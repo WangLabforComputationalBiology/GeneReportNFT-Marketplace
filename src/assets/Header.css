@@ -1,0 +1,92 @@
+
+.header{
+    background: #fff;
+    width: 100%;
+    height: 60px;
+    box-shadow:0px 1px 8px #c9cbcb;
+    
+    display: flex;
+    position: sticky;
+    top: 0;
+    margin: 0 auto;
+    transition: background-color 0.5s;
+  
+  }
+  .header ul{
+    list-style: none;
+    display: flex;
+    
+  }
+  
+  .header li{
+    width: 125px;
+    height: 60px;
+  
+  }
+  .header p, a{
+    line-height: 60px;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    color: #3c3e3d;
+  
+    text-decoration: none;
+  }
+  .header li p:hover{
+    cursor: pointer;
+    color: #16952d;
+  }
+  
+  
+  .header  li:hover{
+    box-shadow: 0px -1px 8px -1px  #d3e3d6;
+    transition: box-shadow 0.2s;
+    border-radius: 3px;
+  }
+  
+  
+  #logo{
+    width: 200px;
+    height: 60px;
+  
+    margin-left: 40px;
+    cursor: pointer;
+  }
+  #logo p{
+    font-size: 40px;
+    line-height: 50px;
+    margin-top:5px;
+    color: #16952d;
+  }
+  
+  
+  #navigation{
+    width: 400px;
+    height: 60px;
+  
+    margin-left: 100px;
+    display: flex;
+    position: relative;
+    left: 30%;
+  }
+  
+  #navigation input{
+    width: 300px;
+    height: 38px;
+    border: 2px solid #5d5d5d;
+    border-radius: 10px;
+    margin-top: 12px;
+    
+  }
+  
+  #naviButtom{
+    width: 40px;
+    height: 38px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: 2px solid #5d5d5d;
+  
+    margin: 12px 0px 0px 3px;
+  
+  }
+  
