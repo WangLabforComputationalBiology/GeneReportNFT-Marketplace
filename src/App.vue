@@ -9,13 +9,19 @@
   </span>
   <ul>
     <!-- 铸造 -->
-    <li id="create"><a href="#"><p>Create</p></a></li>
+    <li id="create">
+      <router-link to="/create" @click="test"><p>Create</p></router-link>
+    </li>
 
     <!-- 投放 -->
-    <li id="drop"><a href="#"><p>Drop</p></a></li>
+    <li id="drop">
+      <router-link to="/drop" ><p>Drop</p></router-link>
+    </li>
 
     <!-- 统计 -->
-    <li id="stats"><a href="#"><p>Stats</p></a></li>
+    <li id="stats"><a href="#"></a>
+      <router-link to="/stats" ><p>Stats</p></router-link>
+    </li>
   </ul>
 
   <!-- 搜索框 -->
@@ -40,20 +46,13 @@
 
   <!-- 内容主体 -->
   <div class="main">
-    <router-link to="/test1" @click="test"> test1 </router-link>
-    <router-link to="/test2" > test2 </router-link>
-
+    <router-view/>
   </div>
 
-  <div id="display">
-    <router-view></router-view>
-  </div>
-  
-
-  <!-- 尾部导航栏
+  <!-- 尾部导航栏 -->
   <div class="bottom">
     <p>bottom area</p>
-  </div> -->
+  </div>
 
 </template>
 
@@ -109,10 +108,6 @@ document.addEventListener('keydown', function(event) {
 <style scoped>
 @import './assets/main.css';
 
-#display{
-  width: 200px;
-  height: 200px;
-  border: 1px solid #fff;
-}
+
 
 </style>

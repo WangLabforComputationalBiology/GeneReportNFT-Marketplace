@@ -1,21 +1,28 @@
 //路由页面
-import Test1 from "@/components/test1.vue";
-import Test2 from "@/components/test2.vue";
-import Router from "vue-router";
+import create from "@/components/create.vue";
+import drop from "@/components/drop.vue";
+import stats from "@/components/stats.vue";
+import { createWebHistory } from "vue-router";
+import { createRouter } from "vue-router";
 
-export default new Router({
-    routes:[
-        {
-            path:'/test1',
-            name:'test1',
-            component:Test1
+const routes = [
+    {
+        path:'/create',
+        component:create
+    },
+    {
+        path:"/drop",
+        component:drop
+    },
+    {
+        path:"/stats",
+        component:stats
+    }
+]
 
-        },
-        {
-            path:"/test2",
-            name:'test2',
-            component:Test2
-        }
-    ]
+const router = createRouter({
+    history:createWebHistory(),
+    routes
 })
 
+export default router
