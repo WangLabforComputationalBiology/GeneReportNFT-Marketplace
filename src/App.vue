@@ -1,9 +1,6 @@
 <template>
 
-  <div>
-    <Header></Header>
-  </div>
-    
+ 
     <!-- 头部导航栏 -->
     <div class="header">
 
@@ -39,31 +36,35 @@
    </span>
 
 
-  <!-- banner -->
-   <div class="banner">
-    <p>banner area</p>
-    
-   </div>
-   
   
 
   <!-- 内容主体 -->
   <div class="main">
-    <p>body area</p>
+    <router-link to="/test1" @click="test"> test1 </router-link>
+    <router-link to="/test2" > test2 </router-link>
+
   </div>
 
-  <!-- 尾部导航栏 -->
+  <div id="display">
+    <router-view></router-view>
+  </div>
+  
+
+  <!-- 尾部导航栏
   <div class="bottom">
     <p>bottom area</p>
-  </div>
+  </div> -->
 
 </template>
 
 
 
-
-
 <script setup>
+  
+function test(){
+  console.log("1");
+}
+
 // header导航栏透明切换方法
 document.addEventListener('DOMContentLoaded', function() {
   var headerRolling = document.querySelector('.header');
@@ -77,6 +78,8 @@ document.addEventListener('DOMContentLoaded', function() {
       headerRolling.style.backdropFilter = 'none';
     }
   });
+
+ 
 });
 
 
@@ -105,5 +108,11 @@ document.addEventListener('keydown', function(event) {
 
 <style scoped>
 @import './assets/main.css';
+
+#display{
+  width: 200px;
+  height: 200px;
+  border: 1px solid #fff;
+}
 
 </style>

@@ -2,15 +2,16 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
-import Header from './components/Header.vue'
-
-
-createApp(App).mount('#app')
+import router from './router'
 
 
 
-export default{
-    component:{
-        Header
-    }
-}
+createApp(App)
+    .use(router)
+    .mount('#app')
+
+
+
+
+
+
