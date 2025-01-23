@@ -7,26 +7,21 @@
   <span id="logo">
     <p>LOGO</p>
   </span>
-  <ul>
-    <!-- 铸造 -->
-    <li id="create">
-      <router-link to="/create" @click="test"><p>Create</p></router-link>
-    </li>
-
-    <!-- 投放 -->
-    <li id="drop">
-      <router-link to="/drop" ><p>Drop</p></router-link>
-    </li>
-
-    <!-- 统计 -->
-    <li id="stats"><a href="#"></a>
-      <router-link to="/stats" ><p>Stats</p></router-link>
-    </li>
-  </ul>
+  <div>
+    <el-menu mode="horizontal" class="menu" active-text-color="#169608">
+      <el-menu-item index="1" class="menuSelection"><router-link to="/create">Create</router-link></el-menu-item>
+      <el-menu-item index="2" class="menuSelection"><router-link to="/drop" >Drop</router-link></el-menu-item>
+      <el-menu-item index="3" class="menuSelection"><router-link to="/stats" >Stats</router-link></el-menu-item>
+    </el-menu>
+  </div>
+  
 
   <!-- 搜索框 -->
   <span id="navigation">
     <input id="navigationInput" type="text" placeholder="press '/' to search...">
+    <el-button type="primary" class="searchBtn">
+            <el-icon ><Search /></el-icon>
+        </el-button>
     <!-- <span id="naviButtom"></span> -->
   </span>
   </div>
@@ -108,6 +103,44 @@ document.addEventListener('keydown', function(event) {
 <style scoped>
 @import './assets/main.css';
 
+a{
+  text-decoration: none; 
+}
 
+.searchBtn{
+  height: 44px;
+  width: 60px;
+  background-color:#169608;
+  border-radius: 12px;
+
+  margin-top: 12px;
+  margin-left: 4px;
+}
+.searchBtn:hover{
+  background-color: #fff;
+  color: #169608;
+}
+
+.menu{
+  width: 500px;
+  height: 80px;
+}
+
+.menu:hover {
+  /* background-color: #2e1e1e; */
+  color: #169608;
+}
+.menuSelection {
+  background-color: #ffffff;
+  color: #169608;
+  width: 140px;
+  font-size: 25px;
+  font-weight: bold;
+
+}
+
+.menuSelection:hover{
+  background-color: #d17070;
+}
 
 </style>
