@@ -86,152 +86,107 @@ body {
 
   /*Demo CSS begin from this */
   height: 55%;
-  background: linear-gradient(to bottom, #b3ffab 0%, #12fff7 100%);
+  /* background: linear-gradient(to bottom, #b3ffab 0%, #12fff7 100%); */
+  background: #f8f8f8;
 }
 
 
 
-.header{
+.header {
   background: #fff;
   width: 100%;
   height: 80px;
-  box-shadow:0px 1px 8px #c9cbcb;
-  border-radius: 10px;
-  
+
   display: flex;
   position: sticky;
-  top: 0;
-  margin: 0 auto;
   transition: background-color 0.5s;
 
 }
 
-#logo{
+#logo {
   width: 200px;
-  height: 60px;
-
+  height: 80px;
   margin-left: 80px;
   cursor: pointer;
-}
-#logo p{
-  font-size: 40px;
-  line-height: 50px;
-  margin-top:15px;
-  color: #16952d;
-  font-weight: bold;
+align-items: center;
+
+  p {
+    font-size: 40px;
+    line-height: 50px;
+    margin-top: 15px;
+    color: #16952d;
+    font-weight: bold;
+  }
 }
 
 
-#navigation{
-  width: 400px;
+
+#navigation {
+  width: 300px;
   height: 80px;
   margin-top: 8px;
-  margin-left: 100px;
+  margin-left: 400px;
   display: flex;
   position: relative;
-  left: 30%;
+
+
+  input {
+    width: 300px;
+    height: 45px;
+    border: 2px solid #5d5d5d;
+    border-radius: 10px;
+    margin-top: 12px;
+  }
 }
 
-#navigation input{
-  width: 300px;
-  height: 45px;
-  border: 2px solid #5d5d5d;
-  border-radius: 10px;
-  margin-top: 12px;
-  
-}
 
 
-/* 侧边栏 */
-.slider{
-  width: 12%;
-  height: 780px;
-  background-color:  rgba(255, 255, 255);
-  position: sticky;
-  float: right;
-  margin-right: 5px;
-  top: 85px;
-  box-shadow:0px 1px 6px #ccc9c9;
-  border-radius: 10px;
-  display: block;
 
-  /* backdrop-filter: blur(10px); */
-}
 
-#profilePic{
+
+#profilePic {
   width: 80px;
   height: 80px;
   background-color: #16952d;
-  box-shadow:2px 2px 5px #b6b6b6;
-  
+  box-shadow: 2px 2px 5px #b6b6b6;
+
 
   margin: 0 auto;
   margin-top: 30px;
   border-radius: 50%;
 }
 
-#profilePic p{
+#profilePic p {
   line-height: 80px;
   text-align: center;
   font-size: large;
   color: white;
 }
 
-#userName{
+#userName {
   width: 80px;
   height: 20px;
   /* background: #16952d; */
   margin: 10px auto;
 }
 
-/* #account{
-  width: 150px;
-  height: 60px;
-  position: relative;
-  right: -20%;
-} */
-
-#backToTopBTN{
-  width: 100%;
-  height: 50px;
-  background-color: rgba(255, 255, 255, 0);
-  
-  border: 0;
-  border-top: 1px solid #ccc9c9;
-
-  color: #169608;
-  font-size: 17px;
-  font-weight: 700;
-
-  display: block;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%,0%);
-}
-
-#backToTopBTN:hover{
-  cursor: pointer;
-  text-shadow: 0 12px 16px 0 rgba(0,0,0,.24);
-}
-
 
 
 /* 主页面 */
-.main{
+.main {
   width: 87%;
   height: 780px;
-  background-color:  rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
   margin: 5px;
-  box-shadow:0px 1px 4px #b6b6b6;
+  box-shadow: 0px 1px 4px #b6b6b6;
   border-radius: 10px;
 }
 
-.bottom{
+.bottom {
   width: 100%;
   height: 90px;
   background-color: rgba(255, 255, 255);
-  box-shadow:0px 1px 4px #b4b6b6;
+  box-shadow: 0px 1px 4px #b4b6b6;
   border-radius: 10px;
   margin: 0 auto;
 }
