@@ -3,6 +3,12 @@
       <div class="banner">
          <h1 class="banner-title">Create</h1>
       </div>
+      <div class="CreateArea">
+         <div class="uploadDataBlock">
+            <img src="../assets/imgs/upload.png" alt="upload">
+            <p>Click here to upload your gene data</p>
+         </div>
+      </div>
    </div>
 </template>
 
@@ -11,15 +17,55 @@ export default {
    name: "create"
 }
 </script>
-body{
-background-color: #fff;
+
+<style lang="scss" scoped>
+body {
+   background-color: #fff !important;
 }
-.body{
-margin: auto;
-width: 90%;
+
+.body {
+   margin: auto;
+   width: 80%;
+   // background-color: #fff;
+}
+
+.CreateArea {
+   width: 100%;
+   height: 600px;
+   // background-color: grey;
+   overflow: hidden;
+
+   .uploadDataBlock {
+      width: 400px;
+      height: 350px;
+      margin: 100px 0 0 300px;
+      border-radius: 10px;
+      border: 1px solid #E4E7ED;
+      background-color: #fff;
+
+      &:hover {
+         cursor: pointer;
+         box-shadow: 1px 3px 3px #DCDFE6;
+         transition: 0.3s;
+      }
+
+      img {
+         display: block;
+         margin: 30px auto;
+         color: #fff;
+
+
+      }
+
+      p {
+         color: #C0C4CC;
+         text-align: center;
+      }
+   }
+
 
 }
-<style>
+
 .banner-title {
    font-size: 70px;
    color: #67C23A;

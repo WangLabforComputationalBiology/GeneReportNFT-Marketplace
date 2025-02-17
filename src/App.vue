@@ -42,10 +42,10 @@
 
   <router-view />
 
-  <!-- 尾部导航栏 -->
+  <!-- 尾部导航栏
   <div class="bottom">
     <p>bottom area</p>
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -88,7 +88,7 @@ a {
   position: sticky;
   top: 0;
   transition: background-color 0.5s;
-  border-bottom: 1px solid #F2F6FC;
+  border-bottom: 1px solid #EBEEF5;
 }
 
 
@@ -129,7 +129,7 @@ a {
     font-weight: bold;
     margin: auto;
     text-align: center;
-    border-bottom: 1px solid #F2F6FC;
+    border-bottom: 1px solid #EBEEF5;
 
     &:hover {
       background-color: #fffffff1;

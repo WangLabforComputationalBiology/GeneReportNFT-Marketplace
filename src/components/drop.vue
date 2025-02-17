@@ -4,7 +4,7 @@
             <h1 class="banner-title">DROP</h1>
             <p>introduction</p>
         </div>
-        
+
     </div>
 
 </template>
@@ -15,24 +15,21 @@ export default {
 }
 </script>
 
-<style lang="scss">
-body {
+<style lang="scss" scoped>
+.body {
+    margin: auto;
+    width: 80%;
     background-color: #fff;
 }
 
-.body {
-    margin: auto;
-    width: 90%;
-
-}
-.banner{
+.banner {
     display: flex;
+    border-bottom: 1px solid #E4E7ED;
 
     .banner-title {
-    font-size: 70px;
-    color: #67C23A;
-}
+        font-size: 70px;
+        color: #67C23A;
+    }
 
 }
-
 </style>

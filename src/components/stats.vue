@@ -11,17 +11,17 @@ export default {
     name: "stats"
 }
 </script>
-body{
-background-color: #fff;
-}
+
+<style lang="scss" scoped>
+
 .body{
 margin: auto;
-width: 90%;
-
+width: 80%;
+background-color: #fff;
 }
 
 .banner-title{
 font-size: 70px;
 color: #67C23A;
 }
-<style></style>
+</style>
