@@ -22,7 +22,6 @@
     </span>
 
     <el-dialog v-model="loginDialogVisible" title="Login" width="20%" center class="custom-dialog">
-
       <div class="dialogBody">
         <p>Try this:</p>
         <div class="useMeta">
@@ -76,10 +75,22 @@ export default {
 
 <style lang="scss" scoped>
 @import "./assets/main.css";
-
 a {
   text-decoration: none;
 }
+
+.header {
+  background: #fff;
+  width: 100%;
+  height: 80px;
+
+  display: flex;
+  position: sticky;
+  top: 0;
+  transition: background-color 0.5s;
+  border-bottom: 1px solid #F2F6FC;
+}
+
 
 .searchBtn {
   height: 44px;
@@ -98,7 +109,7 @@ a {
   }
 
   &:hover {
-    background-color: #169608b9;
+    background-color: #67C23A;
     color: #FFF;
     cursor: pointer;
   }
@@ -118,10 +129,11 @@ a {
     font-weight: bold;
     margin: auto;
     text-align: center;
+    border-bottom: 1px solid #F2F6FC;
 
     &:hover {
       background-color: #fffffff1;
-      color: #16960896;
+      color: #67C23A;
     }
   }
 }
@@ -141,7 +153,7 @@ a {
   float: right;
 
   &:hover {
-    background-color: #169608b9;
+    background-color: #67C23A;
     color: #FFF;
 
   }
@@ -150,8 +162,9 @@ a {
 
 
 .custom-dialog {
-  
-
+  .el-dialog__body {
+    margin-top: 10%;
+  }
 
   .dialogBody {
     height: 300px;
@@ -162,7 +175,7 @@ a {
       margin-top: 30px;
       font-size: 20px;
       font-weight: bold;
-      color: #169608;
+      color: #67C23A;
       border: grey 1px solid;
       border-radius: 10px;
       display: flex;
@@ -174,7 +187,6 @@ a {
       }
 
       .meta {
-
 
         p {
           line-height: 60px;
@@ -209,6 +221,6 @@ a {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
-
+  
 }
 </style>
