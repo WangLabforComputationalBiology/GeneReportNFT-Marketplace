@@ -1,0 +1,17 @@
+app:
+  name: GeneReport_platform
+  port: :8080
+mysql:
+  dsn: root:608111@tcp(127.0.0.1:3307)/GeneReport_platform?charset=utf8mb4&parseTime=True&loc=Local
+  MaxIdleConns: 10
+  MaxOpenConns: 100
+redis:
+  addr: "localhost:6380"
+  password: "608111"
+  timeout: 3000
+  db: 0
+mongoDB:
+  dsn: "mongodb://@localhost:27017/?authSource=admin"
+  db: "GeneReport_platform"
+
+
