@@ -21,22 +21,26 @@
       </div>
     </span>
 
-    <el-dialog v-model="loginDialogVisible" title="Login" width="20%" center class="custom-dialog">
+    <!-- 登录界面 -->
+    <el-dialog v-model="loginDialogVisible" title="Login" center class="custom-dialog">
       <div class="dialogBody">
         <p>Try this:</p>
-        <div class="useMeta">
+        <div class="useMeta" @click="connectWallet">
           <img class="icon" src="./icons/metalogo.png" />
           <span class="meta">
             <p>MetaMask</p>
           </span>
         </div>
+        <div class="loginNotice">Notice: Please use Chrome or Firefox and make sure you have downloaded MetaMask
+          as an extension. </div>
       </div>
-
     </el-dialog>
 
     <span class="loginBTN" @click="isVisible">
       Login
     </span>
+
+    <span class="accountAddress">Account: {{ accountdisplay }} </span>
   </div>
 
 
@@ -50,31 +54,82 @@
 
 <script>
 import { ref } from 'vue';
+import { ethers } from "ethers";
 
 export default {
   name: "App",
   data() {
     return {
+      account: "",
+      provider: null,
       loginDialogVisible: false,
     };
   },
+
+  created() {
+    if (typeof window.ethereum !== 'undefined') {
+      console.log('MetaMask is ready!');
+    }
+  },
+
+  computed: {
+    accountdisplay() {
+      if (this.account.length > 10) {
+        return this.account.slice(0, 10) + '...';
+      }
+      return this.account;
+    },
+  },
+
+
   methods: {
+    //刷新返回主页
     toHome() {
       this.$router.push("/");
     },
+
+    //控制登录弹窗
     isVisible() {
       this.loginDialogVisible = true;
     },
 
+    // MetaMask连接并获取账户
+    async connectWallet() {
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          this.account = accounts[0];
+          console.log('Connected account:', this.account);
+        } catch (error) {
+          console.error('User denied account access or error occurred:', error);
+        }
+      } else {
+        console.log('MetaMask is not installed');
+      }
+
+      if (this.account) {
+        this.$message({
+          message: 'Wallet Connected successfully!',
+          type: 'success',
+          duration: 2000,
+        });
+        this.loginDialogVisible = false;
+      }
+    },
+
+
+
+
+
   },
+}
 
-
-};
 </script>
 
 
 <style lang="scss" scoped>
 @import "./assets/main.css";
+
 a {
   text-decoration: none;
 }
@@ -160,11 +215,18 @@ a {
 
 }
 
+.accountAddress {
+  margin: 28px 0 0 40px;
+  font-size: 18px;
+  color: #169608;
+  cursor: pointer;
+}
 
-.custom-dialog {
-  .el-dialog__body {
-    margin-top: 10%;
-  }
+// 登录弹窗
+::v-deep .custom-dialog {
+  border-radius: 10px !important;
+  width: 20%;
+  margin-top: 5%;
 
   .dialogBody {
     height: 300px;
@@ -195,9 +257,19 @@ a {
         }
       }
 
+
+
       &:hover {
         cursor: pointer;
       }
+
+    }
+
+
+    .loginNotice {
+      width: 100%;
+      height: 50px;
+      margin-top: 100px;
     }
 
     p {
@@ -205,6 +277,7 @@ a {
       font-weight: bold;
       color: #169608;
     }
+
 
 
   }
@@ -221,6 +294,6 @@ a {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
-  
+
 }
 </style>

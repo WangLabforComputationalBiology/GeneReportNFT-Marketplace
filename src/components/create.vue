@@ -45,7 +45,7 @@ body {
 
       &:hover {
          cursor: pointer;
-         box-shadow: 1px 3px 3px #DCDFE6;
+         box-shadow: 0px 0px 6px #DCDFE6;
          transition: 0.3s;
       }
 
