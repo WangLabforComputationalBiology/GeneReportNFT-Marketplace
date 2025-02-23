@@ -28,10 +28,12 @@ func (cGNFT *GNFTController) Burn(ctx *gin.Context) {
 
 // PutOnSale 上架GNFT
 func (cGNFT *GNFTController) PutOnSale() string {
-
+	// 添加逻辑代码
+	return "PutOnSale"
 }
 
 // TakeOffSale 下架GNFT
 func (cGNFT *GNFTController) TakeOffSale() string {
-
+	// 添加逻辑代码
+	return "TakeOffSale"
 }

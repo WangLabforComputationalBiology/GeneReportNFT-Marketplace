@@ -3,11 +3,9 @@
 create database if not exists blc_gene;
 
 
-
 use blc_gene;
 
 show tables ;
-
 
 
 # ================================  数据库表结构  ================================
