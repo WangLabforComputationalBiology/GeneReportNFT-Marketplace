@@ -1,6 +1,6 @@
 app:
   name: GeneReport_platform
-  port: :8080
+  addr: 0.0.0.0:8080
 mysql:
   dsn: root:608111@tcp(127.0.0.1:3307)/GeneReport_platform?charset=utf8mb4&parseTime=True&loc=Local
   MaxIdleConns: 10
@@ -13,5 +13,9 @@ redis:
 mongoDB:
   dsn: "mongodb://@localhost:27017/?authSource=admin"
   db: "GeneReport_platform"
+context:
+  timeout: 3000
+logger:
+
 
 

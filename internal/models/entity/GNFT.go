@@ -5,7 +5,8 @@ import (
 )
 
 type GNFT struct {
-	FileName    string    `json:"file_name"`
+	ID          int       `json:"id"`
+	Name        string    `json:"file_name"`
 	FileSig     string    `json:"file_sig"`
 	FileShares  int       `json:"file_shares"`
 	Data        string    `json:"data"`
