@@ -46,10 +46,10 @@
 
   <router-view />
 
-  <!-- 尾部导航栏
+  <!-- 尾部导航栏 -->
   <div class="bottom">
     <p>bottom area</p>
-  </div> -->
+  </div>
 </template>
 
 <script>
@@ -70,6 +70,7 @@ export default {
     if (typeof window.ethereum !== 'undefined') {
       console.log('MetaMask is ready!');
     }
+
   },
 
   computed: {
@@ -117,10 +118,6 @@ export default {
       }
     },
 
-
-
-
-
   },
 }
 
@@ -143,7 +140,6 @@ a {
   position: sticky;
   top: 0;
   transition: background-color 0.5s;
-  border-bottom: 1px solid #EBEEF5;
 }
 
 
@@ -171,20 +167,18 @@ a {
 }
 
 .menu {
-  width: 500px;
   height: 80px;
   display: flex;
 
   .menuSelection {
     background-color: #ffffff;
     color: #169608;
-    width: 140px;
+    width: 150px;
     font-size: 25px;
     line-height: 80px;
     font-weight: bold;
     margin: auto;
     text-align: center;
-    border-bottom: 1px solid #EBEEF5;
 
     &:hover {
       background-color: #fffffff1;
@@ -223,7 +217,7 @@ a {
 }
 
 // 登录弹窗
-::v-deep .custom-dialog {
+:deep(.custom-dialog)  {
   border-radius: 10px !important;
   width: 20%;
   margin-top: 5%;
@@ -284,16 +278,19 @@ a {
 }
 
 
-
-
-
-
-
-
 .mainBody {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
 
+}
+
+
+.bottom {
+  width: 70%;
+  height: 300px;
+  background-color:#fff;
+  border-radius: 10px;
+  margin: 0 auto;
 }
 </style>
