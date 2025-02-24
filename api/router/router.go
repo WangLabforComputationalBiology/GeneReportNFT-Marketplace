@@ -12,7 +12,6 @@ func registerSwaggerRouter(r *gin.Engine) {
 	r.GET("/swagger/*any", func(c *gin.Context) {
 		ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "SWAGGER")(c)
 	})
-
 }
 
 func registerUserRouter(r *gin.RouterGroup) {
@@ -43,11 +42,11 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(otelgin.Middleware("GRM_Server"), middlewares.CORS())
 	registerSwaggerRouter(r)
-	User := r.Group("/:addr")
+	User := r.Group("/addr")
 	registerUserRouter(User)
-	NFT := r.Group("/:nft_id")
+	NFT := r.Group("/nft_id")
 	registerNFTRouter(NFT)
-	Order := r.Group("/:order_id")
+	Order := r.Group("/order_id")
 	registerOrderRouter(Order)
 	//商城首页
 	r.GET("/")

@@ -3,11 +3,23 @@
 from minio import Minio
 from minio.error import S3Error
 import os
+import yaml
 
-MINIO_SERVER="192.168.2.128:9000"
-ACCESS_KEY="admin"
-SECRET_KEY="12345678"
 
+
+
+# 读取 YAML 文件
+with open('../config/config.yaml', 'r') as file:
+    config = yaml.safe_load(file)
+
+# 获取嵌套的变量
+MINIO_SERVER = str(config['minio']['host'])+':'+str(config['minio']['port'])
+ACCESS_KEY = config['minio']['access_key']
+SECRET_KEY = config['minio']['secret_key']
+
+print(f"MinIO Server: {MINIO_SERVER}")
+print(f"Access Key: {ACCESS_KEY}")
+print(f"Secret Key: {SECRET_KEY}")
 
 
 try:

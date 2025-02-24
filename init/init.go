@@ -5,6 +5,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -79,7 +81,7 @@ func initMinio() {
 	fmt.Printf("accessKey:%s,secretKey:%s", accessKey, secretKey)
 	var err error
 	//不用：=
-	minioClient, err = minio.New(url, &minio.Options{
+	global.MinioClient, err = minio.New(url, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
 		Secure: false, // 如果MinIO服务器使用HTTPS，请设置为true
 	})
