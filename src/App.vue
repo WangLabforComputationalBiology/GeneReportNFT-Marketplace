@@ -36,7 +36,8 @@
       </div>
     </el-dialog>
 
-    <span class="accountAddress" @click="isVisible"><i class="el-icon-user"></i>Account: {{ accountdisplay }} </span>
+    <router-link to="/loginPage"><span class="accountAddress"><i class="el-icon-user"></i>Account: {{ accountdisplay }}
+      </span></router-link>
   </div>
 
 
@@ -44,7 +45,16 @@
 
   <!-- 尾部导航栏 -->
   <div class="bottom">
-    <p>bottom area</p>
+    <div class="inBottom">
+      <div class="communication">
+        <p>Need some help? Please contact us.</p> <br>
+       
+        <p>WangLab @SZTU</p>
+        <p>Email: 11111@gmail.com</p>
+        <p>Adress: xxxxxx</p>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -295,10 +305,22 @@ a {
 
 
 .bottom {
-  width: 1400px;
+  width: 100%;
   height: 300px;
-  background-color: #fff;
-  border-radius: 10px;
+  background-color: #169608;
   margin: 0 auto;
+  display: flex;
+
+  .inBottom {
+    width: 1400px;
+    margin: 50px auto;
+    color: #FFF;
+    font-size: 18px;
+
+    .communication {
+      width: 300px;
+      height: 200px;
+    }
+  }
 }
 </style>

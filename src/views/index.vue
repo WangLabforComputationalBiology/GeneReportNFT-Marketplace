@@ -8,7 +8,7 @@
                Artists</h2>
             <div class="getStartBTN">GET STARTED</div>
          </div>
-         <img src="../assets/imgs/bioschains.png">
+         <img src="../assets/imgs/bioschains.svg">
       </div>
    </div>
 

@@ -26,13 +26,11 @@ body {
 .body {
    margin: auto;
    width: 1400px;
-   // background-color: #fff;
 }
 
 .CreateArea {
    width: 100%;
    height: 600px;
-   // background-color: grey;
    overflow: hidden;
 
    .uploadDataBlock {
