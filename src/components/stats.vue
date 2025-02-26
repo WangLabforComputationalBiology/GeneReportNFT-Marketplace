@@ -16,7 +16,7 @@ export default {
 
 .body{
 margin: auto;
-width: 70%;
+width: 1400px;
 background-color: #fff;
 }
 

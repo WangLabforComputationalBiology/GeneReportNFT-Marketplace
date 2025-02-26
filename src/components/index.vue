@@ -62,7 +62,7 @@ export default {
 <style lang="scss" scoped>
 .body {
    margin: auto;
-   width: 70%;
+   width: 1400px;
    background-color: #fff;
    height: 780px;
    border-bottom: 1px solid #E4E7ED;

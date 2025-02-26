@@ -1,7 +1,7 @@
 <template>
   <!-- 头部导航栏 -->
   <div class="header">
-    <span id="logo" @click="toHome">
+    <span class="logo" @click="toHome">
       <p>LOGO</p>
     </span>
 
@@ -12,7 +12,7 @@
     </div>
 
     <!-- 搜索框 -->
-    <span id="navigation">
+    <span class="navigation">
       <input id="navigationInput" type="text" placeholder="search..." />
       <div type="primary" class="searchBtn">
         <el-icon class="searchIcon" size="large">
@@ -36,11 +36,7 @@
       </div>
     </el-dialog>
 
-    <span class="loginBTN" @click="isVisible">
-      Login
-    </span>
-
-    <span class="accountAddress">Account: {{ accountdisplay }} </span>
+    <span class="accountAddress" @click="isVisible"><i class="el-icon-user"></i>Account: {{ accountdisplay }} </span>
   </div>
 
 
@@ -125,21 +121,53 @@ export default {
 
 
 <style lang="scss" scoped>
-@import "./assets/main.css";
-
 a {
   text-decoration: none;
 }
 
 .header {
-  background: #fff;
-  width: 100%;
+  width: 1400px;
   height: 80px;
 
   display: flex;
   position: sticky;
   top: 0;
   transition: background-color 0.5s;
+
+  .logo {
+    width: 200px;
+    height: 80px;
+    margin: 0 80px;
+    cursor: pointer;
+    align-items: center;
+
+    p {
+      font-size: 40px;
+      line-height: 50px;
+      margin-top: 15px;
+      color: #16952d;
+      font-weight: bold;
+    }
+  }
+
+
+  .navigation {
+    width: 300px;
+    height: 80px;
+    margin-top: 8px;
+    margin-left: 400px;
+    display: flex;
+    position: relative;
+
+
+    input {
+      width: 300px;
+      height: 45px;
+      border: 2px solid #5d5d5d;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+  }
 }
 
 
@@ -171,7 +199,6 @@ a {
   display: flex;
 
   .menuSelection {
-    background-color: #ffffff;
     color: #169608;
     width: 150px;
     font-size: 25px;
@@ -181,46 +208,32 @@ a {
     text-align: center;
 
     &:hover {
-      background-color: #fffffff1;
       color: #67C23A;
     }
   }
 }
 
-.loginBTN {
-  height: 44px;
-  width: 60px;
-  background-color: #169608;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #fff;
-  font-size: 16px;
-  text-align: center;
-  line-height: 44px;
-
-  margin: 20px 0 0 200px;
-  float: right;
-
-  &:hover {
-    background-color: #67C23A;
-    color: #FFF;
-
-  }
-
-}
 
 .accountAddress {
-  margin: 28px 0 0 40px;
+  display: flex;
+  line-height: 80px;
   font-size: 18px;
   color: #169608;
   cursor: pointer;
+
+  .el-icon-user {
+    font-size: 24px;
+    margin: 0 5px 0 100px;
+    line-height: 80px;
+  }
 }
 
 // 登录弹窗
-:deep(.custom-dialog)  {
+:deep(.custom-dialog) {
   border-radius: 10px !important;
   width: 20%;
   margin-top: 5%;
+  box-shadow: 0 0 6px #DCDFE6;
 
   .dialogBody {
     height: 300px;
@@ -255,6 +268,8 @@ a {
 
       &:hover {
         cursor: pointer;
+        box-shadow: 0 0 6px #DCDFE6;
+        transition: 200ms;
       }
 
     }
@@ -274,22 +289,15 @@ a {
 
 
 
+
   }
 }
 
 
-.mainBody {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-
-}
-
-
 .bottom {
-  width: 70%;
+  width: 1400px;
   height: 300px;
-  background-color:#fff;
+  background-color: #fff;
   border-radius: 10px;
   margin: 0 auto;
 }
