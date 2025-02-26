@@ -43,7 +43,7 @@ type Config struct {
 
 func initConfig() {
 	viper.SetConfigName("config")
-	viper.AddConfigPath("./config")
+	viper.AddConfigPath("./config") //在和go.mod同级的地方开始！
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {
@@ -72,7 +72,9 @@ func initMysql() {
 	sqlDB.SetConnMaxLifetime(time.Hour)
 	global.DB = db
 }
+
 func initMinio() {
+	//todo 没建结构体，直接读！
 	url := viper.GetString("minio.host") + ":" + viper.GetString("minio.port")
 	accessKey := viper.GetString("minio.access_key")
 	secretKey := viper.GetString("minio.secret_key")

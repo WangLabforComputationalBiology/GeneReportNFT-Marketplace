@@ -1,6 +1,6 @@
 app:
   name: GeneReport_platform
-  addr: 0.0.0.0:8080
+  addr: 0.0.0.0:8181
 
 mysql:
   #dsn: root:newbee@tcp(127.0.0.1:3306)/GeneReport_platform?charset=utf8mb4&parseTime=True&loc=Local

@@ -1,15 +1,29 @@
 package controllers
 
-import "github.com/gin-gonic/gin"
+import (
+	"GeneReport_platform/tools/utils"
+	"github.com/gin-gonic/gin"
+)
 
-type UserController struct{}
+type User struct{}
 
-var UserCtrller = &UserController{}
+var UserController = User{}
 
-func (cUser *UserController) GetInfo(ctx *gin.Context) {
+func (u *User) Test(c *gin.Context) {
+	c.JSON(200, gin.H{"msg": "请求用户 controller successful！"})
 
 }
 
-func (cUser *UserController) GetGNFTList(ctx *gin.Context) {
+func (u *User) GetNonce(ctx *gin.Context) {
+	account := ctx.Param("account")
+	jwt, _ := utils.GenToken(account)
+	ctx.JSON(200, gin.H{"account": account, "jwt": jwt})
+}
+
+func (u *User) GetInfo(ctx *gin.Context) {
+
+}
+
+func (u *User) GetGNFTList(ctx *gin.Context) {
 
 }
