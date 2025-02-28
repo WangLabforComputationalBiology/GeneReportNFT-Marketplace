@@ -22,11 +22,11 @@ func registerUserRouter(r *gin.RouterGroup) {
 	r.GET("/test", controllers.UserController.Test)
 
 	//todo get请求，  - url：/user/nonce/:账号 ,使用https，path和参数会被加密，account可以直接放在url
-	r.GET("/nonce/:account", controllers.UserController.GetNonce) //这个是http的，下面是https的
+	r.GET("/nonce/:user_address", controllers.UserController.GetNonce) //这个是http的，下面是https的
 	//创建https服务器
 	https := gin.Default()
 	ssl := https.Group("/user")
-	ssl.GET("/nonce/:account", controllers.UserController.GetNonce)
+	ssl.GET("/nonce/:user_address", controllers.UserController.GetNonce)
 	go func() {
 		// Start HTTPS server，server.crt：这是一个证书文件，server.key：这是一个私钥文件
 		if err := https.RunTLS(":8443", "assets/TLS_files/server.crt", "assets/TLS_files/server.key"); err != nil {
