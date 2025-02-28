@@ -15,7 +15,7 @@ import (
 // 我们这里需要额外记录一个username字段，所以要自定义结构体
 // 如果想要保存更多信息，都可以添加到这个结构体中
 type MyClaims struct {
-	Username string `json:"username"`
+	User_address string `json:"user_address"`
 	jwt.RegisteredClaims
 }
 
@@ -26,10 +26,10 @@ const TokenExpireDuration = time.Second * 2
 var MySecret = []byte("123456")
 
 // GenToken 生成JWT
-func GenToken(username string) (string, error) {
+func GenToken(user_address string) (string, error) {
 	// 创建一个我们自己的声明
 	c := MyClaims{
-		username, // 自定义字段
+		user_address, // 自定义字段
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenExpireDuration)), // 过期时间
 			Issuer:    "my-project",                                            // 签发人
@@ -101,7 +101,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			return
 		}
 		// 将当前请求的username信息保存到请求的上下文c上
-		c.Set("username", mc.Username)
+		c.Set("username", mc.User_address)
 		c.Next() // 后续的处理函数可以用过c.Get("username")来获取当前请求的用户信息
 	}
 }

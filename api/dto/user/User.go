@@ -1,20 +1,14 @@
 package user
 
-type LoginReq struct {
-}
-type LoginRes struct {
-}
-
-type GetUserInfoReq struct {
-}
-type GetUserInfoRes struct {
-}
-type GetUserGNFTsReq struct {
-}
-type GetUserGNFTsRes struct {
-}
-type SetUserNameReq struct {
+// 绑定post的
+type EditUserName struct {
+	Name    string `json:"new_name"`
+	Address string `json:"user_address"`
 }
 
-type SetUserNameRes struct {
+// 数据库操作的
+type UpdateUserName struct {
+	ID      uint
+	Address string `gorm:"column:address"`
+	Name    string `gorm:"column:name"`
 }

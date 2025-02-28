@@ -35,6 +35,11 @@ func registerUserRouter(r *gin.RouterGroup) {
 
 	}()
 
+	//更改用户名
+	r.POST("/edit/user_name", controllers.UserController.EditUserName)
+	//上传用户头像
+	r.POST("/upload/avatar", controllers.UserController.UploadProfile)
+
 	//用户主页信息
 	r.GET("/info")
 	//用户藏品信息
