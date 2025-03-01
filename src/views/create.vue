@@ -47,8 +47,6 @@ export default {
          display: block;
          margin: 30px auto;
          color: #fff;
-
-
       }
 
       p {

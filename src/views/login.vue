@@ -6,9 +6,9 @@
                 <p>Downloaded MetaMask in your Brower:</p>
             </div>
             <div class="Wrapper">
-                <div class="useMeta" @click="connectWallet">
+                <div class="useMeta">
                     <p>And try this:</p>
-                    <span class="meta">
+                    <span class="meta"  @click="connectWallet">
                         <img class="icon" src="../icons/metalogo.png" />
                         <p style="color:#C0C4CC;">MetaMask</p>
                     </span>
@@ -62,7 +62,7 @@ export default {
 
 .loginPage {
     width: 100%;
-    height: 800px;
+    height: 655px;
     display: flex;
 
     .Wrapper {

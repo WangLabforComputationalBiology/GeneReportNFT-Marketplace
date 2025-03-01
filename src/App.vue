@@ -25,12 +25,6 @@
     <!-- 登录路由 -->
     <router-link to="/login" class="Login">Login</router-link>
 
-    <!-- 账户小查 -->
-    
-    <el-popover trigger="click">
-      <i class="el-icon-user"></i>
-    </el-popover>
-
   </div>
   <!-- 路由主体 -->
   <router-view />
@@ -167,7 +161,7 @@ a {
     .menuSelection {
       color: #169608;
       width: 150px;
-      font-size: 25px;
+      font-size: 26px;
       line-height: 80px;
       font-weight: bold;
       margin: auto;
@@ -185,7 +179,7 @@ a {
     margin-left: 200px;
     line-height: 80px;
     font-weight: 700;
-    font-size: 20px;
+    font-size: 26px;
     color: #169608;
 
     &:hover {
@@ -194,17 +188,6 @@ a {
     }
   }
 
-  .el-icon-user {
-    line-height: 80px;
-    color: #169608;
-    font-size: 24px;
-    margin-left: 50px;
-
-    &:hover {
-      color: #67C23A;
-      cursor: pointer;
-    }
-  }
 }
 
 //底部区域
