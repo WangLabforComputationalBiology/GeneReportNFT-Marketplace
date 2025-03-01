@@ -19,10 +19,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-body {
-   background-color: #fff !important;
-}
-
 .body {
    margin: auto;
    width: 1400px;

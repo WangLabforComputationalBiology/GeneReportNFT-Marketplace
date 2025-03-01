@@ -5,6 +5,7 @@
       <p>LOGO</p>
     </span>
 
+    <!-- 路由菜单 -->
     <div class="menu">
       <router-link to="/create" class="menuSelection">Create</router-link>
       <router-link to="/drop" class="menuSelection">Drop</router-link>
@@ -21,47 +22,34 @@
       </div>
     </span>
 
-    <!-- 登录界面 -->
-    <el-dialog v-model="loginDialogVisible" title="Login" center class="custom-dialog">
-      <div class="dialogBody">
-        <p>Try this:</p>
-        <div class="useMeta" @click="connectWallet">
-          <img class="icon" src="./icons/metalogo.png" />
-          <span class="meta">
-            <p>MetaMask</p>
-          </span>
-        </div>
-        <div class="loginNotice">Notice: Please use Chrome or Firefox and make sure you have downloaded MetaMask
-          as an extension. </div>
-      </div>
-    </el-dialog>
+    <!-- 登录路由 -->
+    <router-link to="/login" class="Login">Login</router-link>
 
-    <router-link to="/loginPage"><span class="accountAddress"><i class="el-icon-user"></i>Account: {{ accountdisplay }}
-      </span></router-link>
+    <!-- 账户小查 -->
+    
+    <el-popover trigger="click">
+      <i class="el-icon-user"></i>
+    </el-popover>
+
   </div>
-
-
+  <!-- 路由主体 -->
   <router-view />
 
   <!-- 尾部导航栏 -->
   <div class="bottom">
+    <!-- 内容主体 -->
     <div class="inBottom">
       <div class="communication">
-        <p>Need some help? Please contact us.</p> <br>
-       
+        <p>Need some help? Please contact us.</p><br>
         <p>WangLab @SZTU</p>
         <p>Email: 11111@gmail.com</p>
         <p>Adress: xxxxxx</p>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
-import { ethers } from "ethers";
-
 export default {
   name: "App",
   data() {
@@ -69,6 +57,7 @@ export default {
       account: "",
       provider: null,
       loginDialogVisible: false,
+      accountDrawerVisible: false,
     };
   },
 
@@ -88,40 +77,10 @@ export default {
     },
   },
 
-
   methods: {
     //刷新返回主页
     toHome() {
-      this.$router.push("/");
-    },
-
-    //控制登录弹窗
-    isVisible() {
-      this.loginDialogVisible = true;
-    },
-
-    // MetaMask连接并获取账户
-    async connectWallet() {
-      if (typeof window.ethereum !== 'undefined') {
-        try {
-          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          this.account = accounts[0];
-          console.log('Connected account:', this.account);
-        } catch (error) {
-          console.error('User denied account access or error occurred:', error);
-        }
-      } else {
-        console.log('MetaMask is not installed');
-      }
-
-      if (this.account) {
-        this.$message({
-          message: 'Wallet Connected successfully!',
-          type: 'success',
-          duration: 2000,
-        });
-        this.loginDialogVisible = false;
-      }
+      this.$router.push("/index");
     },
 
   },
@@ -138,7 +97,6 @@ a {
 .header {
   width: 1400px;
   height: 80px;
-
   display: flex;
   position: sticky;
   top: 0;
@@ -169,7 +127,6 @@ a {
     display: flex;
     position: relative;
 
-
     input {
       width: 300px;
       height: 45px;
@@ -178,139 +135,88 @@ a {
       margin-top: 12px;
     }
   }
-}
 
 
-.searchBtn {
-  height: 44px;
-  width: 60px;
-  background-color: #169608;
-  border-radius: 12px;
-
-  margin-top: 12px;
-  margin-left: 4px;
-
-  .searchIcon {
+  .searchBtn {
     height: 44px;
     width: 60px;
-    color: #fff;
-    margin: auto;
+    background-color: #169608;
+    border-radius: 12px;
+
+    margin-top: 12px;
+    margin-left: 4px;
+
+    .searchIcon {
+      height: 44px;
+      width: 60px;
+      color: #fff;
+      margin: auto;
+    }
+
+    &:hover {
+      background-color: #67C23A;
+      color: #FFF;
+      cursor: pointer;
+    }
   }
 
-  &:hover {
-    background-color: #67C23A;
-    color: #FFF;
-    cursor: pointer;
+  .menu {
+    height: 80px;
+    display: flex;
+
+    .menuSelection {
+      color: #169608;
+      width: 150px;
+      font-size: 25px;
+      line-height: 80px;
+      font-weight: bold;
+      margin: auto;
+      text-align: center;
+
+      &:hover {
+        color: #67C23A;
+      }
+    }
   }
-}
 
-.menu {
-  height: 80px;
-  display: flex;
 
-  .menuSelection {
-    color: #169608;
-    width: 150px;
-    font-size: 25px;
+  .Login {
+    display: flex;
+    margin-left: 200px;
     line-height: 80px;
-    font-weight: bold;
-    margin: auto;
-    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
+    color: #169608;
 
     &:hover {
       color: #67C23A;
+      cursor: pointer;
     }
   }
-}
-
-
-.accountAddress {
-  display: flex;
-  line-height: 80px;
-  font-size: 18px;
-  color: #169608;
-  cursor: pointer;
 
   .el-icon-user {
-    font-size: 24px;
-    margin: 0 5px 0 100px;
     line-height: 80px;
-  }
-}
+    color: #169608;
+    font-size: 24px;
+    margin-left: 50px;
 
-// 登录弹窗
-:deep(.custom-dialog) {
-  border-radius: 10px !important;
-  width: 20%;
-  margin-top: 5%;
-  box-shadow: 0 0 6px #DCDFE6;
-
-  .dialogBody {
-    height: 300px;
-
-    .useMeta {
-      width: 100%;
-      height: 60px;
-      margin-top: 30px;
-      font-size: 20px;
-      font-weight: bold;
+    &:hover {
       color: #67C23A;
-      border: grey 1px solid;
-      border-radius: 10px;
-      display: flex;
-
-      .icon {
-        margin: 10px;
-        width: 40px;
-        height: 40px
-      }
-
-      .meta {
-
-        p {
-          line-height: 60px;
-          margin-left: 20px;
-          color: rgb(29, 29, 29);
-        }
-      }
-
-
-
-      &:hover {
-        cursor: pointer;
-        box-shadow: 0 0 6px #DCDFE6;
-        transition: 200ms;
-      }
-
+      cursor: pointer;
     }
-
-
-    .loginNotice {
-      width: 100%;
-      height: 50px;
-      margin-top: 100px;
-    }
-
-    p {
-      font-size: 16px;
-      font-weight: bold;
-      color: #169608;
-    }
-
-
-
-
   }
 }
 
-
+//底部区域
 .bottom {
+  //绿色大背景
   width: 100%;
   height: 300px;
   background-color: #169608;
   margin: 0 auto;
   display: flex;
 
+  //底部中心内容
   .inBottom {
     width: 1400px;
     margin: 50px auto;

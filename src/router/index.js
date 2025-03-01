@@ -3,7 +3,7 @@ import create from "@/views/create.vue";
 import drop from "@/views/drop.vue";
 import stats from "@/views/stats.vue";
 import index from "@/views/index.vue";
-import loginPage from "@/views/loginPage.vue";
+import login from "@/views/login.vue";
 import { createWebHistory } from "vue-router";
 import { createRouter } from "vue-router";
 
@@ -21,12 +21,12 @@ const routes = [
         component:stats
     },
     {
-        path:"/",
+        path:"/index",
         component:index
     },
     {
-        path:"/loginPage",
-        component:loginPage
+        path:"/login",
+        component:login
     }
 ]
 
