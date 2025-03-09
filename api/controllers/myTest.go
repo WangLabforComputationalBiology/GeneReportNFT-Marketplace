@@ -23,7 +23,7 @@ func MyTestRoute(r *gin.Engine) {
 	}
 }
 
-// 可以返回请求中文件的哈希值
+// 可以返回请求中文件的哈希值1
 func encryptionTxt(c *gin.Context) {
 	file, err := c.FormFile("files")
 	if err != nil {
