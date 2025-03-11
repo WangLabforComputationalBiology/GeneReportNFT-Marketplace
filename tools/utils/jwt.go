@@ -19,14 +19,22 @@ type MyClaims struct {
 	jwt.RegisteredClaims
 }
 
-// 过期时间
-const TokenExpireDuration = time.Second * 2
+// 默认过期时间
+var TokenExpireDuration time.Duration = time.Minute * 3
 
 // 加密密钥
 var MySecret = []byte("123456")
 
 // GenToken 生成JWT
-func GenToken(user_address string) (string, error) {
+func GenToken(user_address string, optionalArgs ...int) (string, error) {
+	if len(optionalArgs) > 0 {
+		log.Println("手动设置过期时间: ", optionalArgs[0], "分钟！")
+		// 将optionalArgs[0]转换为time.Duration类型
+		TokenExpireDuration = time.Duration(optionalArgs[0]) * time.Minute
+	} else {
+		log.Println("默认设置token过期时间为3分钟！")
+	}
+
 	// 创建一个我们自己的声明
 	c := MyClaims{
 		user_address, // 自定义字段

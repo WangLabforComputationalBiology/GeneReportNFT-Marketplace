@@ -21,8 +21,9 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//测试的接口
 	r.GET("/test", controllers.UserController.Test)
 
-	//todo get请求，  - url：/user/nonce/:账号 ,使用https，path和参数会被加密，account可以直接放在url
 	r.GET("/nonce/:user_address", controllers.UserController.GetNonce) //这个是http的，下面是https的
+
+	//todo get请求，  - url：/user/nonce/:账号 ,使用https，path和参数会被加密，account可以直接放在url
 	//创建https服务器
 	https := gin.Default()
 	ssl := https.Group("/user")
@@ -39,11 +40,14 @@ func registerUserRouter(r *gin.RouterGroup) {
 	r.POST("/edit/user_name", controllers.UserController.EditUserName)
 	//上传用户头像
 	r.POST("/upload/avatar", controllers.UserController.UploadProfile)
-
+	//登录
+	r.POST("/verify/sig", controllers.UserController.LogIng)
+	//登出
+	r.POST("/logout", controllers.UserController.LogOut)
 	//用户主页信息
-	r.GET("/info")
+	r.GET("/info", controllers.UserController.GetInfo)
 	//用户藏品信息
-	r.GET("/collections")
+	r.GET("/gnfts", controllers.UserController.GetGNFTList)
 	//用户订单信息
 	r.GET("/orders")
 }
