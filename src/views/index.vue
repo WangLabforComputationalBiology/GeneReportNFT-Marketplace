@@ -126,6 +126,7 @@ h1 {
 }
 
 .intro {
+   
    h1 {
       margin-top: 50px;
       font-size: 70px;

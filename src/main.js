@@ -12,11 +12,10 @@ import '../theme/index.css'
 const app = createApp(App)
     .use(router)
     .use(ElementPlus)
- //注册 ElementPlus 组件库中的所有图标到全局 Vue 应用中
- for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+//注册 ElementPlus 组件库中的所有图标到全局 Vue 应用中
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
-    
 app.mount('#app')
 
 

@@ -3,6 +3,7 @@
         <div class="banner">
             <h1 class="banner-title">Market</h1>
         </div>
+        <p>trading_test</p>
         <div class="marketPage">
             <!-- 交易表单 -->
             <div v-if="account">
@@ -10,7 +11,7 @@
                 <input type="text" v-model="amount" placeholder="ETH 数量" />
                 <button @click="sendTransaction">发送交易</button>
             </div>
-            <p>{{ "you got:" + balance }}</p>
+            <p>you got: {{ balance }}</p>
             <p v-if="txHash">交易成功！哈希:{{ txHash }}</p>
         </div>
     </div>
@@ -29,7 +30,6 @@ export default {
             amount: "",
             txHash: "",
             balance: "",
-
         };
     },
 
@@ -87,16 +87,19 @@ export default {
                 // console.log("账户余额:", ethers.formatEther(balance));
                 // 验证账户余额是否足够
                 const requiredBalance = ethers.parseEther(this.amount);
-                const balance = this.balance;
-                if (balance < requiredBalance) {
+                // const balance = this.balance;
+                if (this.balance < requiredBalance) {
                     alert("账户余额不足！");
                     return;
                 }
                 console.log("发送交易...");
-                // 发送交易
+
+                // 获取账户
                 const provider = new ethers.BrowserProvider(window.ethereum);
                 const accounts = await provider.send("eth_requestAccounts", []);
-                this.account = accounts[0]; // 获取第一个账户
+                this.account = accounts[0];
+
+                // 发送交易
                 const signer = await provider.getSigner();
                 const tx = await signer.sendTransaction({
                     to: this.recipient,
@@ -104,24 +107,34 @@ export default {
                 });
 
                 console.log("交易发送中...", tx);
-                alert("交易已提交，等待确认...");
+                // alert("交易已提交，等待确认...");
+                this.$message({
+                    message: "交易已提交，等待确认...",
+                    type: "success",
+                });
 
                 // 等待交易完成
                 await tx.wait();
                 this.txHash = tx.hash;
-                alert(`交易成功！交易哈希: ${tx.hash}`);
+                // alert(`交易成功！交易哈希: ${tx.hash}`);
+                this.$message({
+                    message: "交易成功！",
+                    type: "success",
+                });
 
-                //更新余额
-                const balanceWei = await provider.getBalance(accounts[0]);
-                // 将余额转换为 ETH 单位
-                this.balance = ethers.formatEther(balanceWei);
             }
             catch (error) {
                 console.error("交易失败:", error);
                 // alert("交易失败，请检查错误日志！");
             }
+
+            //更新余额
+            const balanceWei = await provider.getBalance(accounts[0]);
+            this.balance = ethers.formatEther(balanceWei);
         },
     },
+
+
 }
 </script>
 

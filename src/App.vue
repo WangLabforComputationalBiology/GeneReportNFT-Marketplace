@@ -1,6 +1,6 @@
 <template>
   <!-- 头部导航栏 -->
-  <div class="header">
+  <header>
     <span class="logo" @click="toHome">
       <p>LOGO</p>
     </span>
@@ -26,7 +26,7 @@
     <!-- 登录路由 -->
     <router-link to="/login" class="Login">Login</router-link>
 
-  </div>
+  </header>
   <!-- 路由主体 -->
   <router-view />
 
@@ -89,18 +89,20 @@ a {
   text-decoration: none;
 }
 
-.header {
-  width: 1400px;
+header {
+  z-index: 1000;
+  width: 100%;
   height: 80px;
   display: flex;
   position: sticky;
   top: 0;
   transition: background-color 0.5s;
+  background-color: #ffffffee;
 
   .logo {
     width: 200px;
     height: 80px;
-    margin: 0 80px;
+    margin-left: 150px;
     cursor: pointer;
     align-items: center;
 
@@ -118,7 +120,8 @@ a {
     width: 300px;
     height: 80px;
     margin-top: 8px;
-    margin-left: 400px;
+    // margin-left: 400px;
+    right: -10%;
     display: flex;
     position: relative;
 
