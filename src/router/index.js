@@ -4,6 +4,7 @@ import drop from "@/views/drop.vue";
 import stats from "@/views/stats.vue";
 import index from "@/views/index.vue";
 import login from "@/views/login.vue";
+import market from "@/views/market.vue";
 import { createWebHistory } from "vue-router";
 import { createRouter } from "vue-router";
 
@@ -27,6 +28,10 @@ const routes = [
     {
         path:"/index",
         component:index
+    },
+    {
+        path:"/market",
+        component:market
     },
     {
         path:"/login",

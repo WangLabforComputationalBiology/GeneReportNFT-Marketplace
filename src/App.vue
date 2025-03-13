@@ -7,6 +7,7 @@
 
     <!-- 路由菜单 -->
     <div class="menu">
+      <router-link to="/market" class="menuSelection">Market</router-link>
       <router-link to="/create" class="menuSelection">Create</router-link>
       <router-link to="/drop" class="menuSelection">Drop</router-link>
       <router-link to="/stats" class="menuSelection">Stats</router-link>
