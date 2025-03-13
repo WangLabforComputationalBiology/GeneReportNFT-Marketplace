@@ -1,5 +1,5 @@
 <template>
-    <div class="body">
+    <body>
         <div class="loginPage">
             <div class="Wrapper">
                 <h1>How to begin?</h1>
@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </body>
 
 </template>
 
@@ -62,19 +62,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.body {
+body {
     margin: auto;
     width: 1400px;
 }
 
 .loginPage {
-    width: 100%;
-    height: 655px;
+    height: 700px;
     display: flex;
 
     .Wrapper {
-        width: 50%;
-        height: 100%;
+        width: 700px;
         background-color: #fff;
         overflow: hidden;
 

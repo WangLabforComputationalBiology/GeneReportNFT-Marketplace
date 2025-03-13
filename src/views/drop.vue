@@ -5,6 +5,9 @@
             <p>introduction</p>
         </div>
 
+        <div class="dropPage">
+
+        </div>
     </div>
 
 </template>
@@ -31,5 +34,9 @@ export default {
         color: #67C23A;
     }
 
+}
+
+.dropPage{
+    height: 700px;
 }
 </style>

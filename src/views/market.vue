@@ -1,5 +1,5 @@
 <template>
-    <div class="body">
+    <body>
         <div class="banner">
             <h1 class="banner-title">Market</h1>
         </div>
@@ -14,7 +14,7 @@
             <p>you got: {{ balance }}</p>
             <p v-if="txHash">交易成功！哈希:{{ txHash }}</p>
         </div>
-    </div>
+    </body>
 </template>
 
 <script>
@@ -83,11 +83,8 @@ export default {
                 return;
             }
             try {
-                // const balance = await this.signer.provider.getBalance(this.account);
-                // console.log("账户余额:", ethers.formatEther(balance));
                 // 验证账户余额是否足够
                 const requiredBalance = ethers.parseEther(this.amount);
-                // const balance = this.balance;
                 if (this.balance < requiredBalance) {
                     alert("账户余额不足！");
                     return;
@@ -129,8 +126,8 @@ export default {
             }
 
             //更新余额
-            const balanceWei = await provider.getBalance(accounts[0]);
-            this.balance = ethers.formatEther(balanceWei);
+            // const balanceWei = await provider.getBalance(accounts[0]);
+            // this.balance = ethers.formatEther(balanceWei);
         },
     },
 
@@ -139,10 +136,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.body {
+body {
     margin: auto;
     width: 1400px;
-    background-color: #fff;
+    // background-color: #fff;
 }
 
 .banner-title {
@@ -151,6 +148,6 @@ export default {
 }
 
 .marketPage {
-    height: 500px;
+    height: 700px;
 }
 </style>

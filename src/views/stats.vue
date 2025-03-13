@@ -1,9 +1,12 @@
 <template>
-    <div class="body">
+    <body>
         <div class="banner">
             <h1 class="banner-title">Stats</h1>
         </div>
-    </div>
+
+        <div class="statsPage">
+        </div>  
+    </body>
 </template>
 
 <script>
@@ -14,7 +17,7 @@ export default {
 
 <style lang="scss" scoped>
 
-.body{
+body{
 margin: auto;
 width: 1400px;
 background-color: #fff;
@@ -23,5 +26,9 @@ background-color: #fff;
 .banner-title{
 font-size: 70px;
 color: #67C23A;
+}
+
+.statsPage{
+height: 700px;
 }
 </style>

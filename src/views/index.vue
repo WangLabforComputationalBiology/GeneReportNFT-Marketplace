@@ -1,7 +1,7 @@
 <template>
    <!-- banner区域 -->
    <div class="body">
-      <div class="banner">
+      <banner>
          <div class="banner-left">
             <h1 class="banner-title" style="margin-top: 200px">Discover Digital Art &<br> Collect NFTs</h1><br>
             <h2>NFT Marketplace UI create with Anima for Figma.<br> Collect, Buy and sell art from more than 20k NFT
@@ -9,7 +9,7 @@
             <div class="getStartBTN" @click="getStart">GET STARTED</div>
          </div>
          <img src="../assets/imgs/bioschains.svg">
-      </div>
+      </banner>
    </div>
 
    <!-- 介绍  -->
@@ -87,10 +87,9 @@ h1 {
    color: #67C23A;
 }
 
-.banner {
+banner {
    display: flex;
    height: 700px;
-   overflow: hidden;
 
    .banner-left {
 
@@ -187,7 +186,6 @@ h1 {
             }
          }
       }
-
 
    }
 }
