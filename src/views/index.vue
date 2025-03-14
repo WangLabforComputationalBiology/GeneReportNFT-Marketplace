@@ -112,7 +112,7 @@ banner {
          cursor: pointer;
 
          &:hover {
-            background-color: #E6A23C99;
+            background-color: #e6a23cdd;
          }
       }
    }

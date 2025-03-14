@@ -19,6 +19,8 @@
 
 <script>
 import { ethers } from "ethers";
+
+
 export default {
     name: "market",
     data() {
@@ -34,7 +36,7 @@ export default {
     },
 
     async created() {
-        // await this.connectWallet(); // 确保 created 生命周期钩子调用异步方法
+        await this.connectWallet(); // 确保 created 生命周期钩子调用异步方法
     },
     methods: {
         async connectWallet() {
@@ -113,7 +115,6 @@ export default {
                 // 等待交易完成
                 await tx.wait();
                 this.txHash = tx.hash;
-                // alert(`交易成功！交易哈希: ${tx.hash}`);
                 this.$message({
                     message: "交易成功！",
                     type: "success",

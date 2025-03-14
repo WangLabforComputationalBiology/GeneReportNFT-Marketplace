@@ -23,7 +23,7 @@
         </div>
       </span>
       <!-- 登录路由 -->
-      <router-link to="/login" class="routerSelection">Login</router-link>
+      <router-link to="/login" class="routerSelection" style="right:0;">Login</router-link>
     </div>
     <span class="side" @click="toHome">
     </span>
@@ -157,16 +157,25 @@ header {
     }
 
     .routerSelection {
-        color: #169608;
-        margin: 0 30px;
-        font-size: 26px;
-        align-content: center;
-        font-weight: bold;
+      color: #169608;
+      margin: 0 30px;
+      font-size: 26px;
+      align-content: center;
+      font-weight: bold;
 
-        &:hover {
-          color: #67C23A;
-        }
+      &:hover {
+        color: #67C23A;
       }
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      // &:last-child {
+      //   margin-left: 20px;
+      // }
+    }
+
 
   }
 }
