@@ -6,7 +6,7 @@
         <p>trading_test</p>
         <div class="marketPage">
             <!-- 交易表单 -->
-            <div v-if="account">
+            <div>
                 <input type="text" style="width: 100%;" v-model="recipient" placeholder="接收地址 (0x...)" />
                 <input type="text" v-model="amount" placeholder="ETH 数量" />
                 <button @click="sendTransaction">发送交易</button>
@@ -34,7 +34,7 @@ export default {
     },
 
     async created() {
-        await this.connectWallet(); // 确保 created 生命周期钩子调用异步方法
+        // await this.connectWallet(); // 确保 created 生命周期钩子调用异步方法
     },
     methods: {
         async connectWallet() {
@@ -122,7 +122,10 @@ export default {
             }
             catch (error) {
                 console.error("交易失败:", error);
-                // alert("交易失败，请检查错误日志！");
+                this.$message({
+                    message: "交易失败！",
+                    type: "error",
+                });
             }
 
             //更新余额
