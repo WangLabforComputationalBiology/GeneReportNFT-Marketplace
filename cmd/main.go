@@ -2,12 +2,16 @@ package main
 
 import (
 	"GeneReport_platform/api/router"
+	_ "GeneReport_platform/docs"
 	. "GeneReport_platform/init"
 	"github.com/gin-gonic/gin"
 )
 
-// 项目入口
-// @title 基因区块链社区
+// @title           API接口文档
+// @version         1.0
+// @description     GeneReport平台
+// @host            localhost:8080
+// @BasePath        /docs
 func main() {
 
 	Init()

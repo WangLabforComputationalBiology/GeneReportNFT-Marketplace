@@ -5,7 +5,7 @@ var (
 )
 
 type OrderService struct {
-	iUserBase interface{}
+	iUserBase
 }
 
 // 订单基础接口

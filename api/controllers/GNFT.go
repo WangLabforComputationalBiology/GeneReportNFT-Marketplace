@@ -8,7 +8,6 @@ var (
 	GNFTCtrller = &GNFTController{}
 )
 
-// 使用dto进行参数校验，res和req
 func (cGNFT *GNFTController) GetInfo(ctx *gin.Context) {
 
 }

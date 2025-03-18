@@ -1,4 +1,150 @@
+basePath: /docs
+definitions:
+  user_dto.LoginReq:
+    properties:
+      signature:
+        type: string
+      user_address:
+        type: string
+    required:
+    - signature
+    - user_address
+    type: object
+  user_dto.UpdateUser:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      name:
+        type: string
+    type: object
+host: localhost:8080
 info:
   contact: {}
-paths: {}
+  description: GeneReport平台
+  title: API接口文档
+  version: "1.0"
+paths:
+  /user_dto/edit/name:
+    post:
+      description: 根据用户地址获取用户基本信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 响应用户基本信息
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "503":
+          description: mysql不可用
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 用户获取基本信息
+      tags:
+      - 用户管理
+  /user_dto/login:
+    post:
+      consumes:
+      - application/json
+      description: 通过用户地址和签名生成 JWT 令牌进行登录
+      parameters:
+      - description: 登录请求参数，包括用户地址和签名
+        in: body
+        name: loginReq
+        required: true
+        schema:
+          $ref: '#/definitions/user_dto.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功响应 JWT 令牌
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 请求体格式错误"/"地址非法或无效
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: 签名验证失败
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "503":
+          description: redis服务不可用
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 用户登录
+      tags:
+      - 用户认证
+  /user_dto/logout:
+    post:
+      description: 用户退出登录，将当前 JWT 加入黑名单
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功登出
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "503":
+          description: Redis服务不可用
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 登出
+      tags:
+      - 用户认证
+  /user_dto/nonce/{user_address}:
+    get:
+      description: 检查当前redis中nonce是否过期：未过期则更新后返回，过期则重新生成
+      parameters:
+      - description: User address
+        in: path
+        name: user_address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功响应nonce
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: 地址非法或无效
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "503":
+          description: redis服务不可用
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 处理用户获取签名nonce请求，用于防重放
+      tags:
+      - 用户认证
 swagger: "2.0"

@@ -1,4 +1,4 @@
-package GNFT
+package GNFT_dto
 
 type GetGNFTInfoReq struct {
 }
