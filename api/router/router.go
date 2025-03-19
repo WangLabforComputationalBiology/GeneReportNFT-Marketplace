@@ -33,7 +33,6 @@ func registerUserRouter(r *gin.RouterGroup) {
 		if err := https.RunTLS(":8443", "assets/TLS_files/server.crt", "assets/TLS_files/server.key"); err != nil {
 			log.Fatalf("Failed to start HTTPS server: %v", err)
 		}
-
 	}()
 
 	//更改用户名
@@ -48,6 +47,8 @@ func registerUserRouter(r *gin.RouterGroup) {
 	r.GET("/info", controllers.UserController.GetInfo)
 	//用户藏品信息
 	r.GET("/gnfts", controllers.UserController.GetGNFTList)
+	//获取用户头像
+	r.GET("/profile", controllers.UserController.GetProfileOfUser)
 	//用户订单信息
 	r.GET("/orders")
 }

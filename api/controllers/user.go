@@ -12,6 +12,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -207,6 +208,36 @@ func (u *User) GetInfo(ctx *gin.Context) {
 	// 打印查询到的用户信息
 	fmt.Printf("找到用户: %+v\n", user)
 	ctx.JSON(200, gin.H{"user": user})
+}
+
+// 获取用户头像
+func (u *User) GetProfileOfUser(c *gin.Context) {
+
+	// 使用Query方法获取参数，如果参数不存在则返回默认值
+	//name := c.Query("name")
+	p_add := c.DefaultQuery("padd", "1.png") // 默认值是20
+	addresses := strings.Split(p_add, "/")   //因为参数长/xxx/sss.png,所以第一个是空的！
+	// 获取对象
+	object, err := global.MinioClient.GetObject(context.Background(), addresses[1], addresses[2], minio.GetObjectOptions{})
+	if err != nil {
+		log.Println("minio获取对象出错！", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "无法获取对象"})
+		return
+	}
+	defer object.Close()
+
+	// 读取对象数据
+	data, err := io.ReadAll(object)
+	if err != nil {
+		log.Println("读取对象数据出错！", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "无法读取对象数据"})
+		return
+	}
+
+	// 设置响应头
+	c.Header("Content-Type", "image/png")
+	c.Header("Content-Disposition", "inline; filename=1.png")
+	c.Data(http.StatusOK, "image/png", data)
 }
 
 // 返回用户藏品信息
