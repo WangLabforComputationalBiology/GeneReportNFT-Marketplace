@@ -181,6 +181,8 @@
 
 <script>
 import { ethers } from "ethers";
+
+
 export default {
     name: "market",
     data() {
@@ -304,7 +306,6 @@ export default {
                 // 等待交易完成
                 await tx.wait();
                 this.txHash = tx.hash;
-                // alert(`交易成功！交易哈希: ${tx.hash}`);
                 this.$message({
                     message: "交易成功！",
                     type: "success",
@@ -313,7 +314,10 @@ export default {
             }
             catch (error) {
                 console.error("交易失败:", error);
-                // alert("交易失败，请检查错误日志！");
+                this.$message({
+                    message: "交易失败！",
+                    type: "error",
+                });
             }
 
             //更新余额
