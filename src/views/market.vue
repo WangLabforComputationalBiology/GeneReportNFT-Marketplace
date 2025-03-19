@@ -1,18 +1,180 @@
 <template>
+
     <body>
         <div class="banner">
             <h1 class="banner-title">Market</h1>
         </div>
-        <p>trading_test</p>
         <div class="marketPage">
-            <!-- 交易表单 -->
-            <div v-if="account">
-                <input type="text" style="width: 100%;" v-model="recipient" placeholder="接收地址 (0x...)" />
-                <input type="text" v-model="amount" placeholder="ETH 数量" />
-                <button @click="sendTransaction">发送交易</button>
+            <div class="nfts-wrapper">
+                <el-tabs v-model="activeName">
+                    <el-tab-pane label="classification1" name="first">
+                        <el-table style="width:100%;" :title="NFTs" class="nft-table" :data="tableData">
+                            <el-table-column type="expand" width="40px">
+                                <template v-slot="props">
+                                    <el-form label-position="left" class="demo-table-expand">
+                                        <el-form-item label="ID:">
+                                            <span>{{ props.row.id }}</span>
+                                        </el-form-item>
+                                        <el-form-item label="Name:">
+                                            <span>{{ props.row.nft_name }}</span>
+                                        </el-form-item>
+                                        <el-form-item label="price:">
+                                            <span>{{ props.row.price + " ETH" }}</span>
+                                        </el-form-item>
+                                        <el-form-item label="Sales:">
+                                            <span>{{ props.row.sales }}</span>
+                                            <span></span>
+                                        </el-form-item>
+                                        <el-form-item label="Address:">
+                                            <span>{{ props.row.address }}</span>
+                                            <span></span>
+                                        </el-form-item>
+                                        <el-form-item label="Description:">
+                                            <span>{{ props.row.description }}</span>
+                                            <span></span>
+                                        </el-form-item>
+                                    </el-form>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="id" label="#" width="80px"></el-table-column>
+                            <el-table-column prop="nft_name" label="Collection" width="" align="left"></el-table-column>
+                            <el-table-column prop="price" label="Price" width="180px" align="right"></el-table-column>
+                            <el-table-column prop="sales" label="Sales" width="200px" align="right"></el-table-column>
+                            <el-table-column prop="address" label="Address" align="right" width="300px">
+                            </el-table-column>
+                            <el-table-column width="120px" align="right">
+                                <el-button size="mini">purchase</el-button>
+                            </el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+
+
+                    <el-tab-pane label="classification2" name="second">
+                        <el-table style="width:100%;" :title="NFTs" class="nft-table" :data="tableData">
+                            <el-table-column type="expand" width="40px">
+                                <template v-slot="props">
+                                    <el-form label-position="left" class="demo-table-expand">
+                                        <el-form-item label="ID:">
+                                            <span>{{ props.row.id }}</span>
+                                        </el-form-item>
+                                        <el-form-item label="Name:">
+                                            <span>{{ props.row.nft_name }}</span>
+                                        </el-form-item>
+                                        <el-form-item label="price:">
+                                            <span>{{ props.row.price + " ETH" }}</span>
+                                        </el-form-item>
+                                        <el-form-item label="Sales:">
+                                            <span>{{ props.row.sales }}</span>
+                                            <span></span>
+                                        </el-form-item>
+                                        <el-form-item label="Address:">
+                                            <span>{{ props.row.address }}</span>
+                                            <span></span>
+                                        </el-form-item>
+                                        <el-form-item label="Description:">
+                                            <span>{{ props.row.description }}</span>
+                                            <span></span>
+                                        </el-form-item>
+                                    </el-form>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="id" label="#" width="80px"></el-table-column>
+                            <el-table-column prop="nft_name" label="Collection" width="" align="left"></el-table-column>
+                            <el-table-column prop="price" label="Price" width="180px" align="right"></el-table-column>
+                            <el-table-column prop="sales" label="Sales" width="200px" align="right"></el-table-column>
+                            <el-table-column prop="address" label="Address" align="right" width="300px">
+                            </el-table-column>
+                            <el-table-column width="120px" align="right">
+                                <el-button size="mini">purchase</el-button>
+                            </el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+
+
+                    <el-tab-pane label="classification3" name="third">
+                        <el-table style="width:100%;" :title="NFTs" class="nft-table" :data="tableData">
+                            <el-table-column type="expand" width="40px">
+                                <template v-slot="props">
+                                    <el-form label-position="left" class="demo-table-expand">
+                                        <el-form-item label="ID:">
+                                            <span>{{ props.row.id }}</span>
+                                        </el-form-item>
+                                        <el-form-item label="Name:">
+                                            <span>{{ props.row.nft_name }}</span>
+                                        </el-form-item>
+                                        <el-form-item label="price:">
+                                            <span>{{ props.row.price + " ETH" }}</span>
+                                        </el-form-item>
+                                        <el-form-item label="Sales:">
+                                            <span>{{ props.row.sales }}</span>
+                                            <span></span>
+                                        </el-form-item>
+                                        <el-form-item label="Address:">
+                                            <span>{{ props.row.address }}</span>
+                                            <span></span>
+                                        </el-form-item>
+                                        <el-form-item label="Description:">
+                                            <span>{{ props.row.description }}</span>
+                                            <span></span>
+                                        </el-form-item>
+                                    </el-form>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="id" label="#" width="80px"></el-table-column>
+                            <el-table-column prop="nft_name" label="Collection" width="" align="left"></el-table-column>
+                            <el-table-column prop="price" label="Price" width="180px" align="right"></el-table-column>
+                            <el-table-column prop="sales" label="Sales" width="200px" align="right"></el-table-column>
+                            <el-table-column prop="address" label="Address" align="right" width="300px">
+                            </el-table-column>
+                            <el-table-column width="120px" align="right">
+                                <el-button size="mini">purchase</el-button>
+                            </el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+
+
+                    <el-tab-pane label="classification4" name="fourth">
+                        <el-table style="width:100%;" :title="NFTs" class="nft-table" :data="tableData">
+                            <el-table-column type="expand" width="40px">
+                                <template v-slot="props">
+                                    <el-form label-position="left" class="demo-table-expand">
+                                        <el-form-item label="ID:">
+                                            <span>{{ props.row.id }}</span>
+                                        </el-form-item>
+                                        <el-form-item label="Name:">
+                                            <span>{{ props.row.nft_name }}</span>
+                                        </el-form-item>
+                                        <el-form-item label="price:">
+                                            <span>{{ props.row.price + " ETH" }}</span>
+                                        </el-form-item>
+                                        <el-form-item label="Sales:">
+                                            <span>{{ props.row.sales }}</span>
+                                            <span></span>
+                                        </el-form-item>
+                                        <el-form-item label="Address:">
+                                            <span>{{ props.row.address }}</span>
+                                            <span></span>
+                                        </el-form-item>
+                                        <el-form-item label="Description:">
+                                            <span>{{ props.row.description }}</span>
+                                            <span></span>
+                                        </el-form-item>
+                                    </el-form>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="id" label="#" width="80px"></el-table-column>
+                            <el-table-column prop="nft_name" label="Collection" width="" align="left"></el-table-column>
+                            <el-table-column prop="price" label="Price" width="180px" align="right"></el-table-column>
+                            <el-table-column prop="sales" label="Sales" width="200px" align="right"></el-table-column>
+                            <el-table-column prop="address" label="Address" align="right" width="300px">
+                            </el-table-column>
+                            <el-table-column width="120px" align="right">
+                                <el-button size="mini">purchase</el-button>
+                            </el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+                </el-tabs>
             </div>
-            <p>you got: {{ balance }}</p>
-            <p v-if="txHash">交易成功！哈希:{{ txHash }}</p>
         </div>
     </body>
 </template>
@@ -30,11 +192,40 @@ export default {
             amount: "",
             txHash: "",
             balance: "",
+            activeName: 'first',//默认选中第一个分类
+
+            //表单数据
+            tableData: [{
+                id: 133,
+                price: 0.02,
+                nft_name: 'NFT1',
+                sales: 0,
+                address: '上海市普陀区金沙江路',
+                description: "xxxxx"
+            }, {
+                id: 212,
+                price: 0.02,
+                nft_name: 'NFT2',
+                sales: 0,
+                address: '上海市普陀区金沙江路'
+            }, {
+                id: 331,
+                price: 0.02,
+                nft_name: 'NFT3',
+                sales: 0,
+                address: '上海市普陀区金沙江路'
+            }, {
+                id: 423,
+                price: 0.02,
+                nft_name: 'NFT4',
+                sales: 0,
+                address: '上海市普陀区金沙江路'
+            }]
         };
     },
 
     async created() {
-        await this.connectWallet(); // 确保 created 生命周期钩子调用异步方法
+        // 确保 created 生命周期钩子调用异步方法
     },
     methods: {
         async connectWallet() {
@@ -149,5 +340,34 @@ body {
 
 .marketPage {
     height: 700px;
+    overflow: hidden;
+}
+
+::deep .nft-table {
+    width: 100%;
+    background-color: rgb(83, 53, 53);
+    border-radius: 10px;
+}
+
+.nfts-wrapper {
+    margin-top: 8px;
+}
+
+//下拉栏样式
+:deep(.el-table__expanded-cell) {
+    color: #67C23A;
+}
+
+//表格样式
+:deep(.demo-table-expand) {
+    margin-left: 50px;
+}
+
+:deep(.el-form-item--label-left) {
+    margin: 0;
+}
+
+:deep(.el-button--mini) {
+    border-radius: 10px;
 }
 </style>
