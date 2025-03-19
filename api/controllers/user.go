@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"GeneReport_platform/api/dto"
 	"GeneReport_platform/api/dto/user_dto"
 	"GeneReport_platform/internal/dao/global"
 	"GeneReport_platform/internal/services"
@@ -18,99 +19,130 @@ type User struct{}
 var UserController = User{}
 
 // GetNonce
-// @Summary 处理用户获取签名nonce请求，用于防重放
+// @Summary 用户获取nonce
 // @Description 检查当前redis中nonce是否过期：未过期则更新后返回，过期则重新生成
 // @Tags 用户认证
 // @Produce json
 // @Param        user_address  path  string  true  "User address"
-// @Success      200  {object} map[string]string "成功响应nonce"
-// @Failure      400  {object} map[string]string "地址非法或无效"
-// @Failure      503  {object} map[string]string "redis服务不可用"
-// @Router       /user_dto/nonce/{user_address} [get]
+// @Success      200  {object} dto.Response "成功响应nonce"
+// @Failure      400  {object} dto.ErrResponse "地址非法或无效"
+// @Failure      503  {object} dto.ErrResponse "redis服务不可用"
+// @Router       /user/nonce/{user_address} [get]
 func (u *User) GetNonce(ctx *gin.Context) {
 	address := ctx.Param("user_address")
-	//参数校验
+	//地址校验
 	if !auth.IsValidAddress(address) {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "地址非法或无效"})
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "地址非法或无效",
+		})
 		return
 	}
 	//获取nonce
 	if nonce, err := services.UserService.GetNonce(address); err != nil {
-		ctx.JSON(http.StatusServiceUnavailable, gin.H{"error": "redis服务不可用"})
+		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{"nonce": nonce})
+		ctx.JSON(http.StatusOK, dto.Response{
+			Code:    http.StatusOK,
+			Message: "获取nonce成功",
+			Data:    gin.H{"nonce": nonce},
+		})
 	}
 
 }
 
 // Login
 // @Summary      用户登录
-// @Description  通过用户地址和签名生成 JWT 令牌进行登录
+// @Description  校验签名并返回生成的 JWT 令牌
 // @Tags         用户认证
 // @Accept       json
 // @Produce      json
 // @Param        loginReq  body      user_dto.LoginReq  true  "登录请求参数，包括用户地址和签名"
-// @Success      200       {object}  map[string]string "成功响应 JWT 令牌"
-// @Failure      400       {object}  map[string]string "请求体格式错误"/"地址非法或无效"
-// @Failure      401       {object}  map[string]string "签名验证失败"
-// @Failure      503       {object}  map[string]string "redis服务不可用"
-// @Router       /user_dto/login [post]
+// @Success      200       {object}  dto.Response "成功响应 JWT 令牌"
+// @Failure      400       {object}  dto.ErrResponse "请求体格式错误"/"地址非法或无效"
+// @Failure      401       {object}  dto.ErrResponse "签名验证失败"
+// @Failure      503       {object}  dto.ErrResponse "redis服务不可用"
+// @Router       /user/login [post]
 func (u *User) Login(ctx *gin.Context) {
 	log.Println("进入登录接口！")
 
 	var json user_dto.LoginReq
 	if err := ctx.ShouldBindJSON(&json); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "请求体格式错误"})
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "请求体格式错误",
+		})
 		return
 	}
 
 	address := json.UserAddress
 	signature := json.Signature
-
+	//地址校验
 	if !auth.IsValidAddress(address) {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "地址非法或无效"})
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "地址非法或无效",
+		})
 		return
 	}
+	//确保用户存在，不存在执行创建
 	if err := services.UserService.EnsureUserExists(address); err != nil {
-		ctx.JSON(http.StatusServiceUnavailable, gin.H{"error": "mysql服务不可用！"})
+		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
+		return
 	}
 	//获取nonce
 	nonce, err := services.UserService.GetNonce(address)
 	if err != nil {
-		ctx.JSON(http.StatusServiceUnavailable, gin.H{"error": "redis服务不可用"})
+		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
-	} else {
-		ctx.JSON(http.StatusOK, gin.H{"nonce": nonce})
 	}
+
 	//执行验签
 	if isAccept, err := auth.VerifySignature(address, nonce, signature); !isAccept && err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "签名验证失败"})
+		ctx.JSON(http.StatusUnauthorized, dto.ErrResponse{
+			Code:    http.StatusUnauthorized,
+			Message: "签名验证失败," + err.Error(),
+		})
+		return
 	}
 
 	jwt, _ := auth.GenerateToken(address)
-	ctx.JSON(200, gin.H{"access_token": jwt})
+	ctx.JSON(200, dto.Response{
+		Code:    http.StatusOK,
+		Message: "成功登录",
+		Data: gin.H{
+			"access_token": jwt,
+		},
+	})
 	log.Printf("签名验证成功！\n用户地址: %v;用户签名: %v\n", address, signature)
 }
 
 // Logout
-// @Summary 登出
+// @Summary 用户登出
 // @Description 用户退出登录，将当前 JWT 加入黑名单
 // @Tags 用户认证
 // @Produce json
-// @Security ApiKeyAuth
-// @Success 200 {object} map[string]string "成功登出"
-// @Failure 503 {object} map[string]string "Redis服务不可用"
-// @Router /user_dto/logout [post]
+// @Security JwtAuth
+// @Success 200 {object} dto.Response "成功登出"
+// @Failure 503 {object} dto.ErrResponse "Redis服务不可用"
+// @Router /user/logout [post]
 func (u *User) Logout(ctx *gin.Context) {
 	jti, _ := ctx.Get("jti")
 	//将jti加入redis黑名单
 	err := global.RedisClient.SetEX(ctx, "blacklist:"+jti.(string), "1", auth.TokenExpireDuration).Err()
 	if err != nil {
-		ctx.JSON(http.StatusServiceUnavailable, gin.H{"error": "Redis服务不可用"})
+		ctx.JSON(http.StatusServiceUnavailable, dto.ErrResponse{
+			Code:    http.StatusServiceUnavailable,
+			Message: "服务器内部错误",
+		})
 		return
 	}
-	ctx.JSON(200, gin.H{"msg:": "成功登出"})
+	ctx.JSON(200, dto.Response{
+		Code:    http.StatusOK,
+		Message: "成功登出",
+		Data:    "",
+	})
 }
 
 // EditUserName
@@ -119,17 +151,21 @@ func (u *User) Logout(ctx *gin.Context) {
 // @Tags 用户管理
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
+// @Security JwtAuth
 // @Param object body user_dto.UpdateUser true "请求体，包含新用户名"
-// @Success 200 {object} map[string]string "用户名更新成功的响应"
-// @Failure 400 {object} map[string]string "请求体格式错误"
-// @Failure 503 {object} map[string]string "mysql不可用"
-// @Router /user_dto/edit/name [post]
+// @Param Authorization header string true "JWT"
+// @Success 200 {object} dto.Response "用户名更新成功"
+// @Failure 400 {object} dto.ErrResponse "请求体格式错误"
+// @Failure 503 {object} dto.ErrResponse "mysql异常"
+// @Router /user/edit/name [post]
 func (u *User) EditUserName(ctx *gin.Context) {
 	log.Println("进入编辑用户名接口！")
 	var json user_dto.UpdateUser
 	if err := ctx.ShouldBindJSON(&json); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "请求体格式错误"})
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "请求体格式错误",
+		})
 		return
 	}
 
@@ -137,11 +173,17 @@ func (u *User) EditUserName(ctx *gin.Context) {
 	log.Println(" 来自post请求体的json的new_name:" + newName)
 	toUpdate := user_dto.UpdateUser{Name: newName}
 	if err := services.UserService.UpdateUser(toUpdate); err != nil {
-		ctx.JSON(http.StatusServiceUnavailable, gin.H{"error": "mysql不可用"})
+		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"new_name": newName, "msg": "用户名更新成功"})
+	ctx.JSON(http.StatusOK, dto.Response{
+		Code:    http.StatusOK,
+		Message: "用户名更新成功",
+		Data: gin.H{
+			"new_name": newName, // 返回新用户名
+		},
+	})
 }
 
 // UploadProfile 上传用户头像
@@ -214,20 +256,21 @@ func (u *User) UploadProfile(ctx *gin.Context) {
 }
 
 // GetInfo
-// @Summary      用户获取基本信息
+// @Summary      获取用户基本信息
 // @Description 根据用户地址获取用户基本信息
 // @Tags 用户管理
 // @Produce json
-// @Security ApiKeyAuth
-// @Success 200 {object} map[string]string "响应用户基本信息"
-// @Failure 503 {object} map[string]string "mysql不可用"
-// @Router /user_dto/edit/name [post]
+// @Security JwtAuth
+// @Param Authorization header string true "JWT"
+// @Success 200 {object} dto.Response "响应用户基本信息"
+// @Failure 503 {object} dto.ErrResponse "mysql不可用"
+// @Router /user/info [post]
 func (u *User) GetInfo(ctx *gin.Context) {
 	// 获取请求头中的 Authorization 值
 	address := ctx.GetString("user_address")
 	userInfo, err := services.UserService.GetUserInfo(address)
 	if err != nil {
-		ctx.JSON(http.StatusServiceUnavailable, gin.H{"error": err})
+		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 	}
 	ctx.JSON(http.StatusOK, userInfo)
 

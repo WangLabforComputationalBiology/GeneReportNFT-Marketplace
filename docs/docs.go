@@ -15,11 +15,69 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/user_dto/edit/name": {
+        "/user/edit/name": {
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "根据用户地址更新用户名",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "用户编辑用户名",
+                "parameters": [
+                    {
+                        "description": "请求体，包含新用户名",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_dto.UpdateUser"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "用户名更新成功",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "请求体格式错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "mysql异常",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/info": {
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
                     }
                 ],
                 "description": "根据用户地址获取用户基本信息",
@@ -29,32 +87,35 @@ const docTemplate = `{
                 "tags": [
                     "用户管理"
                 ],
-                "summary": "用户获取基本信息",
+                "summary": "获取用户基本信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "响应用户基本信息",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.Response"
                         }
                     },
                     "503": {
                         "description": "mysql不可用",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.ErrResponse"
                         }
                     }
                 }
             }
         },
-        "/user_dto/login": {
+        "/user/login": {
             "post": {
-                "description": "通过用户地址和签名生成 JWT 令牌进行登录",
+                "description": "校验签名并返回生成的 JWT 令牌",
                 "consumes": [
                     "application/json"
                 ],
@@ -80,47 +141,35 @@ const docTemplate = `{
                     "200": {
                         "description": "成功响应 JWT 令牌",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.Response"
                         }
                     },
                     "400": {
                         "description": "请求体格式错误\"/\"地址非法或无效",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.ErrResponse"
                         }
                     },
                     "401": {
                         "description": "签名验证失败",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.ErrResponse"
                         }
                     },
                     "503": {
                         "description": "redis服务不可用",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.ErrResponse"
                         }
                     }
                 }
             }
         },
-        "/user_dto/logout": {
+        "/user/logout": {
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "JwtAuth": []
                     }
                 ],
                 "description": "用户退出登录，将当前 JWT 加入黑名单",
@@ -130,30 +179,24 @@ const docTemplate = `{
                 "tags": [
                     "用户认证"
                 ],
-                "summary": "登出",
+                "summary": "用户登出",
                 "responses": {
                     "200": {
                         "description": "成功登出",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.Response"
                         }
                     },
                     "503": {
                         "description": "Redis服务不可用",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.ErrResponse"
                         }
                     }
                 }
             }
         },
-        "/user_dto/nonce/{user_address}": {
+        "/user/nonce/{user_address}": {
             "get": {
                 "description": "检查当前redis中nonce是否过期：未过期则更新后返回，过期则重新生成",
                 "produces": [
@@ -162,7 +205,7 @@ const docTemplate = `{
                 "tags": [
                     "用户认证"
                 ],
-                "summary": "处理用户获取签名nonce请求，用于防重放",
+                "summary": "用户获取nonce",
                 "parameters": [
                     {
                         "type": "string",
@@ -176,28 +219,19 @@ const docTemplate = `{
                     "200": {
                         "description": "成功响应nonce",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.Response"
                         }
                     },
                     "400": {
                         "description": "地址非法或无效",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.ErrResponse"
                         }
                     },
                     "503": {
                         "description": "redis服务不可用",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.ErrResponse"
                         }
                     }
                 }
@@ -205,6 +239,29 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.ErrResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "user_dto.LoginReq": {
             "type": "object",
             "required": [
@@ -241,8 +298,8 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8080",
-	BasePath:         "/docs",
-	Schemes:          []string{},
+	BasePath:         "/",
+	Schemes:          []string{"http"},
 	Title:            "API接口文档",
 	Description:      "GeneReport平台",
 	InfoInstanceName: "swagger",

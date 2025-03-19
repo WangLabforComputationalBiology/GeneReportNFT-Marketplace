@@ -1,5 +1,20 @@
-basePath: /docs
+basePath: /
 definitions:
+  dto.ErrResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  dto.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
   user_dto.LoginReq:
     properties:
       signature:
@@ -26,34 +41,73 @@ info:
   title: API接口文档
   version: "1.0"
 paths:
-  /user_dto/edit/name:
+  /user/edit/name:
+    post:
+      consumes:
+      - application/json
+      description: 根据用户地址更新用户名
+      parameters:
+      - description: 请求体，包含新用户名
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/user_dto.UpdateUser'
+      - description: JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户名更新成功
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "400":
+          description: 请求体格式错误
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+        "503":
+          description: mysql异常
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - JwtAuth: []
+      summary: 用户编辑用户名
+      tags:
+      - 用户管理
+  /user/info:
     post:
       description: 根据用户地址获取用户基本信息
+      parameters:
+      - description: JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: 响应用户基本信息
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.Response'
         "503":
           description: mysql不可用
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ErrResponse'
       security:
-      - ApiKeyAuth: []
-      summary: 用户获取基本信息
+      - JwtAuth: []
+      summary: 获取用户基本信息
       tags:
       - 用户管理
-  /user_dto/login:
+  /user/login:
     post:
       consumes:
       - application/json
-      description: 通过用户地址和签名生成 JWT 令牌进行登录
+      description: 校验签名并返回生成的 JWT 令牌
       parameters:
       - description: 登录请求参数，包括用户地址和签名
         in: body
@@ -67,31 +121,23 @@ paths:
         "200":
           description: 成功响应 JWT 令牌
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.Response'
         "400":
           description: 请求体格式错误"/"地址非法或无效
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ErrResponse'
         "401":
           description: 签名验证失败
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ErrResponse'
         "503":
           description: redis服务不可用
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ErrResponse'
       summary: 用户登录
       tags:
       - 用户认证
-  /user_dto/logout:
+  /user/logout:
     post:
       description: 用户退出登录，将当前 JWT 加入黑名单
       produces:
@@ -100,21 +146,17 @@ paths:
         "200":
           description: 成功登出
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.Response'
         "503":
           description: Redis服务不可用
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ErrResponse'
       security:
-      - ApiKeyAuth: []
-      summary: 登出
+      - JwtAuth: []
+      summary: 用户登出
       tags:
       - 用户认证
-  /user_dto/nonce/{user_address}:
+  /user/nonce/{user_address}:
     get:
       description: 检查当前redis中nonce是否过期：未过期则更新后返回，过期则重新生成
       parameters:
@@ -129,22 +171,18 @@ paths:
         "200":
           description: 成功响应nonce
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.Response'
         "400":
           description: 地址非法或无效
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ErrResponse'
         "503":
           description: redis服务不可用
           schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: 处理用户获取签名nonce请求，用于防重放
+            $ref: '#/definitions/dto.ErrResponse'
+      summary: 用户获取nonce
       tags:
       - 用户认证
+schemes:
+- http
 swagger: "2.0"

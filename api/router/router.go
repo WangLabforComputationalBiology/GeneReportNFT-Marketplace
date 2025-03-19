@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"log"
 )
 
@@ -20,10 +19,7 @@ func registerSwaggerRouter(r *gin.Engine) {
 }
 
 func registerUserRouter(r *gin.RouterGroup) {
-
-	//测试的接口
-	r.GET("/test")
-
+	//获取nonce
 	r.GET("/nonce/:user_address", controllers.UserController.GetNonce)
 
 	//更改用户名
@@ -64,16 +60,16 @@ func SetupRouter() *gin.Engine {
 	if err := r.RunTLS(":8443", "assets/TLS_files/server.crt", "assets/TLS_files/server.key"); err != nil {
 		log.Fatalf("Failed to start HTTPS server: %v", err)
 	}
-
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.Use(otelgin.Middleware("GRM_Server"), middlewares.CORS())
-	registerSwaggerRouter(r)
-	User := r.Group("/user_dto")
-	registerUserRouter(User)
+	r.Use(middlewares.CORS())
+	User := r.Group("/user")
 	NFT := r.Group("/nft_id")
-	registerGNFTRouter(NFT)
 	Order := r.Group("/order_id")
+
+	registerSwaggerRouter(r)
+	registerUserRouter(User)
+	registerGNFTRouter(NFT)
 	registerOrderRouter(Order)
+
 	//商城首页
 	r.GET("/")
 

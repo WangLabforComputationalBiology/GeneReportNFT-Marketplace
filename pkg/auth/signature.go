@@ -25,8 +25,8 @@ This request will not trigger a blockchain transaction or cost any gas fees.
 Wallet address:
 %v
 Nonce:
-%v
-`
+%v`
+
 	return fmt.Sprintf(template, address, nonce)
 }
 
@@ -63,7 +63,7 @@ func VerifySignature(address, nonce, signatureStr string) (bool, error) {
 		return false, errors.New("签名无效")
 	}
 
-	// 验证通过后删除 nonce，防止重放
+	// 验证通过后删除 nonce
 	if err = global.RedisClient.Del(global.Ctx, address).Err(); err != nil {
 		return false, errors.New("redis服务异常")
 	}
