@@ -10,6 +10,7 @@ import (
 var (
 	DB          *gorm.DB
 	Ctx         context.Context
+	CtxCancel   context.CancelFunc
 	RedisClient *redis.Client
 	MinioClient *minio.Client
 )

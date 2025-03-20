@@ -1,28 +1,50 @@
 package dao
 
 import (
+	"GeneReport_platform/api/dto/user_dto"
 	"GeneReport_platform/internal/dao/global"
-	"GeneReport_platform/internal/models/entity"
+	"GeneReport_platform/internal/models"
 	"context"
 	"gorm.io/gorm"
+	"time"
 )
 
-var userDao *UserDao
+var UserDao *userDao
 
-type UserDao struct {
+type userDao struct {
 	table string
 	db    *gorm.DB
 	ctx   context.Context
 }
 
 func RegisterUserDao() {
-	userDao = &UserDao{
-		ctx:   global.Ctx,
-		db:    global.DB,
-		table: "user",
+	UserDao = &userDao{
+		ctx: global.Ctx,
+		db:  global.DB,
 	}
 }
 
-func (u *UserDao) DB() *gorm.DB {
-	return u.db.WithContext(u.ctx).Model(&entity.User{})
+func (u *userDao) DB() *gorm.DB {
+	return u.db.WithContext(u.ctx)
+}
+
+func (u *userDao) IsExist(address string) (bool, error) {
+	var count int64
+	if err := u.DB().Where("address = ?", address).Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+func (u *userDao) CreateUser(address string) error {
+	return u.DB().Model(&models.User{}).Create(&models.User{Address: address, Name: "unnamed", CreateAt: time.Now()}).Error
+}
+
+func (u *userDao) UpdateUser(toUpdate user_dto.UpdateUser) error {
+	return u.DB().Model(&models.User{}).Model(&models.User{}).Where("address = ?", toUpdate.Address).Updates(&models.User{Name: toUpdate.Name}).Error
+}
+
+func (u *userDao) GetUserInfo(address string) (user_dto.UpdateUser, error) {
+	var userInfo user_dto.UpdateUser
+	return userInfo, u.DB().Model(&models.User{}).Where("address = ?", address).First(&userInfo).Error
 }

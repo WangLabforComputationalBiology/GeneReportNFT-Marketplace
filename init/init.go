@@ -1,7 +1,9 @@
 package init
 
 import (
+	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/internal/dao/global"
+	"GeneReport_platform/internal/services"
 	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
@@ -110,14 +112,18 @@ func initRedis() {
 }
 
 func initContext() {
-	global.Ctx, _ = context.WithTimeout(context.Background(), time.Duration(GlobalConfig.CtxConfig.Timeout)*time.Second)
+	global.Ctx, global.CtxCancel = context.WithTimeout(context.Background(), time.Duration(GlobalConfig.CtxConfig.Timeout)*time.Second)
 }
 
 func registerServices() {
-
+	services.RegisterUserService()
+	services.RegisterGNFTService()
+	services.RegisterOrderService()
 }
 func registerDAO() {
-
+	dao.RegisterUserDao()
+	dao.RegisterGNFTDao()
+	dao.RegisterOrderDao()
 }
 
 func Init() {
@@ -125,6 +131,7 @@ func Init() {
 	initMysql()
 	initMinio()
 	initRedis()
+	initContext()
 	registerServices()
 	registerDAO()
 

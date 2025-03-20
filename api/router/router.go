@@ -11,9 +11,11 @@ import (
 )
 
 func registerSwaggerRouter(r *gin.Engine) {
-	r.GET("/swagger/*any", func(c *gin.Context) {
-		ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "SWAGGER")(c)
-	})
+	//环境变量->条件启用swagger
+	//r.GET("/swagger/*any", func(c *gin.Context) {
+	//	ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "SWAGGER")(c)
+	//})
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
 func registerUserRouter(r *gin.RouterGroup) {
@@ -36,13 +38,13 @@ func registerUserRouter(r *gin.RouterGroup) {
 	}()
 
 	//更改用户名
-	r.POST("/edit/user_name", controllers.UserController.EditUserName)
+	r.POST("/edit/name", middlewares.AuthMiddleware(), controllers.UserController.EditUserName)
 	//上传用户头像
-	r.POST("/upload/avatar", controllers.UserController.UploadProfile)
+	r.POST("/upload/avatar", middlewares.AuthMiddleware(), controllers.UserController.UploadProfile)
 	//登录
-	r.POST("/verify/sig", controllers.UserController.LogIng)
+	r.POST("/login", middlewares.AuthMiddleware(), controllers.UserController.Login)
 	//登出
-	r.POST("/logout", controllers.UserController.LogOut)
+	r.POST("/logout", controllers.UserController.Logout)
 	//用户主页信息
 	r.GET("/info", controllers.UserController.GetInfo)
 	//用户藏品信息
@@ -52,21 +54,21 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//用户订单信息
 	r.GET("/orders")
 }
-func registerNFTRouter(r *gin.RouterGroup) {
+func registerGNFTRouter(r *gin.RouterGroup) {
 	//藏品图片
 	r.GET("/img")
 	//藏品信息
 	r.GET("/info")
 	//生成订单
-	r.POST("/buy")
+	r.POST("/buy", middlewares.AuthMiddleware())
 }
 func registerOrderRouter(r *gin.RouterGroup) {
 	//订单信息
-	r.GET("/info")
+	r.GET("/info", middlewares.AuthMiddleware())
 	//支付
-	r.POST("/pay")
+	r.POST("/pay", middlewares.AuthMiddleware())
 	//取消订单
-	r.POST("/cancel")
+	r.POST("/cancel", middlewares.AuthMiddleware())
 }
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
@@ -77,7 +79,12 @@ func SetupRouter() *gin.Engine {
 	NFT := r.Group("/nft_id")
 	registerNFTRouter(NFT)
 	Order := r.Group("/order_id")
+
+	registerSwaggerRouter(r)
+	registerUserRouter(User)
+	registerGNFTRouter(NFT)
 	registerOrderRouter(Order)
+
 	//商城首页
 	r.GET("/")
 
