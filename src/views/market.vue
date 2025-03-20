@@ -35,11 +35,13 @@
                                         </el-form-item>
                                     </el-form>
                                 </template>
+
                             </el-table-column>
                             <el-table-column prop="id" label="#" width="80px"></el-table-column>
                             <el-table-column prop="nft_name" label="Collection" width="" align="left"></el-table-column>
                             <el-table-column prop="price" label="Price" width="180px" align="right"></el-table-column>
                             <el-table-column prop="sales" label="Sales" width="200px" align="right"></el-table-column>
+                            <el-table-column prop="limit" label="Limit" width="100px" align="right"></el-table-column>
                             <el-table-column prop="address" label="Address" align="right" width="300px">
                             </el-table-column>
                             <el-table-column width="120px" align="right">
@@ -176,9 +178,7 @@
                     </el-tab-pane>
                 </el-tabs>
 
-                <el-drawer v-model:visible="drawer" :direction="rtl">
-                    <span>我来啦!</span>
-                </el-drawer>
+
             </div>
         </div>
     </body>
@@ -186,7 +186,6 @@
 
 <script>
 import { ethers } from "ethers";
-
 
 export default {
     name: "market",
@@ -200,14 +199,14 @@ export default {
             txHash: "",
             balance: "",
             activeName: 'first',//默认选中第一个分类
-            drawer: false,
-
+            visible: false,//购买弹窗
             //表单数据
             tableData: [{
                 id: 133,
                 price: 0.02,
                 nft_name: 'NFT1',
                 sales: 0,
+                limit: 10,
                 address: '上海市普陀区金沙江路',
                 description: "xxxxx"
             }, {
@@ -215,18 +214,21 @@ export default {
                 price: 0.02,
                 nft_name: 'NFT2',
                 sales: 0,
+                limit: 10,
                 address: '上海市普陀区金沙江路'
             }, {
                 id: 331,
                 price: 0.02,
                 nft_name: 'NFT3',
                 sales: 0,
+                limit: 10,
                 address: '上海市普陀区金沙江路'
             }, {
                 id: 423,
                 price: 0.02,
                 nft_name: 'NFT4',
                 sales: 0,
+                limit: 10,
                 address: '上海市普陀区金沙江路'
             }]
         };
@@ -330,6 +332,10 @@ export default {
             // const balanceWei = await provider.getBalance(accounts[0]);
             // this.balance = ethers.formatEther(balanceWei);
         },
+
+        drawerVisible(){
+            this.visible = true;
+        }
     },
 
 
