@@ -168,12 +168,17 @@
                             <el-table-column prop="sales" label="Sales" width="200px" align="right"></el-table-column>
                             <el-table-column prop="address" label="Address" align="right" width="300px">
                             </el-table-column>
+
                             <el-table-column width="120px" align="right">
-                                <el-button size="mini">purchase</el-button>
+                                <el-button size="mini" @click="drawerVisible">purchase</el-button>
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
                 </el-tabs>
+
+                <el-drawer v-model:visible="drawer" :direction="rtl">
+                    <span>我来啦!</span>
+                </el-drawer>
             </div>
         </div>
     </body>
@@ -195,6 +200,7 @@ export default {
             txHash: "",
             balance: "",
             activeName: 'first',//默认选中第一个分类
+            drawer: false,
 
             //表单数据
             tableData: [{
