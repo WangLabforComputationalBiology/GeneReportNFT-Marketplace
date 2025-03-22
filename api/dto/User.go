@@ -1,4 +1,4 @@
-package user_dto
+package dto
 
 type LoginReq struct {
 	UserAddress string `json:"user_address" binding:"required"`

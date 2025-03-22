@@ -10,10 +10,10 @@ import (
 )
 
 // AuthMiddleware
-// @securityDefinitions.apikey JwtAuth
-// @in header
-// @name Authorization
-// @description JWT token in format "Bearer {token}"
+//	@securityDefinitions.apikey	JwtAuth
+//	@in							header
+//	@name						Authorization
+//	@description				JWT token in format "Bearer {token}"
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 获取请求中的 Authorization header

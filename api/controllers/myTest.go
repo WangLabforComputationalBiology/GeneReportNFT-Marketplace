@@ -1,14 +1,19 @@
 package controllers
 
 import (
+	. "GeneReport_platform/api/dto"
 	"GeneReport_platform/internal/dao/global"
 	"GeneReport_platform/tools/utils"
 	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v7"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 )
 
 func MyTestRoute(r *gin.Engine) {
@@ -65,4 +70,48 @@ func TestMinio(c *gin.Context) {
 	c.Header("Content-Type", "image/png")
 	c.Header("Content-Disposition", "inline; filename=1.png")
 	c.Data(http.StatusOK, "image/png", data)
+}
+
+// 根据哈希获取交易信息
+func GetTransactionInfo(ctx *gin.Context) {
+
+	// 替换为你的 Etherscan API Key
+	//apiKey := "PS6539ETQH1ZKUE3FVIYH6BVFHE3KT93RB"
+	apiKey := global.ApiKey
+	// 替换为你要查询的交易哈希
+	//txHash := "0x7815bf96f6ca2dd42fd518dc79ca6ce3d19deb4d9a8f1e6582f8811d2ebd032e"
+	txHash := ctx.Query("txhash")
+	// Etherscan API 请求 URL
+	//testurl := fmt.Sprintf("https://api-sepolia.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=%s&apikey=%s", txHash, apiKey)
+	testurl := fmt.Sprintf(global.EndPoint, txHash, apiKey)
+	log.Printf("=========测试网址=========>>>>>>>", testurl)
+	//fixme 让请求走代理
+	//proxyURL, _ := url.Parse("http://127.0.0.1:7897") // Clash HTTP 代理端口
+	proxyURL, _ := url.Parse(global.ProxyUrl)
+	http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyURL)}
+	// 发送 HTTP 请求
+	resp, err := http.Get(testurl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	// 读取响应数据
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var data RpcResponse
+	if err := json.Unmarshal(body, &data); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	// 输出交易信息
+	/*fmt.Println(data, "\n=====================================================\n测试函数是否正常工作")
+	transaction := GNFTCtrller.GetTransaction(txHash)
+	fmt.Println(transaction)*/
+	//测试正常
+	ctx.JSON(http.StatusOK, data)
+
 }

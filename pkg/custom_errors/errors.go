@@ -44,3 +44,14 @@ func (e AppError) ToErrResponse() dto.ErrResponse {
 		Message: e.Message,
 	}
 }
+
+func Is(err error, redisError interface{}) bool {
+	switch redisError := redisError.(type) {
+	case error:
+		return Is(err, redisError)
+	case *error:
+		return Is(err, *redisError)
+	default:
+		return false
+	}
+}

@@ -1,7 +1,7 @@
 package services
 
 import (
-	"GeneReport_platform/api/dto/user_dto"
+	"GeneReport_platform/api/dto"
 	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/internal/dao/global"
 	"GeneReport_platform/pkg/auth"
@@ -74,20 +74,20 @@ func (u *userService) GetNonce(address string) (string, custom_errors.IAppError)
 	return "", custom_errors.New(http.StatusServiceUnavailable, "获取nonce失败", strCmd.Err())
 }
 
-func (u *userService) UpdateUser(toUpdate user_dto.UpdateUser) custom_errors.IAppError {
+func (u *userService) UpdateUser(toUpdate dto.UpdateUser) custom_errors.IAppError {
 	if err := dao.UserDao.UpdateUser(toUpdate); err != nil {
 		return custom_errors.New(http.StatusServiceUnavailable, "服务器内部错误", err)
 	}
 	return nil
 }
 
-func (u *userService) GetUserInfo(address string) (user_dto.UpdateUser, custom_errors.IAppError) {
+func (u *userService) GetUserInfo(address string) (dto.UpdateUser, custom_errors.IAppError) {
 	userInfo, err := dao.UserDao.GetUserInfo(address)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return user_dto.UpdateUser{}, custom_errors.New(http.StatusNotFound, "用户不存在", err)
+			return dto.UpdateUser{}, custom_errors.New(http.StatusNotFound, "用户不存在", err)
 		} else {
-			return user_dto.UpdateUser{}, custom_errors.New(http.StatusInternalServerError, "服务器内部错误", err)
+			return dto.UpdateUser{}, custom_errors.New(http.StatusInternalServerError, "服务器内部错误", err)
 		}
 	}
 	return userInfo, nil

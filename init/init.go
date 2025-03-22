@@ -36,11 +36,18 @@ type RedisConfig struct {
 type CtxConfig struct {
 	Timeout int `mapstructure:"timeout"`
 }
+type Etherscan struct {
+	ApiKey   string `mapstructure:apikey`
+	Endpoint string `mapstructure:endpoint`
+	Proxy    bool   `mapstructure:proxy`
+	ProxyUrl string `mapstructure:proxyurl`
+}
 type Config struct {
 	AppConfig   AppConfig   `mapstructure:"app"`
 	MysqlConfig MysqlConfig `mapstructure:"mysql"`
 	RedisConfig RedisConfig `mapstructure:"redis"`
 	CtxConfig   CtxConfig   `mapstructure:"ctx"`
+	EthConfig   Etherscan   `mapstructure:"etherscan"`
 }
 
 func initConfig() {
@@ -115,6 +122,12 @@ func initContext() {
 	global.Ctx, global.CtxCancel = context.WithTimeout(context.Background(), time.Duration(GlobalConfig.CtxConfig.Timeout)*time.Second)
 }
 
+func initEtherscan() {
+	global.ApiKey = GlobalConfig.EthConfig.ApiKey
+	global.EndPoint = GlobalConfig.EthConfig.Endpoint
+	global.IsProxy = GlobalConfig.EthConfig.Proxy
+	global.ProxyUrl = GlobalConfig.EthConfig.ProxyUrl
+}
 func registerServices() {
 	services.RegisterUserService()
 	services.RegisterGNFTService()
@@ -134,5 +147,6 @@ func Init() {
 	initContext()
 	registerServices()
 	registerDAO()
+	initEtherscan()
 
 }

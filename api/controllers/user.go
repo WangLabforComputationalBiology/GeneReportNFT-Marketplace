@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"GeneReport_platform/api/dto"
-	"GeneReport_platform/api/dto/user_dto"
 	"GeneReport_platform/internal/dao/global"
 	"GeneReport_platform/internal/services"
 	"GeneReport_platform/pkg/auth"
@@ -13,23 +12,28 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"time"
 )
 
 type User struct{}
 
 var UserController = User{}
 
+func (u *User) Test(c *gin.Context) {
+	c.JSON(200, gin.H{"msg": "请求用户 controller successful！"})
+
+}
+
 // GetNonce
-// @Summary 用户获取nonce
-// @Description 检查当前redis中nonce是否过期：未过期则更新后返回，过期则重新生成
-// @Tags 用户认证
-// @Produce json
-// @Param        user_address  path  string  true  "User address"
-// @Success      200  {object} dto.Response "成功响应nonce"
-// @Failure      400  {object} dto.ErrResponse "地址非法或无效"
-// @Failure      503  {object} dto.ErrResponse "redis服务不可用"
-// @Router       /user/nonce/{user_address} [get]
+//
+//	@Summary		用户获取nonce
+//	@Description	检查当前redis中nonce是否过期：未过期则更新后返回，过期则重新生成
+//	@Tags			用户认证
+//	@Produce		json
+//	@Param			user_address	path		string			true	"User address"
+//	@Success		200				{object}	dto.Response	"成功响应nonce"
+//	@Failure		400				{object}	dto.ErrResponse	"地址非法或无效"
+//	@Failure		503				{object}	dto.ErrResponse	"redis服务不可用"
+//	@Router			/user/nonce/{user_address} [get]
 func (u *User) GetNonce(ctx *gin.Context) {
 	address := ctx.Param("user_address")
 	//地址校验
@@ -55,21 +59,22 @@ func (u *User) GetNonce(ctx *gin.Context) {
 }
 
 // Login
-// @Summary      用户登录
-// @Description  校验签名并返回生成的 JWT 令牌
-// @Tags         用户认证
-// @Accept       json
-// @Produce      json
-// @Param        loginReq  body      user_dto.LoginReq  true  "登录请求参数，包括用户地址和签名"
-// @Success      200       {object}  dto.Response "成功响应 JWT 令牌"
-// @Failure      400       {object}  dto.ErrResponse "请求体格式错误"/"地址非法或无效"
-// @Failure      401       {object}  dto.ErrResponse "签名验证失败"
-// @Failure      503       {object}  dto.ErrResponse "redis服务不可用"
-// @Router       /user/login [post]
+//
+//	@Summary		用户登录
+//	@Description	校验签名并返回生成的 JWT 令牌
+//	@Tags			用户认证
+//	@Accept			json
+//	@Produce		json
+//	@Param			loginReq	body		user_dto.LoginReq	true	"登录请求参数，包括用户地址和签名"
+//	@Success		200			{object}	dto.Response		"成功响应 JWT 令牌"
+//	@Failure		400			{object}	dto.ErrResponse		"请求体格式错误"/"地址非法或无效"
+//	@Failure		401			{object}	dto.ErrResponse		"签名验证失败"
+//	@Failure		503			{object}	dto.ErrResponse		"redis服务不可用"
+//	@Router			/user/login [post]
 func (u *User) Login(ctx *gin.Context) {
 	log.Println("进入登录接口！")
 
-	var json user_dto.LoginReq
+	var json dto.LoginReq
 	if err := ctx.ShouldBindJSON(&json); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
@@ -121,14 +126,15 @@ func (u *User) Login(ctx *gin.Context) {
 }
 
 // Logout
-// @Summary 用户登出
-// @Description 用户退出登录，将当前 JWT 加入黑名单
-// @Tags 用户认证
-// @Produce json
-// @Security JwtAuth
-// @Success 200 {object} dto.Response "成功登出"
-// @Failure 503 {object} dto.ErrResponse "Redis服务不可用"
-// @Router /user/logout [post]
+//
+//	@Summary		用户登出
+//	@Description	用户退出登录，将当前 JWT 加入黑名单
+//	@Tags			用户认证
+//	@Produce		json
+//	@Security		JwtAuth
+//	@Success		200	{object}	dto.Response	"成功登出"
+//	@Failure		503	{object}	dto.ErrResponse	"Redis服务不可用"
+//	@Router			/user/logout [post]
 func (u *User) Logout(ctx *gin.Context) {
 	jti, _ := ctx.Get("jti")
 	//将jti加入redis黑名单
@@ -148,21 +154,22 @@ func (u *User) Logout(ctx *gin.Context) {
 }
 
 // EditUserName
-// @Summary      用户编辑用户名
-// @Description 根据用户地址更新用户名
-// @Tags 用户管理
-// @Accept json
-// @Produce json
-// @Security JwtAuth
-// @Param object body user_dto.UpdateUser true "请求体，包含新用户名"
-// @Param Authorization header string true "JWT"
-// @Success 200 {object} dto.Response "用户名更新成功"
-// @Failure 400 {object} dto.ErrResponse "请求体格式错误"
-// @Failure 503 {object} dto.ErrResponse "mysql异常"
-// @Router /user/edit/name [post]
+//
+//	@Summary		用户编辑用户名
+//	@Description	根据用户地址更新用户名
+//	@Tags			用户管理
+//	@Accept			json
+//	@Produce		json
+//	@Security		JwtAuth
+//	@Param			object			body		user_dto.UpdateUser	true	"请求体，包含新用户名"
+//	@Param			Authorization	header		string				true	"JWT"
+//	@Success		200				{object}	dto.Response		"用户名更新成功"
+//	@Failure		400				{object}	dto.ErrResponse		"请求体格式错误"
+//	@Failure		503				{object}	dto.ErrResponse		"mysql异常"
+//	@Router			/user/edit/name [post]
 func (u *User) EditUserName(ctx *gin.Context) {
 	log.Println("进入编辑用户名接口！")
-	var json user_dto.UpdateUser
+	var json dto.UpdateUser
 	if err := ctx.ShouldBindJSON(&json); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
@@ -173,7 +180,7 @@ func (u *User) EditUserName(ctx *gin.Context) {
 
 	newName := json.Name
 	log.Println(" 来自post请求体的json的new_name:" + newName)
-	toUpdate := user_dto.UpdateUser{Name: newName}
+	toUpdate := dto.UpdateUser{Name: newName}
 	if err := services.UserService.UpdateUser(toUpdate); err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
@@ -188,7 +195,20 @@ func (u *User) EditUserName(ctx *gin.Context) {
 	})
 }
 
-// UploadProfile 上传用户头像
+// UploadProfile
+//
+//	@Summary		上传用户头像
+//	@Description	根据用户地址更新用户头像
+//	@Tags			用户管理
+//	@Accept			json
+//	@Produce		json
+//	@Security		JwtAuth
+//	@Param			object			body		user_dto.UpdateUser	true	"请求体，包含图片文件"
+//	@Param			Authorization	header		string				true	"JWT"
+//	@Success		200				{object}	dto.Response		"测试环境返回图片文件！"
+//	@Failure		400				{object}	dto.ErrResponse		"请求体格式错误"
+//	@Failure		503				{object}	dto.ErrResponse		"mysql异常"
+//	@Router			/user/upload/avatar [post]
 func (u *User) UploadProfile(ctx *gin.Context) {
 	// 获取名为"profile"的文件
 	file, header, err := ctx.Request.FormFile("profile")
@@ -233,7 +253,7 @@ func (u *User) UploadProfile(ctx *gin.Context) {
 	log.Println("用户:", address, "正在更改头像！")
 	//更改数据库的picture字段
 
-	var toUpdate = user_dto.UpdateUser{Avatar: "/test/" + pictureName}
+	var toUpdate = dto.UpdateUser{Avatar: "/test/" + pictureName}
 	// 修改数据库的内容
 	if err := services.UserService.UpdateUser(toUpdate); err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, gin.H{"error": "mysql不可用,上传头像失败"})
@@ -258,15 +278,16 @@ func (u *User) UploadProfile(ctx *gin.Context) {
 }
 
 // GetInfo
-// @Summary      获取用户基本信息
-// @Description 根据用户地址获取用户基本信息
-// @Tags 用户管理
-// @Produce json
-// @Security JwtAuth
-// @Param Authorization header string true "JWT"
-// @Success 200 {object} dto.Response "响应用户基本信息"
-// @Failure 503 {object} dto.ErrResponse "mysql不可用"
-// @Router /user/info [post]
+//
+//	@Summary		获取用户基本信息
+//	@Description	根据用户地址获取用户基本信息
+//	@Tags			用户管理
+//	@Produce		json
+//	@Security		JwtAuth
+//	@Param			Authorization	header		string			true	"JWT"
+//	@Success		200				{object}	dto.Response	"响应用户基本信息"
+//	@Failure		503				{object}	dto.ErrResponse	"mysql不可用"
+//	@Router			/user/info [post]
 func (u *User) GetInfo(ctx *gin.Context) {
 	// 获取请求头中的 Authorization 值
 	address := ctx.GetString("user_address")
@@ -281,7 +302,20 @@ func (u *User) GetInfo(ctx *gin.Context) {
 
 }
 
-// 获取用户头像
+// GetProfileOfUser
+//
+//	@Summary		获取用户头像
+//	@Description	根据用户地址获取用户头像
+//	@Tags			用户管理
+//	@Accept			json
+//	@Produce		json
+//	@Security		JwtAuth
+//	@Param			object			body		user_dto.UpdateUser	true	"请求体，包含用户地址"
+//	@Param			Authorization	header		string				true	"JWT"
+//	@Success		200				{object}	dto.Response		"用户头像图片文件"
+//	@Failure		400				{object}	dto.ErrResponse		"请求体格式错误"
+//	@Failure		503				{object}	dto.ErrResponse		"mysql异常"
+//	@Router			/user/profile [post]
 func (u *User) GetProfileOfUser(c *gin.Context) {
 
 	// 使用Query方法获取参数，如果参数不存在则返回默认值
@@ -311,7 +345,20 @@ func (u *User) GetProfileOfUser(c *gin.Context) {
 	c.Data(http.StatusOK, "image/png", data)
 }
 
-// 返回用户藏品信息
+// GetGNFTList
+//
+//	@Summary		用户编辑用户名
+//	@Description	根据用户地址更新用户名
+//	@Tags			用户管理
+//	@Accept			json
+//	@Produce		json
+//	@Security		JwtAuth
+//	@Param			object			body		user_dto.UpdateUser	true	"请求体，包含新用户名"
+//	@Param			Authorization	header		string				true	"JWT"
+//	@Success		200				{object}	dto.Response		"用户名更新成功"
+//	@Failure		400				{object}	dto.ErrResponse		"请求体格式错误"
+//	@Failure		503				{object}	dto.ErrResponse		"mysql异常"
+//	@Router			/user/gnfts [post]
 func (u *User) GetGNFTList(ctx *gin.Context) {
 
 }

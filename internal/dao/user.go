@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"GeneReport_platform/api/dto/user_dto"
+	"GeneReport_platform/api/dto"
 	"GeneReport_platform/internal/dao/global"
 	"GeneReport_platform/internal/models"
 	"context"
@@ -40,11 +40,11 @@ func (u *userDao) CreateUser(address string) error {
 	return u.DB().Model(&models.User{}).Create(&models.User{Address: address, Name: "unnamed", CreateAt: time.Now()}).Error
 }
 
-func (u *userDao) UpdateUser(toUpdate user_dto.UpdateUser) error {
+func (u *userDao) UpdateUser(toUpdate dto.UpdateUser) error {
 	return u.DB().Model(&models.User{}).Model(&models.User{}).Where("address = ?", toUpdate.Address).Updates(&models.User{Name: toUpdate.Name}).Error
 }
 
-func (u *userDao) GetUserInfo(address string) (user_dto.UpdateUser, error) {
-	var userInfo user_dto.UpdateUser
+func (u *userDao) GetUserInfo(address string) (dto.UpdateUser, error) {
+	var userInfo dto.UpdateUser
 	return userInfo, u.DB().Model(&models.User{}).Where("address = ?", address).First(&userInfo).Error
 }
