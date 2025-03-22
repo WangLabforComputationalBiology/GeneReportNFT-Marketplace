@@ -65,11 +65,6 @@ func (u *User) GetNonce(ctx *gin.Context) {
 //	@Tags			用户认证
 //	@Accept			json
 //	@Produce		json
-//	@Param			loginReq	body		user_dto.LoginReq	true	"登录请求参数，包括用户地址和签名"
-//	@Success		200			{object}	dto.Response		"成功响应 JWT 令牌"
-//	@Failure		400			{object}	dto.ErrResponse		"请求体格式错误"/"地址非法或无效"
-//	@Failure		401			{object}	dto.ErrResponse		"签名验证失败"
-//	@Failure		503			{object}	dto.ErrResponse		"redis服务不可用"
 //	@Router			/user/login [post]
 func (u *User) Login(ctx *gin.Context) {
 	log.Println("进入登录接口！")
@@ -132,8 +127,6 @@ func (u *User) Login(ctx *gin.Context) {
 //	@Tags			用户认证
 //	@Produce		json
 //	@Security		JwtAuth
-//	@Success		200	{object}	dto.Response	"成功登出"
-//	@Failure		503	{object}	dto.ErrResponse	"Redis服务不可用"
 //	@Router			/user/logout [post]
 func (u *User) Logout(ctx *gin.Context) {
 	jti, _ := ctx.Get("jti")
@@ -161,11 +154,7 @@ func (u *User) Logout(ctx *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Security		JwtAuth
-//	@Param			object			body		user_dto.UpdateUser	true	"请求体，包含新用户名"
-//	@Param			Authorization	header		string				true	"JWT"
-//	@Success		200				{object}	dto.Response		"用户名更新成功"
-//	@Failure		400				{object}	dto.ErrResponse		"请求体格式错误"
-//	@Failure		503				{object}	dto.ErrResponse		"mysql异常"
+//	@Param			Authorization	header	string	true	"JWT"
 //	@Router			/user/edit/name [post]
 func (u *User) EditUserName(ctx *gin.Context) {
 	log.Println("进入编辑用户名接口！")
@@ -203,11 +192,10 @@ func (u *User) EditUserName(ctx *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Security		JwtAuth
-//	@Param			object			body		user_dto.UpdateUser	true	"请求体，包含图片文件"
-//	@Param			Authorization	header		string				true	"JWT"
-//	@Success		200				{object}	dto.Response		"测试环境返回图片文件！"
-//	@Failure		400				{object}	dto.ErrResponse		"请求体格式错误"
-//	@Failure		503				{object}	dto.ErrResponse		"mysql异常"
+//	@Param			Authorization	header		string			true	"JWT"
+//	@Success		200				{object}	dto.Response	"测试环境返回图片文件！"
+//	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
+//	@Failure		503				{object}	dto.ErrResponse	"mysql异常"
 //	@Router			/user/upload/avatar [post]
 func (u *User) UploadProfile(ctx *gin.Context) {
 	// 获取名为"profile"的文件
@@ -310,11 +298,10 @@ func (u *User) GetInfo(ctx *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Security		JwtAuth
-//	@Param			object			body		user_dto.UpdateUser	true	"请求体，包含用户地址"
-//	@Param			Authorization	header		string				true	"JWT"
-//	@Success		200				{object}	dto.Response		"用户头像图片文件"
-//	@Failure		400				{object}	dto.ErrResponse		"请求体格式错误"
-//	@Failure		503				{object}	dto.ErrResponse		"mysql异常"
+//	@Param			Authorization	header		string			true	"JWT"
+//	@Success		200				{object}	dto.Response	"用户头像图片文件"
+//	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
+//	@Failure		503				{object}	dto.ErrResponse	"mysql异常"
 //	@Router			/user/profile [post]
 func (u *User) GetProfileOfUser(c *gin.Context) {
 
@@ -353,11 +340,10 @@ func (u *User) GetProfileOfUser(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Security		JwtAuth
-//	@Param			object			body		user_dto.UpdateUser	true	"请求体，包含新用户名"
-//	@Param			Authorization	header		string				true	"JWT"
-//	@Success		200				{object}	dto.Response		"用户名更新成功"
-//	@Failure		400				{object}	dto.ErrResponse		"请求体格式错误"
-//	@Failure		503				{object}	dto.ErrResponse		"mysql异常"
+//	@Param			Authorization	header		string			true	"JWT"
+//	@Success		200				{object}	dto.Response	"用户名更新成功"
+//	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
+//	@Failure		503				{object}	dto.ErrResponse	"mysql异常"
 //	@Router			/user/gnfts [post]
 func (u *User) GetGNFTList(ctx *gin.Context) {
 

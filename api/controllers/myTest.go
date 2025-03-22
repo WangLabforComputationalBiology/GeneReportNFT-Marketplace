@@ -14,6 +14,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 func MyTestRoute(r *gin.Engine) {
@@ -72,7 +73,13 @@ func TestMinio(c *gin.Context) {
 	c.Data(http.StatusOK, "image/png", data)
 }
 
-// 根据哈希获取交易信息
+// GetTransactionInfo
+//
+//	@Summary		摘要：根据哈希获取交易信息,参数是交易的哈希值
+//	@Description	描述信息：根据哈希获取交易信息,参数是交易的哈希值
+//	@Param			txHash	query		string			true	"交易的哈希值"
+//	@Success		200		{object}	dto.Response	"成功响应nonce"
+//	@Router			/test/txinfo [get]
 func GetTransactionInfo(ctx *gin.Context) {
 
 	// 替换为你的 Etherscan API Key
@@ -86,20 +93,35 @@ func GetTransactionInfo(ctx *gin.Context) {
 	testurl := fmt.Sprintf(global.EndPoint, txHash, apiKey)
 	log.Printf("=========测试网址=========>>>>>>>", testurl)
 	//fixme 让请求走代理
-	//proxyURL, _ := url.Parse("http://127.0.0.1:7897") // Clash HTTP 代理端口
-	proxyURL, _ := url.Parse(global.ProxyUrl)
-	http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyURL)}
-	// 发送 HTTP 请求
-	resp, err := http.Get(testurl)
-	if err != nil {
-		log.Fatal(err)
+	//配置文件是否开启代理
+	if global.IsProxy {
+		//proxyURL, _ := url.Parse("http://127.0.0.1:7897") // Clash HTTP 代理端口
+		proxyURL, _ := url.Parse(global.ProxyUrl)
+		http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyURL)}
 	}
-	defer resp.Body.Close()
+	// 设置HTTP客户端的超时时间5秒
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+	}
+	// 发送 HTTP 请求
+	resp, err := client.Get(testurl)
+	if err != nil {
+		log.Printf("HTTP请求失败: %v", err) //不能使用log.Fatal(err)，因为这个会终止程序
+		ctx.JSON(http.StatusGatewayTimeout, gin.H{"error": "请求超时或网络错误"})
+		return
+	}
+	//defer resp.Body.Close()这个也可以关闭，但是不能捕获异常
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Println("关闭HTTP响应的Body异常！")
+		}
+	}(resp.Body)
 
 	// 读取响应数据
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	var data RpcResponse
@@ -107,11 +129,6 @@ func GetTransactionInfo(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	// 输出交易信息
-	/*fmt.Println(data, "\n=====================================================\n测试函数是否正常工作")
-	transaction := GNFTCtrller.GetTransaction(txHash)
-	fmt.Println(transaction)*/
-	//测试正常
 	ctx.JSON(http.StatusOK, data)
 
 }

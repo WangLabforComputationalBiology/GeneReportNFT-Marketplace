@@ -15,25 +15,6 @@ definitions:
       message:
         type: string
     type: object
-  user_dto.LoginReq:
-    properties:
-      signature:
-        type: string
-      user_address:
-        type: string
-    required:
-    - signature
-    - user_address
-    type: object
-  user_dto.UpdateUser:
-    properties:
-      address:
-        type: string
-      avatar:
-        type: string
-      name:
-        type: string
-    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -41,18 +22,46 @@ info:
   title: API接口文档
   version: "1.0"
 paths:
+  /test/txinfo:
+    get:
+      description: 描述信息：根据哈希获取交易信息,参数是交易的哈希值
+      parameters:
+      - description: 交易的哈希值
+        in: query
+        name: txHash
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 成功响应nonce
+          schema:
+            $ref: '#/definitions/dto.Response'
+      summary: 摘要：根据哈希获取交易信息,参数是交易的哈希值
   /user/edit/name:
     post:
       consumes:
       - application/json
       description: 根据用户地址更新用户名
       parameters:
-      - description: 请求体，包含新用户名
-        in: body
-        name: object
+      - description: JWT
+        in: header
+        name: Authorization
         required: true
-        schema:
-          $ref: '#/definitions/user_dto.UpdateUser'
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - JwtAuth: []
+      summary: 用户编辑用户名
+      tags:
+      - 用户管理
+  /user/gnfts:
+    post:
+      consumes:
+      - application/json
+      description: 根据用户地址更新用户名
+      parameters:
       - description: JWT
         in: header
         name: Authorization
@@ -108,32 +117,9 @@ paths:
       consumes:
       - application/json
       description: 校验签名并返回生成的 JWT 令牌
-      parameters:
-      - description: 登录请求参数，包括用户地址和签名
-        in: body
-        name: loginReq
-        required: true
-        schema:
-          $ref: '#/definitions/user_dto.LoginReq'
       produces:
       - application/json
-      responses:
-        "200":
-          description: 成功响应 JWT 令牌
-          schema:
-            $ref: '#/definitions/dto.Response'
-        "400":
-          description: 请求体格式错误"/"地址非法或无效
-          schema:
-            $ref: '#/definitions/dto.ErrResponse'
-        "401":
-          description: 签名验证失败
-          schema:
-            $ref: '#/definitions/dto.ErrResponse'
-        "503":
-          description: redis服务不可用
-          schema:
-            $ref: '#/definitions/dto.ErrResponse'
+      responses: {}
       summary: 用户登录
       tags:
       - 用户认证
@@ -142,15 +128,7 @@ paths:
       description: 用户退出登录，将当前 JWT 加入黑名单
       produces:
       - application/json
-      responses:
-        "200":
-          description: 成功登出
-          schema:
-            $ref: '#/definitions/dto.Response'
-        "503":
-          description: Redis服务不可用
-          schema:
-            $ref: '#/definitions/dto.ErrResponse'
+      responses: {}
       security:
       - JwtAuth: []
       summary: 用户登出
@@ -183,6 +161,68 @@ paths:
       summary: 用户获取nonce
       tags:
       - 用户认证
+  /user/profile:
+    post:
+      consumes:
+      - application/json
+      description: 根据用户地址获取用户头像
+      parameters:
+      - description: JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户头像图片文件
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "400":
+          description: 请求体格式错误
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+        "503":
+          description: mysql异常
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - JwtAuth: []
+      summary: 获取用户头像
+      tags:
+      - 用户管理
+  /user/upload/avatar:
+    post:
+      consumes:
+      - application/json
+      description: 根据用户地址更新用户头像
+      parameters:
+      - description: JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 测试环境返回图片文件！
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "400":
+          description: 请求体格式错误
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+        "503":
+          description: mysql异常
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - JwtAuth: []
+      summary: 上传用户头像
+      tags:
+      - 用户管理
 schemes:
 - http
 swagger: "2.0"

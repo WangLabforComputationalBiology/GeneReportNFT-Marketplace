@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 type GNFTController struct{}
@@ -18,20 +19,23 @@ var (
 	GNFTCtrller = &GNFTController{}
 )
 
-// 根据哈希获取交易信息
 func (cGNFT *GNFTController) GetTransaction(txHash string) RpcResponse {
-
 	testurl := fmt.Sprintf(global.EndPoint, txHash, global.ApiKey)
-	proxyURL, _ := url.Parse(global.ProxyUrl)
-	http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyURL)}
-	resp, err := http.Get(testurl)
+	if global.IsProxy {
+		proxyURL, _ := url.Parse(global.ProxyUrl)
+		http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyURL)}
+	}
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+	}
+	resp, err := client.Get(testurl)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	var data RpcResponse
 	if err := json.Unmarshal(body, &data); err != nil {
