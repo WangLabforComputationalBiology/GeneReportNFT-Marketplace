@@ -4,13 +4,13 @@ app:
 
 mysql:
   #dsn: root:newbee@tcp(127.0.0.1:3306)/GeneReport_platform?charset=utf8mb4&parseTime=True&loc=Local
-  dsn: blockchain:c1608@tcp(10.108.25.191:3306)/?charset=utf8mb4&parseTime=True&loc=Local
+  dsn: blockchain:c1608@tcp(5.tcp.cpolar.cn:12482)/GeneReport_platform?charset=utf8mb4&parseTime=True&loc=Local
   MaxIdleConns: 10
   MaxOpenConns: 100
 
 redis:
-  addr: "10.108.25.191:6379"
-  password: "608111"
+  addr: "5.tcp.cpolar.cn:14508"
+  password: ""
   timeout: 3000
   db: 0
 

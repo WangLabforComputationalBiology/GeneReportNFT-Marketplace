@@ -1,7 +1,9 @@
 package init
 
 import (
+	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/internal/dao/global"
+	"GeneReport_platform/internal/services"
 	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
@@ -34,11 +36,18 @@ type RedisConfig struct {
 type CtxConfig struct {
 	Timeout int `mapstructure:"timeout"`
 }
+type Etherscan struct {
+	ApiKey   string `mapstructure:apikey`
+	Endpoint string `mapstructure:endpoint`
+	Proxy    bool   `mapstructure:proxy`
+	ProxyUrl string `mapstructure:proxyurl`
+}
 type Config struct {
 	AppConfig   AppConfig   `mapstructure:"app"`
 	MysqlConfig MysqlConfig `mapstructure:"mysql"`
 	RedisConfig RedisConfig `mapstructure:"redis"`
 	CtxConfig   CtxConfig   `mapstructure:"ctx"`
+	EthConfig   Etherscan   `mapstructure:"etherscan"`
 }
 
 func initConfig() {
@@ -110,14 +119,24 @@ func initRedis() {
 }
 
 func initContext() {
-	global.Ctx, _ = context.WithTimeout(context.Background(), time.Duration(GlobalConfig.CtxConfig.Timeout)*time.Second)
+	global.Ctx, global.CtxCancel = context.WithTimeout(context.Background(), time.Duration(GlobalConfig.CtxConfig.Timeout)*time.Second)
 }
 
+func initEtherscan() {
+	global.ApiKey = GlobalConfig.EthConfig.ApiKey
+	global.EndPoint = GlobalConfig.EthConfig.Endpoint
+	global.IsProxy = GlobalConfig.EthConfig.Proxy
+	global.ProxyUrl = GlobalConfig.EthConfig.ProxyUrl
+}
 func registerServices() {
-
+	services.RegisterUserService()
+	services.RegisterGNFTService()
+	services.RegisterOrderService()
 }
 func registerDAO() {
-
+	dao.RegisterUserDao()
+	dao.RegisterGNFTDao()
+	dao.RegisterOrderDao()
 }
 
 func Init() {
@@ -125,7 +144,9 @@ func Init() {
 	initMysql()
 	initMinio()
 	initRedis()
+	initContext()
 	registerServices()
 	registerDAO()
+	initEtherscan()
 
 }

@@ -1,4 +1,4 @@
-package order
+package dto
 
 type CreateOrderReq struct {
 }

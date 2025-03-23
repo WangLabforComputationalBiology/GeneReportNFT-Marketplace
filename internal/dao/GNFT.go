@@ -2,7 +2,6 @@ package dao
 
 import (
 	"GeneReport_platform/internal/dao/global"
-	"GeneReport_platform/internal/models/entity"
 	"context"
 	"gorm.io/gorm"
 )
@@ -25,5 +24,5 @@ func RegisterGNFTDao() {
 }
 
 func (u *GNFTDao) DB() *gorm.DB {
-	return u.db.WithContext(u.ctx).Model(&entity.GNFT{})
+	return u.db.WithContext(u.ctx)
 }

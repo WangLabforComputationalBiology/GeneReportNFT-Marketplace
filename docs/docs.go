@@ -14,17 +14,358 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/test/txinfo": {
+            "get": {
+                "description": "描述信息：根据哈希获取交易信息,参数是交易的哈希值",
+                "summary": "摘要：根据哈希获取交易信息,参数是交易的哈希值",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "交易的哈希值",
+                        "name": "txHash",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功响应nonce",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/edit/name": {
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "根据用户地址更新用户名",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "用户编辑用户名",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/user/gnfts": {
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "根据用户地址更新用户名",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "用户编辑用户名",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "用户名更新成功",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "请求体格式错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "mysql异常",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/info": {
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "根据用户地址获取用户基本信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "获取用户基本信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "响应用户基本信息",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    },
+                    "503": {
+                        "description": "mysql不可用",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "校验签名并返回生成的 JWT 令牌",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户认证"
+                ],
+                "summary": "用户登录",
+                "responses": {}
+            }
+        },
+        "/user/logout": {
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "用户退出登录，将当前 JWT 加入黑名单",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户认证"
+                ],
+                "summary": "用户登出",
+                "responses": {}
+            }
+        },
+        "/user/nonce/{user_address}": {
+            "get": {
+                "description": "检查当前redis中nonce是否过期：未过期则更新后返回，过期则重新生成",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户认证"
+                ],
+                "summary": "用户获取nonce",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User address",
+                        "name": "user_address",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功响应nonce",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "地址非法或无效",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "redis服务不可用",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/profile": {
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "根据用户地址获取用户头像",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "获取用户头像",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "用户头像图片文件",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "请求体格式错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "mysql异常",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/upload/avatar": {
+            "post": {
+                "security": [
+                    {
+                        "JwtAuth": []
+                    }
+                ],
+                "description": "根据用户地址更新用户头像",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "上传用户头像",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "测试环境返回图片文件！",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "请求体格式错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "mysql异常",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.ErrResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Version:          "1.0",
+	Host:             "localhost:8080",
+	BasePath:         "/",
+	Schemes:          []string{"http"},
+	Title:            "API接口文档",
+	Description:      "GeneReport平台",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
