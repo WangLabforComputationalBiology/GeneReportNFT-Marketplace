@@ -75,9 +75,10 @@ func TestMinio(c *gin.Context) {
 
 // GetTransactionInfo
 //
+//	@Tags			测试
 //	@Summary		摘要：根据哈希获取交易信息,参数是交易的哈希值
 //	@Description	描述信息：根据哈希获取交易信息,参数是交易的哈希值
-//	@Param			txHash	query		string			true	"交易的哈希值"
+//	@Param			txhash	query		string			true	"交易的哈希值"
 //	@Success		200		{object}	dto.Response	"成功响应nonce"
 //	@Router			/test/txinfo [get]
 func GetTransactionInfo(ctx *gin.Context) {
@@ -95,13 +96,14 @@ func GetTransactionInfo(ctx *gin.Context) {
 	//fixme 让请求走代理
 	//配置文件是否开启代理
 	if global.IsProxy {
-		//proxyURL, _ := url.Parse("http://127.0.0.1:7897") // Clash HTTP 代理端口
+		//proxyURL, _ := url.Parse("http://127.0.0.1:7897") // Clash HTTP 代理端口，踩坑代理前面要加http://!!!!!
+		log.Println("开启代理=======> ", global.ProxyUrl)
 		proxyURL, _ := url.Parse(global.ProxyUrl)
 		http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyURL)}
 	}
 	// 设置HTTP客户端的超时时间5秒
 	client := &http.Client{
-		Timeout: 5 * time.Second,
+		Timeout: 9 * time.Second,
 	}
 	// 发送 HTTP 请求
 	resp, err := client.Get(testurl)
@@ -129,6 +131,7 @@ func GetTransactionInfo(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	fmt.Println(data)
 	ctx.JSON(http.StatusOK, data)
 
 }

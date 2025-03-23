@@ -27,7 +27,7 @@ func (u *User) Test(c *gin.Context) {
 //
 //	@Summary		用户获取nonce
 //	@Description	检查当前redis中nonce是否过期：未过期则更新后返回，过期则重新生成
-//	@Tags			用户认证
+//	@Tags			用户管理
 //	@Produce		json
 //	@Param			user_address	path		string			true	"User address"
 //	@Success		200				{object}	dto.Response	"成功响应nonce"
@@ -59,13 +59,19 @@ func (u *User) GetNonce(ctx *gin.Context) {
 }
 
 // Login
-//
-//	@Summary		用户登录
-//	@Description	校验签名并返回生成的 JWT 令牌
-//	@Tags			用户认证
-//	@Accept			json
-//	@Produce		json
-//	@Router			/user/login [post]
+// @Summary      用户登录
+// @Description  校验签名并返回生成的 JWT 令牌
+// @Tags         用户管理
+// @Accept       json
+// @Produce      json
+// @Router       /user/login [post]
+// @Param        loginRequest body dto.LoginReq true "登录请求"
+// @Success      200  {object}  dto.Response  "成功登录，返回 JWT 令牌"
+// @Failure      400  {object}  dto.ErrResponse  "请求体格式错误"
+// @Failure      400  {object}  dto.ErrResponse  "地址非法或无效"
+// @Failure      503  {object}  dto.ErrResponse  "服务不可用，确保用户存在失败"
+// @Failure      503  {object}  dto.ErrResponse  "服务不可用，获取nonce失败"
+// @Failure      401  {object}  dto.ErrResponse  "签名验证失败"
 func (u *User) Login(ctx *gin.Context) {
 	log.Println("进入登录接口！")
 
@@ -124,8 +130,12 @@ func (u *User) Login(ctx *gin.Context) {
 //
 //	@Summary		用户登出
 //	@Description	用户退出登录，将当前 JWT 加入黑名单
-//	@Tags			用户认证
+//	@Tags			用户管理
 //	@Produce		json
+//
+// @Success      200  {object}  dto.Response  "成功登出"
+// @Failure      400  {object}  dto.ErrResponse  "服务器内部错误"
+//
 //	@Security		JwtAuth
 //	@Router			/user/logout [post]
 func (u *User) Logout(ctx *gin.Context) {
@@ -154,6 +164,10 @@ func (u *User) Logout(ctx *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Security		JwtAuth
+//
+// @Success      200  {object}  dto.Response  "用户名更改成功"
+// @Failure      400  {object}  dto.ErrResponse  "请求体格式错误"
+//
 //	@Param			Authorization	header	string	true	"JWT"
 //	@Router			/user/edit/name [post]
 func (u *User) EditUserName(ctx *gin.Context) {
@@ -185,18 +199,19 @@ func (u *User) EditUserName(ctx *gin.Context) {
 }
 
 // UploadProfile
-//
-//	@Summary		上传用户头像
-//	@Description	根据用户地址更新用户头像
-//	@Tags			用户管理
-//	@Accept			json
-//	@Produce		json
-//	@Security		JwtAuth
-//	@Param			Authorization	header		string			true	"JWT"
-//	@Success		200				{object}	dto.Response	"测试环境返回图片文件！"
-//	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
-//	@Failure		503				{object}	dto.ErrResponse	"mysql异常"
-//	@Router			/user/upload/avatar [post]
+// @Summary      上传用户头像
+// @Description  根据用户地址更新用户头像
+// @Tags         用户管理
+// @Accept       multipart/form-data
+// @Produce      json
+// @Security     JwtAuth
+// @Param        Authorization  header    string  true  "JWT"
+// @Param        profile        formData  file    true  "用户头像文件"
+// @Param        user_address   formData  string  true  "用户地址"
+// @Success      200            {object}  dto.Response  "头像上传成功"
+// @Failure      400            {object}  dto.ErrResponse  "请求体格式错误"
+// @Failure      503            {object}  dto.ErrResponse  "服务不可用，数据库异常"
+// @Router       /user/upload/avatar [post]
 func (u *User) UploadProfile(ctx *gin.Context) {
 	// 获取名为"profile"的文件
 	file, header, err := ctx.Request.FormFile("profile")
@@ -290,19 +305,19 @@ func (u *User) GetInfo(ctx *gin.Context) {
 
 }
 
-// GetProfileOfUser
-//
-//	@Summary		获取用户头像
-//	@Description	根据用户地址获取用户头像
-//	@Tags			用户管理
-//	@Accept			json
-//	@Produce		json
-//	@Security		JwtAuth
-//	@Param			Authorization	header		string			true	"JWT"
-//	@Success		200				{object}	dto.Response	"用户头像图片文件"
-//	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
-//	@Failure		503				{object}	dto.ErrResponse	"mysql异常"
-//	@Router			/user/profile [post]
+// GetProfileOfUser 获取用户头像
+// @Summary 获取用户头像
+// @Description 根据用户地址获取用户头像
+// @Tags 用户管理
+// @Accept json
+// @Produce image/png
+// @Security JwtAuth
+// @Param Authorization header string true "JWT"
+// @Param padd query string false "用户头像的路径" default("1.png")
+// @Success 200 {file} file "用户头像图片文件"
+// @Failure 400 {object} dto.ErrResponse "请求体格式错误"
+// @Failure 503 {object} dto.ErrResponse "服务不可用，数据库异常"
+// @Router /user/profile [get]
 func (u *User) GetProfileOfUser(c *gin.Context) {
 
 	// 使用Query方法获取参数，如果参数不存在则返回默认值
@@ -334,7 +349,7 @@ func (u *User) GetProfileOfUser(c *gin.Context) {
 
 // GetGNFTList
 //
-//	@Summary		用户编辑用户名
+//	@Summary		获取用户的藏品（对他可见的数据）
 //	@Description	根据用户地址更新用户名
 //	@Tags			用户管理
 //	@Accept			json

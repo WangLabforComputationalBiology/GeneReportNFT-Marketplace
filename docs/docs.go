@@ -18,12 +18,15 @@ const docTemplate = `{
         "/test/txinfo": {
             "get": {
                 "description": "描述信息：根据哈希获取交易信息,参数是交易的哈希值",
+                "tags": [
+                    "测试"
+                ],
                 "summary": "摘要：根据哈希获取交易信息,参数是交易的哈希值",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "交易的哈希值",
-                        "name": "txHash",
+                        "name": "txhash",
                         "in": "query",
                         "required": true
                     }
@@ -65,7 +68,20 @@ const docTemplate = `{
                         "required": true
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "用户名更改成功",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "请求体格式错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    }
+                }
             }
         },
         "/user/gnfts": {
@@ -85,7 +101,7 @@ const docTemplate = `{
                 "tags": [
                     "用户管理"
                 ],
-                "summary": "用户编辑用户名",
+                "summary": "获取用户的藏品（对他可见的数据）",
                 "parameters": [
                     {
                         "type": "string",
@@ -167,10 +183,46 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "用户认证"
+                    "用户管理"
                 ],
                 "summary": "用户登录",
-                "responses": {}
+                "parameters": [
+                    {
+                        "description": "登录请求",
+                        "name": "loginRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功登录，返回 JWT 令牌",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "地址非法或无效",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "签名验证失败",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "服务不可用，获取nonce失败",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    }
+                }
             }
         },
         "/user/logout": {
@@ -185,10 +237,23 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "用户认证"
+                    "用户管理"
                 ],
                 "summary": "用户登出",
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "成功登出",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponse"
+                        }
+                    }
+                }
             }
         },
         "/user/nonce/{user_address}": {
@@ -198,7 +263,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "用户认证"
+                    "用户管理"
                 ],
                 "summary": "用户获取nonce",
                 "parameters": [
@@ -233,7 +298,7 @@ const docTemplate = `{
             }
         },
         "/user/profile": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "JwtAuth": []
@@ -244,7 +309,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "image/png"
                 ],
                 "tags": [
                     "用户管理"
@@ -257,13 +322,20 @@ const docTemplate = `{
                         "name": "Authorization",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "\"1.png\"",
+                        "description": "用户头像的路径",
+                        "name": "padd",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "用户头像图片文件",
                         "schema": {
-                            "$ref": "#/definitions/dto.Response"
+                            "type": "file"
                         }
                     },
                     "400": {
@@ -273,7 +345,7 @@ const docTemplate = `{
                         }
                     },
                     "503": {
-                        "description": "mysql异常",
+                        "description": "服务不可用，数据库异常",
                         "schema": {
                             "$ref": "#/definitions/dto.ErrResponse"
                         }
@@ -290,7 +362,7 @@ const docTemplate = `{
                 ],
                 "description": "根据用户地址更新用户头像",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -306,11 +378,25 @@ const docTemplate = `{
                         "name": "Authorization",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "用户头像文件",
+                        "name": "profile",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户地址",
+                        "name": "user_address",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "测试环境返回图片文件！",
+                        "description": "头像上传成功",
                         "schema": {
                             "$ref": "#/definitions/dto.Response"
                         }
@@ -322,7 +408,7 @@ const docTemplate = `{
                         }
                     },
                     "503": {
-                        "description": "mysql异常",
+                        "description": "服务不可用，数据库异常",
                         "schema": {
                             "$ref": "#/definitions/dto.ErrResponse"
                         }
@@ -339,6 +425,21 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LoginReq": {
+            "type": "object",
+            "required": [
+                "signature",
+                "user_address"
+            ],
+            "properties": {
+                "signature": {
+                    "type": "string"
+                },
+                "user_address": {
                     "type": "string"
                 }
             }
