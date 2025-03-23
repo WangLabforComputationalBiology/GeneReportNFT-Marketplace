@@ -45,7 +45,10 @@
                             <el-table-column prop="address" label="Address" align="right" width="300px">
                             </el-table-column>
                             <el-table-column width="120px" align="right">
-                                <el-button size="mini">purchase</el-button>
+                                <template v-slot="scope">
+                                    <el-button size="mini"
+                                        @click="purchase(scope.row.id, scope.row.price)">purchase</el-button>
+                                </template>
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
@@ -128,9 +131,11 @@
                             <el-table-column prop="sales" label="Sales" width="200px" align="right"></el-table-column>
                             <el-table-column prop="address" label="Address" align="right" width="300px">
                             </el-table-column>
-                            <el-table-column width="120px" align="right">
-                                <el-button size="mini">purchase</el-button>
-                            </el-table-column>
+                            <template>
+                                <el-table-column width="120px" align="right">
+                                    <el-button size="mini">purchase</el-button>
+                                </el-table-column>
+                            </template>
                         </el-table>
                     </el-tab-pane>
 
@@ -181,11 +186,13 @@
 
             </div>
         </div>
+
     </body>
 </template>
 
 <script>
 import { ethers } from "ethers";
+
 
 export default {
     name: "market",
@@ -235,6 +242,8 @@ export default {
     },
 
     async created() {
+
+
         // 确保 created 生命周期钩子调用异步方法
     },
     methods: {
@@ -333,8 +342,20 @@ export default {
             // this.balance = ethers.formatEther(balanceWei);
         },
 
-        drawerVisible(){
-            this.visible = true;
+        drawerVisible() {
+            this.$nextTick(() => {
+                this.visible = true;
+            })
+        },
+
+        purchase(id, price) {
+            this.$router.push({
+                path: '/market/purchase',
+                query: {
+                    id,
+                    price
+                }
+            });
         }
     },
 
@@ -344,9 +365,11 @@ export default {
 
 <style lang="scss" scoped>
 body {
+    // width: 100%;
     margin: auto;
     width: 1400px;
     // background-color: #fff;
+    overflow: visible;
 }
 
 .banner-title {
@@ -359,11 +382,11 @@ body {
     overflow: hidden;
 }
 
-::deep .nft-table {
-    width: 100%;
-    background-color: rgb(83, 53, 53);
-    border-radius: 10px;
-}
+// ::deep .nft-table {
+//     width: 100%;
+//     background-color: rgb(83, 53, 53);
+//     border-radius: 10px;
+// }
 
 .nfts-wrapper {
     margin-top: 8px;
@@ -385,5 +408,12 @@ body {
 
 :deep(.el-button--mini) {
     border-radius: 10px;
+}
+
+:deep(.el-overlay) {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    overflow: hidden;
+
 }
 </style>

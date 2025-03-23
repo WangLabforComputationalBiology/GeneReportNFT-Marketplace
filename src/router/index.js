@@ -8,11 +8,6 @@ import index from "@/views/index.vue";
 import { createWebHistory } from "vue-router";
 import { createRouter } from "vue-router";
 
-const create = () => import('@/views/create.vue');
-const drop = () => import('@/views/drop.vue');
-const stats = () => import('@/views/stats.vue');
-const login = () => import('@/views/login.vue');
-const market = () => import('@/views/market.vue');
 const routes = [
     {
         path: '/', // 根路径
@@ -24,23 +19,28 @@ const routes = [
     },
     {
         path: '/create',
-        component: create
+        component: () => import('@/views/create.vue')
     },
     {
         path: "/drop",
-        component: drop
+        component: () => import('@/views/drop.vue')
     },
     {
         path: "/stats",
-        component: stats
+        component: () => import('@/views/stats.vue')
     },
     {
         path: "/market",
-        component: market
+        component: () => import('@/views/market.vue')
     },
     {
+        path:'/market/purchase',
+        component: () => import('@/views/market/purchase.vue')
+    },
+    
+    {
         path: "/login",
-        component: login
+        component: () => import('@/views/login.vue')
     }
 ]
 
