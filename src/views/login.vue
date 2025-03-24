@@ -1,11 +1,12 @@
 <template>
+
     <body>
         <div class="loginPage">
             <div class="Wrapper">
                 <h1>How to begin?</h1>
                 <p>1.Download MetaMask in your Brower and login.</p>
                 <img style="margin:25px 0 0 50px;width: 64%;border-radius:10px;" src="../assets/imgs/step1.png" alt="">
-                
+
             </div>
             <div class="Wrapper">
                 <div class="useMeta">
@@ -23,8 +24,21 @@
 
 <script>
 import { ethers } from 'ethers';
+import { useWalletStore } from '@/stores/account'
+const wallet = useWalletStore();
 
 export default {
+    data() {
+        return {
+            account: null,
+            balance: null,
+        }
+    },
+    created() {
+
+        this.account = wallet.address; // 获取store中的账户
+    },
+
     methods: {
         // MetaMask连接并获取账户
         async connectWallet() {
@@ -35,7 +49,13 @@ export default {
                     //获取账户
                     const accounts = await provider.send('eth_requestAccounts', []);
                     this.account = accounts[0];
+                    wallet.setAddress(this.account); // 存储在 store中
                     console.log('Connected account:', this.account);
+                    const balanceWei = await provider.getBalance(accounts[0]);
+                    this.balance = ethers.formatEther(balanceWei);// 将余额转换为 ETH 单位
+                    wallet.setBalance(this.balance)
+                    // console.log("Balance:+", wallet.balance);
+                    
                 } catch (error) {
                     console.error('User denied account access or error occurred:', error);
                     this.$message({
@@ -53,6 +73,10 @@ export default {
                     type: 'success',
                     duration: 2000,
                 });
+
+                setTimeout(() => {
+                        window.location.reload(); // 刷新页面
+                    }, 2000);
             }
         },
     }

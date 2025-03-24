@@ -9,7 +9,7 @@
       <div class="routers">
         <router-link to="/market" class="routerSelection">Market</router-link>
         <router-link to="/create" class="routerSelection">Create</router-link>
-        <router-link to="/drop" class="routerSelection">Drop</router-link>
+        <!-- <router-link to="/drop" class="routerSelection">Drop</router-link> -->
         <router-link to="/stats" class="routerSelection">Stats</router-link>
       </div>
 
@@ -24,13 +24,16 @@
       </span>
       <!-- 登录路由 -->
       <router-link to="/login" class="routerSelection" style="right:0;">Login</router-link>
+      <!-- 账户面板 -->
+        <el-icon class="userIcon" v-if="account">
+          <UserFilled />
+        </el-icon>
     </div>
     <span class="side" @click="toHome">
     </span>
   </header>
   <!-- 路由主体 -->
   <router-view />
-
   <!-- 尾部导航栏 -->
   <footer>
     <!-- 内容主体 -->
@@ -42,22 +45,28 @@
         <p>Adress: xxxxxx</p>
       </div>
     </div>
+
   </footer>
 </template>
 
 <script>
+import { useWalletStore } from '@/stores/account';
+
+
 export default {
   name: "App",
   data() {
     return {
-      account: "",
+      account: null,
       provider: null,
-      loginDialogVisible: false,
+      isVisible: false,
       accountDrawerVisible: false,
     };
   },
 
   created() {
+    const wallet = useWalletStore()
+    this.account = wallet.address;
     if (typeof window.ethereum !== 'undefined') {
       console.log('MetaMask is ready!');
     }
@@ -78,7 +87,9 @@ export default {
     toHome() {
       this.$router.push("/index");
     },
-
+    Visible() {
+      this.isVisible = true;
+    }
   },
 }
 
@@ -171,13 +182,17 @@ header {
         margin-left: 0;
       }
 
-      // &:last-child {
-      //   margin-left: 20px;
-      // }
     }
 
 
   }
+}
+
+.userIcon {
+  font-size: 30px;
+  color: #169608;
+  cursor: pointer;
+  margin-top: 23px;
 }
 
 //底部区域

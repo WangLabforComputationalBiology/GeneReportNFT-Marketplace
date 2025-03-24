@@ -192,8 +192,8 @@
 
 <script>
 import { ethers } from "ethers";
-
-
+import { useWalletStore } from "@/stores/account";
+const wallet = useWalletStore();
 export default {
     name: "market",
     data() {
@@ -242,8 +242,8 @@ export default {
     },
 
     async created() {
-
-
+        // console.log("++++++"+ wallet.address);
+        // console.log("++++++"+ wallet.balance);
         // 确保 created 生命周期钩子调用异步方法
     },
     methods: {
@@ -378,7 +378,7 @@ body {
 }
 
 .marketPage {
-    height: 700px;
+    min-height: 700px;
     overflow: hidden;
 }
 
