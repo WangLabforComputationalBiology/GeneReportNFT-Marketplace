@@ -2,6 +2,7 @@ package custom_errors
 
 import (
 	"GeneReport_platform/api/dto"
+	"errors"
 	"fmt"
 	"github.com/fatih/color"
 )
@@ -45,13 +46,7 @@ func (e AppError) ToErrResponse() dto.ErrResponse {
 	}
 }
 
-func Is(err error, redisError interface{}) bool {
-	switch redisError := redisError.(type) {
-	case error:
-		return Is(err, redisError)
-	case *error:
-		return Is(err, *redisError)
-	default:
-		return false
-	}
+func Is(err, target error) bool {
+	//比较原生错误即可，如需比较自定义错误，请在此增加类型断言逻辑
+	return errors.Is(err, target)
 }

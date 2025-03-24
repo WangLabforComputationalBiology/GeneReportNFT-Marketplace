@@ -203,7 +203,7 @@ func (u *User) EditUserName(ctx *gin.Context) {
 // @Description  根据用户地址更新用户头像
 // @Tags         用户管理
 // @Accept       multipart/form-data
-// @Produce      json
+// @Produce 	 image/png
 // @Security     JwtAuth
 // @Param        Authorization  header    string  true  "JWT"
 // @Param        profile        formData  file    true  "用户头像文件"
