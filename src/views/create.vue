@@ -14,7 +14,7 @@
          <el-card class="custom-card">
             <template #header>
                <div class="card-header">
-                  <span>Wegene</span>
+                  <span style="height: 30px;">Wegene   </span>
                </div>
             </template>
 
@@ -120,13 +120,19 @@ export default {
    box-shadow: 0px 0px 16px #DCDFE6;
 }
 
+:deep{
+   .el-card__header {
+      padding: auto 5px;
+      // background-color: #F5F7FA;
+      color: #67C23A;
+
+   }
+}
 :deep(.el-card__body) {
    display: flex;
 
    position: relative;
    height: 180px;
-
-
 
 }
 
