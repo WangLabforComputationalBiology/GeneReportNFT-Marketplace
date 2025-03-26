@@ -3,14 +3,14 @@ package main
 import (
 	"GeneReport_platform/init"
 	"GeneReport_platform/internal/dao/global"
-	"GeneReport_platform/internal/models/entity"
+	"GeneReport_platform/internal/models"
 	"log"
 )
 
 var modelList = []interface{}{
-	&entity.GNFT{},  //文件
-	&entity.User{},  //用户
-	&entity.Order{}, //权限
+	&models.GNFT{},  //文件
+	&models.User{},  //用户
+	&models.Order{}, //权限
 }
 
 func main() {

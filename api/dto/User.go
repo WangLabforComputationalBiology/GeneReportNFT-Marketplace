@@ -1,28 +1,13 @@
 package dto
 
-import "time"
-
-// user的全量数据
-type Users struct {
-	ID         uint
-	Address    string    `gorm:"column:address"`
-	Name       string    `gorm:"column:name"`
-	Picture    string    `gorm:"column:picture"`
-	CreateTime time.Time `gorm:"column:create_time"`
+type LoginReq struct {
+	UserAddress string `json:"user_address" binding:"required"`
+	Signature   string `json:"signature" binding:"required"`
 }
 
-// 绑定post的
-type EditUserName struct {
-	Name      string `json:"new_name"`
-	Address   string `json:"user_address"`
-	Signature string `json:"signature"`
-}
-
-// 数据库操作的
+// UpdateUser userModel for update
 type UpdateUser struct {
-	ID        uint
-	Address   string `gorm:"column:address"`
-	Name      string `gorm:"column:name"`
-	Picture   string `gorm:"column:picture"`
-	Signature string `gorm:"column:signature"`
+	Address string `gorm:"column:address"`
+	Name    string `gorm:"column:name"`
+	Avatar  string `gorm:"column:avatar"`
 }

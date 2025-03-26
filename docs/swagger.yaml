@@ -1,4 +1,294 @@
+basePath: /
+definitions:
+  dto.ErrResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  dto.LoginReq:
+    properties:
+      signature:
+        type: string
+      user_address:
+        type: string
+    required:
+    - signature
+    - user_address
+    type: object
+  dto.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+host: localhost:8080
 info:
   contact: {}
-paths: {}
+  description: GeneReport平台
+  title: API接口文档
+  version: "1.0"
+paths:
+  /test/txinfo:
+    get:
+      description: 描述信息：根据哈希获取交易信息,参数是交易的哈希值
+      parameters:
+      - description: 交易的哈希值
+        in: query
+        name: txhash
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 成功响应nonce
+          schema:
+            $ref: '#/definitions/dto.Response'
+      summary: 摘要：根据哈希获取交易信息,参数是交易的哈希值
+      tags:
+      - 测试
+  /user/edit/name:
+    post:
+      consumes:
+      - application/json
+      description: 根据用户地址更新用户名
+      parameters:
+      - description: JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户名更改成功
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "400":
+          description: 请求体格式错误
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - JwtAuth: []
+      summary: 用户编辑用户名
+      tags:
+      - 用户管理
+  /user/gnfts:
+    post:
+      consumes:
+      - application/json
+      description: 根据用户地址更新用户名
+      parameters:
+      - description: JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户名更新成功
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "400":
+          description: 请求体格式错误
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+        "503":
+          description: mysql异常
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - JwtAuth: []
+      summary: 获取用户的藏品（对他可见的数据）
+      tags:
+      - 用户管理
+  /user/info:
+    post:
+      description: 根据用户地址获取用户基本信息
+      parameters:
+      - description: JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 响应用户基本信息
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "503":
+          description: mysql不可用
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - JwtAuth: []
+      summary: 获取用户基本信息
+      tags:
+      - 用户管理
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: 校验签名并返回生成的 JWT 令牌
+      parameters:
+      - description: 登录请求
+        in: body
+        name: loginRequest
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功登录，返回 JWT 令牌
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "400":
+          description: 地址非法或无效
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+        "401":
+          description: 签名验证失败
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+        "503":
+          description: 服务不可用，获取nonce失败
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      summary: 用户登录
+      tags:
+      - 用户管理
+  /user/logout:
+    post:
+      description: 用户退出登录，将当前 JWT 加入黑名单
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功登出
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "400":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - JwtAuth: []
+      summary: 用户登出
+      tags:
+      - 用户管理
+  /user/nonce/{user_address}:
+    get:
+      description: 检查当前redis中nonce是否过期：未过期则更新后返回，过期则重新生成
+      parameters:
+      - description: User address
+        in: path
+        name: user_address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功响应nonce
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "400":
+          description: 地址非法或无效
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+        "503":
+          description: redis服务不可用
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      summary: 用户获取nonce
+      tags:
+      - 用户管理
+  /user/profile:
+    get:
+      consumes:
+      - application/json
+      description: 根据用户地址获取用户头像
+      parameters:
+      - description: JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"1.png"'
+        description: 用户头像的路径
+        in: query
+        name: padd
+        type: string
+      produces:
+      - image/png
+      responses:
+        "200":
+          description: 用户头像图片文件
+          schema:
+            type: file
+        "400":
+          description: 请求体格式错误
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+        "503":
+          description: 服务不可用，数据库异常
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - JwtAuth: []
+      summary: 获取用户头像
+      tags:
+      - 用户管理
+  /user/upload/avatar:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 根据用户地址更新用户头像
+      parameters:
+      - description: JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户头像文件
+        in: formData
+        name: profile
+        required: true
+        type: file
+      - description: 用户地址
+        in: formData
+        name: user_address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 头像上传成功
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "400":
+          description: 请求体格式错误
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+        "503":
+          description: 服务不可用，数据库异常
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - JwtAuth: []
+      summary: 上传用户头像
+      tags:
+      - 用户管理
+schemes:
+- http
 swagger: "2.0"

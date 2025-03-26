@@ -5,7 +5,7 @@ var (
 )
 
 type GNFTService struct {
-	iGNFTBase interface{}
+	iGNFTBase
 }
 
 // GNFT基础接口

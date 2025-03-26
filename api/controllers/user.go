@@ -3,16 +3,15 @@ package controllers
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/internal/dao/global"
-	"GeneReport_platform/tools/utils"
+	"GeneReport_platform/internal/services"
+	"GeneReport_platform/pkg/auth"
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v7"
-	"gorm.io/gorm"
 	"io"
 	"log"
 	"net/http"
-	"time"
+	"strings"
 )
 
 type User struct{}
@@ -24,96 +23,195 @@ func (u *User) Test(c *gin.Context) {
 
 }
 
-// 请求nonce
+// GetNonce
+//
+//	@Summary		用户获取nonce
+//	@Description	检查当前redis中nonce是否过期：未过期则更新后返回，过期则重新生成
+//	@Tags			用户管理
+//	@Produce		json
+//	@Param			user_address	path		string			true	"User address"
+//	@Success		200				{object}	dto.Response	"成功响应nonce"
+//	@Failure		400				{object}	dto.ErrResponse	"地址非法或无效"
+//	@Failure		503				{object}	dto.ErrResponse	"redis服务不可用"
+//	@Router			/user/nonce/{user_address} [get]
 func (u *User) GetNonce(ctx *gin.Context) {
 	address := ctx.Param("user_address")
-
-	//fixme 在这里要验证用户是否为新用户，是的话需要写进MySQL！
-
-	jwt, _ := utils.GenToken(address)
-	// 设置 key 并指定过期时间为 3分钟
-	err := global.RedisClient.Set(ctx, address, jwt, time.Minute*3).Err()
-	if err != nil {
-		ctx.JSON(500, gin.H{"error": "redis服务出现问题！"})
+	//地址校验
+	if !auth.IsValidAddress(address) {
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "地址非法或无效",
+		})
 		return
 	}
-	//todo 测试1
-	token, err := utils.ParseToken(jwt)
-	log.Println(" 用户地址是： ", token.User_address)
-	ctx.JSON(200, gin.H{"account": address, "jwt": jwt})
+	//获取nonce
+	if nonce, err := services.UserService.GetNonce(address); err != nil {
+		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
+		return
+	} else {
+		ctx.JSON(http.StatusOK, dto.Response{
+			Code:    http.StatusOK,
+			Message: "获取nonce成功",
+			Data:    gin.H{"nonce": nonce},
+		})
+	}
+
 }
 
-// 发送验签-login接口
-func (u *User) LogIng(ctx *gin.Context) {
+// Login
+// @Summary      用户登录
+// @Description  校验签名并返回生成的 JWT 令牌
+// @Tags         用户管理
+// @Accept       json
+// @Produce      json
+// @Router       /user/login [post]
+// @Param        loginRequest body dto.LoginReq true "登录请求"
+// @Success      200  {object}  dto.Response  "成功登录，返回 JWT 令牌"
+// @Failure      400  {object}  dto.ErrResponse  "请求体格式错误"
+// @Failure      400  {object}  dto.ErrResponse  "地址非法或无效"
+// @Failure      503  {object}  dto.ErrResponse  "服务不可用，确保用户存在失败"
+// @Failure      503  {object}  dto.ErrResponse  "服务不可用，获取nonce失败"
+// @Failure      401  {object}  dto.ErrResponse  "签名验证失败"
+func (u *User) Login(ctx *gin.Context) {
 	log.Println("进入登录接口！")
-	var json dto.EditUserName
+
+	var json dto.LoginReq
 	if err := ctx.ShouldBindJSON(&json); err != nil {
-		// 处理错误，比如返回错误信息
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "请求体格式错误",
+		})
 		return
 	}
-	address := json.Address
+
+	address := json.UserAddress
 	signature := json.Signature
-
-	log.Println("请求里的地址是："+address, "请求里的签名是："+signature)
-	jwt, _ := utils.GenToken(address, 3)
-
-	// 设置 key 并指定过期时间为 3分钟
-	err := global.RedisClient.Set(ctx, address, jwt, time.Minute*3).Err()
+	//地址校验
+	if !auth.IsValidAddress(address) {
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "地址非法或无效",
+		})
+		return
+	}
+	//确保用户存在，不存在执行创建
+	if err := services.UserService.EnsureUserExists(address); err != nil {
+		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
+		return
+	}
+	//获取nonce
+	nonce, err := services.UserService.GetNonce(address)
 	if err != nil {
-		ctx.JSON(500, gin.H{"error": "redis服务出现问题！"})
+		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
 	}
 
-	//todo
-	ctx.JSON(200, gin.H{"reflash_token": "这东西是什么，我不知道啊，文档没说清楚", "access_token": jwt})
+	//执行验签
+	if isAccept, err := auth.VerifySignature(address, nonce, signature); !isAccept && err != nil {
+		ctx.JSON(http.StatusUnauthorized, dto.ErrResponse{
+			Code:    http.StatusUnauthorized,
+			Message: "签名验证失败," + err.Error(),
+		})
+		return
+	}
+
+	jwt, _ := auth.GenerateToken(address)
+	ctx.JSON(200, dto.Response{
+		Code:    http.StatusOK,
+		Message: "成功登录",
+		Data: gin.H{
+			"access_token": jwt,
+		},
+	})
+	log.Printf("签名验证成功！\n用户地址: %v;用户签名: %v\n", address, signature)
 }
 
-// 登出操作
-func (u *User) LogOut(ctx *gin.Context) {
-	var json dto.EditUserName
-	if err := ctx.ShouldBindJSON(&json); err != nil {
-		// 处理错误，比如返回错误信息
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	address := json.Address
-
-	//将redis里的jwt删除！
-	err := global.RedisClient.Del(ctx, address).Err()
+// Logout
+//
+//	@Summary		用户登出
+//	@Description	用户退出登录，将当前 JWT 加入黑名单
+//	@Tags			用户管理
+//	@Produce		json
+//
+// @Success      200  {object}  dto.Response  "成功登出"
+// @Failure      400  {object}  dto.ErrResponse  "服务器内部错误"
+//
+//	@Security		JwtAuth
+//	@Router			/user/logout [post]
+func (u *User) Logout(ctx *gin.Context) {
+	jti, _ := ctx.Get("jti")
+	//将jti加入redis黑名单
+	err := global.RedisClient.SetEX(ctx, "blacklist:"+jti.(string), "1", auth.TokenExpireDuration).Err()
 	if err != nil {
-		ctx.JSON(500, gin.H{"error": "redis服务出现问题！"})
+		ctx.JSON(http.StatusServiceUnavailable, dto.ErrResponse{
+			Code:    http.StatusServiceUnavailable,
+			Message: "服务器内部错误",
+		})
 		return
 	}
-	ctx.JSON(200, gin.H{"msg:": "成功退出登录！"})
+	ctx.JSON(200, dto.Response{
+		Code:    http.StatusOK,
+		Message: "成功登出",
+		Data:    "",
+	})
 }
 
-// 编辑用户名称
+// EditUserName
+//
+//	@Summary		用户编辑用户名
+//	@Description	根据用户地址更新用户名
+//	@Tags			用户管理
+//	@Accept			json
+//	@Produce		json
+//	@Security		JwtAuth
+//
+// @Success      200  {object}  dto.Response  "用户名更改成功"
+// @Failure      400  {object}  dto.ErrResponse  "请求体格式错误"
+//
+//	@Param			Authorization	header	string	true	"JWT"
+//	@Router			/user/edit/name [post]
 func (u *User) EditUserName(ctx *gin.Context) {
 	log.Println("进入编辑用户名接口！")
-	var json dto.EditUserName
+	var json dto.UpdateUser
 	if err := ctx.ShouldBindJSON(&json); err != nil {
-		// 处理错误，比如返回错误信息
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "请求体格式错误",
+		})
 		return
 	}
 
-	name := json.Name
-	log.Println(" 来自post请求体的json的new_name:" + name)
-
-	var update dto.UpdateUser = dto.UpdateUser{Name: name, Address: json.Address}
-
-	// 修改数据库的内容
-	if err := global.DB.Model(&dto.Users{}).Where("address = ?", json.Address).Updates(update).Error; err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "更新用户名失败"})
+	newName := json.Name
+	log.Println(" 来自post请求体的json的new_name:" + newName)
+	toUpdate := dto.UpdateUser{Name: newName}
+	if err := services.UserService.UpdateUser(toUpdate); err != nil {
+		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"msg": "用户名更新成功"})
 
+	ctx.JSON(http.StatusOK, dto.Response{
+		Code:    http.StatusOK,
+		Message: "用户名更新成功",
+		Data: gin.H{
+			"new_name": newName, // 返回新用户名
+		},
+	})
 }
 
-// 上传用户头像
+// UploadProfile
+// @Summary      上传用户头像
+// @Description  根据用户地址更新用户头像
+// @Tags         用户管理
+// @Accept       multipart/form-data
+// @Produce 	 image/png
+// @Security     JwtAuth
+// @Param        Authorization  header    string  true  "JWT"
+// @Param        profile        formData  file    true  "用户头像文件"
+// @Param        user_address   formData  string  true  "用户地址"
+// @Success      200            {object}  dto.Response  "头像上传成功"
+// @Failure      400            {object}  dto.ErrResponse  "请求体格式错误"
+// @Failure      503            {object}  dto.ErrResponse  "服务不可用，数据库异常"
+// @Router       /user/upload/avatar [post]
 func (u *User) UploadProfile(ctx *gin.Context) {
 	// 获取名为"profile"的文件
 	file, header, err := ctx.Request.FormFile("profile")
@@ -158,10 +256,10 @@ func (u *User) UploadProfile(ctx *gin.Context) {
 	log.Println("用户:", address, "正在更改头像！")
 	//更改数据库的picture字段
 
-	var update dto.UpdateUser = dto.UpdateUser{Picture: "/test/" + pictureName}
+	var toUpdate = dto.UpdateUser{Avatar: "/test/" + pictureName}
 	// 修改数据库的内容
-	if err := global.DB.Model(&dto.Users{}).Where("address = ?", address).Updates(update).Error; err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "更新用户名失败"})
+	if err := services.UserService.UpdateUser(toUpdate); err != nil {
+		ctx.JSON(http.StatusServiceUnavailable, gin.H{"error": "mysql不可用,上传头像失败"})
 		return
 	}
 
@@ -182,34 +280,86 @@ func (u *User) UploadProfile(ctx *gin.Context) {
 	//ctx.String(http.StatusOK, "文件上传成功，其他字段值: %s", address)
 }
 
-// 返回用户信息
+// GetInfo
+//
+//	@Summary		获取用户基本信息
+//	@Description	根据用户地址获取用户基本信息
+//	@Tags			用户管理
+//	@Produce		json
+//	@Security		JwtAuth
+//	@Param			Authorization	header		string			true	"JWT"
+//	@Success		200				{object}	dto.Response	"响应用户基本信息"
+//	@Failure		503				{object}	dto.ErrResponse	"mysql不可用"
+//	@Router			/user/info [post]
 func (u *User) GetInfo(ctx *gin.Context) {
 	// 获取请求头中的 Authorization 值
-	address := ctx.GetHeader("Authorization")
+	address := ctx.GetString("user_address")
+	userInfo, err := services.UserService.GetUserInfo(address)
+	if err != nil {
+		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
+	}
+	ctx.JSON(http.StatusOK, userInfo)
 
-	// 创建一个 Users 实例用于接收查询结果
-	var user dto.Users
+	// 打印查询到的用户信息
+	log.Printf("找到用户: %+v\n", userInfo)
 
-	// 根据地址查询用户
-	result := global.DB.Where("address = ?", address).First(&user)
+}
 
-	// 检查错误
-	if result.Error != nil {
-		// 如果没有找到记录，result.Error 将会是 gorm.ErrRecordNotFound
-		if result.Error == gorm.ErrRecordNotFound {
-			fmt.Println("没有找到地址为", address, "的用户")
-		} else {
-			fmt.Println("查询出错:", result.Error)
-		}
+// GetProfileOfUser 获取用户头像
+// @Summary 获取用户头像
+// @Description 根据用户地址获取用户头像
+// @Tags 用户管理
+// @Accept json
+// @Produce image/png
+// @Security JwtAuth
+// @Param Authorization header string true "JWT"
+// @Param padd query string false "用户头像的路径" default("1.png")
+// @Success 200 {file} file "用户头像图片文件"
+// @Failure 400 {object} dto.ErrResponse "请求体格式错误"
+// @Failure 503 {object} dto.ErrResponse "服务不可用，数据库异常"
+// @Router /user/profile [get]
+func (u *User) GetProfileOfUser(c *gin.Context) {
+
+	// 使用Query方法获取参数，如果参数不存在则返回默认值
+	//name := c.Query("name")
+	p_add := c.DefaultQuery("padd", "1.png") // 默认值是20
+	addresses := strings.Split(p_add, "/")   //因为参数长/xxx/sss.png,所以第一个是空的！
+	// 获取对象
+	object, err := global.MinioClient.GetObject(context.Background(), addresses[1], addresses[2], minio.GetObjectOptions{})
+	if err != nil {
+		log.Println("minio获取对象出错！", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "无法获取对象"})
+		return
+	}
+	defer object.Close()
+
+	// 读取对象数据
+	data, err := io.ReadAll(object)
+	if err != nil {
+		log.Println("读取对象数据出错！", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "无法读取对象数据"})
 		return
 	}
 
-	// 打印查询到的用户信息
-	fmt.Printf("找到用户: %+v\n", user)
-	ctx.JSON(200, gin.H{"user": user})
+	// 设置响应头
+	c.Header("Content-Type", "image/png")
+	c.Header("Content-Disposition", "inline; filename=1.png")
+	c.Data(http.StatusOK, "image/png", data)
 }
 
-// 返回用户藏品信息
+// GetGNFTList
+//
+//	@Summary		获取用户的藏品（对他可见的数据）
+//	@Description	根据用户地址更新用户名
+//	@Tags			用户管理
+//	@Accept			json
+//	@Produce		json
+//	@Security		JwtAuth
+//	@Param			Authorization	header		string			true	"JWT"
+//	@Success		200				{object}	dto.Response	"用户名更新成功"
+//	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
+//	@Failure		503				{object}	dto.ErrResponse	"mysql异常"
+//	@Router			/user/gnfts [post]
 func (u *User) GetGNFTList(ctx *gin.Context) {
 
 }
