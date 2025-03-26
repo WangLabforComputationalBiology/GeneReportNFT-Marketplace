@@ -23,11 +23,13 @@
         </div>
       </span>
       <!-- 登录路由 -->
-      <router-link to="/login" class="routerSelection" style="position:absolute;right:10px;align-items: center;">Login</router-link>
+      <router-link to="/login" class="routerSelection" style="position:absolute;right:20px;">Login</router-link>
       <!-- 账户面板 -->
-        <el-icon class="userIcon" v-if="account">
+      <el-icon class="userIcon" v-if="account">
+        <router-link to="/user" style="color: #169608;">
           <UserFilled />
-        </el-icon>
+        </router-link>
+      </el-icon>
     </div>
     <span class="side">
     </span>
@@ -89,7 +91,8 @@ export default {
     },
     Visible() {
       this.isVisible = true;
-    }
+    },
+    
   },
 }
 
@@ -124,13 +127,14 @@ header {
   }
 
   .headerWrapper {
+    align-items: center;
     position: relative;
     width: 1400px;
     display: flex;
     margin: 0 auto;
 
     .navigation {
-      
+
       margin-left: 300px;
       margin-right: 100px;
       width: 300px;
@@ -196,7 +200,6 @@ header {
   font-size: 30px;
   color: #169608;
   cursor: pointer;
-  margin-top: 23px;
 }
 
 //底部区域

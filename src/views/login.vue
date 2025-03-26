@@ -35,26 +35,28 @@ export default {
         }
     },
     created() {
-
-        this.account = wallet.address; // 获取store中的账户
+        // console.log("++++++"+ wallet.address);
+        // this.account = wallet.address; // 获取store中的账户
     },
 
     methods: {
         // MetaMask连接并获取账户
         async connectWallet() {
-            if (typeof window.ethereum !== 'undefined') {
+            if (window.ethereum) {
                 try {
                     // 创建 Web3Provider
-                    const provider = new ethers.BrowserProvider(window.ethereum);
-                    //获取账户
-                    const accounts = await provider.send('eth_requestAccounts', []);
-                    this.account = accounts[0];
-                    wallet.setAddress(this.account); // 存储在 store中
-                    console.log('Connected account:', this.account);
-                    const balanceWei = await provider.getBalance(accounts[0]);
-                    this.balance = ethers.formatEther(balanceWei);// 将余额转换为 ETH 单位
-                    wallet.setBalance(this.balance)
-                    // console.log("Balance:+", wallet.balance);
+                    const provider = new ethers.BrowserProvider(window.ethereum);// 请求账户权限
+                    
+                    const accounts = await provider.send("eth_requestAccounts", []);
+                    this.account = accounts[0]; // 获取第一个账户
+                    console.log("Account:", this.account);
+                    wallet.setAddress(this.account);
+                    // 获取余额（返回值为 BigNumber，单位为 wei）
+                    // const balanceWei = await provider.getBalance(accounts[0]);
+                    // console.log("Balance in Wei:  ", balanceWei);
+                    // // 将余额转换为 ETH 单位
+                    // this.balance = ethers.formatEther(balanceWei);
+                    console.log("Balance:+++++  ", this.balance);
                     
                 } catch (error) {
                     console.error('User denied account access or error occurred:', error);

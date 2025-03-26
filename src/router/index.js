@@ -1,10 +1,6 @@
 //路由页面
 import index from "@/views/index.vue";
-// import create from "@/views/create.vue";
-// import drop from "@/views/drop.vue";
-// import stats from "@/views/stats.vue";
-// import login from "@/views/login.vue";
-// import market from "@/views/market.vue";
+
 import { createWebHistory } from "vue-router";
 import { createRouter } from "vue-router";
 
@@ -41,6 +37,10 @@ const routes = [
     {
         path: "/login",
         component: () => import('@/views/login.vue')
+    },
+    {
+        path: "/user",
+        component: () => import('@/views/user.vue')
     }
 ]
 
@@ -50,7 +50,6 @@ const router = createRouter({
     scrollBehavior(to, from, savedPosition) {
         return { top: 0, left: 0 }; // 每次切换路由时回到顶部,这是vue3写法
     }
-
 })
 
 export default router

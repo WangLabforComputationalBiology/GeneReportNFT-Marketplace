@@ -10,7 +10,6 @@
                 <span class="address-info"> Destination address: <span style="color: #169608;margin: 0 20px;">{{ }}0x121724567f7d4373b589dacaac567815c1c6d904</span>
                 </span><br>
                 <span class="address-info">You spend: <span class="price">{{ purchaseId.price }} ETH</span></span>
-
             </div>
             <div class="info-wrapper">
                 <div class="img">

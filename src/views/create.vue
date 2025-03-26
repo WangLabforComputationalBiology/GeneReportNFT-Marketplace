@@ -5,26 +5,20 @@
       </div>
       <h2 style="padding-left:20px; color:#99a9bf">Your collections:</h2>
       <div class="CreateArea">
-         <!-- <div class="uploadDataBlock">
-            <img src="../assets/imgs/upload.png" alt="upload">
-            <p>Click here to upload your gene data</p>
-         </div> -->
-
          <!-- wegene数据库 -->
-         <el-card class="custom-card">
+         <el-card class="custom-card" v-for="(item, index) in cardList" :key="index">
             <template #header>
                <div class="card-header">
-                  <span style="height: 30px;">Wegene   </span>
+                  <span style="height: 30px;">Wegene</span>
                </div>
             </template>
 
             <div class="card-info">
-               <p>Name: {{ cardFrom.name }}</p>
-               <p>Date: {{ cardFrom.date }}</p>
-               <p>Description: {{ cardFrom.description }}</p>
+               <p>Name: {{ item.name }}</p>
+               <p>Date: {{ item.date }}</p>
+               <p>Description: {{ item.description }}</p>
             </div>
 
-            <!-- <p v-for="o in 4" :key="o" class="text item">{{ 'List item ' + o }}</p> -->
             <template #footer>
                <div class="card-buttons">
                   <el-button type="primary" class="custom-btton">Create</el-button>
@@ -41,12 +35,58 @@ export default {
    name: "create",
    data() {
       return {
-         cardFrom: {
-            name: 'man',
-            date: '2022/22/22',
-            description: '',
-
-         }
+         cardList: [
+            {
+               name: 'Card 1',
+               date: '2023-01-01',
+               description: 'First card description'
+            },
+            {
+               name: 'Card 2',
+               date: '2023-01-02',
+               description: 'Second card description'
+            },
+            {
+               name: 'Card 1',
+               date: '2023-01-01',
+               description: 'First card description'
+            },
+            {
+               name: 'Card 2',
+               date: '2023-01-02',
+               description: 'Second card description'
+            },
+            {
+               name: 'Card 1',
+               date: '2023-01-01',
+               description: 'First card description'
+            },
+            {
+               name: 'Card 2',
+               date: '2023-01-02',
+               description: 'Second card description'
+            },
+            {
+               name: 'Card 1',
+               date: '2023-01-01',
+               description: 'First card description'
+            },
+            {
+               name: 'Card 2',
+               date: '2023-01-02',
+               description: 'Second card description'
+            },
+            {
+               name: 'Card 1',
+               date: '2023-01-01',
+               description: 'First card description'
+            },
+            {
+               name: 'Card 2',
+               date: '2023-01-02',
+               description: 'Second card description'
+            },
+         ]
       }
    }
 }
@@ -59,10 +99,13 @@ export default {
 }
 
 .CreateArea {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 30px;
    width: 100%;
-   height: 600px;
-   padding: 40px;
+   padding: 40px 80px;
    overflow: hidden;
+   // justify-content: space-around;
 
    .uploadDataBlock {
       width: 400px;
@@ -95,6 +138,7 @@ export default {
 
 //卡片样式
 :deep(.custom-card) {
+   margin: 10px 10px;
    width: 260px;
    height: 320px;
    box-shadow: none;
@@ -120,7 +164,7 @@ export default {
    box-shadow: 0px 0px 16px #DCDFE6;
 }
 
-:deep{
+:deep {
    .el-card__header {
       padding: auto 5px;
       // background-color: #F5F7FA;
@@ -128,6 +172,7 @@ export default {
 
    }
 }
+
 :deep(.el-card__body) {
    display: flex;
 
@@ -151,13 +196,13 @@ export default {
    background-color: #E6A23C;
    border: none;
 
-   &:first-child{
-      background-color:#67C23A;
+   &:first-child {
+      background-color: #67C23A;
 
       &:hover {
-      background-color: #67C23Aee;
-      cursor: pointer;
-   }
+         background-color: #67C23Aee;
+         cursor: pointer;
+      }
 
    }
 
