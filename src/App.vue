@@ -23,13 +23,13 @@
         </div>
       </span>
       <!-- 登录路由 -->
-      <router-link to="/login" class="routerSelection" style="right:0;">Login</router-link>
+      <router-link to="/login" class="routerSelection" style="position:absolute;right:10px;align-items: center;">Login</router-link>
       <!-- 账户面板 -->
         <el-icon class="userIcon" v-if="account">
           <UserFilled />
         </el-icon>
     </div>
-    <span class="side" @click="toHome">
+    <span class="side">
     </span>
   </header>
   <!-- 路由主体 -->
@@ -124,11 +124,13 @@ header {
   }
 
   .headerWrapper {
+    position: relative;
     width: 1400px;
     display: flex;
     margin: 0 auto;
 
     .navigation {
+      
       margin-left: 300px;
       margin-right: 100px;
       width: 300px;
@@ -169,7 +171,7 @@ header {
 
     .routerSelection {
       color: #169608;
-      margin: 0 30px;
+      margin: 0 25px;
       font-size: 26px;
       align-content: center;
       font-weight: bold;
@@ -189,6 +191,8 @@ header {
 }
 
 .userIcon {
+  position: absolute;
+  right: 0;
   font-size: 30px;
   color: #169608;
   cursor: pointer;
@@ -212,7 +216,7 @@ footer {
     font-size: 18px;
 
     .communication {
-      width: 300px;
+      width: 350px;
       height: 200px;
     }
   }
