@@ -3,10 +3,14 @@
     <body>
         <div class="purchase-page">
             <div class="info-wrapper">
-                <h1 style="color: #169608;margin-bottom:50px">Confirm your order</h1>
+                <h1 style="color: #169608;margin-bottom:10px">Confirm your order</h1>
                 <h1>ID: #{{ purchaseId.id }} </h1>
-                <p>you spend:</p>
-                <div class="price">{{ purchaseId.price }} ETH</div>
+                <span class="address-info">Your address: <span style="color: #169608; margin: 0 20px;">{{ address }}</span>
+                </span><br>
+                <span class="address-info"> Destination address: <span style="color: #169608;margin: 0 20px;">{{ }}0x121724567f7d4373b589dacaac567815c1c6d904</span>
+                </span><br>
+                <span class="address-info">You spend: <span class="price">{{ purchaseId.price }} ETH</span></span>
+
             </div>
             <div class="info-wrapper">
                 <div class="img">
@@ -19,12 +23,25 @@
 </template>
 
 <script>
+import { useWalletStore } from "@/stores/account";
+const wallet = useWalletStore();
+
 export default {
     name: 'Purchase',
+    data() {
+        return {
+            address: null,
+        }
+    },
     computed: {
         purchaseId() {
             return this.$route.query;
         }
+    },
+
+    created() {
+        const wallet = useWalletStore();
+        this.address = wallet.address;
     }
 }
 
@@ -43,7 +60,6 @@ body {
     margin: auto;
     margin-top: 100px;
     margin-bottom: 100px;
-    padding: 30px 100px;
     height: 620px;
     width: 1000px;
     border-radius: 15px;
@@ -53,8 +69,8 @@ body {
     .info-wrapper {
         width: 50%;
         display: inflex;
-        height: 400px;
-        padding: 50px 0px 50px 20px;
+        // height: 400px;
+        padding: 20px 0px 40px 20px;
 
         h1 {
             margin: 15px 0;
@@ -81,7 +97,17 @@ body {
 
             img {
                 width: 250px;
-                margin: 40px 0 0 80px;
+                margin: 50px 0 0 90px;
+            }
+        }
+
+        .address-info {
+            line-height: 36px;
+            font-size: 18px;
+            color: #A8ABB2;
+
+            &:last-child{
+                line-height: 60px;
             }
         }
     }
