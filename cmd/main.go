@@ -12,7 +12,7 @@ import (
 // @description	GeneReport平台
 // @host			120.24.168.132:8080
 // @BasePath		/docs
-// @schemes		http
+// @schemes		http https
 func main() {
 
 	Init()

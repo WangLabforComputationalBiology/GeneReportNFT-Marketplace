@@ -24,8 +24,6 @@ func testRouter(r *gin.RouterGroup) {
 
 func registerUserRouter(r *gin.RouterGroup) {
 
-	r.GET("/nonce/:user_address", controllers.UserController.GetNonce) //这个是http的，下面是https的
-
 	//todo get请求，  - url：/user/nonce/:账号 ,使用https，path和参数会被加密，account可以直接放在url
 	//创建https服务器
 	https := gin.Default()
@@ -38,7 +36,7 @@ func registerUserRouter(r *gin.RouterGroup) {
 			log.Fatalf("Failed to start HTTPS server: %v", err)
 		}
 	}()
-
+	r.GET("/nonce/:user_address", controllers.UserController.GetNonce) //这个是http的，下面是https的
 	//更改用户名
 	r.POST("/edit/name", middlewares.AuthMiddleware(), controllers.UserController.EditUserName)
 	//上传用户头像
