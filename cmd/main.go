@@ -10,7 +10,7 @@ import (
 // @title			API接口文档
 // @version		1.0
 // @description	GeneReport平台
-// @host			0.0.0.0:8080
+// @host			120.24.168.132:8080
 // @BasePath		/docs
 // @schemes		http
 func main() {

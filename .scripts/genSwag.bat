@@ -1,2 +1,2 @@
 cd ..
-swag init -g /cmd/main.go
+swag init -g ./cmd/main.go
