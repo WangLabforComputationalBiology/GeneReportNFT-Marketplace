@@ -128,16 +128,14 @@ func (u *User) Login(ctx *gin.Context) {
 
 // Logout
 //
-//	@Summary		用户登出
-//	@Description	用户退出登录，将当前 JWT 加入黑名单
-//	@Tags			用户管理
-//	@Produce		json
-//
-// @Success      200  {object}  dto.Response  "成功登出"
-// @Failure      400  {object}  dto.ErrResponse  "服务器内部错误"
-//
-//	@Security		JwtAuth
-//	@Router			/user/logout [post]
+//		@Summary		用户登出
+//		@Description	用户退出登录，将当前 JWT 加入黑名单
+//		@Tags			用户管理
+//		@Produce		json
+//		@Security		JwtAuth
+//	 @Success      200  {object}  dto.Response  "成功登出"
+//	 @Failure      400  {object}  dto.ErrResponse  "服务器内部错误"
+//		@Router			/user/logout [post]
 func (u *User) Logout(ctx *gin.Context) {
 	jti, _ := ctx.Get("jti")
 	//将jti加入redis黑名单

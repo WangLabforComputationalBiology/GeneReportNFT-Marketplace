@@ -9,8 +9,8 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
-    "basePath": "/",
+    "host": "0.0.0.0:8080",
+    "basePath": "/docs",
     "paths": {
         "/test/txinfo": {
             "get": {
@@ -362,7 +362,7 @@
                     "multipart/form-data"
                 ],
                 "produces": [
-                    "application/json"
+                    "image/png"
                 ],
                 "tags": [
                     "用户管理"

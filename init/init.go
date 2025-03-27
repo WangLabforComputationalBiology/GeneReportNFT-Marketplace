@@ -52,7 +52,7 @@ type Config struct {
 
 func initConfig() {
 	viper.SetConfigName("config")
-	viper.AddConfigPath("./config") //在和go.mod同级的地方开始！
+	viper.AddConfigPath("../config") //在和go.mod同级的地方开始！
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {

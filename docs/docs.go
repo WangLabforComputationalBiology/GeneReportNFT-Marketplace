@@ -365,7 +365,7 @@ const docTemplate = `{
                     "multipart/form-data"
                 ],
                 "produces": [
-                    "application/json"
+                    "image/png"
                 ],
                 "tags": [
                     "用户管理"
@@ -462,8 +462,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/",
+	Host:             "0.0.0.0:8080",
+	BasePath:         "/docs",
 	Schemes:          []string{"http"},
 	Title:            "API接口文档",
 	Description:      "GeneReport平台",

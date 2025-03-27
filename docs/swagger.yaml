@@ -1,4 +1,4 @@
-basePath: /
+basePath: /docs
 definitions:
   dto.ErrResponse:
     properties:
@@ -25,7 +25,7 @@ definitions:
       message:
         type: string
     type: object
-host: localhost:8080
+host: 0.0.0.0:8080
 info:
   contact: {}
   description: GeneReport平台
@@ -270,7 +270,7 @@ paths:
         required: true
         type: string
       produces:
-      - application/json
+      - image/png
       responses:
         "200":
           description: 头像上传成功

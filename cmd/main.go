@@ -7,12 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//	@title			API接口文档
-//	@version		1.0
-//	@description	GeneReport平台
-//	@host			localhost:8080
-//	@BasePath		/
-//	@schemes		http
+// @title			API接口文档
+// @version		1.0
+// @description	GeneReport平台
+// @host			0.0.0.0:8080
+// @BasePath		/docs
+// @schemes		http
 func main() {
 
 	Init()
