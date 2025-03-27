@@ -37,10 +37,10 @@ type CtxConfig struct {
 	Timeout int `mapstructure:"timeout"`
 }
 type Etherscan struct {
-	ApiKey   string `mapstructure:apikey`
-	Endpoint string `mapstructure:endpoint`
-	Proxy    bool   `mapstructure:proxy`
-	ProxyUrl string `mapstructure:proxyurl`
+	ApiKey   string `mapstructure:"apikey"`
+	Endpoint string `mapstructure:"endpoint"`
+	Proxy    bool   `mapstructure:"proxy"`
+	ProxyUrl string `mapstructure:"proxyurl"`
 }
 type Config struct {
 	AppConfig   AppConfig   `mapstructure:"app"`
@@ -52,7 +52,7 @@ type Config struct {
 
 func initConfig() {
 	viper.SetConfigName("config")
-	viper.AddConfigPath("../config") //在和go.mod同级的地方开始！
+	viper.AddConfigPath("./config") //在和go.mod同级的地方开始！
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {
