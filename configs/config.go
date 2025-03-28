@@ -42,7 +42,7 @@ type Config struct {
 	MysqlConfig     MysqlConfig     `mapstructure:"mysql"`
 	RedisConfig     RedisConfig     `mapstructure:"redis"`
 	MinioConfig     MinioConfig     `mapstructure:"minio"`
-	CtxConfig       CtxConfig       `mapstructure:"ctx"`
+	CtxConfig       CtxConfig       `mapstructure:"context"`
 	EtherScanConfig EtherScanConfig `mapstructure:"ether_scan"`
 }
 
