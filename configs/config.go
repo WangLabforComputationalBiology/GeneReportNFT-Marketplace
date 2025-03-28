@@ -59,7 +59,7 @@ func LoadConfig() {
 	if err := viper.Unmarshal(GlobalConfig); err != nil {
 		log.Fatalf("无法解析配置文件: %v", err)
 	}
-
+	log.Printf("已读取到配置文件: %v", GlobalConfig)
 }
 
 //func initEtherScanConfig() {
