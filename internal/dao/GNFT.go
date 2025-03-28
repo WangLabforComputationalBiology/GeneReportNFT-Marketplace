@@ -9,17 +9,15 @@ import (
 var gnftDao *GNFTDao
 
 type GNFTDao struct {
-	db        *gorm.DB
-	ctx       context.Context
-	ctxCancel context.CancelFunc
+	db  *gorm.DB
+	ctx context.Context
 }
 
 func RegisterGNFTDao() {
-	ctx, cancelFunc := context.WithCancel(context.Background())
+
 	gnftDao = &GNFTDao{
-		db:        DB,
-		ctx:       ctx,
-		ctxCancel: cancelFunc,
+		db:  DB,
+		ctx: context.Background(),
 	}
 }
 
