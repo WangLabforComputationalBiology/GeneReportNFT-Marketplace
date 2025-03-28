@@ -2,6 +2,7 @@ package services
 
 import (
 	"GeneReport_platform/api/dto"
+	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/pkg/appContext"
 	"GeneReport_platform/pkg/auth"
@@ -56,6 +57,7 @@ func (u *userService) EnsureUserExists(userAddress string) custom_errors.IAppErr
 
 func (u *userService) GetNonce(address string) (string, custom_errors.IAppError) {
 	strCmd := dao.RedisClient.GetEx(appContext.NewTimeoutContext(), address, 3*time.Minute)
+	log.Printf("上下文设置超时时间为:%v", configs.GlobalConfig.CtxConfig.Timeout)
 	//若当前查询得到的nonce还未过期，则直接返回，并更新过期时间
 	if strCmd.Err() == nil {
 		defer log.Printf(" 用户地址: %v; nonce: %v\n", address, strCmd.Val())
