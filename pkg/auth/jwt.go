@@ -1,7 +1,8 @@
 package auth
 
 import (
-	"GeneReport_platform/internal/dao/global"
+	"GeneReport_platform/internal/dao"
+	"GeneReport_platform/pkg/appContext"
 	"errors"
 	"github.com/go-redis/redis/v8"
 	"github.com/golang-jwt/jwt/v4"
@@ -69,7 +70,7 @@ func ParseToken(tokenString string) (*CustomClaims, error) {
 }
 
 func CheckBlacklist(jti string) (bool, error) {
-	if err := global.RedisClient.Get(global.Ctx, "blacklist:"+jti).Err(); err != nil {
+	if err := dao.RedisClient.Get(appContext.NewTimeoutContext(), "blacklist:"+jti).Err(); err != nil {
 		// 不在黑名单中
 		if errors.Is(err, redis.Nil) {
 			return false, nil

@@ -2,8 +2,8 @@ package dao
 
 import (
 	"GeneReport_platform/api/dto"
-	"GeneReport_platform/internal/dao/global"
 	"GeneReport_platform/internal/models"
+	"GeneReport_platform/pkg/appContext"
 	"context"
 	"gorm.io/gorm"
 	"time"
@@ -12,20 +12,19 @@ import (
 var UserDao *userDao
 
 type userDao struct {
-	table string
-	db    *gorm.DB
-	ctx   context.Context
+	db  *gorm.DB
+	ctx context.Context
 }
 
 func RegisterUserDao() {
 	UserDao = &userDao{
-		ctx: global.Ctx,
-		db:  global.DB,
+		ctx: context.Background(),
+		db:  DB,
 	}
 }
 
 func (u *userDao) DB() *gorm.DB {
-	return u.db.WithContext(u.ctx)
+	return u.db.WithContext(appContext.NewTimeoutContextByParent(u.ctx))
 }
 
 func (u *userDao) IsExist(address string) (bool, error) {

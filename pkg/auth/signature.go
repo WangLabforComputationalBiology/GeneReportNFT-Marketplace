@@ -1,7 +1,8 @@
 package auth
 
 import (
-	"GeneReport_platform/internal/dao/global"
+	"GeneReport_platform/internal/dao"
+	"GeneReport_platform/pkg/appContext"
 	"errors"
 	"fmt"
 	"github.com/ethereum/go-ethereum/common"
@@ -64,7 +65,7 @@ func VerifySignature(address, nonce, signatureStr string) (bool, error) {
 	}
 
 	// 验证通过后删除 nonce
-	if err = global.RedisClient.Del(global.Ctx, address).Err(); err != nil {
+	if err = dao.RedisClient.Del(appContext.NewTimeoutContext(), address).Err(); err != nil {
 		return false, errors.New("redis服务异常")
 	}
 

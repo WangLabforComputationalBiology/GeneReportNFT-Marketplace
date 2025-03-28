@@ -1,6 +1,6 @@
 package dto
 
-// 调用ethscanner的api请求得到的响应数据
+// RpcResponse 用于调用ethscanner的api请求得到的响应数据
 type RpcResponse struct {
 	JSONRPC string `json:"jsonrpc"`
 	ID      int    `json:"id"`

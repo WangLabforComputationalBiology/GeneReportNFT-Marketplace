@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"GeneReport_platform/internal/dao/global"
+	"GeneReport_platform/pkg/appContext"
 	"context"
 	"gorm.io/gorm"
 )
@@ -9,20 +9,20 @@ import (
 var gnftDao *GNFTDao
 
 type GNFTDao struct {
-	table string
-	db    *gorm.DB
-	ctx   context.Context
+	db        *gorm.DB
+	ctx       context.Context
+	ctxCancel context.CancelFunc
 }
 
 func RegisterGNFTDao() {
-
+	ctx, cancelFunc := context.WithCancel(context.Background())
 	gnftDao = &GNFTDao{
-		ctx:   global.Ctx,
-		db:    global.DB,
-		table: "gnft",
+		db:        DB,
+		ctx:       ctx,
+		ctxCancel: cancelFunc,
 	}
 }
 
 func (u *GNFTDao) DB() *gorm.DB {
-	return u.db.WithContext(u.ctx)
+	return u.db.WithContext(appContext.NewTimeoutContextByParent(u.ctx))
 }

@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"GeneReport_platform/internal/dao/global"
 	"context"
 	"gorm.io/gorm"
 )
@@ -9,17 +8,15 @@ import (
 var orderDao *OrderDao
 
 type OrderDao struct {
-	table string
-	db    *gorm.DB
-	ctx   context.Context
+	db  *gorm.DB
+	ctx context.Context
 }
 
 func RegisterOrderDao() {
 
 	orderDao = &OrderDao{
-		ctx:   global.Ctx,
-		db:    global.DB,
-		table: "order_dto",
+		ctx: context.Background(),
+		db:  DB,
 	}
 }
 

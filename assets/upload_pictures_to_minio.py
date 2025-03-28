@@ -9,7 +9,7 @@ import yaml
 
 
 # 读取 YAML 文件
-with open('../config/config.yaml', 'r') as file:
+with open('../configs/config.yaml', 'r') as file:
     config = yaml.safe_load(file)
 
 # 获取嵌套的变量

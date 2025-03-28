@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"GeneReport_platform/api/dto"
-	"GeneReport_platform/internal/dao/global"
+	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/internal/services"
 	"GeneReport_platform/pkg/auth"
 	"context"
@@ -139,7 +139,7 @@ func (u *User) Login(ctx *gin.Context) {
 func (u *User) Logout(ctx *gin.Context) {
 	jti, _ := ctx.Get("jti")
 	//将jti加入redis黑名单
-	err := global.RedisClient.SetEX(ctx, "blacklist:"+jti.(string), "1", auth.TokenExpireDuration).Err()
+	err := dao.RedisClient.SetEX(ctx, "blacklist:"+jti.(string), "1", auth.TokenExpireDuration).Err()
 	if err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, dto.ErrResponse{
 			Code:    http.StatusServiceUnavailable,
@@ -226,7 +226,7 @@ func (u *User) UploadProfile(ctx *gin.Context) {
 	pictureName := address + ".png"
 
 	//先删除原本在minio用户对应的头像图片文件,Assignment count mismatch: 2 = 1表明在赋值语句中，左侧的变量数量与右侧提供的值数量不匹配。
-	err = global.MinioClient.RemoveObject(context.Background(), "test", pictureName, minio.RemoveObjectOptions{})
+	err = dao.MinioClient.RemoveObject(context.Background(), "test", pictureName, minio.RemoveObjectOptions{})
 
 	if err != nil {
 		log.Println("上传失败！！\n", err)
@@ -235,7 +235,7 @@ func (u *User) UploadProfile(ctx *gin.Context) {
 	fileSize := header.Size
 	// todo 处理文件，例如保存到minio服务器,桶可以考虑用地址哈希！
 	// 上传文件到 MinIO
-	_, err = global.MinioClient.PutObject(
+	_, err = dao.MinioClient.PutObject(
 		context.Background(),
 		"test", // 替换为你的桶名称
 		pictureName,
@@ -323,7 +323,7 @@ func (u *User) GetProfileOfUser(c *gin.Context) {
 	p_add := c.DefaultQuery("padd", "1.png") // 默认值是20
 	addresses := strings.Split(p_add, "/")   //因为参数长/xxx/sss.png,所以第一个是空的！
 	// 获取对象
-	object, err := global.MinioClient.GetObject(context.Background(), addresses[1], addresses[2], minio.GetObjectOptions{})
+	object, err := dao.MinioClient.GetObject(context.Background(), addresses[1], addresses[2], minio.GetObjectOptions{})
 	if err != nil {
 		log.Println("minio获取对象出错！", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "无法获取对象"})

@@ -1,16 +1,14 @@
-package global
+package dao
 
 import (
-	"context"
 	"github.com/go-redis/redis/v8"
 	"github.com/minio/minio-go/v7"
 	"gorm.io/gorm"
 )
 
 var (
-	DB          *gorm.DB
-	Ctx         context.Context
-	CtxCancel   context.CancelFunc
+	DB *gorm.DB
+
 	RedisClient *redis.Client
 	MinioClient *minio.Client
 

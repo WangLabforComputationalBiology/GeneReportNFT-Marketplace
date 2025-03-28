@@ -2,7 +2,7 @@ package controllers
 
 import (
 	. "GeneReport_platform/api/dto"
-	"GeneReport_platform/internal/dao/global"
+	"GeneReport_platform/internal/dao"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -13,16 +13,16 @@ import (
 	"time"
 )
 
-type GNFTController struct{}
+type GNFT struct{}
 
 var (
-	GNFTCtrller = &GNFTController{}
+	GNFTController = &GNFT{}
 )
 
-func (cGNFT *GNFTController) GetTransaction(txHash string) RpcResponse {
-	testurl := fmt.Sprintf(global.EndPoint, txHash, global.ApiKey)
-	if global.IsProxy {
-		proxyURL, _ := url.Parse(global.ProxyUrl)
+func (cGNFT *GNFT) GetTransaction(txHash string) RpcResponse {
+	testurl := fmt.Sprintf(dao.EndPoint, txHash, dao.ApiKey)
+	if dao.IsProxy {
+		proxyURL, _ := url.Parse(dao.ProxyUrl)
 		http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyURL)}
 	}
 	client := &http.Client{
@@ -46,31 +46,31 @@ func (cGNFT *GNFTController) GetTransaction(txHash string) RpcResponse {
 	return data
 }
 
-func (cGNFT *GNFTController) GetInfo(ctx *gin.Context) {
+func (cGNFT *GNFT) GetInfo(ctx *gin.Context) {
 
 }
 
-func (cGNFT *GNFTController) GetList(ctx *gin.Context) {
+func (cGNFT *GNFT) GetList(ctx *gin.Context) {
 
 }
 
-func (cGNFT *GNFTController) Mint(ctx *gin.Context) {
+func (cGNFT *GNFT) Mint(ctx *gin.Context) {
 
 }
 
 // Burn 销毁GNFT
-func (cGNFT *GNFTController) Burn(ctx *gin.Context) {
+func (cGNFT *GNFT) Burn(ctx *gin.Context) {
 
 }
 
 // PutOnSale 上架GNFT
-func (cGNFT *GNFTController) PutOnSale() string {
+func (cGNFT *GNFT) PutOnSale() string {
 	// 添加逻辑代码
 	return "PutOnSale"
 }
 
 // TakeOffSale 下架GNFT
-func (cGNFT *GNFTController) TakeOffSale() string {
+func (cGNFT *GNFT) TakeOffSale() string {
 	// 添加逻辑代码
 	return "TakeOffSale"
 }

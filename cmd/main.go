@@ -2,8 +2,9 @@ package main
 
 import (
 	"GeneReport_platform/api/router"
+	"GeneReport_platform/configs"
 	_ "GeneReport_platform/docs"
-	. "GeneReport_platform/init"
+	"GeneReport_platform/internal/setup"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,10 +16,10 @@ import (
 // @schemes		http https
 func main() {
 
-	Init()
+	setup.Setup()
 	r := gin.Default()
 	r = router.SetupRouter()
 
-	_ = r.Run(GlobalConfig.AppConfig.Addr) //在配置的端口运行
+	_ = r.Run(configs.GlobalConfig.AppConfig.Addr) //在配置的端口运行
 
 }

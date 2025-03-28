@@ -1,9 +1,9 @@
 package main
 
 import (
-	"GeneReport_platform/init"
-	"GeneReport_platform/internal/dao/global"
+	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/internal/models"
+	"GeneReport_platform/internal/setup"
 	"log"
 )
 
@@ -14,10 +14,10 @@ var modelList = []interface{}{
 }
 
 func main() {
-	init.Init()
+	setup.Setup()
 	// 自动迁移所有模型
 	for _, model := range modelList {
-		if err := global.DB.AutoMigrate(model); err != nil {
+		if err := dao.DB.AutoMigrate(model); err != nil {
 			log.Fatalf("Failed to migrate model %T: %v", model, err)
 		}
 	}
