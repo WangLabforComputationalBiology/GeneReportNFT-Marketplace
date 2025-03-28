@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	. "GeneReport_platform/api/dto"
+	"GeneReport_platform/api/dto"
 	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/tools/utils"
 	"context"
@@ -126,7 +126,7 @@ func GetTransactionInfo(ctx *gin.Context) {
 		log.Println(err)
 	}
 
-	var data RpcResponse
+	var data dto.RpcResponse
 	if err := json.Unmarshal(body, &data); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
