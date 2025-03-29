@@ -779,3 +779,31 @@ CREATE TABLE `GNFT_web_auth_profile_id` (
 `token` varchar(255) NOT NULL COMMENT '临时访问密码',
 `expires_in` int(10) NOT NULL DEFAULT 1
 )
+
+-- 交易记录表
+drop table if exists `GNFT_transaction`;
+CREATE TABLE `GNFT_transaction` (
+`tx_hash` varchar(64) NOT NULL COMMENT '交易哈希',
+`from` varchar(64) NOT NULL  COMMENT '客户地址',
+`to` varchar(64) NOT NULL COMMENT '商家地址',
+`gas` varchar(50) NOT NULL COMMENT '交易产生的gas',
+`price` varchar(50) NOT NULL COMMENT '此次交易金额',
+`profile_id` varchar(32) NOT NULL COMMENT '交易的基因报告id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='GNFT_transaction';
+
+
+
+
+-- 基因报告对谁可见
+drop table if exists `GNFT_possess`;
+CREATE TABLE `GNFT_possess` (
+`profile_id` varchar(32) NOT NULL COMMENT '基因报告id',
+`address` varchar(64) NOT NULL  COMMENT '对谁可见，地址'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='GNFT_possess';
+
+insert into GNFT_possess (`profile_id`, `address`) values
+('2022', '0xAc6b478Ae65E7D955F64ED80E65E613ea34c820f'),
+('2023', '0x9D0bf56A50090bE7F7f8Fad07DDa4949FBc6Cd17'),
+('2024', '0x8e174fC25f7d4373b589DAcAaC884985C1C6D053'),
+('2025', '0x02729118740a8b9D6a6eF171b7Fe30fEBeDe34F2'),
+('2026', '0xdD27Ef37a5c09E4c940C2EDd900ABB9B5d220a13');
