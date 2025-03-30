@@ -60,10 +60,3 @@ func LoadConfig() {
 		log.Fatalf("无法解析配置文件: %v", err)
 	}
 }
-
-//func initEtherScanConfig() {
-//	dao.ApiKey = GlobalConfig.EtherScanConfig.ApiKey
-//	dao.EndPoint = GlobalConfig.EtherScanConfig.Endpoint
-//	dao.IsProxy = GlobalConfig.EtherScanConfig.Proxy
-//	dao.ProxyUrl = GlobalConfig.EtherScanConfig.ProxyUrl
-//}

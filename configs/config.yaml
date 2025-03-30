@@ -4,29 +4,41 @@ app:
 
 mysql:
   #dsn: root:newbee@tcp(127.0.0.1:3306)/GeneReport_platform?charset=utf8mb4&parseTime=True&loc=Local
-  dsn: blockchain:c1608@tcp(localhost:3306)/GeneReport_platform?charset=utf8mb4&parseTime=True&loc=Local
+  dsn: blockchain:c1608@tcp(120.24.168.132:3306)/GeneReport_platform?charset=utf8mb4&parseTime=True&loc=Local
   MaxIdleConns: 10
   MaxOpenConns: 100
 
 redis:
-  addr: "localhost:6379"
-  password: "c1608"
+  addr: 120.24.168.132:6379
+  password: c1608
   timeout: 3000
   db: 0
 
 minio:
-  host: localhost
+  host: 120.24.168.132
   port: 9000
   access_key: minioadmin
   secret_key: minioc1608
 
 mongoDB:
-  dsn: "mongodb://@localhost:27017/?authSource=admin"
-  db: "GeneReport_platform"
+  dsn: mongodb://@localhost:27017/?authSource=admin
+  db: GeneReport_platform
 
 context:
   timeout: 3
 logger:
+
+# sepolia测试完
+ether_scan:
+  apikey: PS6539ETQH1ZKUE3FVIYH6BVFHE3KT93RB
+  endpoint: https://api-sepolia.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=%s&apikey=%s
+  proxy: true
+  proxy_url: http://127.0.0.1:7897
+
+wegene:
+  id: szjsbiolab
+  secret: cgioHbVHp6xp2rZzPthkkp6BRNfsDOr3
+
 
 
 

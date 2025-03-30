@@ -1,4 +1,4 @@
-package dao
+package configs
 
 import (
 	"github.com/go-redis/redis/v8"
@@ -17,4 +17,7 @@ var (
 	ProxyUrl string
 	ApiKey   string
 	EndPoint string
+
+	WegeneId     string
+	WegeneSecret string
 )

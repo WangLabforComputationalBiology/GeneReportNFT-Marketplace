@@ -42,16 +42,21 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//上传用户头像
 	r.POST("/upload/avatar", middlewares.AuthMiddleware(), controllers.UserController.UploadProfile)
 	//登录
-	r.POST("/login", middlewares.AuthMiddleware(), controllers.UserController.Login)
+	r.POST("/login", controllers.UserController.Login)
 	//登出
-	r.POST("/logout", controllers.UserController.Logout)
+	r.POST("/logout", middlewares.AuthMiddleware(), controllers.UserController.Logout)
 	//用户主页信息
-	r.GET("/info", controllers.UserController.GetInfo)
-	r.GET("/gnfts", controllers.UserController.GetGNFTList)
+	r.GET("/info", middlewares.AuthMiddleware(), controllers.UserController.GetInfo)
+	//获取用户收藏列表
+	r.GET("/gnfts", middlewares.AuthMiddleware(), controllers.UserController.GetGNFTList)
 	//获取用户头像
-	r.GET("/profile", controllers.UserController.GetProfileOfUser)
+	r.GET("/profile", middlewares.AuthMiddleware(), controllers.UserController.GetProfileOfUser)
 	//用户订单信息
-	r.GET("/orders")
+	r.GET("/orders", middlewares.AuthMiddleware())
+	//oauth2
+	r.GET("/oauth2Wegene", controllers.UserController.Oauth2Wegene)
+	//接收code
+	r.GET("/receiveCode", controllers.UserController.ReceiveCode)
 }
 func registerGNFTRouter(r *gin.RouterGroup) {
 	//藏品图片

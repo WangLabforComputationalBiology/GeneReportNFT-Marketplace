@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"GeneReport_platform/api/dto"
-	"GeneReport_platform/internal/dao"
+	"GeneReport_platform/configs"
 	"GeneReport_platform/tools/utils"
 	"context"
 	"encoding/json"
@@ -51,7 +51,7 @@ func encryptionTxt(c *gin.Context) {
 }
 func TestMinio(c *gin.Context) {
 	// 获取对象
-	object, err := dao.MinioClient.GetObject(context.Background(), "test", "1.png", minio.GetObjectOptions{})
+	object, err := configs.MinioClient.GetObject(context.Background(), "test", "1.png", minio.GetObjectOptions{})
 	if err != nil {
 		log.Println("minio获取对象出错！", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "无法获取对象"})
@@ -85,25 +85,25 @@ func GetTransactionInfo(ctx *gin.Context) {
 
 	// 替换为你的 Etherscan API Key
 	//apiKey := "PS6539ETQH1ZKUE3FVIYH6BVFHE3KT93RB"
-	apiKey := dao.ApiKey
+	apiKey := configs.ApiKey
 	// 替换为你要查询的交易哈希
 	//txHash := "0x7815bf96f6ca2dd42fd518dc79ca6ce3d19deb4d9a8f1e6582f8811d2ebd032e"
 	txHash := ctx.Query("txhash")
 	// Etherscan API 请求 URL
 	//testurl := fmt.Sprintf("https://api-sepolia.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=%s&apikey=%s", txHash, apiKey)
-	testurl := fmt.Sprintf(dao.EndPoint, txHash, apiKey)
+	testurl := fmt.Sprintf(configs.EndPoint, txHash, apiKey)
 	log.Print("=========测试网址=========>>>>>>>", testurl)
 	//fixme 让请求走代理
 	//配置文件是否开启代理
-	if dao.IsProxy {
+	if configs.IsProxy {
 		//proxyURL, _ := url.Parse("http://127.0.0.1:7897") // Clash HTTP 代理端口，踩坑代理前面要加http://!!!!!
-		log.Println("开启代理=======> ", dao.ProxyUrl)
-		proxyURL, _ := url.Parse(dao.ProxyUrl)
+		log.Println("开启代理=======> ", configs.ProxyUrl)
+		proxyURL, _ := url.Parse(configs.ProxyUrl)
 		http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyURL)}
 	}
 	// 设置HTTP客户端的超时时间5秒
 	client := &http.Client{
-		Timeout: 9 * time.Second,
+		Timeout: 10 * time.Second,
 	}
 	// 发送 HTTP 请求
 	resp, err := client.Get(testurl)

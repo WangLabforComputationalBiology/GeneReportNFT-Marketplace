@@ -41,7 +41,7 @@ func setupMysql() {
 	sqlDB.SetMaxIdleConns(configs.GlobalConfig.MysqlConfig.MaxIdleConns)
 	sqlDB.SetMaxOpenConns(configs.GlobalConfig.MysqlConfig.MaxOpenConns)
 	sqlDB.SetConnMaxLifetime(time.Hour)
-	dao.DB = db
+	configs.DB = db
 }
 
 func setupMinio() {
@@ -51,7 +51,7 @@ func setupMinio() {
 	fmt.Print("main的viper配置在这个包前生效！url:", url)
 	fmt.Printf("accessKey:%s,secretKey:%s", accessKey, secretKey)
 	var err error
-	dao.MinioClient, err = minio.New(url, &minio.Options{
+	configs.MinioClient, err = minio.New(url, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
 		Secure: false, // 如果MinIO服务器使用HTTPS，请设置为true
 	})
@@ -60,7 +60,7 @@ func setupMinio() {
 	}
 }
 func setupRedis() {
-	dao.RedisClient = redis.NewClient(&redis.Options{
+	configs.RedisClient = redis.NewClient(&redis.Options{
 		Addr:        configs.GlobalConfig.RedisConfig.Addr,                                 // Redis 服务器地址
 		Password:    configs.GlobalConfig.RedisConfig.Password,                             // Redis 密码
 		DB:          configs.GlobalConfig.RedisConfig.Db,                                   // Redis 数据库
@@ -68,13 +68,20 @@ func setupRedis() {
 	})
 
 	// 测试 Redis 连接
-	_, err := dao.RedisClient.Ping(context.Background()).Result()
+	_, err := configs.RedisClient.Ping(context.Background()).Result()
 	if err != nil {
 		log.Fatalf("Failed to connect to Redis: %v", err)
 	}
 
 	log.Println("Connected to Redis")
 
+}
+
+func initEtherScanConfig() {
+	configs.ApiKey = configs.GlobalConfig.EtherScanConfig.ApiKey
+	configs.EndPoint = configs.GlobalConfig.EtherScanConfig.Endpoint
+	configs.IsProxy = configs.GlobalConfig.EtherScanConfig.Proxy
+	configs.ProxyUrl = configs.GlobalConfig.EtherScanConfig.ProxyUrl
 }
 
 func Setup() {
@@ -88,6 +95,7 @@ func Setup() {
 		setupRedis()
 		registerServices()
 		registerDAO()
+		initEtherScanConfig()
 	})
 
 }

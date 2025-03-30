@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"GeneReport_platform/configs"
 	"GeneReport_platform/pkg/appContext"
 	"context"
 	"gorm.io/gorm"
@@ -16,7 +17,7 @@ type GNFTDao struct {
 func RegisterGNFTDao() {
 
 	gnftDao = &GNFTDao{
-		db:  DB,
+		db:  configs.DB,
 		ctx: context.Background(),
 	}
 }

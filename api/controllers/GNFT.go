@@ -2,7 +2,7 @@ package controllers
 
 import (
 	. "GeneReport_platform/api/dto"
-	"GeneReport_platform/internal/dao"
+	"GeneReport_platform/configs"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -20,9 +20,9 @@ var (
 )
 
 func (cGNFT *GNFT) GetTransaction(txHash string) RpcResponse {
-	testurl := fmt.Sprintf(dao.EndPoint, txHash, dao.ApiKey)
-	if dao.IsProxy {
-		proxyURL, _ := url.Parse(dao.ProxyUrl)
+	testurl := fmt.Sprintf(configs.EndPoint, txHash, configs.ApiKey)
+	if configs.IsProxy {
+		proxyURL, _ := url.Parse(configs.ProxyUrl)
 		http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyURL)}
 	}
 	client := &http.Client{

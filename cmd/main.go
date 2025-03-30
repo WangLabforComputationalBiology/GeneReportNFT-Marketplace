@@ -3,7 +3,6 @@ package main
 import (
 	"GeneReport_platform/api/router"
 	"GeneReport_platform/configs"
-	_ "GeneReport_platform/docs"
 	"GeneReport_platform/internal/setup"
 	"github.com/gin-gonic/gin"
 )

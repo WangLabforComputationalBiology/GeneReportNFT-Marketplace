@@ -2,6 +2,7 @@ package services
 
 import (
 	"GeneReport_platform/api/dto"
+	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/pkg/appContext"
 	"GeneReport_platform/pkg/auth"
@@ -55,7 +56,7 @@ func (u *userService) EnsureUserExists(userAddress string) custom_errors.IAppErr
 }
 
 func (u *userService) GetNonce(address string) (string, custom_errors.IAppError) {
-	strCmd := dao.RedisClient.GetEx(appContext.NewTimeoutContext(), address, 3*time.Minute)
+	strCmd := configs.RedisClient.GetEx(appContext.NewTimeoutContext(), address, 3*time.Minute)
 	//若当前查询得到的nonce还未过期，则直接返回，并更新过期时间
 	if strCmd.Err() == nil {
 		defer log.Printf(" 用户地址: %v; nonce: %v\n", address, strCmd.Val())
@@ -64,7 +65,7 @@ func (u *userService) GetNonce(address string) (string, custom_errors.IAppError)
 		//已过期或不存在，执行生成nonce
 		nonce := auth.GenerateNonce()
 
-		if err := dao.RedisClient.SetEX(appContext.NewTimeoutContext(), address, nonce, 3*time.Minute).Err(); err == nil {
+		if err := configs.RedisClient.SetEX(appContext.NewTimeoutContext(), address, nonce, 3*time.Minute).Err(); err == nil {
 			defer log.Printf(" 用户地址是: %v; nonce: %v\n", address, nonce)
 			return nonce, nil
 		}

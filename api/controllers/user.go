@@ -2,15 +2,19 @@ package controllers
 
 import (
 	"GeneReport_platform/api/dto"
-	"GeneReport_platform/internal/dao"
+	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/services"
 	"GeneReport_platform/pkg/auth"
+	"bytes"
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v7"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -59,19 +63,20 @@ func (u *User) GetNonce(ctx *gin.Context) {
 }
 
 // Login
-// @Summary      用户登录
-// @Description  校验签名并返回生成的 JWT 令牌
-// @Tags         用户管理
-// @Accept       json
-// @Produce      json
-// @Router       /user/login [post]
-// @Param        loginRequest body dto.LoginReq true "登录请求"
-// @Success      200  {object}  dto.Response  "成功登录，返回 JWT 令牌"
-// @Failure      400  {object}  dto.ErrResponse  "请求体格式错误"
-// @Failure      400  {object}  dto.ErrResponse  "地址非法或无效"
-// @Failure      503  {object}  dto.ErrResponse  "服务不可用，确保用户存在失败"
-// @Failure      503  {object}  dto.ErrResponse  "服务不可用，获取nonce失败"
-// @Failure      401  {object}  dto.ErrResponse  "签名验证失败"
+//
+//	@Summary		用户登录
+//	@Description	校验签名并返回生成的 JWT 令牌
+//	@Tags			用户管理
+//	@Accept			json
+//	@Produce		json
+//	@Router			/user/login [post]
+//	@Param			loginRequest	body		dto.LoginReq	true	"登录请求"
+//	@Success		200				{object}	dto.Response	"成功登录，返回 JWT 令牌"
+//	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
+//	@Failure		400				{object}	dto.ErrResponse	"地址非法或无效"
+//	@Failure		503				{object}	dto.ErrResponse	"服务不可用，确保用户存在失败"
+//	@Failure		503				{object}	dto.ErrResponse	"服务不可用，获取nonce失败"
+//	@Failure		401				{object}	dto.ErrResponse	"签名验证失败"
 func (u *User) Login(ctx *gin.Context) {
 	log.Println("进入登录接口！")
 
@@ -128,18 +133,20 @@ func (u *User) Login(ctx *gin.Context) {
 
 // Logout
 //
-//		@Summary		用户登出
-//		@Description	用户退出登录，将当前 JWT 加入黑名单
-//		@Tags			用户管理
-//		@Produce		json
-//		@Security		JwtAuth
-//	 @Success      200  {object}  dto.Response  "成功登出"
-//	 @Failure      400  {object}  dto.ErrResponse  "服务器内部错误"
-//		@Router			/user/logout [post]
+//	@Summary		用户登出
+//	@Description	用户退出登录，将当前 JWT 加入黑名单
+//	@Tags			用户管理
+//	@Produce		json
+//
+//	@Success		200	{object}	dto.Response	"成功登出"
+//	@Failure		400	{object}	dto.ErrResponse	"服务器内部错误"
+//
+//	@Security		JwtAuth
+//	@Router			/user/logout [post]
 func (u *User) Logout(ctx *gin.Context) {
 	jti, _ := ctx.Get("jti")
 	//将jti加入redis黑名单
-	err := dao.RedisClient.SetEX(ctx, "blacklist:"+jti.(string), "1", auth.TokenExpireDuration).Err()
+	err := configs.RedisClient.SetEX(ctx, "blacklist:"+jti.(string), "1", auth.TokenExpireDuration).Err()
 	if err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, dto.ErrResponse{
 			Code:    http.StatusServiceUnavailable,
@@ -163,10 +170,10 @@ func (u *User) Logout(ctx *gin.Context) {
 //	@Produce		json
 //	@Security		JwtAuth
 //
-// @Success      200  {object}  dto.Response  "用户名更改成功"
-// @Failure      400  {object}  dto.ErrResponse  "请求体格式错误"
+//	@Success		200				{object}	dto.Response	"用户名更改成功"
+//	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
 //
-//	@Param			Authorization	header	string	true	"JWT"
+//	@Param			Authorization	header		string			true	"JWT"
 //	@Router			/user/edit/name [post]
 func (u *User) EditUserName(ctx *gin.Context) {
 	log.Println("进入编辑用户名接口！")
@@ -197,19 +204,20 @@ func (u *User) EditUserName(ctx *gin.Context) {
 }
 
 // UploadProfile
-// @Summary      上传用户头像
-// @Description  根据用户地址更新用户头像
-// @Tags         用户管理
-// @Accept       multipart/form-data
-// @Produce 	 image/png
-// @Security     JwtAuth
-// @Param        Authorization  header    string  true  "JWT"
-// @Param        profile        formData  file    true  "用户头像文件"
-// @Param        user_address   formData  string  true  "用户地址"
-// @Success      200            {object}  dto.Response  "头像上传成功"
-// @Failure      400            {object}  dto.ErrResponse  "请求体格式错误"
-// @Failure      503            {object}  dto.ErrResponse  "服务不可用，数据库异常"
-// @Router       /user/upload/avatar [post]
+//
+//	@Summary		上传用户头像
+//	@Description	根据用户地址更新用户头像
+//	@Tags			用户管理
+//	@Accept			multipart/form-data
+//	@Produce		image/png
+//	@Security		JwtAuth
+//	@Param			Authorization	header		string			true	"JWT"
+//	@Param			profile			formData	file			true	"用户头像文件"
+//	@Param			user_address	formData	string			true	"用户地址"
+//	@Success		200				{object}	dto.Response	"头像上传成功"
+//	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
+//	@Failure		503				{object}	dto.ErrResponse	"服务不可用，数据库异常"
+//	@Router			/user/upload/avatar [post]
 func (u *User) UploadProfile(ctx *gin.Context) {
 	// 获取名为"profile"的文件
 	file, header, err := ctx.Request.FormFile("profile")
@@ -226,7 +234,7 @@ func (u *User) UploadProfile(ctx *gin.Context) {
 	pictureName := address + ".png"
 
 	//先删除原本在minio用户对应的头像图片文件,Assignment count mismatch: 2 = 1表明在赋值语句中，左侧的变量数量与右侧提供的值数量不匹配。
-	err = dao.MinioClient.RemoveObject(context.Background(), "test", pictureName, minio.RemoveObjectOptions{})
+	err = configs.MinioClient.RemoveObject(context.Background(), "test", pictureName, minio.RemoveObjectOptions{})
 
 	if err != nil {
 		log.Println("上传失败！！\n", err)
@@ -235,7 +243,7 @@ func (u *User) UploadProfile(ctx *gin.Context) {
 	fileSize := header.Size
 	// todo 处理文件，例如保存到minio服务器,桶可以考虑用地址哈希！
 	// 上传文件到 MinIO
-	_, err = dao.MinioClient.PutObject(
+	_, err = configs.MinioClient.PutObject(
 		context.Background(),
 		"test", // 替换为你的桶名称
 		pictureName,
@@ -304,18 +312,19 @@ func (u *User) GetInfo(ctx *gin.Context) {
 }
 
 // GetProfileOfUser 获取用户头像
-// @Summary 获取用户头像
-// @Description 根据用户地址获取用户头像
-// @Tags 用户管理
-// @Accept json
-// @Produce image/png
-// @Security JwtAuth
-// @Param Authorization header string true "JWT"
-// @Param padd query string false "用户头像的路径" default("1.png")
-// @Success 200 {file} file "用户头像图片文件"
-// @Failure 400 {object} dto.ErrResponse "请求体格式错误"
-// @Failure 503 {object} dto.ErrResponse "服务不可用，数据库异常"
-// @Router /user/profile [get]
+//
+//	@Summary		获取用户头像
+//	@Description	根据用户地址获取用户头像
+//	@Tags			用户管理
+//	@Accept			json
+//	@Produce		image/png
+//	@Security		JwtAuth
+//	@Param			Authorization	header		string			true	"JWT"
+//	@Param			padd			query		string			false	"用户头像的路径"	default("1.png")
+//	@Success		200				{file}		file			"用户头像图片文件"
+//	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
+//	@Failure		503				{object}	dto.ErrResponse	"服务不可用，数据库异常"
+//	@Router			/user/profile [get]
 func (u *User) GetProfileOfUser(c *gin.Context) {
 
 	// 使用Query方法获取参数，如果参数不存在则返回默认值
@@ -323,7 +332,7 @@ func (u *User) GetProfileOfUser(c *gin.Context) {
 	p_add := c.DefaultQuery("padd", "1.png") // 默认值是20
 	addresses := strings.Split(p_add, "/")   //因为参数长/xxx/sss.png,所以第一个是空的！
 	// 获取对象
-	object, err := dao.MinioClient.GetObject(context.Background(), addresses[1], addresses[2], minio.GetObjectOptions{})
+	object, err := configs.MinioClient.GetObject(context.Background(), addresses[1], addresses[2], minio.GetObjectOptions{})
 	if err != nil {
 		log.Println("minio获取对象出错！", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "无法获取对象"})
@@ -360,4 +369,72 @@ func (u *User) GetProfileOfUser(c *gin.Context) {
 //	@Router			/user/gnfts [post]
 func (u *User) GetGNFTList(ctx *gin.Context) {
 
+}
+
+func (u *User) Oauth2Wegene(ctx *gin.Context) {
+	fmt.Println("开始重定向到wegene授权页面")
+	ctx.Redirect(http.StatusMovedPermanently, "https://api.wegene.com/authorize/?redirect_uri="+
+		"http://localhost:8080/user/receiveCode&response_type=code&client_id=szjsbiolab&scope=basic rs123")
+}
+
+func (u *User) ReceiveCode(ctx *gin.Context) {
+
+	//输出请求所有得东西
+	fmt.Println(ctx.Request.URL.Query())
+
+	code := ctx.Query("code")
+	fmt.Println("（（（（（（（（（（（（（（（（授权码：", code, "））））））））））））））））））")
+
+	u.GetWegeneToken(code)
+	if code == "" {
+		fmt.Println("授权码为空，第二次进入这个接口，无需重定向！")
+		return
+	}
+	ctx.Redirect(301, "http://localhost:8080/swagger/index.html#/")
+}
+
+func (u *User) GetWegeneToken(code string) {
+
+	// 设置请求的URL
+	getToknUrl := "https://api.wegene.com/token/"
+
+	// 设置请求参数
+	data := url.Values{}
+	fmt.Println("code:", code)
+	data.Set("client_id", configs.WegeneId)
+	data.Set("client_secret", configs.WegeneSecret)
+	//grant_type 参数：设置为 authorization_code，这是 OAuth2 授权码流程中正确的 grant_type 值。
+	data.Set("grant_type", "authorization_code")
+	data.Set("code", code)
+	data.Set("redirect_uri", "http://localhost:8080/user/receiveCod")
+	data.Set("scope", "basic rs123") //这里的权限范围需要和上面重定向的一样
+
+	// 创建POST请求
+	req, err := http.NewRequest("POST", getToknUrl, bytes.NewBufferString(data.Encode()))
+	if err != nil {
+		fmt.Println("Error creating request:", err)
+		return
+	}
+
+	// 设置请求头
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	// 发送请求
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error sending request:", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// 读取响应
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Error reading response:", err)
+		return
+	}
+
+	// 打印响应
+	fmt.Println("Response:", string(body))
 }

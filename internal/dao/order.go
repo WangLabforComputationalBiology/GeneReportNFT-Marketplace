@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"GeneReport_platform/configs"
 	"context"
 	"gorm.io/gorm"
 )
@@ -16,7 +17,7 @@ func RegisterOrderDao() {
 
 	orderDao = &OrderDao{
 		ctx: context.Background(),
-		db:  DB,
+		db:  configs.DB,
 	}
 }
 

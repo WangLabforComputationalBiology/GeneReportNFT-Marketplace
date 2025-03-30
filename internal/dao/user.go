@@ -2,6 +2,7 @@ package dao
 
 import (
 	"GeneReport_platform/api/dto"
+	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/models"
 	"GeneReport_platform/pkg/appContext"
 	"context"
@@ -19,7 +20,7 @@ type userDao struct {
 func RegisterUserDao() {
 	UserDao = &userDao{
 		ctx: context.Background(),
-		db:  DB,
+		db:  configs.DB,
 	}
 }
 
