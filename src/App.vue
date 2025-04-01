@@ -7,7 +7,7 @@
     <div class="headerWrapper">
       <!-- 路由菜单 -->
       <div class="routers">
-        <router-link to="/market" class="routerSelection">Market</router-link>
+        <router-link to="/market" class="routerSelection ">Market</router-link>
         <router-link to="/create" class="routerSelection">Create</router-link>
         <!-- <router-link to="/drop" class="routerSelection">Drop</router-link> -->
         <router-link to="/stats" class="routerSelection">Stats</router-link>
