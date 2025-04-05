@@ -34,6 +34,7 @@ Nonce:
 
 // VerifySignature 执行验签
 func VerifySignature(address, nonce, signatureStr string) (bool, error) {
+	//构造签名信息（带默认前缀）
 	msg := fmt.Sprintf("\x19Ethereum Signed Message:\n%d%s", len(structureMessage(address, nonce)), structureMessage(address, nonce))
 	msgHash := crypto.Keccak256Hash([]byte(msg))
 	signature := common.Hex2Bytes(signatureStr) // 十六进制字符串转字节
