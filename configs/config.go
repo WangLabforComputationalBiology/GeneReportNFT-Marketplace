@@ -37,6 +37,12 @@ type EtherScanConfig struct {
 	Proxy    bool   `mapstructure:"proxy"`
 	ProxyUrl string `mapstructure:"proxy_url"`
 }
+
+type WegeneConfig struct {
+	Id     string `mapstructure:"id"`
+	Secret string `mapstructure:"secret"`
+}
+
 type Config struct {
 	AppConfig       AppConfig       `mapstructure:"app"`
 	MysqlConfig     MysqlConfig     `mapstructure:"mysql"`
@@ -44,6 +50,7 @@ type Config struct {
 	MinioConfig     MinioConfig     `mapstructure:"minio"`
 	CtxConfig       CtxConfig       `mapstructure:"context"`
 	EtherScanConfig EtherScanConfig `mapstructure:"ether_scan"`
+	WegeneConfig    WegeneConfig    `mapstructure:"wegene"`
 }
 
 func LoadConfig() {

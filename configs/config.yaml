@@ -28,7 +28,7 @@ context:
   timeout: 3
 logger:
 
-# sepolia测试完
+# sepolia测试网
 ether_scan:
   apikey: PS6539ETQH1ZKUE3FVIYH6BVFHE3KT93RB
   endpoint: https://api-sepolia.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=%s&apikey=%s
@@ -40,5 +40,10 @@ wegene:
   secret: cgioHbVHp6xp2rZzPthkkp6BRNfsDOr3
 
 
-
-
+rocketmq:
+  name_server: 127.0.0.1:9876
+  group: rocketmq_group
+  topic: rocketmq_topic
+  tag: rocketmq_tag
+  consumer: true
+  producer: true

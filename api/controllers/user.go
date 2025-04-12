@@ -371,10 +371,13 @@ func (u *User) GetGNFTList(ctx *gin.Context) {
 
 }
 
+//====================================OAuth2======================================
+
 func (u *User) Oauth2Wegene(ctx *gin.Context) {
 	fmt.Println("开始重定向到wegene授权页面")
 	ctx.Redirect(http.StatusMovedPermanently, "https://api.wegene.com/authorize/?redirect_uri="+
-		"http://localhost:8080/user/receiveCode&response_type=code&client_id=szjsbiolab&scope=basic rs123")
+		"http://localhost:8080/user/receiveCode&response_type=code&client_id=szjsbiolab&"+
+		"scope=basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web")
 }
 
 func (u *User) ReceiveCode(ctx *gin.Context) {
@@ -391,6 +394,7 @@ func (u *User) ReceiveCode(ctx *gin.Context) {
 		return
 	}
 	ctx.Redirect(301, "http://localhost:8080/swagger/index.html#/")
+
 }
 
 func (u *User) GetWegeneToken(code string) {
@@ -403,11 +407,12 @@ func (u *User) GetWegeneToken(code string) {
 	fmt.Println("code:", code)
 	data.Set("client_id", configs.WegeneId)
 	data.Set("client_secret", configs.WegeneSecret)
-	//grant_type 参数：设置为 authorization_code，这是 OAuth2 授权码流程中正确的 grant_type 值。
+	//grant_type 参数：设置为 authorization_code，这是 OAuth2 授权码模式。
 	data.Set("grant_type", "authorization_code")
 	data.Set("code", code)
-	data.Set("redirect_uri", "http://localhost:8080/user/receiveCod")
-	data.Set("scope", "basic rs123") //这里的权限范围需要和上面重定向的一样
+	//这里也可以和上面不一样！
+	data.Set("redirect_uri", "http://localhost:8080/user/receiveCode")
+	data.Set("scope", "basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web") //这里的权限范围需要和上面重定向的一样
 
 	// 创建POST请求
 	req, err := http.NewRequest("POST", getToknUrl, bytes.NewBufferString(data.Encode()))
@@ -419,6 +424,7 @@ func (u *User) GetWegeneToken(code string) {
 	// 设置请求头
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
+	fmt.Println("请求token！")
 	// 发送请求
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -438,3 +444,11 @@ func (u *User) GetWegeneToken(code string) {
 	// 打印响应
 	fmt.Println("Response:", string(body))
 }
+
+/*
+Response: {"access_token":"a3a401b429f273b7f2e515f4b8d51379","token_type":"bearer",
+"expires_in":86400,"refresh_token":"62ca9e2733526673f7fb2d77fa82a9ef",
+"scope":"basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web"}
+
+Bearer a3a401b429f273b7f2e515f4b8d51379
+*/
