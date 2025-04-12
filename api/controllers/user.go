@@ -84,7 +84,7 @@ func (u *User) Login(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&json); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
-			Message: "请求体格式错误",
+			Message: "请求体格式错误,请重新登录",
 		})
 		return
 	}
@@ -95,7 +95,7 @@ func (u *User) Login(ctx *gin.Context) {
 	if !auth.IsValidAddress(address) {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
-			Message: "地址非法或无效",
+			Message: "地址非法或无效,请重新登录",
 		})
 		return
 	}
@@ -115,7 +115,7 @@ func (u *User) Login(ctx *gin.Context) {
 	if isAccept, err := auth.VerifySignature(address, nonce, signature); !isAccept && err != nil {
 		ctx.JSON(http.StatusUnauthorized, dto.ErrResponse{
 			Code:    http.StatusUnauthorized,
-			Message: "签名验证失败," + err.Error(),
+			Message: "签名验证失败,请重新登录",
 		})
 		return
 	}
