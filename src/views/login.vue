@@ -35,8 +35,8 @@ export default {
         }
     },
     created() {
-        // console.log("++++++"+ wallet.address);
-        // this.account = wallet.address; // 获取store中的账户
+        console.log("++++++"+ wallet.address);
+        this.account = wallet.address; // 获取store中的账户
     },
 
     methods: {
