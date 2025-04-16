@@ -47,7 +47,7 @@ func (u *userService) IsNewUser(userAddress string) (bool, custom_errors.IAppErr
 func (u *userService) EnsureUserExists(userAddress string) custom_errors.IAppError {
 	if isNew, err := UserService.IsNewUser(userAddress); err != nil {
 		log.Println(err)
-		return custom_errors.New(http.StatusInternalServerError, "服务器内部错误", err)
+		return custom_errors.New(http.StatusInternalServerError, "err不等于nil", err)
 	} else if isNew {
 		if err := dao.UserDao.CreateUser(userAddress); err != nil {
 			return custom_errors.New(http.StatusInternalServerError, "插入数据出错", err)
