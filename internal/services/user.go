@@ -49,7 +49,7 @@ func (u *userService) EnsureUserExists(userAddress string) custom_errors.IAppErr
 		return custom_errors.New(http.StatusInternalServerError, "服务器内部错误", err)
 	} else if isNew {
 		if err := dao.UserDao.CreateUser(userAddress); err != nil {
-			return custom_errors.New(http.StatusInternalServerError, "服务器内部错误", err)
+			return custom_errors.New(http.StatusInternalServerError, "插入数据出错", err)
 		}
 	}
 	return nil

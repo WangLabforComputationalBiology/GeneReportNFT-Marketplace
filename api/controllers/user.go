@@ -91,7 +91,7 @@ func (u *User) Login(ctx *gin.Context) {
 
 	address := json.UserAddress
 	signature := json.Signature
-	//地址校验
+	//1.地址校验
 	if !auth.IsValidAddress(address) {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
@@ -99,19 +99,15 @@ func (u *User) Login(ctx *gin.Context) {
 		})
 		return
 	}
-	//确保用户存在，不存在执行创建
-	if err := services.UserService.EnsureUserExists(address); err != nil {
-		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
-		return
-	}
-	//获取nonce
+
+	//2.获取nonce,校验redis中是否有nonce
 	nonce, err := services.UserService.GetNonce(address)
 	if err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
 	}
 
-	//执行验签
+	//3.执行验签
 	if isAccept, err := auth.VerifySignature(address, nonce, signature); !isAccept && err != nil {
 		ctx.JSON(http.StatusUnauthorized, dto.ErrResponse{
 			Code:    http.StatusUnauthorized,
@@ -120,6 +116,13 @@ func (u *User) Login(ctx *gin.Context) {
 		return
 	}
 
+	//4，确保用户存在，不存在执行创建
+	if err := services.UserService.EnsureUserExists(address); err != nil {
+		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
+		return
+	}
+
+	//5.生成token
 	jwt, _ := auth.GenerateToken(address)
 	ctx.JSON(200, dto.Response{
 		Code:    http.StatusOK,
