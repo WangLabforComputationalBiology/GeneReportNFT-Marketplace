@@ -120,6 +120,7 @@ func (u *User) Login(ctx *gin.Context) {
 
 	//4，确保用户存在，不存在执行创建
 	if err := services.UserService.EnsureUserExists(address); err != nil {
+		log.Println("确保用户存在失败")
 		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
 	}
