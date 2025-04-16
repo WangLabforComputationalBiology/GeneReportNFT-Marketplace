@@ -40,6 +40,7 @@ func (u *userService) IsNewUser(userAddress string) (bool, custom_errors.IAppErr
 	if err != nil {
 		return false, custom_errors.New(http.StatusInternalServerError, "服务器内部错误", err)
 	}
+	log.Println("数据库err等于nil")
 	return !isNew, nil
 }
 
