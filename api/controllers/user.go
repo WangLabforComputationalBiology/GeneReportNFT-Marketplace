@@ -79,6 +79,7 @@ func (u *User) GetNonce(ctx *gin.Context) {
 //	@Failure		401				{object}	dto.ErrResponse	"签名验证失败"
 func (u *User) Login(ctx *gin.Context) {
 	log.Println("进入登录接口！")
+	log.Println("进入登录接口！！！！")
 
 	var json dto.LoginReq
 	if err := ctx.ShouldBindJSON(&json); err != nil {
