@@ -38,6 +38,7 @@ func RegisterUserService() {
 func (u *userService) IsNewUser(userAddress string) (bool, custom_errors.IAppError) {
 	isNew, err := dao.UserDao.IsExist(userAddress)
 	if err != nil {
+		log.Println("数据库内部错误为%v", err)
 		return false, custom_errors.New(http.StatusInternalServerError, "服务器内部错误", err)
 	}
 	log.Println("数据库err等于nil")
