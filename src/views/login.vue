@@ -23,68 +23,96 @@
 </template>
 
 <script>
-import { ethers } from 'ethers';
+import { ethers, getAddress } from 'ethers';
 import { useWalletStore } from '@/stores/account'
+import axios from 'axios';
 const wallet = useWalletStore();
 
 export default {
     data() {
         return {
-            account: null,
-            balance: null,
+            address: '',
+            balance: '',
+            message: '',
+            nonce: '',
+            error: ''
         }
     },
     created() {
-        console.log("++++++"+ wallet.address);
-        this.account = wallet.address; // 获取store中的账户
+        // console.log("++++++"+ wallet.address);
+        // this.account = wallet.address; // 获取store中的账户
     },
 
     methods: {
+        //验签信息构造函数
+        structureMessage(address, nonce) {
+            const template = `Welcome to GeneReport_platform!
+        Click to sign in and accept the OpenSeaTerms of Service and Privacy Policy.
+        This request will not trigger a blockchain transaction or cost any gas fees.
+        Wallet address:
+        ${address}
+        Nonce:
+        ${nonce}`;
+
+            return template;
+        },
+
         // MetaMask连接并获取账户
         async connectWallet() {
-            if (window.ethereum) {
-                try {
-                    // 创建 Web3Provider
-                    const provider = new ethers.BrowserProvider(window.ethereum);// 请求账户权限
-                    
-                    const accounts = await provider.send("eth_requestAccounts", []);
-                    this.account = accounts[0]; // 获取第一个账户
-                    console.log("Account:", this.account);
-                    wallet.setAddress(this.account);
-                    // 获取余额（返回值为 BigNumber，单位为 wei）
-                    // const balanceWei = await provider.getBalance(accounts[0]);
-                    // console.log("Balance in Wei:  ", balanceWei);
-                    // // 将余额转换为 ETH 单位
-                    // this.balance = ethers.formatEther(balanceWei);
-                    console.log("Balance:+++++  ", this.balance);
-                    
-                } catch (error) {
-                    console.error('User denied account access or error occurred:', error);
-                    this.$message({
-                        message: 'Please login in to MetaMask.',
-                        type: 'error',
-                        duration: 3000,
-                    });
+            this.error = '';
+            try {
+                // 1. 检查MetaMask是否安装
+                if (!window.ethereum) {
+                    throw new Error('Please install MetaMask');
                 }
-            } else {
-                console.log('MetaMask is not installed');
-            }
-            if (this.account) {
-                this.$message({
-                    message: 'Wallet have Connected: ' + this.account,
-                    type: 'success',
-                    duration: 2000,
+
+                // 2. 创建provider并请求账户
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                const accounts = await provider.send("eth_requestAccounts", []);
+                this.address = accounts[0];
+
+                // 3. 获取nonce
+                const nonceResponse = await axios.get(`http://120.24.168.132:8080/user/nonce/${this.address}`);//等待异步完成避免拿不到nonce
+                this.nonce = nonceResponse.data.data.nonce;
+
+                // 4. 构造消息
+                this.message = this.structureMessage(this.address, this.nonce);
+                console.log('Message to sign:', this.message);
+
+                // 5. 请求签名
+                const signature = await window.ethereum.request({
+                    method: "personal_sign",
+                    params: [this.message, this.address],
                 });
 
-                setTimeout(() => {
-                        window.location.reload(); // 刷新页面
-                    }, 2000);
+                // 6. 发送登录请求
+                const loginResponse = await axios.post("http://120.24.168.132:8080/user/login", {
+                    user_address: this.address,
+                    signature: signature,
+                });
+
+                console.log('Login success:', loginResponse.data);
+                this.$message.success('Login successful!');
+
+            } catch (error) {
+                console.error('Error:', error);
+
+                if (error.code === 4001) {
+                    this.error = 'You denied the wallet connection';
+                } else if (error.response) {
+                    this.error = error.response.data.message || 'Login failed';
+                } else {
+                    this.error = error.message || 'Unknown error occurred';
+                }
+
+                this.$message.error(this.error);
             }
-        },
+        }
     }
 
 
 }
+
 </script>
 
 <style lang="scss" scoped>

@@ -134,8 +134,7 @@ header {
     margin: 0 auto;
 
     .navigation {
-
-      margin-left: 300px;
+      margin-left: 600px;
       margin-right: 100px;
       width: 300px;
       display: flex;
@@ -145,7 +144,7 @@ header {
       input {
         width: 300px;
         height: 40px;
-        border: 2px solid #5d5d5d;
+        border: 2px solid #E4E7ED;
         border-radius: 10px;
       }
 
