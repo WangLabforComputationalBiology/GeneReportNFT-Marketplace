@@ -103,12 +103,14 @@ func (u *User) Login(ctx *gin.Context) {
 	//2.获取nonce,校验redis中是否有nonce
 	nonce, err := services.UserService.GetNonce(address)
 	if err != nil {
+		log.Println("当前地址无nonce，请重新登录")
 		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
 	}
 
 	//3.执行验签
 	if isAccept, err := auth.VerifySignature(address, nonce, signature); !isAccept && err != nil {
+		log.Println("签名验证失败,请重新登录")
 		ctx.JSON(http.StatusUnauthorized, dto.ErrResponse{
 			Code:    http.StatusUnauthorized,
 			Message: "签名验证失败,请重新登录",
