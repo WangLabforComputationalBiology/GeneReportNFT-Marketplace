@@ -7,7 +7,7 @@ cd ..
 swag init -g ./cmd/main.go
 
 # 进入 cmd 目录
-cd cmd/
+cd cmd/main/
 
 # 编译 Go 程序，输出到上一级目录的 gin-server
 go build -o ../gin-server main.go
