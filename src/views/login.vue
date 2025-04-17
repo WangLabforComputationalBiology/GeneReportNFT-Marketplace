@@ -25,7 +25,7 @@
 <script>
 import { ethers, getAddress } from 'ethers';
 import { useWalletStore } from '@/stores/account'
-import axios from 'axios';
+import Api from '../axios/aixos'
 const wallet = useWalletStore();
 
 export default {
@@ -47,12 +47,16 @@ export default {
         //验签信息构造函数
         structureMessage(address, nonce) {
             const template = `Welcome to GeneReport_platform!
-        Click to sign in and accept the OpenSeaTerms of Service and Privacy Policy.
-        This request will not trigger a blockchain transaction or cost any gas fees.
-        Wallet address:
-        ${address}
-        Nonce:
-        ${nonce}`;
+
+Click to sign in and accept the OpenSeaTerms of Service and Privacy Policy.
+
+This request will not trigger a blockchain transaction or cost any gas fees.
+
+Wallet address:
+${address}
+
+Nonce:
+${nonce}`;
 
             return template;
         },
@@ -72,12 +76,12 @@ export default {
                 this.address = accounts[0];
 
                 // 3. 获取nonce
-                const nonceResponse = await axios.get(`http://120.24.168.132:8080/user/nonce/${this.address}`);//等待异步完成避免拿不到nonce
+                const nonceResponse = await Api.get(`/user/nonce/${this.address}`);//等待异步完成避免拿不到nonce
                 this.nonce = nonceResponse.data.data.nonce;
 
                 // 4. 构造消息
                 this.message = this.structureMessage(this.address, this.nonce);
-                console.log('Message to sign:', this.message);
+                console.log(this.message);
 
                 // 5. 请求签名
                 const signature = await window.ethereum.request({
@@ -86,7 +90,7 @@ export default {
                 });
 
                 // 6. 发送登录请求
-                const loginResponse = await axios.post("http://120.24.168.132:8080/user/login", {
+                const loginResponse = await Api.post("/user/login", {
                     user_address: this.address,
                     signature: signature,
                 });

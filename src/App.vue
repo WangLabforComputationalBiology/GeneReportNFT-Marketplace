@@ -23,7 +23,7 @@
         </div>
       </span>
       <!-- 登录路由 -->
-      <router-link to="/login" class="routerSelection" style="position:absolute;right:20px;">Login</router-link>
+      <router-link to="/login" class="routerSelection" style="position:absolute;right:20px;width:50px">Login</router-link>
       <!-- 账户面板 -->
       <el-icon class="userIcon" v-if="account">
         <router-link to="/user" style="color: #169608;">
