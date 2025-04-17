@@ -91,7 +91,7 @@ func (u *User) Login(ctx *gin.Context) {
 
 	address := json.UserAddress
 	signature := json.Signature
-	log.Printf("address:%v;;;;signature:%v", address, signature)
+
 	//1.地址校验
 	if !auth.IsValidAddress(address) {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
