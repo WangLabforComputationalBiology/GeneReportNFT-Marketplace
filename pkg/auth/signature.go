@@ -39,7 +39,7 @@ func VerifySignature(address, nonce, signatureStr string) (bool, error) {
 	msg := fmt.Sprintf("\x19Ethereum Signed Message:\n%d%s", len(structureMessage(address, nonce)), structureMessage(address, nonce))
 	msgHash := crypto.Keccak256Hash([]byte(msg))
 	signature := common.Hex2Bytes(signatureStr) // 十六进制字符串转字节
-	if len(signature) != 65 {
+	if len(signature) != 132 {
 		return false, errors.New("签名长度无效")
 	}
 	// 调整 v 值
