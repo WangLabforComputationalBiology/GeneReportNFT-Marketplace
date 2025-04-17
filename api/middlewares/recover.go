@@ -22,20 +22,6 @@ var (
 	slash     = []byte("/")
 )
 
-//todo RecoverMiddleware 恐慌捕获恢复处理
-//func RecoverMiddleware() gin.HandlerFunc {
-//	return func(c *gin.Context) {
-//		defer func() {
-//			if cause := recover(); cause != nil {
-//				xzap.WithContext(c.Request.Context()).Errorf("[Recovery] panic recovered, request:%s%v [## stack:]:\n%s", dumpRequest(c.Request), cause, dumpStack(3))
-//				xhttp.Error(c, errcode.ErrUnexpected)
-//			}
-//		}()
-//
-//		c.Next()
-//	}
-//}
-
 // getStacks 获取调用堆栈信息
 func getStacks() string {
 	cs := stack.Trace().TrimBelow(stack.Caller(2)).TrimRuntime()
