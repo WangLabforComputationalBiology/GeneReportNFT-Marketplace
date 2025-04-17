@@ -175,7 +175,7 @@ header {
     .routerSelection {
       color: #169608;
       margin: 0 25px;
-      font-size: 26px;
+      font-size: 22px;
       align-content: center;
       font-weight: bold;
 

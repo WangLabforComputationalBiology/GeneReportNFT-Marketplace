@@ -39,8 +39,6 @@ export default {
         }
     },
     created() {
-        // console.log("++++++"+ wallet.address);
-        // this.account = wallet.address; // 获取store中的账户
     },
 
     methods: {
@@ -74,9 +72,11 @@ ${nonce}`;
                 const provider = new ethers.BrowserProvider(window.ethereum);
                 const accounts = await provider.send("eth_requestAccounts", []);
                 this.address = accounts[0];
-
+                const balanceWei = await provider.getBalance(this.address);// 获取余额（返回值为 BigNumber，单位为 wei）
+                wallet.balance = ethers.formatEther(balanceWei);// 将余额转换为 ETH 单位
+                console.log(balanceWei)
                 // 3. 获取nonce
-                const nonceResponse = await Api.get(`/user/nonce/${this.address}`);//等待异步完成避免拿不到nonce
+                const nonceResponse = await Api.get(`/user/nonce/${this.address}`);//必须等待异步完成避免拿不到nonce
                 this.nonce = nonceResponse.data.data.nonce;
 
                 // 4. 构造消息
@@ -97,6 +97,13 @@ ${nonce}`;
 
                 console.log('Login success:', loginResponse.data);
                 this.$message.success('Login successful!');
+
+                wallet.address = this.address; // 更新store中的账户
+
+
+                setTimeout(() => {
+                    window.location.href = '/user?t=' + Date.now(); // 加时间戳避免缓存
+                }, 2000); // 2秒后跳转
 
             } catch (error) {
                 console.error('Error:', error);
