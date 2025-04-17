@@ -3,11 +3,13 @@ package middlewares
 import (
 	"bytes"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
 	"runtime"
+	"runtime/debug"
 	"strings"
 
 	"github.com/go-stack/stack"
@@ -120,6 +122,61 @@ func dumpStack(skip int) []byte {
 		_, _ = fmt.Fprintf(buf, "\t%s: %s\n", function(pc), source(lines, line))
 	}
 	return buf.Bytes()
+}
+
+// ErrorHandler 中间件用于捕获和处理错误
+func ErrorHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 执行后续处理程序
+		defer func() {
+			if err := recover(); err != nil {
+				// 捕获 panic
+				stack := string(debug.Stack())
+
+				// 这里可以添加日志记录
+				fmt.Printf("PANIC: %v\nStacktrace: %s\n", err, stack)
+
+				// 返回500错误响应
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"error":   "Internal Server Error",
+					"message": fmt.Sprintf("%v", err),
+				})
+
+				// 终止后续处理
+				c.Abort()
+				return
+			}
+
+			// 检查是否有错误绑定到context
+			if len(c.Errors) > 0 {
+				// 获取最后一个错误
+				err := c.Errors.Last()
+
+				// 这里可以添加日志记录
+				fmt.Printf("Error: %v\n", err)
+
+				// 根据错误类型返回不同状态码
+				status := http.StatusInternalServerError
+				if err.Type == gin.ErrorTypeBind {
+					status = http.StatusBadRequest
+				} else if err.Type == gin.ErrorTypeRender {
+					status = http.StatusInternalServerError
+				}
+
+				// 返回错误响应
+				c.JSON(status, gin.H{
+					"error": err.Error(),
+				})
+
+				// 终止后续处理
+				c.Abort()
+				return
+			}
+		}()
+
+		// 继续处理请求
+		c.Next()
+	}
 }
 
 // source returns a space-trimmed slice of the n'th line.
