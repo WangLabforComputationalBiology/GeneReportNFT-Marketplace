@@ -4,7 +4,7 @@
 cd ..
 
 # 运行 swag init 生成 Swagger 文档
-swag init -g ./cmd/main.go
+# swag init -g ./cmd/main.go
 
 # 进入 cmd 目录
 cd cmd/main/
