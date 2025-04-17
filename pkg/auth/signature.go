@@ -8,6 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/google/uuid"
+	"log"
 )
 
 // GenerateNonce 生成验签码
@@ -39,7 +40,8 @@ func VerifySignature(address, nonce, signatureStr string) (bool, error) {
 	msg := fmt.Sprintf("\x19Ethereum Signed Message:\n%d%s", len(structureMessage(address, nonce)), structureMessage(address, nonce))
 	msgHash := crypto.Keccak256Hash([]byte(msg))
 	signature := common.Hex2Bytes(signatureStr) // 十六进制字符串转字节
-	if len(signature) != 132 {
+	log.Printf("签名字节数为：%v", len(signature))
+	if len(signature) != 65 {
 		return false, errors.New("签名长度无效")
 	}
 	// 调整 v 值
