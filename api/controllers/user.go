@@ -209,7 +209,7 @@ func (u *User) EditUserName(ctx *gin.Context) {
 	})
 }
 
-// UploadProfile
+// UploadAvatar
 //
 //	@Summary		上传用户头像
 //	@Description	根据用户地址更新用户头像
@@ -224,7 +224,7 @@ func (u *User) EditUserName(ctx *gin.Context) {
 //	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
 //	@Failure		503				{object}	dto.ErrResponse	"服务不可用，数据库异常"
 //	@Router			/user/upload/avatar [post]
-func (u *User) UploadProfile(ctx *gin.Context) {
+func (u *User) UploadAvatar(ctx *gin.Context) {
 	// 获取名为"profile"的文件
 	file, header, err := ctx.Request.FormFile("profile")
 	if err != nil {

@@ -21,11 +21,10 @@ show tables ;
 drop table  if exists  users;
 -- 创建用户列表表
 CREATE TABLE `users` (
-`id` int NOT NULL PRIMARY KEY COMMENT '自增id',
-`address` varchar(64) NOT NULL COMMENT '钱包账户地址',
+`address` varchar(64) NOT NULL PRIMARY KEY COMMENT '钱包账户地址',
 `name` varchar(32) NOT NULL COMMENT '用户名',
-`picture` varchar(1024) NOT NULL DEFAULT '默认头像path' COMMENT '头像地址/文件',
-`create_time` datetime NOT NULL COMMENT '账户注册时间'
+`avatar` varchar(1024) NOT NULL DEFAULT '默认头像path' COMMENT '头像地址/文件',
+`create_at` datetime NOT NULL COMMENT '账户注册时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户列表';
 
 
