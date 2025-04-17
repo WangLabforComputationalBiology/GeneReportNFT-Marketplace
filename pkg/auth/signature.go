@@ -30,6 +30,7 @@ Nonce:
 %v`
 
 	return fmt.Sprintf(template, address, nonce)
+
 }
 
 // VerifySignature 执行验签
