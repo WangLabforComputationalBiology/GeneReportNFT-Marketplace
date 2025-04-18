@@ -129,11 +129,12 @@ ${nonce}`;
 <style lang="scss" scoped>
 body {
     margin: auto;
-    width: 1400px;
+    width: 80vw;
+    min-width: 1200px;
+    min-height: calc(100vh - 80px);
 }
 
 .loginPage {
-    height: 700px;
     display: flex;
 
     .Wrapper {

@@ -95,51 +95,24 @@ export default {
 <style lang="scss" scoped>
 .body {
    margin: auto;
-   width: 1400px;
+   width: 80vw;
+   min-height: calc(100vh - 80px);
+   min-width: 1200px;
 }
 
+/* 卡片区域 */
 .CreateArea {
    display: flex;
    flex-wrap: wrap;
-   gap: 30px;
+   gap: 40px;
    width: 100%;
-   padding: 40px 80px;
-   overflow: hidden;
-   // justify-content: space-around;
-
-   .uploadDataBlock {
-      width: 400px;
-      height: 350px;
-      margin: 100px 0 0 300px;
-      border-radius: 10px;
-      border: 1px solid #E4E7ED;
-      background-color: #fff;
-
-      &:hover {
-         cursor: pointer;
-         box-shadow: 0px 0px 6px #DCDFE6;
-         transition: 0.3s;
-      }
-
-      img {
-         display: block;
-         margin: 30px auto;
-         color: #fff;
-      }
-
-      p {
-         color: #C0C4CC;
-         text-align: center;
-      }
-   }
-
-
+   min-width: 1200px;
 }
 
-//卡片样式
+/* 卡片样式 */
 :deep(.custom-card) {
-   margin: 10px 10px;
-   width: 260px;
+   // margin: 10px 10px;
+   width: 250px;
    height: 320px;
    box-shadow: none;
    border-radius: 10px;

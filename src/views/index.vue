@@ -78,7 +78,7 @@ export default {
    margin: auto;
    width: 1400px;
    background-color: #fff;
-   height: 780px;
+   height: calc(100vh - 80px);
    border-bottom: 1px solid #E4E7ED;
 }
 
@@ -125,7 +125,7 @@ banner {
 }
 
 .intro {
-   
+
    h1 {
       margin-top: 50px;
       font-size: 70px;

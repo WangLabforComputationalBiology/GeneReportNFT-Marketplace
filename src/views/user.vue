@@ -39,6 +39,7 @@ export default {
 .body {
     margin: auto;
     width: 1400px;
+    height: calc(100vh - 80px);
     background-color: #fff;
 }
 

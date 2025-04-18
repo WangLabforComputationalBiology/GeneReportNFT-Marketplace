@@ -19,8 +19,10 @@ export default {
 
 body{
 margin: auto;
-width: 1400px;
+width: 80vw;
+min-width: 1400px;
 background-color: #fff;
+height: calc(100vh - 80px);
 }
 
 .banner-title{

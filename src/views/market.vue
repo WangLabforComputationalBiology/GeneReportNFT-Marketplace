@@ -260,7 +260,7 @@ export default {
                     this.signer = await provider.getSigner();// 获取签名者（用于发送交易）
                     console.log("Signer:", this.signer);
 
-                    
+
                     // const balanceWei = await provider.getBalance(accounts[0]);// 获取余额（返回值为 BigNumber，单位为 wei）
                     // this.balance = ethers.formatEther(balanceWei);// 将余额转换为 ETH 单位
                     console.log("Balance:", this.balance);
@@ -367,7 +367,9 @@ body {
     // width: 100%;
     margin: auto;
     width: 1400px;
-    // background-color: #fff;
+    min-height: calc(100vh - 80px);
+    width: 80vw;
+    min-width: 1200px;
     overflow: visible;
 }
 

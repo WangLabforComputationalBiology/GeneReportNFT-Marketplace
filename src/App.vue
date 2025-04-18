@@ -129,21 +129,20 @@ header {
   .headerWrapper {
     align-items: center;
     position: relative;
-    width: 1400px;
+    width: 80vw;
+    min-width: 1200px;
     display: flex;
     margin: 0 auto;
 
     .navigation {
-      margin-left: 600px;
-      margin-right: 100px;
       width: 300px;
       display: flex;
       align-items: center;
       margin-top: 8px;
 
       input {
-        width: 300px;
-        height: 40px;
+        width: 250px;
+        height: 35px;
         border: 2px solid #E4E7ED;
         border-radius: 10px;
       }
@@ -154,8 +153,8 @@ header {
         margin-left: 4px;
 
         .searchIcon {
-          height: 40px;
-          width: 60px;
+          height: 34px;
+          width: 45px;
           color: #fff;
         }
 
