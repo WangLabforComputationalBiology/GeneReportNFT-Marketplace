@@ -4,157 +4,123 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"go.uber.org/zap"
 	"io"
-	"io/ioutil"
 	"net/http"
-	"net/http/httputil"
 	"runtime"
-	"runtime/debug"
-	"strings"
-
-	"github.com/go-stack/stack"
+	"strconv"
 )
 
-var (
-	dunno     = []byte("???")
-	centerDot = []byte("·")
-	dot       = []byte(".")
-	slash     = []byte("/")
-)
-
-// getStacks 获取调用堆栈信息
-func getStacks() string {
-	cs := stack.Trace().TrimBelow(stack.Caller(2)).TrimRuntime()
-	var b strings.Builder
-
-	for _, c := range cs {
-		s := fmt.Sprintf("%+n\n\t%+v", c, c)
-		if !strings.Contains(s, "net/http") && !strings.Contains(s, "gin-gonic/gin") && !strings.Contains(s, "go-playground/validator") {
-			b.WriteString(s)
-			b.WriteString("\n")
-		}
-	}
-
-	return strings.TrimSpace(b.String())
+// ErrorResponse 统一的错误响应结构
+type ErrorResponse struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+	Stack   string `json:"stack,omitempty"` // 仅在调试模式下返回
 }
 
-// dumpRequest 格式化请求样式
-func dumpRequest(req *http.Request) string {
-	var dup io.ReadCloser
-	req.Body, dup = dupReadCloser(req.Body)
-
-	var b bytes.Buffer
-	var err error
-
-	reqURI := req.RequestURI
-	if reqURI == "" {
-		reqURI = req.URL.RequestURI()
-	}
-
-	_, _ = fmt.Fprintf(&b, "%s %s HTTP/%d.%d\n", req.Method, reqURI)
-	chunked := len(req.TransferEncoding) > 0 && req.TransferEncoding[0] == "chunked"
-	if req.Body != nil {
-		var n int64
-		var dest io.Writer = &b
-		if chunked {
-			dest = httputil.NewChunkedWriter(dest)
-		}
-		n, err = io.Copy(dest, req.Body)
-		if chunked {
-			dest.(io.Closer).Close()
-		}
-		if n > 0 {
-			_, _ = io.WriteString(&b, "\n")
-		}
-	}
-
-	req.Body = dup
-	if err != nil {
-		return err.Error()
-	}
-
-	return b.String()
+// AppError 自定义错误类型
+type AppError struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+	Detail  error  `json:"detail"`
 }
 
-func dupReadCloser(reader io.ReadCloser) (io.ReadCloser, io.ReadCloser) {
-	var buf bytes.Buffer
-	tee := io.TeeReader(reader, &buf)
-	return ioutil.NopCloser(tee), ioutil.NopCloser(&buf)
+// Error 实现 error 接口
+func (e *AppError) Error() string {
+	return e.Message
 }
 
-// dumpStack returns a nicely formatted stack frame, skipping skip frames.
-func dumpStack(skip int) []byte {
-	buf := new(bytes.Buffer) // the returned data
-	// As we loop, we open files and read them. These variables record the currently
-	// loaded dto.
-	var lines [][]byte
-	var lastFile string
-	for i := skip; ; i++ { // Skip the expected number of frames
-		pc, file, line, ok := runtime.Caller(i)
-		if !ok {
-			break
-		}
-		// Print this much at least.  If we can't find the source, it won't show.
-		_, _ = fmt.Fprintf(buf, "%s:%d (0x%x)\n", file, line, pc)
-		if file != lastFile {
-			data, err := ioutil.ReadFile(file)
-			if err != nil {
-				continue
-			}
-			lines = bytes.Split(data, []byte{'\n'})
-			lastFile = file
-		}
+// ErrorHandlerConfig 中间件配置
+type ErrorHandlerConfig struct {
+	Logger      *zap.Logger
+	DebugMode   bool  // 是否返回堆栈信息
+	LogStack    bool  // 是否记录堆栈信息到日志
+	MaxBodySize int64 // 最大请求Body读取大小
+}
 
-		_, _ = fmt.Fprintf(buf, "\t%s: %s\n", function(pc), source(lines, line))
+// ErrorHandler 增强的错误处理中间件
+func ErrorHandler(config ErrorHandlerConfig) gin.HandlerFunc {
+	if config.Logger == nil {
+		logger, _ := zap.NewProduction()
+		config.Logger = logger
 	}
-	return buf.Bytes()
-}
+	if config.MaxBodySize == 0 {
+		config.MaxBodySize = 1024 * 1024 // 默认1MB
+	}
 
-// ErrorHandler 中间件用于捕获和处理错误
-func ErrorHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// 生成请求ID
+		requestID := uuid.New().String()
+		c.Set("request_id", requestID)
+		logger := config.Logger.With(zap.String("request_id", requestID))
+
 		// 执行后续处理程序
 		defer func() {
-			if err := recover(); err != nil {
-				// 捕获 panic
-				stack := string(debug.Stack())
-
-				// 这里可以添加日志记录
-				fmt.Printf("PANIC: %v\nStacktrace: %s\n", err, stack)
-
-				// 返回500错误响应
-				c.JSON(http.StatusInternalServerError, gin.H{
-					"error":   "Internal Server Error",
-					"message": fmt.Sprintf("%v", err),
-				})
-
-				// 终止后续处理
+			// 捕获 panic
+			if cause := recover(); cause != nil {
+				stack := formatStack(3)
+				logger.Error("Panic recovered",
+					zap.Any("error", cause),
+					zap.String("stack", stack),
+					zap.String("request", dumpRequest(c.Request, config.MaxBodySize)),
+				)
+				response := ErrorResponse{
+					Code:    "INTERNAL_SERVER_ERROR",
+					Message: "Internal Server Error",
+				}
+				if config.DebugMode {
+					response.Stack = stack
+				}
+				c.JSON(http.StatusInternalServerError, response)
 				c.Abort()
 				return
 			}
 
-			// 检查是否有错误绑定到context
+			// 检查 Gin 上下文错误
 			if len(c.Errors) > 0 {
-				// 获取最后一个错误
 				err := c.Errors.Last()
-
-				// 这里可以添加日志记录
-				fmt.Printf("Error: %v\n", err)
-
-				// 根据错误类型返回不同状态码
-				status := http.StatusInternalServerError
-				if err.Type == gin.ErrorTypeBind {
-					status = http.StatusBadRequest
-				} else if err.Type == gin.ErrorTypeRender {
-					status = http.StatusInternalServerError
+				stack := ""
+				if config.LogStack || config.DebugMode {
+					stack = formatStack(3)
 				}
 
-				// 返回错误响应
-				c.JSON(status, gin.H{
-					"error": err.Error(),
-				})
+				// 确定状态码和响应
+				status := http.StatusInternalServerError
+				response := ErrorResponse{
+					Code:    "UNKNOWN_ERROR",
+					Message: err.Error(),
+				}
 
-				// 终止后续处理
+				// 处理自定义错误
+				if customErr, ok := err.Err.(*AppError); ok {
+					response.Code = customErr.Code
+					response.Message = customErr.Message
+					if customErr.Code == "BAD_REQUEST" {
+						status = http.StatusBadRequest
+					} else if customErr.Code == "NOT_FOUND" {
+						status = http.StatusNotFound
+					}
+				} else if err.Type == gin.ErrorTypeBind {
+					response.Code = "BAD_REQUEST"
+					response.Message = "Invalid request parameters"
+					status = http.StatusBadRequest
+				}
+
+				// 记录日志
+				logger.Error("Request error",
+					zap.String("error", err.Error()),
+					zap.String("type", strconv.FormatUint(uint64(err.Type), 10)),
+					zap.String("stack", stack),
+					zap.String("request", dumpRequest(c.Request, config.MaxBodySize)),
+				)
+
+				// 设置堆栈（调试模式）
+				if config.DebugMode {
+					response.Stack = stack
+				}
+
+				c.JSON(status, response)
 				c.Abort()
 				return
 			}
@@ -165,28 +131,64 @@ func ErrorHandler() gin.HandlerFunc {
 	}
 }
 
-// source returns a space-trimmed slice of the n'th line.
-func source(lines [][]byte, n int) []byte {
-	n-- // in stack trace, lines are 1-indexed but our array is 0-indexed
-	if n < 0 || n >= len(lines) {
-		return dunno
+// NewCustomError 创建自定义错误
+func NewCustomError(code, message string, err error) *AppError {
+	return &AppError{
+		Code:    code,
+		Message: message,
+		Detail:  err,
 	}
-	return bytes.TrimSpace(lines[n])
 }
 
-// function returns, if possible, the name of the function containing the PC.
+// formatStack 格式化堆栈信息
+func formatStack(skip int) string {
+	var buf bytes.Buffer
+	pcs := make([]uintptr, 32)
+	n := runtime.Callers(skip, pcs)
+	for i := 0; i < n; i++ {
+		fn := runtime.FuncForPC(pcs[i])
+		if fn == nil {
+			continue
+		}
+		file, line := fn.FileLine(pcs[i])
+		fmt.Fprintf(&buf, "%s\n\t%s:%d\n", function(pcs[i]), file, line)
+	}
+	return buf.String()
+}
+
+// function 返回简化的函数名
 func function(pc uintptr) []byte {
 	fn := runtime.FuncForPC(pc)
 	if fn == nil {
-		return dunno
+		return []byte("???")
 	}
 	name := []byte(fn.Name())
-	if lastslash := bytes.LastIndex(name, slash); lastslash >= 0 {
+	if lastslash := bytes.LastIndex(name, []byte("/")); lastslash >= 0 {
 		name = name[lastslash+1:]
 	}
-	if period := bytes.Index(name, dot); period >= 0 {
+	if period := bytes.Index(name, []byte(".")); period >= 0 {
 		name = name[period+1:]
 	}
-	name = bytes.Replace(name, centerDot, dot, -1)
+	name = bytes.Replace(name, []byte("·"), []byte("."), -1)
 	return name
+}
+
+// dumpRequest 格式化请求信息
+func dumpRequest(req *http.Request, maxBodySize int64) string {
+	var b bytes.Buffer
+	reqURI := req.RequestURI
+	if reqURI == "" {
+		reqURI = req.URL.RequestURI()
+	}
+	fmt.Fprintf(&b, "%s %s HTTP/%d.%d\n", req.Method, reqURI, req.ProtoMajor, req.ProtoMinor)
+	if req.Body != nil {
+		n, err := io.Copy(&b, io.LimitReader(req.Body, maxBodySize))
+		if err != nil {
+			return fmt.Sprintf("Error reading body: %v", err)
+		}
+		if n > 0 {
+			b.WriteString("\n")
+		}
+	}
+	return b.String()
 }
