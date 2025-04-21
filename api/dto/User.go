@@ -11,3 +11,22 @@ type UpdateUser struct {
 	Name    string `gorm:"column:name"`
 	Avatar  string `gorm:"column:avatar"`
 }
+
+type GetToken struct {
+	AccessToken  string `json:"access_token"`
+	TokenType    string `json:"token_type"`
+	ExpiresIn    int    `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	Scope        string `json:"scope"`
+}
+
+type GetReportId struct {
+	Id       string    `json:"id"`
+	Profiles []Profile `json:"profiles"`
+}
+
+type Profile struct {
+	Id     string `json:"id"`
+	Format string `json:"format"`
+	Sex    int    `json:"sex"`
+}

@@ -5,8 +5,10 @@ import (
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/services"
 	"GeneReport_platform/pkg/auth"
+	"GeneReport_platform/pkg/rocketmq"
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v7"
@@ -377,7 +379,8 @@ func (u *User) Oauth2Wegene(ctx *gin.Context) {
 	fmt.Println("开始重定向到wegene授权页面")
 	ctx.Redirect(http.StatusMovedPermanently, "https://api.wegene.com/authorize/?redirect_uri="+
 		"http://localhost:8080/user/receiveCode&response_type=code&client_id=szjsbiolab&"+
-		"scope=basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web")
+		"scope=basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web"+
+		" names email")
 }
 
 func (u *User) ReceiveCode(ctx *gin.Context) {
@@ -412,7 +415,10 @@ func (u *User) GetWegeneToken(code string) {
 	data.Set("code", code)
 	//这里也可以和上面不一样！
 	data.Set("redirect_uri", "http://localhost:8080/user/receiveCode")
-	data.Set("scope", "basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web") //这里的权限范围需要和上面重定向的一样
+	//这里的权限范围是上面重定向的子集，只能少不能多，可以用户自己选
+	//fixme 这里可以让用户选择授权的范围
+	data.Set("scope", "basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web names email")
+	//上面的范围如果有names和emali那么/user的响应会多出这两个值
 
 	// 创建POST请求
 	req, err := http.NewRequest("POST", getToknUrl, bytes.NewBufferString(data.Encode()))
@@ -443,12 +449,58 @@ func (u *User) GetWegeneToken(code string) {
 
 	// 打印响应
 	fmt.Println("Response:", string(body))
+
+	var token dto.GetToken
+	if err := json.Unmarshal(body, &token); err != nil {
+		fmt.Println("Error unmarshaling response:", err)
+		return
+	}
+
+	//拿token去https://api.wegene.com/user/ --get请求基因报告id
+	//fixme 这里的基因报告有多份，现在先默认拿第一份，后续需要根前端对接，让用户选择他想要的基因报告
+	id := getReportId(token.AccessToken)
+
+	var toMqMsg string = token.AccessToken + ":" + id
+	fmt.Println(toMqMsg)
+	//发送消息到mq，主题是saveData
+	//fixme 测试先关掉存数据的方法
+	rocketmq.SendMsg("saveData", toMqMsg)
+
 }
+func getReportId(token string) (reportId string) {
 
-/*
-Response: {"access_token":"a3a401b429f273b7f2e515f4b8d51379","token_type":"bearer",
-"expires_in":86400,"refresh_token":"62ca9e2733526673f7fb2d77fa82a9ef",
-"scope":"basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web"}
+	url := "https://api.wegene.com/user/"
+	method := "GET"
 
-Bearer a3a401b429f273b7f2e515f4b8d51379
-*/
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, nil)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	req.Header.Add("Authorization", "Bearer "+token)
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(string(body))
+
+	var jsonData dto.GetReportId
+
+	err = json.Unmarshal(body, &jsonData)
+	if err != nil {
+		fmt.Println("解析获取reportId的响应数据出错！" + err.Error())
+	}
+	reportId = jsonData.Profiles[0].Id
+	return
+}

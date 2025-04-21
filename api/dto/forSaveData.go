@@ -1,0 +1,181 @@
+package dto
+
+import "gorm.io/gorm"
+
+type Head struct {
+	ProfileId string `gorm:"column:profile_id"`
+	ReportId  string `gorm:"column:report_id"`
+}
+
+// Genotype 表示单个基因型信息
+type Genotype struct {
+	Genotype    string  `json:"genotype" gorm:"column:genotype"`
+	Summary     string  `json:"summary" gorm:"column:summary"`
+	TSummary    string  `json:"tsummary" gorm:"column:tsummary"`
+	Score       string  `json:"score" gorm:"column:score"`
+	Rsid        string  `json:"rsid" gorm:"column:rsid"`
+	Gene        string  `json:"gene" gorm:"column:gene"`
+	OrValue     float64 `json:"or_value,omitempty" gorm:"column:or_value"`
+	Orientation string  `json:"orientation,omitempty" gorm:"column:orientation"`
+}
+
+type Psychology struct {
+	gorm.Model
+	Head
+	Description string     `json:"description"  gorm:"column:description"`
+	Score       float64    `json:"score"  gorm:"column:score"`
+	Rank        string     `json:"rank"  gorm:"column:rank"`
+	Caseid      string     `json:"caseid"  gorm:"column:caseid"`
+	Genotypes   []Genotype `json:"genotypes"  gorm:"column:genotypes"`
+}
+
+type Skin struct {
+	gorm.Model
+	Head
+	Description string     `json:"description" gorm:"column:description"`
+	Score       float64    `json:"score" gorm:"column:score"`
+	Rank        string     `json:"rank" gorm:"column:rank"`
+	CaseID      string     `json:"caseid" gorm:"column:caseid"`
+	Genotypes   []Genotype `json:"genotypes" gorm:"column:genotypes"`
+}
+
+type Athletigen struct {
+	gorm.Model
+	Head
+	Description string     `json:"description" gorm:"column:description"`
+	Score       float64    `json:"score" gorm:"column:score"`
+	Rank        string     `json:"rank" gorm:"column:rank"`
+	CaseID      int        `json:"caseid" gorm:"column:caseid"`
+	Genotypes   []Genotype `json:"genotypes" gorm:"column:genotypes"`
+}
+
+type HealthyDrug struct {
+}
+
+// Result 表示结果信息
+type HealthResult struct {
+	Genotypes []Genotype `json:"genotypes" gorm:"column:genotypes"`
+	Mag       float64    `json:"mag" gorm:"column:mag"`
+	Odds      float64    `json:"odds" gorm:"column:odds"`
+	Summary   []string   `json:"summary" gorm:"column:summary"`
+	SummaryEn []string   `json:"summary_en" gorm:"column:summary_en"`
+	Advise    []string   `json:"advise" gorm:"column:advise"`
+	AdviseEn  []string   `json:"advise_en" gorm:"column:advise_en"`
+}
+
+// HealthyTraits、HealthyCarrier、HealthyMetabolism共用
+type HealthyThree struct {
+	gorm.Model
+	Head
+	Description      string       `json:"description" gorm:"column:description"`
+	DescriptionEn    string       `json:"description_en" gorm:"column:description_en"`
+	Mag              float64      `json:"mag" gorm:"column:mag"`
+	Odds             float64      `json:"odds" gorm:"column:odds"`
+	Sex              string       `json:"sex" gorm:"column:sex"`
+	Result           HealthResult `json:"result" gorm:"column:result"`
+	AddTime          int          `json:"add_time" gorm:"column:add_time"`
+	CustomUpdateTime int          `json:"custom_update_time" gorm:"column:custom_update_time"`
+	UpdateTime       int          `json:"update_time" gorm:"column:update_time"`
+	CategoryChild    string       `json:"category_child" gorm:"column:category_child"`
+	CategoryThird    interface{}  `json:"category_third" gorm:"column:category_third"`
+	Genotypes        []Genotype   `json:"genotypes" gorm:"column:genotypes"`
+	TSummary         string       `json:"tsummary" gorm:"column:tsummary"`
+	CaseID           int          `json:"caseid" gorm:"column:caseid"`
+	Score            float64      `gorm:"column:score" json:"score"`
+	Rank             string       `gorm:"column:rank" json:"rank"`
+}
+
+type Risk struct {
+	gorm.Model
+	Head
+	Risk        float64    `json:"risk" gorm:"column:risk"`
+	Description string     `json:"description" gorm:"column:description"`
+	CaseID      int        `json:"caseid" gorm:"column:caseid"`
+	Percent     string     `json:"percent" gorm:"column:percent"`
+	Genotypes   []Genotype `json:"genotypes" gorm:"column:genotypes"`
+}
+
+//==================================上面是需要循环的，下面的请求一次=====================================
+
+type Block struct {
+	ChineseNation float64 `json:"chinese_nation" gorm:"column:chinese_nation"`
+	NeAsian       float64 `json:"ne_asian" gorm:"column:ne_asian"`
+	SeAsian       float64 `json:"se_asian" gorm:"column:se_asian"`
+	SouthAsian    float64 `json:"south_asian" gorm:"column:south_asian"`
+	CentralAsian  float64 `json:"central_asian" gorm:"column:central_asian"`
+	MiddleEastern float64 `json:"middle_eastern" gorm:"column:middle_eastern"`
+	African       float64 `json:"african" gorm:"column:african"`
+	European      float64 `json:"european" gorm:"column:european"`
+	American      float64 `json:"american" gorm:"column:american"`
+	Oceanian      float64 `json:"oceanian" gorm:"column:oceanian"`
+}
+
+type Area struct {
+	Eskimo         float64 `json:"eskimo" gorm:"column:eskimo"`
+	Tungus         float64 `json:"tungus" gorm:"column:tungus"`
+	Sindhi         float64 `json:"sindhi" gorm:"column:sindhi"`
+	Mbuti          float64 `json:"mbuti" gorm:"column:mbuti"`
+	French         float64 `json:"french" gorm:"column:french"`
+	Papuan         float64 `json:"papuan" gorm:"column:papuan"`
+	Sardinian      float64 `json:"sardinian" gorm:"column:sardinian"`
+	Cambodian      float64 `json:"cambodian" gorm:"column:cambodian"`
+	Japanese       float64 `json:"japanese" gorm:"column:japanese"`
+	HanSouthern    float64 `json:"han_southern" gorm:"column:han_southern"`
+	HanNorthern    float64 `json:"han_northern" gorm:"column:han_northern"`
+	Mayan          float64 `json:"mayan" gorm:"column:mayan"`
+	FinnishRussian float64 `json:"finnish_russian" gorm:"column:finnish_russian"`
+	Yoruba         float64 `json:"yoruba" gorm:"column:yoruba"`
+	Yakut          float64 `json:"yakut" gorm:"column:yakut"`
+	Bantusa        float64 `json:"bantusa" gorm:"column:bantusa"`
+	Pima           float64 `json:"pima" gorm:"column:pima"`
+	Ny             float64 `json:"ny" gorm:"column:ny"`
+	Mongolian      float64 `json:"mongolian" gorm:"column:mongolian"`
+	Uygur          float64 `json:"uygur" gorm:"column:uygur"`
+	Dai            float64 `json:"dai" gorm:"column:dai"`
+	Lahu           float64 `json:"lahu" gorm:"column:lahu"`
+	She            float64 `json:"she" gorm:"column:she"`
+	Somali         float64 `json:"somali" gorm:"column:somali"`
+	Hungarian      float64 `json:"hungarian" gorm:"column:hungarian"`
+	Iranian        float64 `json:"iranian" gorm:"column:iranian"`
+	Saudi          float64 `json:"saudi" gorm:"column:saudi"`
+	Balkan         float64 `json:"balkan" gorm:"column:balkan"`
+	Egyptian       float64 `json:"egyptian" gorm:"column:egyptian"`
+	Uzbek          float64 `json:"uzbek" gorm:"column:uzbek"`
+	Gaoshan        float64 `json:"gaoshan" gorm:"column:gaoshan"`
+	Korean         float64 `json:"korean" gorm:"column:korean"`
+	English        float64 `json:"english" gorm:"column:english"`
+	Spanish        float64 `json:"spanish" gorm:"column:spanish"`
+	Kinh           float64 `json:"kinh" gorm:"column:kinh"`
+	Bengali        float64 `json:"bengali" gorm:"column:bengali"`
+	Thai           float64 `json:"thai" gorm:"column:thai"`
+	Ashkenazi      float64 `json:"ashkenazi" gorm:"column:ashkenazi"`
+	Kyrgyz         float64 `json:"kyrgyz" gorm:"column:kyrgyz"`
+	Tibetan        float64 `json:"tibetan" gorm:"column:tibetan"`
+	MiaoYao        float64 `json:"miao_yao" gorm:"column:miao_yao"`
+	Mala           float64 `json:"mala" gorm:"column:mala"`
+}
+
+type Ancestry struct {
+	gorm.Model
+	Head
+	UniqueID   string `json:"unique_id" gorm:"column:unique_id"`
+	UpdateTime int64  `json:"update_time" gorm:"column:update_time"`
+	Block      Block  `json:"block" gorm:"embedded;embeddedPrefix:block_"`
+	Area       Area   `json:"area" gorm:"embedded;embeddedPrefix:area_"`
+}
+
+type Haplogroups struct {
+	gorm.Model
+	Head
+	Y  string `json:"y" gorm:"column:y"`
+	Mt string `json:"mt" gorm:"column:mt"`
+}
+
+type Demographics struct {
+	gorm.Model
+	Head
+	Surname        string `json:"surname" gorm:"column:surname"`
+	NativeProvince string `json:"native_province" gorm:"column:native_province"`
+	NativeCity     string `json:"native_city" gorm:"column:native_city"`
+	Population     string `json:"population" gorm:"column:population"`
+}
