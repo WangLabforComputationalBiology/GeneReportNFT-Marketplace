@@ -93,7 +93,8 @@ func (u *User) Login(ctx *gin.Context) {
 
 	address := json.UserAddress
 	signature := json.Signature
-	//地址校验
+
+	//1.地址校验
 	if !auth.IsValidAddress(address) {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
@@ -101,20 +102,18 @@ func (u *User) Login(ctx *gin.Context) {
 		})
 		return
 	}
-	//确保用户存在，不存在执行创建
-	if err := services.UserService.EnsureUserExists(address); err != nil {
-		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
-		return
-	}
-	//获取nonce
+
+	//2.获取nonce,校验redis中是否有nonce
 	nonce, err := services.UserService.GetNonce(address)
 	if err != nil {
+		log.Println("当前地址无nonce，请重新登录")
 		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
 	}
 
-	//执行验签
+	//3.执行验签
 	if isAccept, err := auth.VerifySignature(address, nonce, signature); !isAccept && err != nil {
+		log.Printf("验签错误，错误为：%v", err)
 		ctx.JSON(http.StatusUnauthorized, dto.ErrResponse{
 			Code:    http.StatusUnauthorized,
 			Message: "签名验证失败,请重新登录",
@@ -122,6 +121,13 @@ func (u *User) Login(ctx *gin.Context) {
 		return
 	}
 
+	//4，确保用户存在，不存在执行创建
+	if err := services.UserService.EnsureUserExists(address); err != nil {
+		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
+		return
+	}
+
+	//5.生成token
 	jwt, _ := auth.GenerateToken(address)
 	ctx.JSON(200, dto.Response{
 		Code:    http.StatusOK,
@@ -205,7 +211,7 @@ func (u *User) EditUserName(ctx *gin.Context) {
 	})
 }
 
-// UploadProfile
+// UploadAvatar
 //
 //	@Summary		上传用户头像
 //	@Description	根据用户地址更新用户头像
@@ -220,7 +226,7 @@ func (u *User) EditUserName(ctx *gin.Context) {
 //	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
 //	@Failure		503				{object}	dto.ErrResponse	"服务不可用，数据库异常"
 //	@Router			/user/upload/avatar [post]
-func (u *User) UploadProfile(ctx *gin.Context) {
+func (u *User) UploadAvatar(ctx *gin.Context) {
 	// 获取名为"profile"的文件
 	file, header, err := ctx.Request.FormFile("profile")
 	if err != nil {
@@ -396,7 +402,7 @@ func (u *User) ReceiveCode(ctx *gin.Context) {
 		fmt.Println("授权码为空，第二次进入这个接口，无需重定向！")
 		return
 	}
-	ctx.Redirect(301, "http://localhost:8080/swagger/index.html#/")
+	ctx.Redirect(http.StatusMovedPermanently, "http://localhost:8080/swagger/index.html#/")
 
 }
 

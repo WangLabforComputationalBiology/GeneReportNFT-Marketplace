@@ -30,7 +30,7 @@ func (u *userDao) DB() *gorm.DB {
 
 func (u *userDao) IsExist(address string) (bool, error) {
 	var count int64
-	if err := u.DB().Where("address = ?", address).Count(&count).Error; err != nil {
+	if err := u.DB().Model(&models.User{}).Where("address = ?", address).Count(&count).Error; err != nil {
 		return false, err
 	}
 	return count > 0, nil

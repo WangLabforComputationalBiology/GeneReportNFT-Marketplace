@@ -4,13 +4,13 @@
 cd ..
 
 # 运行 swag init 生成 Swagger 文档
-swag init -g ./cmd/main.go
+# swag init -g ./cmd/main.go
 
 # 进入 cmd 目录
-cd cmd/
+cd cmd/main/
 
 # 编译 Go 程序，输出到上一级目录的 gin-server
-go build -o ../gin-server main.go
+go build -o ../../gin-server main.go
 
 # 检查 tmux 会话是否存在，如果不存在则创建
 tmux has-session -t gin-server 2>/dev/null

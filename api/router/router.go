@@ -40,7 +40,7 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//更改用户名
 	r.POST("/edit/name", middlewares.AuthMiddleware(), controllers.UserController.EditUserName)
 	//上传用户头像
-	r.POST("/upload/avatar", middlewares.AuthMiddleware(), controllers.UserController.UploadProfile)
+	r.POST("/upload/avatar", middlewares.AuthMiddleware(), controllers.UserController.UploadAvatar)
 	//登录
 	r.POST("/login", controllers.UserController.Login)
 	//登出

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fatih/color"
+	"log"
 )
 
 type IAppError interface {
@@ -40,6 +41,7 @@ func (e AppError) ErrorWithDetail() string {
 
 // ToErrResponse 转换为ErrResponse 进行响应
 func (e AppError) ToErrResponse() dto.ErrResponse {
+	log.Printf(e.ErrorWithDetail())
 	return dto.ErrResponse{
 		Code:    e.Code,
 		Message: e.Message,
