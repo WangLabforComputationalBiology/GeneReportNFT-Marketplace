@@ -399,7 +399,7 @@ func (u *User) ReceiveCode(ctx *gin.Context) {
 		fmt.Println("授权码为空，第二次进入这个接口，无需重定向！")
 		return
 	}
-	ctx.Redirect(301, "http://localhost:8080/swagger/index.html#/")
+	ctx.Redirect(http.StatusMovedPermanently, "http://localhost:8080/swagger/index.html#/")
 
 }
 
