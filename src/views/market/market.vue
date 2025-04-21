@@ -242,9 +242,7 @@ export default {
     },
 
     async created() {
-        // console.log("++++++"+ wallet.address);
-        // console.log("++++++"+ wallet.balance);
-        // 确保 created 生命周期钩子调用异步方法
+
     },
     methods: {
         async connectWallet() {
@@ -336,9 +334,6 @@ export default {
                 });
             }
 
-            //更新余额
-            // const balanceWei = await provider.getBalance(accounts[0]);
-            // this.balance = ethers.formatEther(balanceWei);
         },
 
         drawerVisible() {

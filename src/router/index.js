@@ -27,7 +27,7 @@ const routes = [
     },
     {
         path: "/market",
-        component: () => import('@/views/market.vue')
+        component: () => import('@/views/market/market.vue')
     },
     {
         path:'/market/purchase',

@@ -138,7 +138,7 @@ header {
       width: 300px;
       display: flex;
       align-items: center;
-      margin-top: 8px;
+      margin: 8px 0 0 20px;
 
       input {
         width: 250px;

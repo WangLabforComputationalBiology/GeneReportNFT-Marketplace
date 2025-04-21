@@ -3,16 +3,14 @@
         <div class="banner">
             <h1 class="banner-title">User</h1>
         </div>
-        <span>Wallet address: </span> <span>{{ address }}</span><br>
-        <span>Wallet balance: </span> <span>{{ balance }}</span>
-        <div class="dropPage">
-        </div>
+        <span>{{ address }}</span><br>
+        <span >Wallet balance: </span> <span>{{ balance }}</span>
+
     </div>
 
 </template>
 
 <script>
-import { ethers } from 'ethers';
 import { useWalletStore } from '@/stores/account';
 const wallet = useWalletStore();
 export default {
@@ -26,7 +24,6 @@ export default {
     },
 
     created() {
-        // this.getWalletBalance();
     },
 
     methods: {

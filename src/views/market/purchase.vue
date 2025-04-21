@@ -49,7 +49,7 @@ export default {
 <style lang="scss" scoped>
 body {
     margin: auto;
-    width: 1400px;
+    height: calc(100vh - 80px);
     overflow: visible;
 }
 
