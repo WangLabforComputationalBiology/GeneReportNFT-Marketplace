@@ -9,14 +9,16 @@ type Head struct {
 
 // Genotype 表示单个基因型信息
 type Genotype struct {
-	Genotype    string  `json:"genotype" gorm:"column:genotype"`
-	Summary     string  `json:"summary" gorm:"column:summary"`
-	TSummary    string  `json:"tsummary" gorm:"column:tsummary"`
-	Score       string  `json:"score" gorm:"column:score"`
-	Rsid        string  `json:"rsid" gorm:"column:rsid"`
-	Gene        string  `json:"gene" gorm:"column:gene"`
-	OrValue     float64 `json:"or_value,omitempty" gorm:"column:or_value"`
-	Orientation string  `json:"orientation,omitempty" gorm:"column:orientation"`
+	ID           uint    `gorm:"primary_key"`
+	PsychologyID uint    `gorm:"foreignkey:PsychologyID"`
+	Genotype     string  `json:"genotype" gorm:"column:genotype"`
+	Summary      string  `json:"summary" gorm:"column:summary"`
+	TSummary     string  `json:"tsummary" gorm:"column:tsummary"`
+	Score        string  `json:"score" gorm:"column:score"`
+	Rsid         string  `json:"rsid" gorm:"column:rsid"`
+	Gene         string  `json:"gene" gorm:"column:gene"`
+	OrValue      float64 `json:"or_value,omitempty" gorm:"column:or_value"`
+	Orientation  string  `json:"orientation,omitempty" gorm:"column:orientation"`
 }
 
 type Psychology struct {
@@ -26,8 +28,11 @@ type Psychology struct {
 	Score       float64    `json:"score"  gorm:"column:score"`
 	Rank        string     `json:"rank"  gorm:"column:rank"`
 	Caseid      string     `json:"caseid"  gorm:"column:caseid"`
-	Genotypes   []Genotype `json:"genotypes"  gorm:"column:genotypes"`
+	Genotypes   []Genotype `json:"genotypes"  gorm:"foreignKey:PsychologyID;constraint:OnDelete:CASCADE"`
 }
+
+//`Genotype` 结构体中的 `PsychologyID` 字段将作为外键，关联到 `Psychology` 结构体的主键 `ID`
+//todo 记得做迁移
 
 type Skin struct {
 	gorm.Model
@@ -36,7 +41,7 @@ type Skin struct {
 	Score       float64    `json:"score" gorm:"column:score"`
 	Rank        string     `json:"rank" gorm:"column:rank"`
 	CaseID      string     `json:"caseid" gorm:"column:caseid"`
-	Genotypes   []Genotype `json:"genotypes" gorm:"column:genotypes"`
+	Genotypes   []Genotype `json:"genotypes"  gorm:"foreignKey:PsychologyID;constraint:OnDelete:CASCADE"`
 }
 
 type Athletigen struct {
@@ -46,7 +51,7 @@ type Athletigen struct {
 	Score       float64    `json:"score" gorm:"column:score"`
 	Rank        string     `json:"rank" gorm:"column:rank"`
 	CaseID      int        `json:"caseid" gorm:"column:caseid"`
-	Genotypes   []Genotype `json:"genotypes" gorm:"column:genotypes"`
+	Genotypes   []Genotype `json:"genotypes"  gorm:"foreignKey:PsychologyID;constraint:OnDelete:CASCADE"`
 }
 
 type HealthyDrug struct {
@@ -54,13 +59,19 @@ type HealthyDrug struct {
 
 // Result 表示结果信息
 type HealthResult struct {
-	Genotypes []Genotype `json:"genotypes" gorm:"column:genotypes"`
+	ID        uint       `gorm:"primary_key"`
+	ResultID  uint       `gorm:"foreignkey:ResultID"`
+	Genotypes []Genotype `json:"genotypes"  gorm:"foreignKey:PsychologyID;constraint:OnDelete:CASCADE"`
 	Mag       float64    `json:"mag" gorm:"column:mag"`
 	Odds      float64    `json:"odds" gorm:"column:odds"`
-	Summary   []string   `json:"summary" gorm:"column:summary"`
+	/*Summary   []string   `json:"summary" gorm:"column:summary"`
 	SummaryEn []string   `json:"summary_en" gorm:"column:summary_en"`
 	Advise    []string   `json:"advise" gorm:"column:advise"`
-	AdviseEn  []string   `json:"advise_en" gorm:"column:advise_en"`
+	AdviseEn  []string   `json:"advise_en" gorm:"column:advise_en"`*/
+	Summary   string `json:"summary" gorm:"column:summary,type:json"` // 修改为 JSON 字段
+	SummaryEn string `json:"summary_en" gorm:"column:summary_en,type:json"`
+	Advise    string `json:"advise" gorm:"column:advise,type:json"`
+	AdviseEn  string `json:"advise_en" gorm:"column:advise_en,type:json"`
 }
 
 // HealthyTraits、HealthyCarrier、HealthyMetabolism共用
@@ -72,13 +83,13 @@ type HealthyThree struct {
 	Mag              float64      `json:"mag" gorm:"column:mag"`
 	Odds             float64      `json:"odds" gorm:"column:odds"`
 	Sex              string       `json:"sex" gorm:"column:sex"`
-	Result           HealthResult `json:"result" gorm:"column:result"`
+	Result           HealthResult `json:"result" gorm:"foreignkey:ResultID"`
 	AddTime          int          `json:"add_time" gorm:"column:add_time"`
 	CustomUpdateTime int          `json:"custom_update_time" gorm:"column:custom_update_time"`
 	UpdateTime       int          `json:"update_time" gorm:"column:update_time"`
 	CategoryChild    string       `json:"category_child" gorm:"column:category_child"`
-	CategoryThird    interface{}  `json:"category_third" gorm:"column:category_third"`
-	Genotypes        []Genotype   `json:"genotypes" gorm:"column:genotypes"`
+	CategoryThird    string       `json:"category_third" gorm:"column:category_third"`
+	Genotypes        []Genotype   `json:"genotypes"  gorm:"foreignKey:PsychologyID;constraint:OnDelete:CASCADE"`
 	TSummary         string       `json:"tsummary" gorm:"column:tsummary"`
 	CaseID           int          `json:"caseid" gorm:"column:caseid"`
 	Score            float64      `gorm:"column:score" json:"score"`
@@ -92,7 +103,7 @@ type Risk struct {
 	Description string     `json:"description" gorm:"column:description"`
 	CaseID      int        `json:"caseid" gorm:"column:caseid"`
 	Percent     string     `json:"percent" gorm:"column:percent"`
-	Genotypes   []Genotype `json:"genotypes" gorm:"column:genotypes"`
+	Genotypes   []Genotype `json:"genotypes"  gorm:"foreignKey:PsychologyID;constraint:OnDelete:CASCADE"`
 }
 
 //==================================上面是需要循环的，下面的请求一次=====================================

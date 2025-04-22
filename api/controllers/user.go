@@ -5,7 +5,6 @@ import (
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/services"
 	"GeneReport_platform/pkg/auth"
-	"GeneReport_platform/pkg/rocketmq"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -458,7 +457,7 @@ func (u *User) GetWegeneToken(code string) {
 	fmt.Println(toMqMsg)
 	//发送消息到mq，主题是saveData
 	//fixme 测试先关掉存数据的方法
-	rocketmq.SendMsg("saveData", toMqMsg)
+	//rocketmq.SendMsg("saveData", toMqMsg)
 
 }
 func getReportId(token string) (reportId string) {
