@@ -30,10 +30,10 @@ const routes = [
         component: () => import('@/views/market/market.vue')
     },
     {
-        path:'/market/purchase',
+        path: '/market/purchase',
         component: () => import('@/views/market/purchase.vue')
     },
-    
+
     {
         path: "/login",
         component: () => import('@/views/login.vue')
@@ -41,6 +41,10 @@ const routes = [
     {
         path: "/user",
         component: () => import('@/views/user.vue')
+    },
+    {
+        path: "/selectProfile/:lastSegment",
+        component: () => import('@/views/selectProfile.vue')
     }
 ]
 
