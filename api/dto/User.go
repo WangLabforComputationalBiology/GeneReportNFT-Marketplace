@@ -21,12 +21,15 @@ type GetToken struct {
 }
 
 type GetReportId struct {
-	Id       string    `json:"id"`
+	Id    int    `json:"id"`
+	Email string `json:"email"`
+
 	Profiles []Profile `json:"profiles"`
 }
 
 type Profile struct {
 	Id     string `json:"id"`
 	Format string `json:"format"`
+	Name   string `json:"name"`
 	Sex    int    `json:"sex"`
 }

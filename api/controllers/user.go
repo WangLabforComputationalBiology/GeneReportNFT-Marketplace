@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
 	"io"
 	"io/ioutil"
@@ -17,6 +18,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type User struct{}
@@ -384,16 +386,22 @@ func (u *User) ReceiveCode(ctx *gin.Context) {
 	code := ctx.Query("code")
 	fmt.Println("（（（（（（（（（（（（（（（（授权码：", code, "））））））））））））））））））")
 
-	u.GetWegeneToken(code)
+	token := u.GetWegeneToken(code)
+
+	//生成一个uuid
+	uuid := uuid.New().String()
+	//将uuid和toen的映射存到redis，5分钟后过期
+	configs.RedisClient.Set(ctx, uuid, token, 5*time.Minute)
+	fmt.Println("存到redis的code：token= ", code, "------", token)
 	if code == "" {
 		fmt.Println("授权码为空，第二次进入这个接口，无需重定向！")
 		return
 	}
-	ctx.Redirect(http.StatusMovedPermanently, "http://localhost:8080/swagger/index.html#/")
+	ctx.Redirect(http.StatusMovedPermanently, "http://localhost:5173/selectProfile/"+uuid)
 
 }
 
-func (u *User) GetWegeneToken(code string) {
+func (u *User) GetWegeneToken(code string) (tkn string) {
 
 	// 设置请求的URL
 	getToknUrl := "https://api.wegene.com/token/"
@@ -407,7 +415,7 @@ func (u *User) GetWegeneToken(code string) {
 	data.Set("grant_type", "authorization_code")
 	data.Set("code", code)
 	//这里也可以和上面不一样！
-	data.Set("redirect_uri", "http://localhost:8080/user/receiveCode")
+	data.Set("redirect_uri", "http://localhost:8080/user/receiveCode") //可有可无
 	//这里的权限范围是上面重定向的子集，只能少不能多，可以用户自己选
 	//fixme 这里可以让用户选择授权的范围
 	data.Set("scope", "basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web names email")
@@ -451,7 +459,9 @@ func (u *User) GetWegeneToken(code string) {
 
 	//拿token去https://api.wegene.com/user/ --get请求基因报告id
 	//fixme 这里的基因报告有多份，现在先默认拿第一份，后续需要根前端对接，让用户选择他想要的基因报告
-	id := getReportId(token.AccessToken)
+	usersProfile := getReportId(token.AccessToken)
+
+	id := usersProfile.Profiles[0].Id
 
 	var toMqMsg string = token.AccessToken + ":" + id
 	fmt.Println(toMqMsg)
@@ -459,8 +469,12 @@ func (u *User) GetWegeneToken(code string) {
 	//fixme 测试先关掉存数据的方法
 	//rocketmq.SendMsg("saveData", toMqMsg)
 
+	//返回token
+	tkn = token.AccessToken
+	return
+
 }
-func getReportId(token string) (reportId string) {
+func getReportId(token string) (usersProfile dto.GetReportId) {
 
 	url := "https://api.wegene.com/user/"
 	method := "GET"
@@ -488,12 +502,37 @@ func getReportId(token string) (reportId string) {
 	}
 	fmt.Println(string(body))
 
-	var jsonData dto.GetReportId
-
-	err = json.Unmarshal(body, &jsonData)
+	err = json.Unmarshal(body, &usersProfile)
 	if err != nil {
 		fmt.Println("解析获取reportId的响应数据出错！" + err.Error())
 	}
-	reportId = jsonData.Profiles[0].Id
+
 	return
+}
+
+func (u *User) GetUsersProfileByCode(ctx *gin.Context) {
+	//在get请求路径里面获取code
+	code := ctx.Query("code")
+	fmt.Println("code:", code)
+	//根据code在redis获取token
+	token := configs.RedisClient.Get(context.Background(), code).Val()
+	//在go里面，如果在redis拿不到值，将会是""!!
+	if token == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "授权过期或未授权！"})
+		return
+	}
+	//成功拿到后删除
+	//configs.RedisClient.Del(context.Background(), code)
+	usersProfile := getReportId(token)
+	//创建一个数组将usersProfile.Profiles[x].id中的每个元素都添加到数组中
+	var profiles []string
+	for _, v := range usersProfile.Profiles {
+		profiles = append(profiles, v.Id)
+	}
+	//由于数据有限，所以在里面添加几个假数据
+	profiles = append(profiles, "1false", "2false", "3false", "4false", "5false", "6false")
+	ctx.JSON(http.StatusOK, gin.H{
+		"profiles": profiles,
+	})
+
 }
