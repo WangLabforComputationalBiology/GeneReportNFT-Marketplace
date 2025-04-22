@@ -10,12 +10,12 @@ import (
 
 var Myp rocketmq.Producer
 
-func init() {
-	Myproducer()
-}
-func Myproducer() {
-	//连接recketmq
-	p, err := rocketmq.NewProducer(producer.WithNameServer([]string{"120.24.168.132:9876"}))
+func Myproducer(group string) {
+	// 连接 RocketMQ
+	p, err := rocketmq.NewProducer(
+		producer.WithNameServer([]string{"120.24.168.132:9876"}),
+		producer.WithGroupName(group), // 添加生产者组名称
+	)
 	if err != nil {
 		fmt.Println("生成producer失败：", err)
 	}
@@ -32,9 +32,9 @@ func Myproducer() {
 	//同步发送
 	res, err := p.SendSync(context.Background(), msg)
 	if err != nil {
-		fmt.Printf("send message error: %s\n", err)
+		fmt.Printf("生产者发送消息失败: %s\n", err)
 	} else {
-		fmt.Printf("send message success: result=%s\n", res.String())
+		fmt.Printf("生产者发送消息成功: result=%s\n", res.String())
 	}
 	Myp = p
 	//关闭连接
@@ -44,17 +44,17 @@ func Myproducer() {
 	//}
 }
 
-func SendMsg(msg string) {
+func SendMsg(topic, msg string) {
 	//实例化消息
 	msg1 := &primitive.Message{
-		Topic: "test",
+		Topic: topic,
 		Body:  []byte(msg),
 	}
 	//同步发送
 	res, err := Myp.SendSync(context.Background(), msg1)
 	if err != nil {
-		fmt.Printf("send message error: %s\n", err)
+		fmt.Printf("生产者发送消息失败: %s\n", err)
 	} else {
-		fmt.Printf("send message success: result=%s\n", res.String())
+		fmt.Printf("生产者发送消息成功: result=%s\n", res.String())
 	}
 }
