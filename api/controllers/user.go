@@ -308,6 +308,7 @@ func (u *User) GetInfo(ctx *gin.Context) {
 	address := ctx.GetString("user_address")
 	userInfo, err := services.UserService.GetUserInfo(address)
 	if err != nil {
+		ctx.Error(err)
 		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 	}
 	ctx.JSON(http.StatusOK, userInfo)
@@ -360,19 +361,6 @@ func (u *User) GetProfileOfUser(c *gin.Context) {
 	c.Data(http.StatusOK, "image/png", data)
 }
 
-// GetGNFTList
-//
-//	@Summary		获取用户的藏品（对他可见的数据）
-//	@Description	根据用户地址更新用户名
-//	@Tags			用户管理
-//	@Accept			json
-//	@Produce		json
-//	@Security		JwtAuth
-//	@Param			Authorization	header		string			true	"JWT"
-//	@Success		200				{object}	dto.Response	"用户名更新成功"
-//	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
-//	@Failure		503				{object}	dto.ErrResponse	"mysql异常"
-//	@Router			/user/gnfts [post]
 func (u *User) GetGNFTList(ctx *gin.Context) {
 
 }

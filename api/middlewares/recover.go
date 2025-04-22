@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"io"
 	"net/http"
 	"runtime"
@@ -33,18 +34,53 @@ func (e *AppError) Error() string {
 
 // ErrorHandlerConfig 中间件配置
 type ErrorHandlerConfig struct {
-	Logger      *zap.Logger
 	DebugMode   bool  // 是否返回堆栈信息
-	LogStack    bool  // 是否记录堆栈信息到日志
+	LogStack    bool  // 是否记录堆栈信息
 	MaxBodySize int64 // 最大请求Body读取大小
 }
 
-// ErrorHandler 增强的错误处理中间件
+// ErrorHandler 增强的错误处理中间件，使用自定义 Zap 编码器输出到控制台
 func ErrorHandler(config ErrorHandlerConfig) gin.HandlerFunc {
-	if config.Logger == nil {
-		logger, _ := zap.NewProduction()
-		config.Logger = logger
+	// 自定义 Zap 编码器配置
+	encoderConfig := zapcore.EncoderConfig{
+		TimeKey:        "time",
+		LevelKey:       "level",
+		NameKey:        "logger",
+		CallerKey:      "caller",
+		MessageKey:     "msg",
+		StacktraceKey:  "stacktrace",
+		LineEnding:     zapcore.DefaultLineEnding, // 每条日志换行
+		EncodeLevel:    zapcore.CapitalLevelEncoder,
+		EncodeTime:     zapcore.ISO8601TimeEncoder,
+		EncodeDuration: zapcore.StringDurationEncoder,
+		EncodeCaller:   zapcore.ShortCallerEncoder,
 	}
+
+	// 创建自定义 Zap 配置
+	zapConfig := zap.Config{
+		Level:            zap.NewAtomicLevelAt(zap.ErrorLevel),
+		Development:      true,
+		Encoding:         "console",
+		EncoderConfig:    encoderConfig,
+		OutputPaths:      []string{"stdout"},
+		ErrorOutputPaths: []string{"stderr"},
+	}
+
+	// 构建 Zap 日志器
+	logger, err := zapConfig.Build()
+	if err != nil {
+		fmt.Println("Failed to initialize logger:", err)
+		logger, _ = zap.NewDevelopment() // 回退到默认
+	}
+	// 使用defer关键字，在函数返回之前执行该函数
+	defer func(logger *zap.Logger) {
+		// 尝试同步logger
+		if err := logger.Sync(); err != nil {
+			// 如果同步失败，打印错误信息
+			fmt.Println("Failed to sync logger:", err)
+		}
+	}(logger)
+
 	if config.MaxBodySize == 0 {
 		config.MaxBodySize = 1024 * 1024 // 默认1MB
 	}
@@ -53,18 +89,23 @@ func ErrorHandler(config ErrorHandlerConfig) gin.HandlerFunc {
 		// 生成请求ID
 		requestID := uuid.New().String()
 		c.Set("request_id", requestID)
-		logger := config.Logger.With(zap.String("request_id", requestID))
+		logger := logger.With(zap.String("request_id", requestID))
 
 		// 执行后续处理程序
 		defer func() {
 			// 捕获 panic
 			if cause := recover(); cause != nil {
-				stack := formatStack(3)
+				stack := ""
+				if config.LogStack || config.DebugMode {
+					stack = formatStack(3)
+				}
+				// 使用 Zap 输出到控制台
 				logger.Error("Panic recovered",
 					zap.Any("error", cause),
 					zap.String("stack", stack),
 					zap.String("request", dumpRequest(c.Request, config.MaxBodySize)),
 				)
+
 				response := ErrorResponse{
 					Code:    "INTERNAL_SERVER_ERROR",
 					Message: "Internal Server Error",
@@ -96,10 +137,27 @@ func ErrorHandler(config ErrorHandlerConfig) gin.HandlerFunc {
 				if customErr, ok := err.Err.(*AppError); ok {
 					response.Code = customErr.Code
 					response.Message = customErr.Message
-					if customErr.Code == "BAD_REQUEST" {
+					switch customErr.Code {
+					case "BAD_REQUEST":
 						status = http.StatusBadRequest
-					} else if customErr.Code == "NOT_FOUND" {
+					case "NOT_FOUND":
 						status = http.StatusNotFound
+					case "UNAUTHORIZED":
+						status = http.StatusUnauthorized
+					case "FORBIDDEN":
+						status = http.StatusForbidden
+					case "CONFLICT":
+						status = http.StatusConflict
+					case "UNSUPPORTED_MEDIA_TYPE":
+						status = http.StatusUnsupportedMediaType
+					case "TIMEOUT":
+						status = http.StatusRequestTimeout
+					case "EXTERNAL_SERVICE_ERROR":
+						status = http.StatusServiceUnavailable
+					case "DATABASE_ERROR":
+						status = http.StatusInternalServerError
+					default:
+						status = http.StatusInternalServerError
 					}
 				} else if err.Type == gin.ErrorTypeBind {
 					response.Code = "BAD_REQUEST"
@@ -107,7 +165,7 @@ func ErrorHandler(config ErrorHandlerConfig) gin.HandlerFunc {
 					status = http.StatusBadRequest
 				}
 
-				// 记录日志
+				// 使用 Zap 输出到控制台
 				logger.Error("Request error",
 					zap.String("error", err.Error()),
 					zap.String("type", strconv.FormatUint(uint64(err.Type), 10)),
