@@ -15,7 +15,11 @@ const routes = [
     },
     {
         path: '/create',
-        component: () => import('@/views/create.vue')
+        component: () => import('@/views/create/create.vue')
+    },
+    {
+        path: "/create/selectProfile",
+        component: () => import('@/views/create/selectProfile.vue')
     },
     {
         path: "/drop",
@@ -33,7 +37,6 @@ const routes = [
         path: '/market/purchase',
         component: () => import('@/views/market/purchase.vue')
     },
-
     {
         path: "/login",
         component: () => import('@/views/login.vue')
@@ -41,10 +44,6 @@ const routes = [
     {
         path: "/user",
         component: () => import('@/views/user.vue')
-    },
-    {
-        path: "/selectProfile/:lastSegment",
-        component: () => import('@/views/selectProfile.vue')
     }
 ]
 

@@ -15,16 +15,20 @@ export default {
 }
 </script>
 
+
+
 <style lang="scss" scoped>
-
-body{
-margin: auto;
-width: 80vw;
-min-width: 1400px;
-background-color: #fff;
-height: calc(100vh - 80px);
+// 全局样式
+body {
+    margin: auto;
+    
+    width: 80vw;
+    min-width: 1200px;
+    min-height: calc(100vh - 80px);
 }
+</style>
 
+<style lang="scss" scoped>
 .banner-title{
 font-size: 70px;
 color: #67C23A;

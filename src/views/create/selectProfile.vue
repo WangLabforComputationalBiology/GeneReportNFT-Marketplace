@@ -1,21 +1,28 @@
 <template>
-    <div class="card">
-        <div class="card-header">{{ code }}</div>
+
+    <body>
+        <div class="banner">
+            <span class="banner-title">Create</span><span class="tip">Please select a profile:</span>
+        </div>
+
         <div class="card-body">
             <div v-if="profiles.length > 0">
-                <p>请选择一个 Profile:</p>
-                <label v-for="(profile, index) in profiles" :key="index" class="radio-label">
-                    <input type="radio" v-model="selectedProfile" :value="profile" />
-                    {{ profile }}
-                </label>
+
+                <el-table class="radio-label" props="profiles" :data="profiles" style="width: 100%;">
+                    <el-table-column label="id" prop="id" width="250px" />
+                    <el-table-column label="source" prop="source" width="500px" />
+                    <el-table-column label="date" prop="date" />
+
+                </el-table>
             </div>
             <div v-else>
                 <p>没有可用的 Profile。</p>
             </div>
-            <p>选中的 Profile: {{ selectedProfile }}</p>
-            <p>{{ content }}</p>
+            <!-- <p>选中的 Profile: {{ selectedProfile }}</p>
+            <p>{{ content }}</p> -->
         </div>
-    </div>
+
+    </body>
 </template>
 
 <script>
@@ -49,7 +56,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/getProfileIds?code=${this.code}`);
+                const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/m1/4576706-4225408-default/user/getProfileIds`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -67,9 +74,29 @@ export default {
 }
 </script>
 
-<style scoped>
-.radio-label {
-    display: block;
-    margin-bottom: 10px;
+<style lang="scss" scoped>
+body {
+    margin: auto;
+    width: 1400px;
+    min-height: calc(100vh - 80px);
+    width: 80vw;
+    min-width: 1200px;
+    overflow: visible;
+}
+</style>
+
+<style lang="scss" scoped>
+.banner {
+    .banner-title {
+        font-size: 70px;
+        color: #67C23A;
+    }
+
+
+    .tip {
+        margin-left: 20px;
+        font-size: 20px;
+        color: #99a9bf;
+    }
 }
 </style>

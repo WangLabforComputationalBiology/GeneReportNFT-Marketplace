@@ -358,16 +358,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// 全局样式
 body {
-    // width: 100%;
     margin: auto;
-    width: 1400px;
-    min-height: calc(100vh - 80px);
+    
     width: 80vw;
     min-width: 1200px;
-    overflow: visible;
+    min-height: calc(100vh - 80px);
 }
+</style>
 
+<style lang="scss" scoped>
 .banner-title {
     font-size: 70px;
     color: #67C23A;

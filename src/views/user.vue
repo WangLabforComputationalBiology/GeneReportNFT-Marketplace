@@ -1,13 +1,12 @@
 <template>
-    <div class="body">
+
+    <body>
         <div class="banner">
             <h1 class="banner-title">User</h1>
         </div>
         <span>{{ address }}</span><br>
-        <span >Wallet balance: </span> <span>{{ balance }}</span>
-
-    </div>
-
+        <span>Wallet balance: </span> <span>{{ balance }}</span>
+    </body>
 </template>
 
 <script>
@@ -27,19 +26,23 @@ export default {
     },
 
     methods: {
-        
+
     },
 }
 </script>
 
 <style lang="scss" scoped>
-.body {
+// 全局样式
+body {
     margin: auto;
-    width: 1400px;
-    height: calc(100vh - 80px);
-    background-color: #fff;
-}
 
+    width: 80vw;
+    min-width: 1200px;
+    min-height: calc(100vh - 80px);
+}
+</style>
+
+<style lang="scss" scoped>
 .banner {
     display: flex;
     // border-bottom: 1px solid #E4E7ED;
