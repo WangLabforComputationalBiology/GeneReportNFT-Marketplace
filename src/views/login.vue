@@ -4,9 +4,9 @@
         <div class="loginPage">
             <div class="Wrapper">
                 <h1>How to begin?</h1>
-                <p>1.Download MetaMask in your Brower and login.</p>
+                <p>1.<a href="https://chromewebstore.google.com/search/metamask?utm_source=ext_sidebar" target="_blank">Download MetaMask as an extension</a>  in your Brower and login.</p>
                 <img style="margin:25px 0 0 50px;width: 64%;border-radius:10px;" src="../assets/imgs/step1.png" alt="">
-
+                <p style="font-size: 16px;color:#C0C4CC">*We do suggest that use Google Chrome.</p>
             </div>
             <div class="Wrapper">
                 <div class="useMeta">
@@ -156,6 +156,14 @@ body {
             ;
             font-size: 24px;
             color: #67C23A;
+        }
+        a{
+            color: #67C23A;
+
+            &:hover {
+                text-decoration: underline;
+                color: #E6A23C;
+            }
         }
     }
 
