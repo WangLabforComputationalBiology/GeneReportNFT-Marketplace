@@ -18,7 +18,7 @@ const routes = [
         component: () => import('@/views/create/create.vue')
     },
     {
-        path: "/create/selectProfile",
+        path: "/create/selectProfile/:lastSegment",//最后面的动态参数不能改
         component: () => import('@/views/create/selectProfile.vue')
     },
     {

@@ -22,6 +22,7 @@
           </el-icon>
         </div>
       </span>
+      <button id="wegeneVerify"@click="redirectToOAuth">Wegene认证</button>
       <!-- 登录路由 -->
       <router-link to="/login" class="routerSelection" style="position:absolute;right:20px;width:50px">Login</router-link>
       <!-- 账户面板 -->
@@ -92,6 +93,9 @@ export default {
     Visible() {
       this.isVisible = true;
     },
+    redirectToOAuth() {
+      window.location.href = import.meta.env.VITE_APP_BASE_URL+'/user/oauth2Wegene';
+    }
     
   },
 }
