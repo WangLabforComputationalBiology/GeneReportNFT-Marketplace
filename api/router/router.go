@@ -59,6 +59,8 @@ func registerUserRouter(r *gin.RouterGroup) {
 	r.GET("/receiveCode", controllers.UserController.ReceiveCode)
 	//根据code获取用户的profile id供用户选择
 	r.GET("/getProfileIds" /*middlewares.AuthMiddleware(),*/, controllers.UserController.GetUsersProfileByCode)
+	//用户授权哪份报告
+	r.POST("/saveProfile" /*middlewares.AuthMiddleware(), */, controllers.UserController.SaveProfileInfo)
 }
 func registerGNFTRouter(r *gin.RouterGroup) {
 	//藏品图片

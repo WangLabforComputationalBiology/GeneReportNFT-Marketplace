@@ -5,6 +5,7 @@ import (
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/services"
 	"GeneReport_platform/pkg/auth"
+	"GeneReport_platform/pkg/rocketmq"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -397,10 +398,11 @@ func (u *User) ReceiveCode(ctx *gin.Context) {
 		fmt.Println("授权码为空，第二次进入这个接口，无需重定向！")
 		return
 	}
-	ctx.Redirect(http.StatusMovedPermanently, "http://localhost:5173/selectProfile/"+uuid)
+	ctx.Redirect(http.StatusMovedPermanently, "http://localhost:5173/create/selectProfile/"+uuid)
 
 }
 
+// 根据授权码获取token
 func (u *User) GetWegeneToken(code string) (tkn string) {
 
 	// 设置请求的URL
@@ -415,7 +417,7 @@ func (u *User) GetWegeneToken(code string) (tkn string) {
 	data.Set("grant_type", "authorization_code")
 	data.Set("code", code)
 	//这里也可以和上面不一样！
-	data.Set("redirect_uri", "http://localhost:8080/user/receiveCode") //可有可无
+	//data.Set("redirect_uri", "http://localhost:8080/user/receiveCode") //可有可无
 	//这里的权限范围是上面重定向的子集，只能少不能多，可以用户自己选
 	//fixme 这里可以让用户选择授权的范围
 	data.Set("scope", "basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web names email")
@@ -457,23 +459,13 @@ func (u *User) GetWegeneToken(code string) (tkn string) {
 		return
 	}
 
-	//拿token去https://api.wegene.com/user/ --get请求基因报告id
-	//fixme 这里的基因报告有多份，现在先默认拿第一份，后续需要根前端对接，让用户选择他想要的基因报告
-	usersProfile := getReportId(token.AccessToken)
-
-	id := usersProfile.Profiles[0].Id
-
-	var toMqMsg string = token.AccessToken + ":" + id
-	fmt.Println(toMqMsg)
-	//发送消息到mq，主题是saveData
-	//fixme 测试先关掉存数据的方法
-	//rocketmq.SendMsg("saveData", toMqMsg)
-
 	//返回token
 	tkn = token.AccessToken
 	return
 
 }
+
+// 拿着token取请求peofile,基因报告
 func getReportId(token string) (usersProfile dto.GetReportId) {
 
 	url := "https://api.wegene.com/user/"
@@ -510,6 +502,7 @@ func getReportId(token string) (usersProfile dto.GetReportId) {
 	return
 }
 
+// 重定向将token的kv映射传给前端，前端那这个key请求基因报告数据供用户选择
 func (u *User) GetUsersProfileByCode(ctx *gin.Context) {
 	//在get请求路径里面获取code
 	code := ctx.Query("code")
@@ -521,8 +514,6 @@ func (u *User) GetUsersProfileByCode(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "授权过期或未授权！"})
 		return
 	}
-	//成功拿到后删除
-	//configs.RedisClient.Del(context.Background(), code)
 	usersProfile := getReportId(token)
 	//创建一个数组将usersProfile.Profiles[x].id中的每个元素都添加到数组中
 	var profiles []string
@@ -534,5 +525,24 @@ func (u *User) GetUsersProfileByCode(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"profiles": profiles,
 	})
+}
 
+func (u *User) SaveProfileInfo(ctx *gin.Context) {
+	//获取post请求json里面的数据
+	var toSave dto.ToSave
+	if err := ctx.ShouldBindJSON(&toSave); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	code := toSave.Code
+	//根据code在redis获取token
+	token := configs.RedisClient.Get(context.Background(), code).Val()
+	//拿到后删除redis的记录
+	configs.RedisClient.Del(context.Background(), code)
+	sendMsg := token + ":" + toSave.ProfileId
+	//异步保存数据
+	rocketmq.SendMsg("saveData", sendMsg)
+
+	fmt.Println("成功！异步保存数据：", sendMsg)
+	ctx.JSON(http.StatusOK, gin.H{"msg": "successful!"})
 }

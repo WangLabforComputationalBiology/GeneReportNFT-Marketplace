@@ -33,3 +33,8 @@ type Profile struct {
 	Name   string `json:"name"`
 	Sex    int    `json:"sex"`
 }
+
+type ToSave struct {
+	Code      string `json:"code"`
+	ProfileId string `json:"profileId"`
+}
