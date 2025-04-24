@@ -358,14 +358,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// 全局样式
-body {
-    margin: auto;
-    
-    width: 80vw;
-    min-width: 1200px;
-    min-height: calc(100vh - 80px);
-}
+
 </style>
 
 <style lang="scss" scoped>
@@ -375,15 +368,10 @@ body {
 }
 
 .marketPage {
+    padding: 10px;
     min-height: 700px;
     overflow: hidden;
 }
-
-// ::deep .nft-table {
-//     width: 100%;
-//     background-color: rgb(83, 53, 53);
-//     border-radius: 10px;
-// }
 
 .nfts-wrapper {
     margin-top: 8px;

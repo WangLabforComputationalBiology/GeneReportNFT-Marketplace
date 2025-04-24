@@ -1,5 +1,5 @@
 <template>
-   <div class="body">
+   <body>
       <div class="banner">
          <h1 class="banner-title">Create</h1>
       </div>
@@ -27,7 +27,7 @@
             </template>
          </el-card>
       </div>
-   </div>
+   </body>
 </template>
 
 <script>
@@ -93,11 +93,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.body {
-   margin: auto;
-   width: 80vw;
-   min-height: calc(100vh - 80px);
-   min-width: 1200px;
+body {
+   width: 80vw !important;
 }
 
 /* 卡片区域 */

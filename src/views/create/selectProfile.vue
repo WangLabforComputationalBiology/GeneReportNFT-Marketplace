@@ -8,18 +8,26 @@
         <div class="card-body">
             <div v-if="profiles.length > 0">
 
-                <el-table class="radio-label" props="profiles" :data="profiles" style="width: 100%;">
-                    <el-table-column label="id" prop="id" width="250px" />
-                    <el-table-column label="source" prop="source" width="500px" />
-                    <el-table-column label="date" prop="date" />
-
+                <el-table :data="profiles" style="width: 100%">
+                    <!-- <el-table-column type="selection" width="55" /> -->
+                    <el-table-column prop="index" label="Serial Number" width="150" align="center">
+                        <template #default="scope">
+                            {{ scope.$index + 1 }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="id" label="Profile ID" align="center" width="1250"/>
+                    <el-table-column label="Operations">
+                        <template #default="scope">
+                            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
+                                Select
+                            </el-button>
+                        </template>
+                    </el-table-column>
                 </el-table>
             </div>
             <div v-else>
-                <p>没有可用的 Profile。</p>
+                <p>No Profiles.</p>
             </div>
-            <!-- <p>选中的 Profile: {{ selectedProfile }}</p>
-            <p>{{ content }}</p> -->
         </div>
 
     </body>
@@ -73,17 +81,6 @@ export default {
     }
 }
 </script>
-
-<style lang="scss" scoped>
-body {
-    margin: auto;
-    width: 1400px;
-    min-height: calc(100vh - 80px);
-    width: 80vw;
-    min-width: 1200px;
-    overflow: visible;
-}
-</style>
 
 <style lang="scss" scoped>
 .banner {
