@@ -112,12 +112,12 @@ func (u *userService) SendSMSCode(phone string) custom_errors.IAppError {
 	// 发送短信
 	_, err := UniSMS.UniSMSClient.Send(message)
 	if err != nil {
-		return custom_errors.New(http.StatusServiceUnavailable, "unisws服务错误或不可用", err)
+		return custom_errors.New(http.StatusServiceUnavailable, "SWS服务错误，请稍后再试", err)
 	}
 
 	// 存redis
 	if err = configs.RedisClient.SetEX(context.Background(), "SMS_phone:"+phone, codeToSave, time.Minute*10).Err(); err != nil {
-		return custom_errors.New(http.StatusInternalServerError, "redis服务错误或不可用", err)
+		return custom_errors.New(http.StatusInternalServerError, "内部错误", err)
 	}
 	return nil
 }
@@ -133,7 +133,7 @@ func (u *userService) VerifySMSCode(phone string, code string) custom_errors.IAp
 			return custom_errors.New(http.StatusBadRequest, "验证码错误", errors.New("用户输入验证码错误"))
 		}
 	} else {
-		return custom_errors.New(http.StatusNotFound, "验证码已过期", errors.New("未发送验证码或验证码已过期"))
+		return custom_errors.New(http.StatusNotFound, "未发送验证码或验证码已过期", errors.New("未发送验证码或验证码已过期"))
 	}
 
 }

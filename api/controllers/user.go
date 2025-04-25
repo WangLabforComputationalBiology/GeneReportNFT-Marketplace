@@ -404,7 +404,7 @@ func (u *User) ReceiveCode(ctx *gin.Context) {
 
 }
 
-// 根据授权码获取token
+// GetWegeneToken 根据授权码获取token
 func (u *User) GetWegeneToken(code string) (tkn string) {
 
 	// 设置请求的URL
@@ -467,7 +467,7 @@ func (u *User) GetWegeneToken(code string) (tkn string) {
 
 }
 
-// 拿着token取请求peofile,基因报告
+// 拿着token取请求profile,基因报告
 func getReportId(token string) (usersProfile dto.GetReportId) {
 
 	url := "https://api.wegene.com/user/"
@@ -510,7 +510,7 @@ func (u *User) SendSMSCode(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
-			Message: "请求体格式错误,请重新登录",
+			Message: "请求体格式错误,请检查",
 		})
 		return
 	}
@@ -525,12 +525,12 @@ func (u *User) VerifySMSCode(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
-			Message: "请求体格式错误,请重新登录",
+			Message: "请求体格式错误,请检查",
 		})
 		return
 	}
 	if err := services.UserService.VerifySMSCode(req.Phone, req.Code); err != nil {
-
+		ctx.JSON(http.StatusInternalServerError, err.ToErrResponse())
 	}
 }
 
