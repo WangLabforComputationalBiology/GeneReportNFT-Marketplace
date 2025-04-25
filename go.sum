@@ -5,6 +5,8 @@ github.com/KyleBanks/depth v1.2.1 h1:5h8fQADFrWtarTdtDudMmGsC7GPbOAu6RVB3ffsVFHc
 github.com/KyleBanks/depth v1.2.1/go.mod h1:jzSb9d0L43HxTQfT+oSA1EEp2q+ne2uh6XgeJcm8brE=
 github.com/apache/rocketmq-client-go/v2 v2.1.2 h1:yt73olKe5N6894Dbm+ojRf/JPiP0cxfDNNffKwhpJVg=
 github.com/apache/rocketmq-client-go/v2 v2.1.2/go.mod h1:6I6vgxHR3hzrvn+6n/4mrhS+UTulzK/X9LB2Vk1U5gE=
+github.com/apistd/uni-go-sdk v0.0.2 h1:7kqETCOz/rz8AQU55XGzxDFGoFeMgeZL5fGwvxKBZrc=
+github.com/apistd/uni-go-sdk v0.0.2/go.mod h1:eIqYos4IbHgE/rB75r05ypNLahooEMJCrbjXq322b74=
 github.com/benbjohnson/clock v1.1.0 h1:Q92kusRqC1XV2MjkWETPvjJVqKetz1OzxZB7mHJLju8=
 github.com/benbjohnson/clock v1.1.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
 github.com/bytedance/sonic v1.13.2 h1:8/H1FempDZqC4VqjptGo14QQlJx8VdZJegxs6wwfqpQ=

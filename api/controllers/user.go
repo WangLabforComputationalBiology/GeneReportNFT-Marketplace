@@ -82,8 +82,8 @@ func (u *User) GetNonce(ctx *gin.Context) {
 func (u *User) Login(ctx *gin.Context) {
 	log.Println("进入登录接口！")
 
-	var json dto.LoginReq
-	if err := ctx.ShouldBindJSON(&json); err != nil {
+	var req dto.LoginReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
 			Message: "请求体格式错误,请重新登录",
@@ -91,8 +91,8 @@ func (u *User) Login(ctx *gin.Context) {
 		return
 	}
 
-	address := json.UserAddress
-	signature := json.Signature
+	address := req.UserAddress
+	signature := req.Signature
 
 	//1.地址校验
 	if !auth.IsValidAddress(address) {
@@ -185,8 +185,8 @@ func (u *User) Logout(ctx *gin.Context) {
 //	@Router			/user/edit/name [post]
 func (u *User) EditUserName(ctx *gin.Context) {
 	log.Println("进入编辑用户名接口！")
-	var json dto.UpdateUser
-	if err := ctx.ShouldBindJSON(&json); err != nil {
+	var req dto.UpdateUser
+	if err := ctx.ShouldBindJSON(&req); err != nil || req.Name == "" {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
 			Message: "请求体格式错误",
@@ -194,7 +194,8 @@ func (u *User) EditUserName(ctx *gin.Context) {
 		return
 	}
 
-	newName := json.Name
+	newName := req.Name
+
 	log.Println(" 来自post请求体的json的new_name:" + newName)
 	toUpdate := dto.UpdateUser{Name: newName}
 	if err := services.UserService.UpdateUser(toUpdate); err != nil {
@@ -363,6 +364,7 @@ func (u *User) GetProfileOfUser(c *gin.Context) {
 	c.Data(http.StatusOK, "image/png", data)
 }
 
+// GetGNFTList 获取用户已获取到数据的GNFT列表
 func (u *User) GetGNFTList(ctx *gin.Context) {
 
 }
@@ -461,6 +463,7 @@ func (u *User) GetWegeneToken(code string) {
 	rocketmq.SendMsg("saveData", toMqMsg)
 
 }
+
 func getReportId(token string) (reportId string) {
 
 	url := "https://api.wegene.com/user/"
@@ -497,4 +500,34 @@ func getReportId(token string) (reportId string) {
 	}
 	reportId = jsonData.Profiles[0].Id
 	return
+}
+
+// SendSMSCode 通过手机号码获取验证码并存入redis
+func (u *User) SendSMSCode(ctx *gin.Context) {
+	var req dto.SendSMSCodeReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "请求体格式错误,请重新登录",
+		})
+		return
+	}
+	if err := services.UserService.SendSMSCode(req.Phone); err != nil {
+		ctx.JSON(http.StatusInternalServerError, err.ToErrResponse())
+	}
+}
+
+// VerifySMSCode 验证手机验证码
+func (u *User) VerifySMSCode(ctx *gin.Context) {
+	var req dto.VerifySMSCodeReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "请求体格式错误,请重新登录",
+		})
+		return
+	}
+	if err := services.UserService.VerifySMSCode(req.Phone, req.Code); err != nil {
+
+	}
 }

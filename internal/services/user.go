@@ -3,11 +3,14 @@ package services
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
+	"GeneReport_platform/internal/UniSMS"
 	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/pkg/appContext"
 	"GeneReport_platform/pkg/auth"
 	"GeneReport_platform/pkg/custom_errors"
+	"context"
 	"errors"
+	unisms "github.com/apistd/uni-go-sdk/sms"
 	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 	"log"
@@ -93,4 +96,43 @@ func (u *userService) GetUserInfo(address string) (dto.UpdateUser, custom_errors
 		}
 	}
 	return userInfo, nil
+}
+
+// SendSMSCode 发送短信验证码
+func (u *userService) SendSMSCode(phone string) custom_errors.IAppError {
+	message := unisms.BuildMessage()
+	message.SetTo(phone)
+	message.SetSignature("林锐轩")
+	message.SetTemplateId("pub_verif_en_ttl2")
+
+	// 设置模板数据（code,ttl）
+	message.SetTemplateData(map[string]string{"code": UniSMS.GenerateSMSCode(), "ttl": "10"})
+
+	// 发送短信
+	_, err := UniSMS.UniSMSClient.Send(message)
+	if err != nil {
+		return custom_errors.New(http.StatusServiceUnavailable, "unisws服务错误或不可用", err)
+	}
+
+	// 存redis
+	if err = configs.RedisClient.SetEX(context.Background(), "SMS_phone:"+phone, code, time.Minute*10).Err(); err != nil {
+		return custom_errors.New(http.StatusInternalServerError, "redis服务错误或不可用", err)
+	}
+	return nil
+}
+
+// VerifySMSCode 验证短信验证码
+func (u *userService) VerifySMSCode(phone string, code string) custom_errors.IAppError {
+	strCmd := configs.RedisClient.Get(context.Background(), "SMS_phone:"+phone)
+
+	if strCmd.Err() == nil {
+		if strCmd.Val() == code {
+			return nil
+		} else {
+			return custom_errors.New(http.StatusBadRequest, "验证码错误", errors.New("用户输入验证码错误"))
+		}
+	} else {
+		return custom_errors.New(http.StatusNotFound, "验证码已过期", errors.New("未发送验证码或验证码已过期"))
+	}
+
 }

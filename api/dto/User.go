@@ -30,3 +30,11 @@ type Profile struct {
 	Format string `json:"format"`
 	Sex    int    `json:"sex"`
 }
+
+type SendSMSCodeReq struct {
+	Phone string `json:"phone" binding:"required"`
+}
+type VerifySMSCodeReq struct {
+	Phone string `json:"phone" binding:"required"`
+	Code  string `json:"code" binding:"required"`
+}

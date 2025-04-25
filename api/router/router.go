@@ -57,6 +57,10 @@ func registerUserRouter(r *gin.RouterGroup) {
 	r.GET("/oauth2Wegene", controllers.UserController.Oauth2Wegene)
 	//接收code
 	r.GET("/receiveCode", controllers.UserController.ReceiveCode)
+	//发送验证码
+	r.POST("/send_sms", controllers.UserController.SendSMSCode)
+	//验证验证码
+	r.POST("/verify_sms", controllers.UserController.VerifySMSCode)
 }
 func registerGNFTRouter(r *gin.RouterGroup) {
 	//藏品图片
