@@ -15,6 +15,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -100,40 +101,41 @@ func (u *userService) GetUserInfo(address string) (dto.UpdateUser, custom_errors
 
 // SendSMSCode 发送短信验证码
 func (u *userService) SendSMSCode(phone string) custom_errors.IAppError {
-	codeToSave := UniSMS.GenerateSMSCode()
 	message := unisms.BuildMessage()
 	message.SetTo(phone)
 	message.SetSignature("林锐轩")
 	message.SetTemplateId("pub_verif_en_ttl2")
 
+	codeToSave := UniSMS.GenerateSMSCode()
 	// 设置模板数据（code,ttl）
 	message.SetTemplateData(map[string]string{"code": codeToSave, "ttl": "10"})
 
 	// 发送短信
 	_, err := UniSMS.UniSMSClient.Send(message)
 	if err != nil {
-		return custom_errors.New(http.StatusServiceUnavailable, "SWS服务错误，请稍后再试", err)
+		return custom_errors.New(http.StatusServiceUnavailable, "服务繁忙，请稍后再试", err)
 	}
 
 	// 存redis
 	if err = configs.RedisClient.SetEX(context.Background(), "SMS_phone:"+phone, codeToSave, time.Minute*10).Err(); err != nil {
-		return custom_errors.New(http.StatusInternalServerError, "内部错误", err)
+		return custom_errors.New(http.StatusServiceUnavailable, "内部错误", err)
 	}
 	return nil
 }
 
 // VerifySMSCode 验证短信验证码
-func (u *userService) VerifySMSCode(phone string, code string) custom_errors.IAppError {
+func (u *userService) VerifySMSCode(phone string, code string) (bool, custom_errors.IAppError) {
+	//redis取验证码
 	strCmd := configs.RedisClient.Get(context.Background(), "SMS_phone:"+phone)
 
 	if strCmd.Err() == nil {
-		if strCmd.Val() == code {
-			return nil
+		if strings.Split(strCmd.Val(), ":")[1] == code {
+			return true, nil
 		} else {
-			return custom_errors.New(http.StatusBadRequest, "验证码错误", errors.New("用户输入验证码错误"))
+			return false, nil
 		}
 	} else {
-		return custom_errors.New(http.StatusNotFound, "未发送验证码或验证码已过期", errors.New("未发送验证码或验证码已过期"))
+		return false, custom_errors.New(http.StatusNotFound, "未发送验证码或验证码已过期", errors.New("未发送验证码或验证码已过期"))
 	}
 
 }

@@ -529,7 +529,16 @@ func (u *User) VerifySMSCode(ctx *gin.Context) {
 		})
 		return
 	}
-	if err := services.UserService.VerifySMSCode(req.Phone, req.Code); err != nil {
+	if isPass, err := services.UserService.VerifySMSCode(req.Phone, req.Code); err == nil {
+		if isPass {
+			ctx.JSON(http.StatusOK, dto.Response{Code: 200, Message: "验证成功"})
+		} else {
+			ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+				Code:    http.StatusBadRequest,
+				Message: "验证码错误",
+			})
+		}
+	} else {
 		ctx.JSON(http.StatusInternalServerError, err.ToErrResponse())
 	}
 }
