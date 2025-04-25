@@ -25,7 +25,7 @@
     .inBottom {
         min-width: 1400px;
 
-        margin: 50px auto;
+        padding: 40px;
         color: #FFF;
         font-size: 18px;
 

@@ -6,6 +6,11 @@
         </div>
         <span>{{ address }}</span><br>
         <span>Wallet balance: </span> <span>{{ balance }}</span>
+        <router-link to="/verify" style="color: #fff;">
+            <el-button>
+                verify
+            </el-button>
+        </router-link>
     </body>
 </template>
 
@@ -45,4 +50,5 @@ export default {
 .dropPage {
     height: 700px;
 }
+
 </style>

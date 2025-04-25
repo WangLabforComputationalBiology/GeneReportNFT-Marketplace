@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <div class="side" @click="toHome">
-            LOGO
+            L
         </div>
         <div class="headerWrapper">
             <!-- 路由菜单 -->
@@ -69,7 +69,6 @@ export default {
 .header {
     z-index: 1000;
     width: 99vw;
-    // max-width: 1900px;
     height: 60px;
     display: flex;
     position: sticky;
@@ -96,7 +95,7 @@ export default {
     .headerWrapper {
         align-items: center;
         position: relative;
-        width: 78vw;
+        width: 85vw;
         min-width: 1200px;
         display: flex;
         margin: 0 auto;

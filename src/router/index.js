@@ -38,6 +38,10 @@ const routes = [
         component: () => import('@/views/market/purchase.vue')
     },
     {
+        path: '/verify',
+        component: () => import('@/views/verify.vue')
+    },
+    {
         path: "/login",
         component: () => import('@/views/login.vue')
     },
