@@ -57,6 +57,10 @@ func registerUserRouter(r *gin.RouterGroup) {
 	r.GET("/oauth2Wegene", controllers.UserController.Oauth2Wegene)
 	//接收code
 	r.GET("/receiveCode", controllers.UserController.ReceiveCode)
+	//根据code获取用户的profile id供用户选择
+	r.GET("/getProfileIds" /*middlewares.AuthMiddleware(),*/, controllers.UserController.GetUsersProfileByCode)
+	//用户授权哪份报告
+	r.POST("/saveProfile" /*middlewares.AuthMiddleware(), */, controllers.UserController.SaveProfileInfo)
 	//发送验证码
 	r.POST("/send_sms", controllers.UserController.SendSMSCode)
 	//验证验证码

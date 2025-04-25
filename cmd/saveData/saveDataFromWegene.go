@@ -1,11 +1,32 @@
 package main
 
 import (
+	"GeneReport_platform/api/dto"
+	"GeneReport_platform/configs"
+	"GeneReport_platform/internal/setup"
 	"GeneReport_platform/pkg/rocketmq"
 	"fmt"
 )
 
 func main() {
+
+	setup.Setup()
+	// 自动迁移
+	configs.DB.AutoMigrate(
+
+		&dto.Psychology{},
+		&dto.Skin{},
+		&dto.Athletigen{},
+		//&dto.HealthyDrug{},
+
+		&dto.HealthyThree{},
+		&dto.HealthResult{},
+		&dto.Risk{},
+		&dto.Ancestry{},
+		&dto.Haplogroups{},
+		&dto.Demographics{},
+		&dto.Genotype{},
+	)
 
 	rocketmq.Myproducer("ptest")
 
