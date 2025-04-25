@@ -2,7 +2,6 @@ package main
 
 import (
 	"GeneReport_platform/api/router"
-	_ "GeneReport_platform/cmd/main/docs" //不写的话访问/swagger/index.html#/会报错！！
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/setup"
 	"GeneReport_platform/pkg/rocketmq"

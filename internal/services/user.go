@@ -100,13 +100,14 @@ func (u *userService) GetUserInfo(address string) (dto.UpdateUser, custom_errors
 
 // SendSMSCode 发送短信验证码
 func (u *userService) SendSMSCode(phone string) custom_errors.IAppError {
+	codeToSave := UniSMS.GenerateSMSCode()
 	message := unisms.BuildMessage()
 	message.SetTo(phone)
 	message.SetSignature("林锐轩")
 	message.SetTemplateId("pub_verif_en_ttl2")
 
 	// 设置模板数据（code,ttl）
-	message.SetTemplateData(map[string]string{"code": UniSMS.GenerateSMSCode(), "ttl": "10"})
+	message.SetTemplateData(map[string]string{"code": codeToSave, "ttl": "10"})
 
 	// 发送短信
 	_, err := UniSMS.UniSMSClient.Send(message)
@@ -115,7 +116,7 @@ func (u *userService) SendSMSCode(phone string) custom_errors.IAppError {
 	}
 
 	// 存redis
-	if err = configs.RedisClient.SetEX(context.Background(), "SMS_phone:"+phone, code, time.Minute*10).Err(); err != nil {
+	if err = configs.RedisClient.SetEX(context.Background(), "SMS_phone:"+phone, codeToSave, time.Minute*10).Err(); err != nil {
 		return custom_errors.New(http.StatusInternalServerError, "redis服务错误或不可用", err)
 	}
 	return nil

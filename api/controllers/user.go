@@ -504,7 +504,6 @@ func getReportId(token string) (usersProfile dto.GetReportId) {
 	return
 }
 
-<<<<<<< HEAD
 // SendSMSCode 通过手机号码获取验证码并存入redis
 func (u *User) SendSMSCode(ctx *gin.Context) {
 	var req dto.SendSMSCodeReq
@@ -531,10 +530,11 @@ func (u *User) VerifySMSCode(ctx *gin.Context) {
 		return
 	}
 	if err := services.UserService.VerifySMSCode(req.Phone, req.Code); err != nil {
-		
+
 	}
-=======
-// 重定向将token的kv映射传给前端，前端那这个key请求基因报告数据供用户选择
+}
+
+// GetUsersProfileByCode 重定向将token的kv映射传给前端，前端那这个key请求基因报告数据供用户选择
 func (u *User) GetUsersProfileByCode(ctx *gin.Context) {
 	//在get请求路径里面获取code
 	code := ctx.Query("code")
