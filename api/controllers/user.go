@@ -467,12 +467,8 @@ func (u *User) GetWegeneToken(code string) (tkn string) {
 
 }
 
-<<<<<<< HEAD
-func getReportId(token string) (reportId string) {
-=======
 // 拿着token取请求peofile,基因报告
 func getReportId(token string) (usersProfile dto.GetReportId) {
->>>>>>> origin/backend
 
 	url := "https://api.wegene.com/user/"
 	method := "GET"
@@ -535,7 +531,7 @@ func (u *User) VerifySMSCode(ctx *gin.Context) {
 		return
 	}
 	if err := services.UserService.VerifySMSCode(req.Phone, req.Code); err != nil {
-
+		
 	}
 =======
 // 重定向将token的kv映射传给前端，前端那这个key请求基因报告数据供用户选择
@@ -581,5 +577,5 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 
 	fmt.Println("成功！异步保存数据：", sendMsg)
 	ctx.JSON(http.StatusOK, gin.H{"msg": "successful!"})
->>>>>>> origin/backend
+
 }
