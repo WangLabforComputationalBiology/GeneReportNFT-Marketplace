@@ -4,27 +4,39 @@
         <div style="max-width: 600px">
             <el-alert title="Success alert" type="success" description="More text description" show-icon />
         </div>
-        <h1>{{ code }}</h1>
+        
         <div class="banner">
-            <span class="banner-title">Create</span><span class="tip">Please select a profile:</span>
+            <span class="banner-title">Create</span><span class="tip"> <p>Wegene Connected: </p>
+            <p style="color: #E6A23C;">{{ code }} </p>   
+            </span>
         </div>
 
         <div class="card-body">
             <div v-if="profiles.length > 0">
-                <p>请选择一个 Profile:</p>
-                <p>---------</p>
-                <label v-for="(profile, index) in profiles" :key="index" class="radio-label">
+                <p style="color: #99a9bf;">Please select a Profile:</p>
+                <el-table :data="profiles" style="width: 50%" @selection-change="handleSelectionChange">
+                    <!-- Radio button column -->
+                    <el-table-column width="500" label="#Id">
+                        <template #default="{ row }">
+                            <el-radio v-model="selectedProfile" :label="row.id" />
+                        </template>
+                    </el-table-column>
+                    <!-- Profile ID column -->
+                    <!-- <el-table-column prop="id" label="Profile ID" /> -->
+                </el-table>
+
+                <!-- <label v-for="(profile, index) in profiles" :key="index" class="radio-label">
                     <input type="radio" v-model="selectedProfile" :value="profile.id" />
                     {{ profile.id }}
-                </label>
+                </label> -->
             </div>
             <div v-else>
                 <p>No Profiles.</p>
             </div>
-            <p>选中的 Profile: {{ selectedProfile }}</p>
-            <p>{{ content }}</p>
+            <p>Selected Profile: {{ selectedProfile }}</p>
+            <!-- <p>{{ content }}</p> -->
         </div>
-        <button @click="authorizeProfile">授权报告</button>
+        <button @click="authorizeProfile">Verify Profile</button>
     </body>
 </template>
 
@@ -118,13 +130,14 @@ export default {
 
 
 .banner {
+    display: flex;
     .banner-title {
         font-size: 70px;
         color: #67C23A;
     }
 
     .tip {
-        margin-left: 20px;
+        margin: 30px 0 0 20px;
         font-size: 20px;
         color: #99a9bf;
     }

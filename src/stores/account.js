@@ -4,6 +4,7 @@ export const useWalletStore = defineStore("Wallet", {
     state: () => ({
         address: null,
         balance: 0,
+        country: null,
     }),
     mutations: {
         
