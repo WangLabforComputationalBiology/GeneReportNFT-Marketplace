@@ -38,3 +38,11 @@ type ToSave struct {
 	Code      string `json:"code"`
 	ProfileId string `json:"profileId"`
 }
+
+type SendSMSCodeReq struct {
+	Phone string `json:"phone" binding:"required"`
+}
+type VerifySMSCodeReq struct {
+	Phone string `json:"phone" binding:"required"`
+	Code  string `json:"code" binding:"required"`
+}
