@@ -109,9 +109,9 @@ func (u *userService) SendSMSCode(phone string) custom_errors.IAppError {
 	codeToSave := smsVerify.GenerateSMSCode()
 	// 设置模板数据（code,ttl）
 	message.SetTemplateData(map[string]string{"code": codeToSave, "ttl": "10"})
-	Client := unisms.NewClient("Nkkp1zkmw2ZvdqjN8EQmiB9MmGSHsX3HPL4LDzuaiqRKt422Y")
 	// 发送短信
-	_, err := Client.Send(message)
+	_, err := smsVerify.UniSMSClient.Send(message)
+	log.Println("是否被初始化:", smsVerify.IsInit)
 	if err != nil {
 		return custom_errors.New(http.StatusServiceUnavailable, "服务繁忙，请稍后再试", err)
 	}

@@ -9,11 +9,12 @@ import (
 
 // UniSMSClient sdk中已默认配置了请求端点和hmac模式
 var UniSMSClient *unisms.UniSMSClient
+var IsInit bool
 
 func init() {
 	// 初始化 smsVerify 客户端
 	//UniSMSClient = unisms.NewClient("Nkkp1zkmw2ZvdqjN8EQmiB9MmGSHsX3HPL4LDzuaiqRKt422Y", "Dv6QEBu7xwv83U3dk7Wqt4ZGGSKsg2")//HMAC模式
-
+	IsInit = true
 	UniSMSClient = unisms.NewClient("Nkkp1zkmw2ZvdqjN8EQmiB9MmGSHsX3HPL4LDzuaiqRKt422Y") //简易模式
 	fmt.Println("smsVerify client initialized")
 }
