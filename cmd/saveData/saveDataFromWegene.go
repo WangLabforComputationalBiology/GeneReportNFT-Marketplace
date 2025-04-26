@@ -13,12 +13,10 @@ func main() {
 	setup.Setup()
 	// 自动迁移
 	configs.DB.AutoMigrate(
-
 		&dto.Psychology{},
 		&dto.Skin{},
 		&dto.Athletigen{},
 		//&dto.HealthyDrug{},
-
 		&dto.HealthyThree{},
 		&dto.HealthResult{},
 		&dto.Risk{},

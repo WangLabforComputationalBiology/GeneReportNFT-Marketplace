@@ -393,7 +393,7 @@ func (u *User) ReceiveCode(ctx *gin.Context) {
 	uuid := uuid.New().String()
 	//将uuid和toen的映射存到redis，5分钟后过期
 	configs.RedisClient.Set(ctx, uuid, token, 5*time.Minute)
-	fmt.Println("存到redis的code：token= ", code, "------", token)
+	fmt.Println("存到redis的uuid：token = ", uuid, "------", token)
 	if code == "" {
 		fmt.Println("授权码为空，第二次进入这个接口，无需重定向！")
 		return
@@ -515,16 +515,9 @@ func (u *User) GetUsersProfileByCode(ctx *gin.Context) {
 		return
 	}
 	usersProfile := getReportId(token)
-	//创建一个数组将usersProfile.Profiles[x].id中的每个元素都添加到数组中
-	var profiles []string
-	for _, v := range usersProfile.Profiles {
-		profiles = append(profiles, v.Id)
-	}
-	//由于数据有限，所以在里面添加几个假数据
-	profiles = append(profiles, "1false", "2false", "3false", "4false", "5false", "6false")
-	ctx.JSON(http.StatusOK, gin.H{
-		"profiles": profiles,
-	})
+	usersProfile.Profiles = append(usersProfile.Profiles, dto.Profile{Id: "fabc-8555-cdalse", Name: "xxx", Sex: 0})
+	usersProfile.Profiles = append(usersProfile.Profiles, dto.Profile{Id: "6abc-1626299398-copy", Name: "XXXX", Sex: 0})
+	ctx.JSON(http.StatusOK, usersProfile)
 }
 
 func (u *User) SaveProfileInfo(ctx *gin.Context) {
