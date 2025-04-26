@@ -6,6 +6,11 @@
         </div>
         <span>{{ address }}</span><br>
         <span>Wallet balance: </span> <span>{{ balance }}</span>
+        <router-link to="/verify" style="color: #fff;">
+            <el-button>
+                verify
+            </el-button>
+        </router-link>
     </body>
 </template>
 
@@ -32,20 +37,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// 全局样式
-body {
-    margin: auto;
-
-    width: 80vw;
-    min-width: 1200px;
-    min-height: calc(100vh - 80px);
-}
-</style>
-
-<style lang="scss" scoped>
 .banner {
     display: flex;
-    // border-bottom: 1px solid #E4E7ED;
 
     .banner-title {
         font-size: 70px;
@@ -57,4 +50,5 @@ body {
 .dropPage {
     height: 700px;
 }
+
 </style>

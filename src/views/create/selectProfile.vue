@@ -1,12 +1,8 @@
 <template>
+
     <body>
         <div style="max-width: 600px">
-            <el-alert
-            title="Success alert"
-            type="success"
-            description="More text description"
-            show-icon
-            />
+            <el-alert title="Success alert" type="success" description="More text description" show-icon />
         </div>
         <h1>{{ code }}</h1>
         <div class="banner">
@@ -23,7 +19,7 @@
                 </label>
             </div>
             <div v-else>
-                <p>没有可用的 Profile。</p>
+                <p>No Profiles.</p>
             </div>
             <p>选中的 Profile: {{ selectedProfile }}</p>
             <p>{{ content }}</p>
@@ -82,28 +78,28 @@ export default {
         async authorizeProfile() {
             // 在这里处理授权逻辑
             try {
-            const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/saveProfile`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    code: this.code,
-                    profileId: this.selectedProfile
-                })
-            });
+                const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/saveProfile`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        code: this.code,
+                        profileId: this.selectedProfile
+                    })
+                });
 
-            if (response.ok) { // 检查响应状态码是否为 200
-                this.showAlert = true; // 显示 alert
-                console.log('Profile authorized successfully');
-            } else {
-                console.error('Failed to authorize profile:', response.statusText);
+                if (response.ok) { // 检查响应状态码是否为 200
+                    this.showAlert = true; // 显示 alert
+                    console.log('Profile authorized successfully');
+                } else {
+                    console.error('Failed to authorize profile:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error authorizing profile:', error);
             }
-        } catch (error) {
-            console.error('Error authorizing profile:', error);
-        }
 
-           
+
         }
     }
 }
@@ -112,21 +108,14 @@ export default {
 
 
 <style lang="scss" scoped>
-
 .el-alert {
-  margin: 20px 0 0;
+    margin: 20px 0 0;
 }
+
 .el-alert:first-child {
-  margin: 0;
+    margin: 0;
 }
-body {
-    margin: auto;
-    width: 1400px;
-    min-height: calc(100vh - 80px);
-    width: 80vw;
-    min-width: 1200px;
-    overflow: visible;
-}
+
 
 .banner {
     .banner-title {

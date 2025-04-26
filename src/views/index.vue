@@ -1,53 +1,44 @@
 <template>
    <!-- banner区域 -->
-   <div class="body">
+   <div class="wapper">
       <banner>
          <div class="banner-left">
-            <h1 class="banner-title" style="margin-top: 200px">Discover Digital Art &<br> Collect NFTs</h1><br>
+            <h1 style="margin-top: 150px">Explore genetic code &<br> Collect NFTs</h1><br>
             <h2>NFT Marketplace UI create with Anima for Figma.<br> Collect, Buy and sell art from more than 20k NFT
                Artists</h2>
-            <div class="getStartBTN" @click="getStart">GET STARTED</div>
+            <div class="getStartBTN" @click="scrollToSection">GET STARTED</div>
          </div>
          <img src="../assets/imgs/bioschains.svg">
       </banner>
    </div>
 
-   <!-- 介绍  -->
-   <div class="body">
-      <div class="intro">
-         <h1>Introduction</h1>
-         <el-carousel height="650px" interval="0">
-            <el-carousel-item v-for="item in 4" :key="item">
-               <h3 class="small">{{ item }}</h3>
-            </el-carousel-item>
-         </el-carousel>
-      </div>
-
-   </div>
+   <!-- 跳转参考线 -->
+   <hr style="border:none; " ref="targetSection">
 
    <!-- 引导 -->
-   <div class="body">
+   <div class="wapper">
       <div class="howToDo">
          <h1>How it works</h1>
          <div class="howTodo-wrapper">
             <div class="steps">
                <div class="content-wrapper">
                   <h3>Setup your wallet</h3>
-                  <p>Set up your wallet of choice. Connect it to the Animarket by clicking the wallet icon in the top
+                  <p>Set up your Metamask wallet. Connect it to us by clicking the wallet icon in the top
                      right corner.</p>
                </div>
             </div>
             <div class="steps">
                <div class="content-wrapper">
                   <h3>Create Collection</h3>
-                  <p>Upload your work and setup your collection. Add a description, social links and floor price.</p>
+                  <p>Upload your Wegene data and setup your collection. Add a description, social links and floor price.
+                  </p>
                </div>
             </div>
 
             <div class="steps">
                <div class="content-wrapper">
-                  <h3>Start Earning</h3>
-                  <p>Choose between auctions and fixed-price listings. Start earning by selling your NFTs or trading
+                  <h3>Start Sharing</h3>
+                  <p>Choose fixed-price listings. Get revenue from your sharing or trading
                      others.</p>
                   <div class="content-warpper">
                   </div>
@@ -57,31 +48,56 @@
       </div>
    </div>
 
+   <!-- 介绍  -->
+   <div class="wapper">
+      <div class="intro">
+         <h1>Introduction</h1>
+         <el-carousel height="650px" interval="0">
+            <el-carousel-item v-for="item in 4" :key="item">
+               <h3 class="small">{{ item }}</h3>
+            </el-carousel-item>
+         </el-carousel>
+      </div>
+   </div>
+
+
+
 </template>
 
 <script>
-import router from '@/router';
+import { ref } from 'vue'
 
+// 使用 ref 绑定目标元素
+const targetSection = ref(null)
 export default {
-   name: "create",
-   methods: {
-      getStart() {
-         router.push('/login');
+   setup() {
+      // 使用 ref 定义 targetSection
+      const targetSection = ref(null)
+
+      // 滚动方法
+      const scrollToSection = () => {
+         if (targetSection.value) {
+            targetSection.value.scrollIntoView({ behavior: 'smooth' })
+         }
+      }
+
+      // 将 ref 和方法暴露给模板
+      return {
+         targetSection,
+         scrollToSection
       }
    }
-
 }
 </script>
 
 
 
 <style lang="scss" scoped>
-.body {
-   margin: auto;
+.wapper {
+   margin: 60px auto;
    width: 1400px;
    background-color: #fff;
-   height: calc(100vh - 80px);
-   border-bottom: 1px solid #E4E7ED;
+   height: calc(100vh - 60px);
 }
 
 h1 {
@@ -91,7 +107,6 @@ h1 {
 
 banner {
    display: flex;
-   height: 700px;
 
    .banner-left {
 
@@ -120,7 +135,7 @@ banner {
    }
 
    img {
-      margin: 250px 0 0 300px;
+      margin: 220px 0 0 300px;
       width: 300px;
       height: 300px;
    }

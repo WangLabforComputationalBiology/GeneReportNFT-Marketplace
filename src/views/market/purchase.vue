@@ -47,11 +47,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-body {
-    margin: auto;
-    height: calc(100vh - 80px);
-    overflow: visible;
-}
 
 .purchase-page {
     position: relative;

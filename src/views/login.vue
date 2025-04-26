@@ -1,20 +1,24 @@
 <template>
 
     <body>
-        <div class="loginPage">
-            <div class="Wrapper">
-                <h1>How to begin?</h1>
-                <p>1.<a href="https://chromewebstore.google.com/search/metamask?utm_source=ext_sidebar" target="_blank">Download MetaMask as an extension</a>  in your Brower and login.</p>
-                <img style="margin:25px 0 0 50px;width: 64%;border-radius:10px;" src="../assets/imgs/step1.png" alt="">
-                <p style="font-size: 16px;color:#C0C4CC">*We do suggest that use Google Chrome.</p>
-            </div>
-            <div class="Wrapper">
-                <div class="useMeta">
-                    <p>2.Try this:</p>
-                    <span class="meta" @click="connectWallet">
-                        <img class="icon" src="../icons/metalogo.png" />
-                        <p style="color:#C0C4CC;">MetaMask</p>
-                    </span>
+        <div class="outerWrapper">
+            <div class="loginPage">
+                <div class="Wrapper">
+                    <h1>How to begin?</h1>
+                    <p>1.<a href="https://chromewebstore.google.com/search/metamask?utm_source=ext_sidebar"
+                            target="_blank">Download MetaMask as an extension</a> in your Brower and login.</p>
+                    <img style="margin:25px 0 0 50px;width: 64%;border-radius:10px;" src="../assets/imgs/step1.png"
+                        alt="">
+                    <p style="font-size: 16px;color:#C0C4CC">*We do suggest that use Google Chrome.</p>
+                </div>
+                <div class="Wrapper">
+                    <div class="useMeta">
+                        <p>2.Try this:</p>
+                        <span class="meta" @click="connectWallet">
+                            <img class="icon" src="../icons/metalogo.png" />
+                            <p style="color:#C0C4CC;">MetaMask</p>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -127,11 +131,10 @@ ${nonce}`;
 </script>
 
 <style lang="scss" scoped>
-body {
-    margin: auto;
+.outerWrapper{
     width: 80vw;
-    min-width: 1200px;
-    min-height: calc(100vh - 80px);
+    margin: 0px auto;
+    padding: 50px;
 }
 
 .loginPage {
@@ -157,7 +160,8 @@ body {
             font-size: 24px;
             color: #67C23A;
         }
-        a{
+
+        a {
             color: #67C23A;
 
             &:hover {
