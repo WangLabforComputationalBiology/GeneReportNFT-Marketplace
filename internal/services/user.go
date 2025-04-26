@@ -3,8 +3,8 @@ package services
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
-	"GeneReport_platform/internal/UniSMS"
 	"GeneReport_platform/internal/dao"
+	"GeneReport_platform/internal/smsVerify"
 	"GeneReport_platform/pkg/appContext"
 	"GeneReport_platform/pkg/auth"
 	"GeneReport_platform/pkg/custom_errors"
@@ -106,12 +106,12 @@ func (u *userService) SendSMSCode(phone string) custom_errors.IAppError {
 	message.SetSignature("林锐轩")
 	message.SetTemplateId("pub_verif_en_ttl2")
 
-	codeToSave := UniSMS.GenerateSMSCode()
+	codeToSave := smsVerify.GenerateSMSCode()
 	// 设置模板数据（code,ttl）
 	message.SetTemplateData(map[string]string{"code": codeToSave, "ttl": "10"})
-
+	Client := unisms.NewClient("Nkkp1zkmw2ZvdqjN8EQmiB9MmGSHsX3HPL4LDzuaiqRKt422Y")
 	// 发送短信
-	_, err := UniSMS.UniSMSClient.Send(message)
+	_, err := Client.Send(message)
 	if err != nil {
 		return custom_errors.New(http.StatusServiceUnavailable, "服务繁忙，请稍后再试", err)
 	}
