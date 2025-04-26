@@ -18,8 +18,8 @@
                 <p>请选择一个 Profile:</p>
                 <p>---------</p>
                 <label v-for="(profile, index) in profiles" :key="index" class="radio-label">
-                    <input type="radio" v-model="selectedProfile" :value="profile" />
-                    {{ profile }}
+                    <input type="radio" v-model="selectedProfile" :value="profile.id" />
+                    {{ profile.id }}
                 </label>
             </div>
             <div v-else>
@@ -64,8 +64,8 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await fetch(`http://127.0.0.1:4523/m1/4576706-4225408-default/user/getProfileIds`);
-                //const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/getProfileIds?code=${this.code}`);
+                //const response = await fetch(`http://127.0.0.1:4523/m1/4576706-4225408-default/user/getProfileIds`);
+                const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/getProfileIds?code=${this.code}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
