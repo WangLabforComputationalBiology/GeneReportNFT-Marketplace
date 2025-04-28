@@ -26,7 +26,15 @@
 </template>
 
 <script>
+import { reactive, computed } from 'vue';
 import Api from '../axios/aixos'
+// 国家代码映射
+const countryCodeMap = {
+    cn: '+86',
+    us: '+1',
+    de: '+49',
+};
+
 export default {
     name: 'Verify',
     data() {
@@ -39,17 +47,26 @@ export default {
             }
         };
     },
+    computed: {
+        phoneNumber() {
+            if (!this.form.country || !this.form.number) {
+                return '';
+            }
+            return `${countryCodeMap[this.form.country]}${this.form.number}`;
+        },
+    }
+    ,
     methods: {
         async getCode() {
             try {
                 // 验证手机号格式（假设需要）
-                if (!this.form.number || !/^\d{10,}$/.test(this.form.number)) {
+                if (!this.phoneNumber) {
                     this.$message.error("Please enter a valid phone number.");
                     return;
                 }
 
                 const response = await Api.post("/user/send_sms", {
-                    phone: this.form.number,
+                    phone: this.phoneNumber,
                 });
 
                 const { data } = response;
