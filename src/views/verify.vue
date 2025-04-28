@@ -1,27 +1,37 @@
 <template>
     <div class="wrapper">
-        <el-form :model="form" label-width="auto" style="max-width: 600px">
+        <el-form :model="form" label-width="auto" style="max-width: 420px">
             <el-form-item label="Phone Number:">
 
                 <el-input v-model="form.number" type="tel" oninput="value=value.replace(/[^0-9]/g,'')" maxlength="11">
                     <template #prepend>
-                        <el-select v-model="form.country" placeholder="Select" style="width: 70px">
+                        <el-select v-model="form.country" placeholder="Select" style="width: 64px">
                             <el-option label="+86" value="cn" />
                             <el-option label="+1" value="us" />
-                            <el-option label="+49" value="de" />
+                            <el-option label="+7" value="de" />
+                            <el-option label="+44" value="gb" />
+                            <el-option label="+33" value="fr" />
                         </el-select>
+                    </template>
+                    <template #append>
+                        <img :src="'https://flagcdn.com/32x24/' + form.country + '.png'" :alt="form.country + '国旗'"
+                            class="flags" />
                     </template>
                 </el-input>
             </el-form-item>
             <el-form-item label="Verification code:">
-                <el-input v-model="form.code" />
+                <el-input v-model="form.code" type="code" maxlength="6">
+                    <template #append>
+                        <el-button type="primary" @click="getCode">Send</el-button>
+                    </template>
+                </el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="getCode">Send Verification Code</el-button>
+
                 <el-button @click="verify">Verify</el-button>
             </el-form-item>
         </el-form>
-        <img :src="'https://flagcdn.com/24x18/' + form.country + '.png'" :alt="form.country + '国旗'" class="mr-2" />
+
     </div>
 </template>
 
@@ -33,6 +43,8 @@ const countryCodeMap = {
     cn: '+86',
     us: '+1',
     de: '+49',
+    fr: '+33',
+    gb: '+44',
 };
 
 export default {
@@ -78,14 +90,14 @@ export default {
 
                 // 处理不同的状态码
                 if (data.code === 200) {
-                    this.$message.success(this.$t("sms.sent_success")); // 使用国际化
+                    this.$message.success("sms.sent_success"); // 使用国际化
                     return data; // 显式返回数据
                 } else if (data.code === 429) {
                     this.$message.error
-                    this.$message.error(this.$t("sms.rate_limit_exceeded")); // 频率限制
+                    this.$message.error("sms.rate_limit_exceeded"); // 频率限制
                     return;
                 } else {
-                    this.$message.error(data.message || this.$t("sms.send_failed")); // 使用后端返回的错误信息
+                    this.$message.error(data.message || "sms.send_failed"); // 使用后端返回的错误信息
                     return;
                 }
             } catch (error) {
@@ -94,7 +106,7 @@ export default {
                 const errorMessage =
                     error.response?.data?.message ||
                     error.message ||
-                    this.$t("sms.error");
+                    "sms.error";
                 this.$message.error(errorMessage);
                 throw error; // 抛出错误以便调用方处理
             }
@@ -165,6 +177,12 @@ export default {
     height: 100vh;
     background-color: #fff;
 }
+
+.flags {
+    width: 24px;
+    height: 18px;
+    margin-top: 5px;
+}
 </style>
 
 <style lang="scss" scoped>
@@ -173,7 +191,9 @@ export default {
     color: #67C23A;
 }
 
+
 :deep(.el-input__wrapper) {
+    width: 100%;
 
     &:focus-within {
         box-shadow: 0px 0px 0px 1px inset #67C23A !important;
@@ -190,13 +210,25 @@ export default {
 }
 
 :deep(.el-input-group__prepend) {
+    width: 10px;
     border: none;
     background-color: #fff;
 
 }
 
+:deep(.el-select__placeholder){
+    width: 40px;
+}
+
+:deep(.el-input-group__append) {
+    border: none;
+
+}
+
+
 // 下拉框选择器
 :deep(.el-tooltip__trigger) {
+    padding: 10px;
     height: 42px;
     border: none !important;
     box-shadow: none !important;
@@ -210,9 +242,13 @@ export default {
 :deep(.el-select__selected-item) {
     color: #000;
     line-height: 70px;
-}
 
-:deep(.el-select-dropdown) {
-    color: #67C23A !important;
+
+}
+:deep(.el-button--primary){
+    padding: 0;
+    width: 64px;
+    height: 42px;
+    background-color: #fff;
 }
 </style>
