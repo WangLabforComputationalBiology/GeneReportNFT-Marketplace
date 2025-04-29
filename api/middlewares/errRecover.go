@@ -13,10 +13,35 @@ import (
 	"strconv"
 )
 
-// ErrorResponse 统一的错误响应结构
-type ErrorResponse struct {
+var (
+	EncoderConfig = zapcore.EncoderConfig{
+		TimeKey:        "time",
+		LevelKey:       "level",
+		NameKey:        "logger",
+		CallerKey:      "caller",
+		MessageKey:     "msg",
+		StacktraceKey:  "stacktrace",
+		LineEnding:     zapcore.DefaultLineEnding, // 每条日志换行
+		EncodeLevel:    zapcore.CapitalLevelEncoder,
+		EncodeTime:     zapcore.ISO8601TimeEncoder,
+		EncodeDuration: zapcore.StringDurationEncoder,
+		EncodeCaller:   zapcore.ShortCallerEncoder,
+	}
+	ZapConfig = zap.Config{
+		Level:            zap.NewAtomicLevelAt(zap.ErrorLevel),
+		Development:      true,
+		Encoding:         "console",
+		EncoderConfig:    EncoderConfig,
+		OutputPaths:      []string{"stdout"},
+		ErrorOutputPaths: []string{"stderr"},
+	}
+)
+
+// ErrorLog 统一错误日志格式
+type ErrorLog struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
+	Detail  string `json:"detail"`          // 错误详情
 	Stack   string `json:"stack,omitempty"` // 仅在调试模式下返回
 }
 
@@ -27,7 +52,7 @@ type AppError struct {
 	Detail  error  `json:"detail"`
 }
 
-// Error 实现 error 接口
+// AppError 隐式实现 error 接口
 func (e *AppError) Error() string {
 	return e.Message
 }
@@ -41,33 +66,9 @@ type ErrorHandlerConfig struct {
 
 // ErrorHandler 增强的错误处理中间件，使用自定义 Zap 编码器输出到控制台
 func ErrorHandler(config ErrorHandlerConfig) gin.HandlerFunc {
-	// 自定义 Zap 编码器配置
-	encoderConfig := zapcore.EncoderConfig{
-		TimeKey:        "time",
-		LevelKey:       "level",
-		NameKey:        "logger",
-		CallerKey:      "caller",
-		MessageKey:     "msg",
-		StacktraceKey:  "stacktrace",
-		LineEnding:     zapcore.DefaultLineEnding, // 每条日志换行
-		EncodeLevel:    zapcore.CapitalLevelEncoder,
-		EncodeTime:     zapcore.ISO8601TimeEncoder,
-		EncodeDuration: zapcore.StringDurationEncoder,
-		EncodeCaller:   zapcore.ShortCallerEncoder,
-	}
-
-	// 创建自定义 Zap 配置
-	zapConfig := zap.Config{
-		Level:            zap.NewAtomicLevelAt(zap.ErrorLevel),
-		Development:      true,
-		Encoding:         "console",
-		EncoderConfig:    encoderConfig,
-		OutputPaths:      []string{"stdout"},
-		ErrorOutputPaths: []string{"stderr"},
-	}
 
 	// 构建 Zap 日志器
-	logger, err := zapConfig.Build()
+	logger, err := ZapConfig.Build()
 	if err != nil {
 		fmt.Println("Failed to initialize logger:", err)
 		logger, _ = zap.NewDevelopment() // 回退到默认
@@ -249,4 +250,8 @@ func dumpRequest(req *http.Request, maxBodySize int64) string {
 		}
 	}
 	return b.String()
+}
+
+func errResponse(ctx *gin.Context) {
+	ctx.Error()
 }
