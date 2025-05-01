@@ -18,6 +18,7 @@ var (
 	ApiKey   string
 	EndPoint string
 
-	WegeneId     string
-	WegeneSecret string
+	WegeneId           string
+	WegeneSecret       string
+	WegeneRedirectHost string
 )

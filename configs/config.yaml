@@ -38,6 +38,8 @@ ether_scan:
 wegene:
   id: szjsbiolab
   secret: cgioHbVHp6xp2rZzPthkkp6BRNfsDOr3
+  #redirect_host: localhost
+  redirect_host: 120.24.168.132
 
 
 rocketmq:
@@ -47,3 +49,5 @@ rocketmq:
   tag: rocketmq_tag
   consumer: true
   producer: true
+
+oauth:
