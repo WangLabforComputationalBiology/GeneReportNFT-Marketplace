@@ -376,7 +376,7 @@ func (u *User) GetGNFTList(ctx *gin.Context) {
 func (u *User) Oauth2Wegene(ctx *gin.Context) {
 	fmt.Println("开始重定向到wegene授权页面")
 	ctx.Redirect(http.StatusMovedPermanently, "https://api.wegene.com/authorize/?redirect_uri="+
-		"http://localhost:8080/user/receiveCode&response_type=code&client_id=szjsbiolab&"+
+		"http://"+configs.WegeneRedirectHost+":8080/user/receiveCode&response_type=code&client_id=szjsbiolab&"+
 		"scope=basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web"+
 		" names email")
 }

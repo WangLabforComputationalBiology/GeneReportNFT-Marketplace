@@ -39,8 +39,9 @@ type EtherScanConfig struct {
 }
 
 type WegeneConfig struct {
-	Id     string `mapstructure:"id"`
-	Secret string `mapstructure:"secret"`
+	Id           string `mapstructure:"id"`
+	Secret       string `mapstructure:"secret"`
+	RedirectHost string `mapstructure:"redirect_host"`
 }
 
 type Config struct {

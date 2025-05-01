@@ -85,6 +85,7 @@ func initEtherScanConfig() {
 
 	configs.WegeneId = configs.GlobalConfig.WegeneConfig.Id
 	configs.WegeneSecret = configs.GlobalConfig.WegeneConfig.Secret
+	configs.WegeneRedirectHost = configs.GlobalConfig.WegeneConfig.RedirectHost
 }
 
 func Setup() {

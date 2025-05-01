@@ -28,11 +28,11 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户列表';
 
 
-insert into users values (1,'0xAc6b478Ae65E7D955F64ED80E65E613ea34c820f','陈焕凯','/test/1.png',NOW()),
-                         (2,'0x9D0bf56A50090bE7F7f8Fad07DDa4949FBc6Cd17','黄瑞升','/test/2.png',NOW()),
-                         (3,'0x8e174fC25f7d4373b589DAcAaC884985C1C6D053','唐嘉铭','/test/3.png',NOW()),
-                         (4,'0x02729118740a8b9D6a6eF171b7Fe30fEBeDe34F2','林锐轩','/test/4.png',now()),
-                         (5,'0xdD27Ef37a5c09E4c940C2EDd900ABB9B5d220a13','lin林','/test/5.png',now());
+insert into users values ('0xAc6b478Ae65E7D955F64ED80E65E613ea34c820f','陈焕凯','/test/1.png',NOW()),
+                         ('0x9D0bf56A50090bE7F7f8Fad07DDa4949FBc6Cd17','黄瑞升','/test/2.png',NOW()),
+                         ('0x8e174fC25f7d4373b589DAcAaC884985C1C6D053','唐嘉铭','/test/3.png',NOW()),
+                         ('0x02729118740a8b9D6a6eF171b7Fe30fEBeDe34F2','林锐轩','/test/4.png',now()),
+                         ('0xdD27Ef37a5c09E4c940C2EDd900ABB9B5d220a13','lin林','/test/5.png',now());
 
 
 drop table if exists  GNFT_basic;

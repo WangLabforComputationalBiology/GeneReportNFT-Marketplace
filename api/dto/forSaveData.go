@@ -10,15 +10,15 @@ type Head struct {
 // Genotype 表示单个基因型信息
 type Genotype struct {
 	gorm.Model
-	ForKey      uint    `gorm:"column:for_key"`
-	Genotype    string  `json:"genotype" gorm:"column:genotype"`
-	Summary     string  `json:"summary" gorm:"column:summary"`
-	TSummary    string  `json:"tsummary" gorm:"column:tsummary"`
-	Score       string  `json:"score" gorm:"column:score"`
-	Rsid        string  `json:"rsid" gorm:"column:rsid"`
-	Gene        string  `json:"gene" gorm:"column:gene"`
-	OrValue     float64 `json:"or_value,omitempty" gorm:"column:or_value"`
-	Orientation string  `json:"orientation,omitempty" gorm:"column:orientation"`
+	ForKey      uint   `gorm:"column:for_key"`
+	Genotype    string `json:"genotype" gorm:"column:genotype"`
+	Summary     string `json:"summary" gorm:"column:summary"`
+	TSummary    string `json:"tsummary" gorm:"column:tsummary"`
+	Score       string `json:"score" gorm:"column:score"`
+	Rsid        string `json:"rsid" gorm:"column:rsid"`
+	Gene        string `json:"gene" gorm:"column:gene"`
+	OrValue     string `json:"or_value,omitempty" gorm:"column:or_value"`
+	Orientation string `json:"orientation,omitempty" gorm:"column:orientation"`
 }
 
 type Psychology struct {
@@ -57,6 +57,17 @@ type Athletigen struct {
 type HealthyDrug struct {
 }
 
+// Result 存入数据库前的中间状态
+type HealthResultDto struct {
+	Genotypes []Genotype `json:"genotypes" `
+	Mag       float64    `json:"mag"`
+	Odds      float64    `json:"odds"`
+	Summary   []string   `json:"summary"`
+	SummaryEn []string   `json:"summary_en" `
+	Advise    []string   `json:"advise" `
+	AdviseEn  []string   `json:"advise_en"`
+}
+
 // Result 表示结果信息
 type HealthResult struct {
 	gorm.Model
@@ -79,22 +90,22 @@ type HealthResult struct {
 type HealthyThree struct {
 	gorm.Model
 	Head
-	Description      string       `json:"description" gorm:"column:description"`
-	DescriptionEn    string       `json:"description_en" gorm:"column:description_en"`
-	Mag              float64      `json:"mag" gorm:"column:mag"`
-	Odds             float64      `json:"odds" gorm:"column:odds"`
-	Sex              string       `json:"sex" gorm:"column:sex"`
-	Result           HealthResult `json:"result" gorm:"-"`
-	AddTime          int          `json:"add_time" gorm:"column:add_time"`
-	CustomUpdateTime int          `json:"custom_update_time" gorm:"column:custom_update_time"`
-	UpdateTime       int          `json:"update_time" gorm:"column:update_time"`
-	CategoryChild    string       `json:"category_child" gorm:"column:category_child"`
-	CategoryThird    string       `json:"category_third" gorm:"column:category_third"` //这部分暂时不知道是什么，string先占着！！
-	Genotypes        []Genotype   `json:"genotypes" gorm:"-"`
-	TSummary         string       `json:"tsummary" gorm:"column:tsummary"`
-	CaseID           int          `json:"caseid" gorm:"column:caseid"`
-	Score            float64      `gorm:"column:score" json:"score"`
-	Rank             string       `gorm:"column:rank" json:"rank"`
+	Description      string          `json:"description" gorm:"column:description"`
+	DescriptionEn    string          `json:"description_en" gorm:"column:description_en"`
+	Mag              float64         `json:"mag" gorm:"column:mag"`
+	Odds             float64         `json:"odds" gorm:"column:odds"`
+	Sex              string          `json:"sex" gorm:"column:sex"`
+	Result           HealthResultDto `json:"result" gorm:"-"`
+	AddTime          int             `json:"add_time" gorm:"column:add_time"`
+	CustomUpdateTime int             `json:"custom_update_time" gorm:"column:custom_update_time"`
+	UpdateTime       int             `json:"update_time" gorm:"column:update_time"`
+	CategoryChild    string          `json:"category_child" gorm:"column:category_child"`
+	CategoryThird    string          `json:"category_third" gorm:"column:category_third"` //这部分暂时不知道是什么，string先占着！！
+	Genotypes        []Genotype      `json:"genotypes" gorm:"-"`
+	TSummary         string          `json:"tsummary" gorm:"column:tsummary"`
+	CaseID           int             `json:"caseid" gorm:"column:caseid"`
+	Score            float64         `gorm:"column:score" json:"score"`
+	Rank             string          `gorm:"column:rank" json:"rank"`
 }
 
 type Risk struct {

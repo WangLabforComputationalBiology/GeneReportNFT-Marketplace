@@ -191,9 +191,9 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 			_, err = file.Write((append(jsonData, '\n')))*/
 
 		//获取成功插入后返回的主键id
-		var prkId uint
+		var fekId uint
 		// 使用反射获取ID属性
-		val := reflect.ValueOf(&responseData) //这里提供指针，下面的嵌套结构体才能修改
+		val := reflect.ValueOf(&responseData) //这里提供指针，下面的嵌套结构体才能修改！！！
 		//判断反射得到的是否是指针，是就取出指针指向的内存
 		if val.Kind() == reflect.Ptr {
 			val = val.Elem()
@@ -223,19 +223,20 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 			idField := val.FieldByName("ID")
 			if idField.IsValid() && idField.CanInterface() {
 				idValue := idField.Interface()
-				prkId = idValue.(uint) //类型断言，尝试把 idValue 转换为 uint 类型。
+				fekId = idValue.(uint) //类型断言，尝试把 idValue 转换为 uint 类型。
 				fmt.Println("ID:", idValue)
 			} else {
 				fmt.Println("ID属性不存在或不可访问！")
 			}
 
+			//=======================上面的操作不知道body具体是什么类型，所以一直用反射，下面确定具体类型的直接转==================
 			//利用反射判断是否存在Genotypes这个属性
 			genotypesValue := val.FieldByName("Genotypes")
 			// 遍历 Genotypes 属性的值
 			for i := 0; i < genotypesValue.Len(); i++ {
 				//将每个Genotypes的值转换为dto.Genotype类型
 				genotype := genotypesValue.Index(i).Interface().(dto.Genotype)
-				genotype.ForKey = prkId //如果上面成功prk必定有值
+				genotype.ForKey = fekId //如果上面成功prk必定有值
 				result := configs.DB.Create(&genotype)
 				if result.Error != nil {
 					fmt.Println("逻辑外键关联的genotype插入失败:", result.Error)
@@ -246,8 +247,34 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 			resultValue := val.FieldByName("Result")
 			if resultValue.IsValid() {
 				//将resultValue转换为dto.HealthResult类型
-				result := resultValue.Interface().(dto.HealthResult)
-				result.ForKey = prkId
+				resultDto := resultValue.Interface().(dto.HealthResultDto)
+				summaryStr, _ := json.Marshal(resultDto.Summary)
+				summaryEnStr, _ := json.Marshal(resultDto.SummaryEn)
+				adviseStr, _ := json.Marshal(resultDto.Advise)
+				adviseEnStr, _ := json.Marshal(resultDto.AdviseEn)
+				healthResult := dto.HealthResult{
+					ForKey:    fekId,
+					Mag:       resultDto.Mag,
+					Odds:      resultDto.Odds,
+					Summary:   string(summaryStr),
+					SummaryEn: string(summaryEnStr),
+					Advise:    string(adviseStr),
+					AdviseEn:  string(adviseEnStr),
+				}
+				//将HealthyResult存入数据库
+				result := configs.DB.Create(&healthResult)
+				if result.Error != nil {
+					fmt.Println("HealthResult插入失败:", result.Error)
+				}
+				healthyResultId := healthResult.ID
+				//对dto.HealthResultDto里面的[]generytype存如数据库
+				for _, v := range resultDto.Genotypes {
+					v.ForKey = healthyResultId //todo：这里的id最好使用uuid不要和上面一样，有可能会和其他记录的外键重复
+					result := configs.DB.Create(&v)
+					if result.Error != nil {
+						fmt.Println("HealthyResultDto的Genotype插入失败:", result.Error)
+					}
+				}
 
 			}
 		} else {
@@ -260,11 +287,11 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 func SaveAllData(token, profileId string) {
 
 	//athletigen、risk、skin、health/carrier、health/metabolism、health/tratis、psychology
-	//health/drug-----X
+	//health/drug-----Xd
 	//getDataFromWegene[dto.HealthyDrug](forHealthyDrug, profileId, BASEURL+"/health/drug", token)
-	/*getDataFromWegene[dto.HealthyThree](forHealthyTraits, profileId, BASEURL+"/health/traits", token)
+	getDataFromWegene[dto.HealthyThree](forHealthyTraits, profileId, BASEURL+"/health/traits", token)
 	getDataFromWegene[dto.HealthyThree](forHealthyCarrier, profileId, BASEURL+"/health/carrier", token)
-	getDataFromWegene[dto.HealthyThree](forHealthyMetabolism, profileId, BASEURL+"/health/metabolism", token)*/
+	getDataFromWegene[dto.HealthyThree](forHealthyMetabolism, profileId, BASEURL+"/health/metabolism", token)
 	getDataFromWegene[dto.Risk](forRisk, profileId, BASEURL+"/risk", token)
 	getDataFromWegene[dto.Athletigen](forAthletigen, profileId, BASEURL+"/athletigen", token)
 	getDataFromWegene[dto.Skin](forSkin, profileId, BASEURL+"/skin", token)
