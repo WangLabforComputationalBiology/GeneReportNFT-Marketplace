@@ -377,7 +377,9 @@ func (u *User) Oauth2Wegene(ctx *gin.Context) {
 	fmt.Println("开始重定向到wegene授权页面")
 	ctx.Redirect(http.StatusMovedPermanently, "https://api.wegene.com/authorize/?redirect_uri="+
 		"http://"+configs.WegeneRedirectHost+":8080/user/receiveCode&response_type=code&client_id=szjsbiolab&"+
-		"scope=basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web"+
+		//fixme 时间证明，rsXX的位置必须放在前面而且在basic的后面，认证会报错！
+		"scope=basic rs670139 rs17749164"+ //前者是数据库记录有的，后者是记录没有的但是txt文件有
+		" athletigen skin psychology risk health ancestry haplogroups demographics web"+
 		" names email")
 }
 
@@ -422,7 +424,8 @@ func (u *User) GetWegeneToken(code string) (tkn string) {
 	//data.Set("redirect_uri", "http://localhost:8080/user/receiveCode") //可有可无
 	//这里的权限范围是上面重定向的子集，只能少不能多，可以用户自己选
 	//fixme 这里可以让用户选择授权的范围
-	data.Set("scope", "basic rs123 athletigen skin psychology risk health ancestry haplogroups demographics web names email")
+	data.Set("scope", "basic rs670139 rs17749164"+ //前者是数据库记录有的，后者是记录没有的但是txt文件有
+		" athletigen skin psychology risk health ancestry haplogroups demographics web names email")
 	//上面的范围如果有names和emali那么/user的响应会多出这两个值
 
 	// 创建POST请求
