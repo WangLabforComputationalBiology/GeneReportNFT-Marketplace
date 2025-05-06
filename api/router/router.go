@@ -2,6 +2,7 @@ package router
 
 import (
 	"GeneReport_platform/api/controllers"
+	"GeneReport_platform/api/controllers/studio"
 	"GeneReport_platform/api/middlewares"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -82,22 +83,28 @@ func registerOrderRouter(r *gin.RouterGroup) {
 	//取消订单
 	r.POST("/cancel", middlewares.AuthMiddleware())
 }
+func registerStudioRouter(r *gin.RouterGroup) {
+	r.GET("/captcha", studio.StudioController.GetCatcha)
+	r.POST("/captcha/check", studio.StudioController.CheckCaptcha)
+}
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(otelgin.Middleware("GRM_Server"), middlewares.CORS())
 
 	//商城首页
 	r.GET("/")
+
 	Test := r.Group("/test")
 	User := r.Group("/user")
 	NFT := r.Group("/nft")
 	Order := r.Group("/order")
-
+	Studio := r.Group("/studio")
 	registerSwaggerRouter(r)
 	testRouter(Test)
 	registerUserRouter(User)
 	registerGNFTRouter(NFT)
 	registerOrderRouter(Order)
+	registerStudioRouter(Studio)
 
 	//前缀是/test
 	controllers.MyTestRoute(r)
