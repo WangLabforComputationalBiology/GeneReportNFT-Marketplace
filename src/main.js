@@ -10,6 +10,9 @@ import 'element-plus/dist/index.css'
 import '../theme/index.css'
 import Header from './views/components/header.vue'
 import Footer from './views/components/footer.vue'
+import "go-captcha-vue/dist/style.css"
+import GoCaptcha from "go-captcha-vue"
+
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
@@ -17,6 +20,7 @@ const app = createApp(App)
     .use(router)
     .use(ElementPlus)
     .use(pinia)
+    .use(GoCaptcha)
     
 //注册 ElementPlus 组件库中的所有图标到全局 Vue 应用中
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
