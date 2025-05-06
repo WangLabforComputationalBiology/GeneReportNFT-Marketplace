@@ -13,6 +13,15 @@ import (
 	"strconv"
 )
 
+// NewCustomError 创建自定义错误
+func NewCustomError(code, message string, err error) *AppError {
+	return &AppError{
+		Code:    code,
+		Message: message,
+		Detail:  err,
+	}
+}
+
 var (
 	EncoderConfig = zapcore.EncoderConfig{
 		TimeKey:        "time",
@@ -57,15 +66,8 @@ func (e *AppError) Error() string {
 	return e.Message
 }
 
-// ErrorHandlerConfig 中间件配置
-type ErrorHandlerConfig struct {
-	DebugMode   bool  // 是否返回堆栈信息
-	LogStack    bool  // 是否记录堆栈信息
-	MaxBodySize int64 // 最大请求Body读取大小
-}
-
 // ErrorHandler 增强的错误处理中间件，使用自定义 Zap 编码器输出到控制台
-func ErrorHandler(config ErrorHandlerConfig) gin.HandlerFunc {
+func ErrorHandler() gin.HandlerFunc {
 
 	// 构建 Zap 日志器
 	logger, err := ZapConfig.Build()
@@ -82,10 +84,6 @@ func ErrorHandler(config ErrorHandlerConfig) gin.HandlerFunc {
 		}
 	}(logger)
 
-	if config.MaxBodySize == 0 {
-		config.MaxBodySize = 1024 * 1024 // 默认1MB
-	}
-
 	return func(c *gin.Context) {
 		// 生成请求ID
 		requestID := uuid.New().String()
@@ -97,14 +95,14 @@ func ErrorHandler(config ErrorHandlerConfig) gin.HandlerFunc {
 			// 捕获 panic
 			if cause := recover(); cause != nil {
 				stack := ""
-				if config.LogStack || config.DebugMode {
-					stack = formatStack(3)
-				}
+				stack = formatStack(3)
+
 				// 使用 Zap 输出到控制台
 				logger.Error("Panic recovered",
 					zap.Any("error", cause),
 					zap.String("stack", stack),
-					zap.String("request", dumpRequest(c.Request, config.MaxBodySize)),
+					//请求体默认大小1MB
+					zap.String("request", dumpRequest(c.Request, 1024*1024)),
 				)
 
 				response := ErrorResponse{
@@ -181,21 +179,11 @@ func ErrorHandler(config ErrorHandlerConfig) gin.HandlerFunc {
 
 				c.JSON(status, response)
 				c.Abort()
-				return
 			}
 		}()
 
 		// 继续处理请求
 		c.Next()
-	}
-}
-
-// NewCustomError 创建自定义错误
-func NewCustomError(code, message string, err error) *AppError {
-	return &AppError{
-		Code:    code,
-		Message: message,
-		Detail:  err,
 	}
 }
 
@@ -215,7 +203,7 @@ func formatStack(skip int) string {
 	return buf.String()
 }
 
-// function 返回简化的函数名
+// function 返回简化的函数名并以二进制形式返回
 func function(pc uintptr) []byte {
 	fn := runtime.FuncForPC(pc)
 	if fn == nil {
@@ -250,8 +238,4 @@ func dumpRequest(req *http.Request, maxBodySize int64) string {
 		}
 	}
 	return b.String()
-}
-
-func errResponse(ctx *gin.Context) {
-	ctx.Error()
 }

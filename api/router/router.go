@@ -2,7 +2,6 @@ package router
 
 import (
 	"GeneReport_platform/api/controllers"
-	"GeneReport_platform/api/controllers/studio"
 	"GeneReport_platform/api/middlewares"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -84,8 +83,8 @@ func registerOrderRouter(r *gin.RouterGroup) {
 	r.POST("/cancel", middlewares.AuthMiddleware())
 }
 func registerStudioRouter(r *gin.RouterGroup) {
-	r.GET("/captcha", studio.StudioController.GetCatcha)
-	r.POST("/captcha/check", studio.StudioController.CheckCaptcha)
+	r.GET("/captcha", controllers.StudioController.GetCatcha)
+	r.POST("/captcha/check", controllers.StudioController.CheckCaptcha)
 }
 func SetupRouter() *gin.Engine {
 	r := gin.Default()

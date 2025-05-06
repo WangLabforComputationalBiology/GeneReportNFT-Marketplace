@@ -1,4 +1,4 @@
-package studio
+package controllers
 
 import (
 	"GeneReport_platform/api/dto"
