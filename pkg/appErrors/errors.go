@@ -1,4 +1,4 @@
-package custom_errors
+package appErrors
 
 import (
 	"GeneReport_platform/api/dto"
