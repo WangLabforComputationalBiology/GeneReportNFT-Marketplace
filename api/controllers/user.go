@@ -4,6 +4,7 @@ import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/services"
+	"GeneReport_platform/pkg/appErrors"
 	"GeneReport_platform/pkg/auth"
 	"GeneReport_platform/pkg/rocketmq"
 	"bytes"
@@ -511,14 +512,13 @@ func getReportId(token string) (usersProfile dto.GetReportId) {
 func (u *User) SendSMSCode(ctx *gin.Context) {
 	var req dto.SendSMSCodeReq
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
-			Code:    http.StatusBadRequest,
-			Message: "请求体格式错误,请检查",
-		})
+		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查"))
 		return
 	}
+
 	if err := services.UserService.SendSMSCode(req.Phone); err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.ToErrResponse())
+		ctx.Error(err)
+		return
 	}
 }
 
@@ -526,23 +526,17 @@ func (u *User) SendSMSCode(ctx *gin.Context) {
 func (u *User) VerifySMSCode(ctx *gin.Context) {
 	var req dto.VerifySMSCodeReq
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
-			Code:    http.StatusBadRequest,
-			Message: "请求体格式错误,请检查",
-		})
+		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查", err))
 		return
 	}
-	if isPass, err := services.UserService.VerifySMSCode(req.Phone, req.Code); err == nil {
-		if isPass {
-			ctx.JSON(http.StatusOK, dto.Response{Code: 200, Message: "验证成功"})
-		} else {
-			ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
-				Code:    http.StatusBadRequest,
-				Message: "验证码错误",
-			})
-		}
-	} else {
-		ctx.JSON(http.StatusInternalServerError, err.ToErrResponse())
+	if isPass, err := services.UserService.VerifySMSCode(req.Phone, req.Code); err != nil {
+		ctx.Error(err)
+		return
+	} else if isPass {
+		ctx.JSON(http.StatusOK, dto.Response{
+			Code:    http.StatusOK,
+			Message: "短信验证成功",
+		})
 	}
 }
 

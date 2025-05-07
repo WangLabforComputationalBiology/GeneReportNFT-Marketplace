@@ -87,19 +87,17 @@ func ZapMiddleware() gin.HandlerFunc {
 				zap.Int("status", status),
 				zap.Duration("latency", latency),
 				zap.String("client_ip", ctx.ClientIP()),
-				zap.String("user_agent", ctx.Request.UserAgent()),
 				zap.String("request_body", requestBody),     // 添加请求体
 				zap.String("errors", err.ErrorWithDetail()), // 记录 Gin 上下文中的错误
 			)
 		} else {
-			AppLogger.Info("Request Error",
+			AppLogger.Info("Info output",
 				zap.String("method", method),
 				zap.String("path", path),
 				zap.String("query", query),
 				zap.Int("status", status),
 				zap.Duration("latency", latency),
 				zap.String("client_ip", ctx.ClientIP()),
-				zap.String("user_agent", ctx.Request.UserAgent()),
 				zap.String("request_body", requestBody),     // 添加请求体
 				zap.String("errors", err.ErrorWithDetail()), // 记录 Gin 上下文中的错误
 			)

@@ -15,15 +15,21 @@ type IAppError interface {
 }
 type AppError struct {
 	Code    int    `json:"code"`
-	Message string `json:"message"` //用户端模糊错误信息
-	Detail  string `json:"detail"`  //内部错误详情
+	Message string `json:"message"`          //用户端模糊错误信息
+	Detail  string `json:"detail,omitempty"` //内部错误详情
 }
 
 // New 仿errors.New
 // 创建一个新的AppError实例
-func New(code int, message string, err error) AppError {
-	return AppError{
-		Code: code, Message: message, Detail: err.Error(),
+func New(code int, message string, errs ...error) AppError {
+	if len(errs) > 0 {
+		return AppError{
+			Code: code, Message: message, Detail: errs[0].Error(),
+		}
+	} else {
+		return AppError{
+			Code: code, Message: message,
+		}
 	}
 }
 

@@ -9,12 +9,10 @@ import (
 
 // UniSMSClient sdk中已默认配置了请求端点和hmac模式
 var UniSMSClient *unisms.UniSMSClient
-var IsInit bool
 
 func init() {
 	// 初始化 smsVerify 客户端
 	//UniSMSClient = unisms.NewClient("Nkkp1zkmw2ZvdqjN8EQmiB9MmGSHsX3HPL4LDzuaiqRKt422Y", "Dv6QEBu7xwv83U3dk7Wqt4ZGGSKsg2")//HMAC模式
-	IsInit = true
 	UniSMSClient = unisms.NewClient("Nkkp1zkmw2ZvdqjN8EQmiB9MmGSHsX3HPL4LDzuaiqRKt422Y") //简易模式
 	fmt.Println("smsVerify client initialized")
 }
@@ -24,16 +22,3 @@ func GenerateSMSCode() string {
 	n, _ := rand.Int(rand.Reader, big.NewInt(1000000))
 	return fmt.Sprintf("%06d", n)
 }
-
-//====================================后续按需求升级HMAC模式======================================
-
-//// GenerateHMACSignature 生成 HMAC 签名
-//func GenerateHMACSignature() string {
-//	// 生成 HMAC 签名
-//
-//}
-//
-//// SendHMACSMS 发送HMAC模式短信
-//func (u *unisms.UniSMSClient) SendHMACSMS(phoneNumber string, code string) {
-//
-//}

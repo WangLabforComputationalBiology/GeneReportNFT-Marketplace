@@ -15,7 +15,6 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -100,7 +99,8 @@ func (u *userService) GetUserInfo(address string) (dto.UpdateUser, appErrors.IAp
 }
 
 // SendSMSCode 发送短信验证码
-func (u *userService) SendSMSCode(phone string) appErrors.IAppError {
+// Redis存储格式 key:"SMS_phone:{phone}" value:{"code":{code},"attempts":0} expire:10min
+func (u *userService) SendSMSCode(phone string) error {
 	message := unisms.BuildMessage()
 	message.SetTo(phone)
 	message.SetSignature("林锐轩")
@@ -109,33 +109,56 @@ func (u *userService) SendSMSCode(phone string) appErrors.IAppError {
 	codeToSave := smsVerify.GenerateSMSCode()
 	// 设置模板数据（code,ttl）
 	message.SetTemplateData(map[string]string{"code": codeToSave, "ttl": "10"})
+	// 设置上下文超时
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	// 发送短信
 	_, err := smsVerify.UniSMSClient.Send(message)
-	log.Println("是否被初始化:", smsVerify.IsInit)
+
 	if err != nil {
 		return appErrors.New(http.StatusServiceUnavailable, "服务繁忙，请稍后再试", err)
 	}
 
-	// 存redis
-	if err = configs.RedisClient.SetEX(context.Background(), "SMS_phone:"+phone, codeToSave, time.Minute*10).Err(); err != nil {
-		return appErrors.New(http.StatusServiceUnavailable, "内部错误", err)
+	// 创建 Pipeline
+	pipe := configs.RedisClient.Pipeline()
+
+	// 在 Pipeline 中添加 HSet 命令
+	pipe.HSet(ctx, "SMS_phone:"+phone, map[string]interface{}{
+		"code":     codeToSave,
+		"attempts": 0,
+	})
+
+	// 在 Pipeline 中添加 Expire 命令
+	pipe.Expire(ctx, "SMS_phone:"+phone, 10*time.Minute)
+
+	// 执行 Pipeline
+	_, err = pipe.Exec(ctx)
+	if err != nil {
+		return appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
 	return nil
 }
 
 // VerifySMSCode 验证短信验证码
-func (u *userService) VerifySMSCode(phone string, code string) (bool, appErrors.IAppError) {
-	//redis取验证码
-	strCmd := configs.RedisClient.Get(context.Background(), "SMS_phone:"+phone)
-
-	if strCmd.Err() == nil {
-		if strings.Split(strCmd.Val(), ":")[1] == code {
-			return true, nil
-		} else {
-			return false, nil
-		}
+// Redis存储格式 key:"SMS_phone:{phone}" value:{"code":{code},"attempts":{attempts}} expire:10min
+func (u *userService) VerifySMSCode(phone string, code string) (bool, error) {
+	var correctCode string
+	var attempts int64
+	sliceCmd := configs.RedisClient.HMGet(context.Background(), "SMS_phone:"+phone, "code", "attempts")
+	if err := sliceCmd.Err(); err != nil {
+		return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	} else {
-		return false, appErrors.New(http.StatusNotFound, "未发送验证码或验证码已过期", errors.New("未发送验证码或验证码已过期"))
-	}
+		correctCode = sliceCmd.Val()[0].(string)
+		attempts = sliceCmd.Val()[1].(int64)
+		if attempts >= 5 {
+			return false, appErrors.New(http.StatusTooManyRequests, "验证码错误次数过多，请十分钟后再试", err)
+		}
 
+		if correctCode != code {
+			defer configs.RedisClient.HIncrBy(context.Background(), "SMS_phone:"+phone, "attempts", 1)
+			return false, appErrors.New(http.StatusBadRequest, "验证码错误", errors.New("验证码错误"))
+
+		}
+		return true, nil
+	}
 }
