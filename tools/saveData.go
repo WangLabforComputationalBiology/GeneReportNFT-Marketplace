@@ -191,6 +191,7 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 			_, err = file.Write((append(jsonData, '\n')))*/
 
 		//获取成功插入后返回的主键id
+		//fixme 因为genetype被多个表共用，这里的id最好随机
 		var fekId uint
 		// 使用反射获取ID属性
 		val := reflect.ValueOf(&responseData) //这里提供指针，下面的嵌套结构体才能修改！！！
@@ -283,18 +284,21 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 
 	}
 }
+func getDataFromWegeneSimple[T any](url string) {
+
+}
 
 func SaveAllData(token, profileId string) {
 
 	//athletigen、risk、skin、health/carrier、health/metabolism、health/tratis、psychology
 	//health/drug-----Xd
 	//getDataFromWegene[dto.HealthyDrug](forHealthyDrug, profileId, BASEURL+"/health/drug", token)
-	getDataFromWegene[dto.HealthyThree](forHealthyTraits, profileId, BASEURL+"/health/traits", token)
-	getDataFromWegene[dto.HealthyThree](forHealthyCarrier, profileId, BASEURL+"/health/carrier", token)
-	getDataFromWegene[dto.HealthyThree](forHealthyMetabolism, profileId, BASEURL+"/health/metabolism", token)
+	getDataFromWegene[dto.HealthyTraits](forHealthyTraits, profileId, BASEURL+"/health/traits", token)
+	getDataFromWegene[dto.HealthyCarrier](forHealthyCarrier, profileId, BASEURL+"/health/carrier", token)
+	getDataFromWegene[dto.HealthyMetabolism](forHealthyMetabolism, profileId, BASEURL+"/health/metabolism", token)
 	getDataFromWegene[dto.Risk](forRisk, profileId, BASEURL+"/risk", token)
 	getDataFromWegene[dto.Athletigen](forAthletigen, profileId, BASEURL+"/athletigen", token)
 	getDataFromWegene[dto.Skin](forSkin, profileId, BASEURL+"/skin", token)
 	getDataFromWegene[dto.Psychology](forPsychology, profileId, BASEURL+"/psychology", token)
-
+	//单独的接口
 }

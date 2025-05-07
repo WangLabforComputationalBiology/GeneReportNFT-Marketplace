@@ -87,7 +87,47 @@ type HealthResult struct {
 }
 
 // HealthyTraits、HealthyCarrier、HealthyMetabolism共用
-type HealthyThree struct {
+type HealthyTraits struct {
+	gorm.Model
+	Head
+	Description      string          `json:"description" gorm:"column:description"`
+	DescriptionEn    string          `json:"description_en" gorm:"column:description_en"`
+	Mag              float64         `json:"mag" gorm:"column:mag"`
+	Odds             float64         `json:"odds" gorm:"column:odds"`
+	Sex              string          `json:"sex" gorm:"column:sex"`
+	Result           HealthResultDto `json:"result" gorm:"-"`
+	AddTime          int             `json:"add_time" gorm:"column:add_time"`
+	CustomUpdateTime int             `json:"custom_update_time" gorm:"column:custom_update_time"`
+	UpdateTime       int             `json:"update_time" gorm:"column:update_time"`
+	CategoryChild    string          `json:"category_child" gorm:"column:category_child"`
+	CategoryThird    string          `json:"category_third" gorm:"column:category_third"` //这部分暂时不知道是什么，string先占着！！
+	Genotypes        []Genotype      `json:"genotypes" gorm:"-"`
+	TSummary         string          `json:"tsummary" gorm:"column:tsummary"`
+	CaseID           int             `json:"caseid" gorm:"column:caseid"`
+	Score            float64         `gorm:"column:score" json:"score"`
+	Rank             string          `gorm:"column:rank" json:"rank"`
+}
+type HealthyCarrier struct {
+	gorm.Model
+	Head
+	Description      string          `json:"description" gorm:"column:description"`
+	DescriptionEn    string          `json:"description_en" gorm:"column:description_en"`
+	Mag              float64         `json:"mag" gorm:"column:mag"`
+	Odds             float64         `json:"odds" gorm:"column:odds"`
+	Sex              string          `json:"sex" gorm:"column:sex"`
+	Result           HealthResultDto `json:"result" gorm:"-"`
+	AddTime          int             `json:"add_time" gorm:"column:add_time"`
+	CustomUpdateTime int             `json:"custom_update_time" gorm:"column:custom_update_time"`
+	UpdateTime       int             `json:"update_time" gorm:"column:update_time"`
+	CategoryChild    string          `json:"category_child" gorm:"column:category_child"`
+	CategoryThird    string          `json:"category_third" gorm:"column:category_third"` //这部分暂时不知道是什么，string先占着！！
+	Genotypes        []Genotype      `json:"genotypes" gorm:"-"`
+	TSummary         string          `json:"tsummary" gorm:"column:tsummary"`
+	CaseID           int             `json:"caseid" gorm:"column:caseid"`
+	Score            float64         `gorm:"column:score" json:"score"`
+	Rank             string          `gorm:"column:rank" json:"rank"`
+}
+type HealthyMetabolism struct {
 	gorm.Model
 	Head
 	Description      string          `json:"description" gorm:"column:description"`
