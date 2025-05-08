@@ -21,7 +21,7 @@
                     </el-icon>
                 </div>
             </span>
-            <button  @click="redirectToOAuth">获取微基因数据</button>
+            <!-- <button  @click="redirectToOAuth">获取微基因数据</button> -->
             <!-- 登录路由 -->
             <router-link to="/login" class="routerSelection"
                 style="position:absolute;right:20px;width:50px" v-if="!account">Login</router-link>

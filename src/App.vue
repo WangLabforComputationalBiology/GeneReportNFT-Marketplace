@@ -6,5 +6,5 @@
   <router-view />
 
   <!-- 尾部导航栏 -->
-  <Footer />
+  <!-- <Footer /> -->
 </template>
