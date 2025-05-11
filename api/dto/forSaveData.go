@@ -1,6 +1,9 @@
 package dto
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"reflect"
+)
 
 type Head struct {
 	ProfileId string `gorm:"column:profile_id"`
@@ -241,4 +244,25 @@ type Demographics struct {
 	NativeProvince string `json:"native_province" gorm:"column:native_province"`
 	NativeCity     string `json:"native_city" gorm:"column:native_city"`
 	Population     string `json:"population" gorm:"column:population"`
+}
+
+// 将有gorm.Mod属性属性的结构体注册到map然后写一个方法可以获取他们的类型
+var typeRegistry = map[string]reflect.Type{
+	//"Genotype":          reflect.TypeOf(Genotype{}),
+	"Psychology":        reflect.TypeOf(Psychology{}),
+	"Skin":              reflect.TypeOf(Skin{}),
+	"Athletigen":        reflect.TypeOf(Athletigen{}),
+	"HealthResult":      reflect.TypeOf(HealthResultDto{}),
+	"HealthyTraits":     reflect.TypeOf(HealthyTraits{}),
+	"HealthyCarrier":    reflect.TypeOf(HealthyCarrier{}),
+	"HealthyMetabolism": reflect.TypeOf(HealthyMetabolism{}),
+	"Risk":              reflect.TypeOf(Risk{}),
+	"Ancestry":          reflect.TypeOf(Ancestry{}),
+	"Haplogroups":       reflect.TypeOf(Haplogroups{}),
+	"Demographics":      reflect.TypeOf(Demographics{}),
+}
+
+func GetStructType(name string) (reflect.Type, bool) {
+	t, ok := typeRegistry[name]
+	return t, ok
 }

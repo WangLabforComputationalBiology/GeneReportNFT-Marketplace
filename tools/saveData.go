@@ -284,7 +284,56 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 
 	}
 }
-func getDataFromWegeneSimple[T any](url string) {
+func getDataFromWegeneSimple[T any](profileId, url, token string) {
+	url += "/" + profileId
+	method := "POST"
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, nil)
+	req.Header.Add("Authorization", "Bearer "+token)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(string(body))
+
+	var responseData T
+	err = json.Unmarshal(body, &responseData)
+	if err != nil {
+		fmt.Println("Error parsing JSON:", err)
+	}
+	val := reflect.ValueOf(&responseData)
+	if val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+	if val.Kind() == reflect.Struct {
+		// 获取Head嵌套结构体的反射值
+		headVal := val.FieldByName("Head")
+		// 修改ProfileId字段
+		profileIdField := headVal.FieldByName("ProfileId")
+		if profileIdField.CanSet() {
+			profileIdField.SetString(profileId)
+		}
+	}
+
+	result := configs.DB.Create(&responseData) //已经用泛型声明了
+	if result.Error != nil {
+		var t T
+		tType := reflect.TypeOf(t)
+		name := tType.Name()
+		fmt.Println(name, "---->创建主表记录错误:", result.Error)
+	}
 
 }
 
@@ -301,4 +350,7 @@ func SaveAllData(token, profileId string) {
 	getDataFromWegene[dto.Skin](forSkin, profileId, BASEURL+"/skin", token)
 	getDataFromWegene[dto.Psychology](forPsychology, profileId, BASEURL+"/psychology", token)
 	//单独的接口
+	getDataFromWegeneSimple[dto.Ancestry](profileId, BASEURL+"/ancestry", token)
+	getDataFromWegeneSimple[dto.Haplogroups](profileId, BASEURL+"/haplogroups", token)
+	getDataFromWegeneSimple[dto.Demographics](profileId, BASEURL+"/demographics", token)
 }

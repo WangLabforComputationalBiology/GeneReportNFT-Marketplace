@@ -65,6 +65,8 @@ func registerUserRouter(r *gin.RouterGroup) {
 	r.POST("/send_sms", controllers.UserController.SendSMSCode)
 	//验证验证码
 	r.POST("/verify_sms", controllers.UserController.VerifySMSCode)
+	//获取用户的基因数据
+	r.GET("/getData/:param" /*, middlewares.AuthMiddleware()*/, controllers.OrderCtrller.GetData)
 }
 func registerGNFTRouter(r *gin.RouterGroup) {
 	//藏品图片
