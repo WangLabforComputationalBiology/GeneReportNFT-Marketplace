@@ -21,13 +21,12 @@
 
 
          <div class="wrapper-right" v-if="this.step === -1">
-
          </div>
 
 
          <!-- 短信验证阶段 0 -->
          <div class="wrapper-left" v-if="this.step === 0">
-            <h1 style="margin: 10px; color:#909399">Start your GNFT journey from here</h1>
+            <h1>Start your GNFT journey from here</h1>
             <div class="inside-step"><img src="../../icons/status_ing.svg" alt="status icon">
                <div class="step-tip" style="line-height: 80px; color:#67c23a">Verify your region using phone number.
                </div>
@@ -160,7 +159,7 @@
 
          <!-- 添加描述阶段 1 -->
          <div class="wrapper-left" v-if="this.step === 2">
-            <h1 style="margin: 10px; color:#909399">Start your GNFT journey from here</h1>
+            <h1>Start your GNFT journey from here</h1>
             <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
                <div class="step-tip" style="line-height: 80px; color:#67c23a">Verify your region using phone number.
                </div>
@@ -168,7 +167,7 @@
             </div>
             <div class="line" style="background-color: #67c23a;"></div>
             <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
-               <div class="step-tip" style="color:#67c23a">Allow us to access your genetic reports. We ensure that no
+               <div class="step-tip-ok">Allow us to access your genetic reports. We ensure that no
                   additonal
                   personal data
                   will be stored by your platform.</div>
@@ -176,7 +175,7 @@
             </div>
             <div class="line" style="background-color: #67c23a;"></div>
             <div class="inside-step"><img src="../../icons/status_ing.svg" alt="status icon">
-               <div class="step-tip">Create your unique GNFT. Once your item is minted you will not be able to change
+               <div class="step-tip-ok">Create your unique GNFT. Once your item is minted you will not be able to change
                   any of its information.</div>
 
             </div>
@@ -226,7 +225,7 @@
 
          <!-- 完成阶段 3 -->
          <div class="wrapper-left" v-if="this.step === 3">
-            <h1 style="margin: 10px; color:#909399">Start your GNFT journey from here</h1>
+            <h1>Start your GNFT journey from here</h1>
             <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
                <div class="step-tip" style="line-height: 80px; color:#67c23a">Verify your region using phone number.
                </div>
@@ -408,6 +407,10 @@ export default {
       padding: 150px 80px 100px 160px;
       height: calc(100vh - 60px);
 
+      h1{
+         margin: 10px;color:#909399;
+      }
+
       .title {
          font-size: 70px;
          color: #67C23A;
@@ -451,6 +454,14 @@ export default {
             font-size: 20px;
             margin-left: 25px;
             color: #A8ABB2;
+         }
+         .step-tip-ok {
+            display: flex;
+            align-self: center;
+            font-size: 20px;
+            margin-left: 25px;
+            color: #A8ABB2;
+            color: #67C23A;
          }
       }
 

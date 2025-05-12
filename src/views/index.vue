@@ -1,5 +1,8 @@
 <template>
    <!-- banner区域 -->
+   <body>
+      
+   
    <div class="wapper">
       <banner>
          <div class="banner-left">
@@ -61,7 +64,7 @@
    </div>
 
 
-
+</body>
 </template>
 
 <script>
@@ -93,6 +96,9 @@ export default {
 
 
 <style lang="scss" scoped>
+body{
+   overflow: auto;
+}
 .wapper {
    margin: 60px auto;
    width: 1400px;
