@@ -182,11 +182,14 @@ ${nonce}`;
         }
 
         .meta {
-            margin-top: 30px;
+            margin-top: 50px;
             display: flex;
             border-radius: 10px;
             border: 1px solid #E4E7ED;
 
+            .icon{
+                margin-left: 50px;
+            }
 
             p {
                 font-size: 36px;

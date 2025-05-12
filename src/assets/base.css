@@ -58,6 +58,18 @@
   font-weight: normal;
 }
 
+
+/* 隐藏滚动条 */
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+html::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+
  /* 全局样式 */
 body {
     margin: auto;

@@ -72,8 +72,9 @@
                      </template>
                   </el-input>
                </el-form-item>
-
-               <!-- <gocaptcha-rotate :config="{}" :data="{}" :events="{}" ref="domRef" /> -->
+               
+                  <SliderCheck :successFun="handleSuccessFun" :errorFun="handleErrorFun"  style="margin-bottom: 22px;"/>
+               
 
                <el-form-item label="Verification code:">
                   <el-input v-model="form.code" type="code" maxlength="6">
@@ -271,7 +272,8 @@
 </template>
 
 
-<script lang="ts">
+<script lang="js">
+import SliderCheck from '../components/slidecheck.vue';
 // import Api from '../../axios/aixos';
 // 国家代码映射
 const countryCodeMap = {
@@ -284,6 +286,7 @@ const countryCodeMap = {
 
 export default {
    name: 'Create',
+   components: { SliderCheck },
    data() {
       return {
          step: -1,//0:进行手机验证
@@ -371,9 +374,13 @@ export default {
          } catch (error) {
             console.error('Error authorizing profile:', error);
          }
-
-
-      }
+      },
+      // 滑块验证成功回调
+      handleSuccessFun() {
+         this.login_model.status = true
+      },
+      // 滑块验证失败回调
+      handleErrorFun() { },
    }
 }
 </script>
@@ -592,6 +599,7 @@ export default {
 
 .add-trait {
    color: #67C23A;
+
    &:hover {
       cursor: pointer;
 
