@@ -48,7 +48,7 @@
             <div class="line"></div>
             <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
                <div class="step-tip" style="line-height: 28px;">Offer your GNFT for sale on the market. Prior listing,
-                  you may delete your GNFT; However, once listed, you will not be able to delete your GNFT。</div>
+                  you may delete your GNFT; However, once listed, you will not be able to delete your GNFT.</div>
 
             </div>
          </div>
@@ -461,7 +461,7 @@ export default {
    overflow: auto;
    right: 0;
    width: 50%;
-   padding: 150px 180px;
+   padding: 100px 180px;
    height: calc(100vh - 60px);
 
    .platforms {
@@ -591,6 +591,7 @@ export default {
 }
 
 .add-trait {
+   color: #67C23A;
    &:hover {
       cursor: pointer;
 
