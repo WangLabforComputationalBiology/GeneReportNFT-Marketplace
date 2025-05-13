@@ -12,6 +12,7 @@ import (
 	"errors"
 	unisms "github.com/apistd/uni-go-sdk/sms"
 	"github.com/go-redis/redis/v8"
+	"github.com/mitchellh/mapstructure"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
@@ -86,15 +87,18 @@ func (u *userService) UpdateUser(toUpdate dto.UpdateUser) appErrors.IAppError {
 	return nil
 }
 
-func (u *userService) GetUserInfo(address string) (dto.UpdateUser, appErrors.IAppError) {
-	userInfo, err := dao.UserDao.GetUserInfo(address)
+func (u *userService) GetUserInfo(address string) (dto.UserInfoRes, error) {
+	user, err := dao.UserDao.GetUser(address)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return dto.UpdateUser{}, appErrors.New(http.StatusNotFound, "用户不存在", err)
+			return dto.UserInfoRes{}, appErrors.New(http.StatusNotFound, "用户不存在", err)
 		} else {
-			return dto.UpdateUser{}, appErrors.New(http.StatusInternalServerError, "服务器内部错误", err)
+			return dto.UserInfoRes{}, appErrors.New(http.StatusInternalServerError, "服务器内部错误", err)
 		}
 	}
+	// 映射转换dto
+	var userInfo dto.UserInfoRes
+	mapstructure.Decode(user, &userInfo)
 	return userInfo, nil
 }
 
