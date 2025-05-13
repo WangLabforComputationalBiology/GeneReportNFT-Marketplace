@@ -934,7 +934,7 @@ CREATE TABLE ownerships
 
 drop table if exists `activities`;
 -- 活动activities表
-CREATE TABLE Activity (
+CREATE TABLE activities (
                           id VARCHAR(36) NOT NULL,
                           user_address VARCHAR(42) NOT NULL,
                           time DATETIME NOT NULL,
