@@ -1,24 +1,13 @@
 package models
 
-import (
-	"time"
-)
-
 type GNFT struct {
-	ID          int       `json:"id"`
-	Name        string    `json:"file_name"`
-	FileSig     string    `json:"file_sig"`
-	FileShares  int       `json:"file_shares"`
-	Data        string    `json:"data"`
-	Race        int       `json:"race"`
-	Age         int       `json:"age"`
-	BloodType   int       `json:"blood_type"`
-	Gender      bool      `json:"gender"`
-	Height      float32   `json:"height"`
-	Weight      float32   `json:"weight"`
-	SmkStat     int       `json:"smk_stat"`
-	AlcStat     int       `json:"alc_stat"`
-	Other       string    `json:"other"`
-	Description string    `json:"description"`
-	CreateAt    time.Time `json:"create_at"`
+	ProfileId     string `gorm:"index:idx_gnft;type:varchar(32)" json:"profileId"`
+	Identifier    string `gorm:"index:idx_gnft;type:varchar(32)" json:"identifier"`
+	Category      string `gorm:"type:varchar(32)" json:"category"`
+	Address       string `gorm:"type:varchar(42)" json:"address"`
+	TokenStandard string `gorm:"type:varchar(32)" json:"token_standard"`
+	Name          string `gorm:"index:idx_name;type:varchar(32)" json:"name"`
+	Description   string `gorm:"type:text" json:"description"`
+	Supply        int    `gorm:"type:int" json:"supply"`
+	IsMinted      bool   `gorm:"type:boolean;default:false" json:"is_minted"`
 }

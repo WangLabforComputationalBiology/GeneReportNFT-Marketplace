@@ -8,9 +8,9 @@ import (
 )
 
 var modelList = []interface{}{
-	&models.GNFT{},  //文件
-	&models.User{},  //用户
-	&models.Order{}, //权限
+	&models.GNFT{},    //文件
+	&models.User{},    //用户
+	&models.Listing{}, //权限
 }
 
 func main() {
