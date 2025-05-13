@@ -298,7 +298,7 @@ func (u *User) UploadAvatar(ctx *gin.Context) {
 	//ctx.String(http.StatusOK, "文件上传成功，其他字段值: %s", address)
 }
 
-// GetInfo
+// GetUserInfo
 //
 //	@Summary		获取用户基本信息
 //	@Description	根据用户地址获取用户基本信息
@@ -309,13 +309,11 @@ func (u *User) UploadAvatar(ctx *gin.Context) {
 //	@Success		200				{object}	dto.Response	"响应用户基本信息"
 //	@Failure		503				{object}	dto.ErrResponse	"mysql不可用"
 //	@Router			/user/info [post]
-func (u *User) GetInfo(ctx *gin.Context) {
-	// 获取请求头中的 Authorization 值
+func (u *User) GetUserInfo(ctx *gin.Context) {
 	address := ctx.GetString("user_address")
 	userInfo, err := services.UserService.GetUserInfo(address)
 	if err != nil {
 		ctx.Error(err)
-		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 	}
 	ctx.JSON(http.StatusOK, userInfo)
 

@@ -46,7 +46,7 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//登出
 	r.POST("/logout", middlewares.AuthMiddleware(), controllers.UserController.Logout)
 	//用户主页信息
-	r.GET("/info", middlewares.AuthMiddleware(), controllers.UserController.GetInfo)
+	r.GET("/info", middlewares.AuthMiddleware(), controllers.UserController.GetUserInfo)
 	//获取用户收藏列表
 	r.GET("/gnfts", middlewares.AuthMiddleware(), controllers.UserController.GetGNFTList)
 	//获取用户头像
@@ -85,7 +85,7 @@ func registerOrderRouter(r *gin.RouterGroup) {
 	r.POST("/cancel", middlewares.AuthMiddleware())
 }
 func registerStudioRouter(r *gin.RouterGroup) {
-	r.GET("/captcha", controllers.StudioController.GetCatcha)
+	r.GET("/captcha", controllers.StudioController.GetCATCHA)
 	r.POST("/captcha/check", controllers.StudioController.CheckCaptcha)
 }
 func SetupRouter() *gin.Engine {

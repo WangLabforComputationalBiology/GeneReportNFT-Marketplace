@@ -10,6 +10,7 @@ import (
 )
 
 // AuthMiddleware
+//
 //	@securityDefinitions.apikey	JwtAuth
 //	@in							header
 //	@name						Authorization
