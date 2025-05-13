@@ -5,7 +5,7 @@ import (
 )
 
 type Collection struct {
-	ProfileId      string    `gorm:"primaryKey;type:varchar(32)" json:"profileId"`
+	Id             string    `gorm:"primaryKey;type:varchar(32)" json:"Id"`
 	Name           string    `gorm:"type:varchar(32)" json:"name"`
 	Address        string    `gorm:"type:varchar(42)" json:"address"`
 	Description    string    `gorm:"type:text" json:"description"`

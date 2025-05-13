@@ -1,7 +1,8 @@
 package models
 
 type Listing struct {
-	ProfileId         string `gorm:"index:idx_listing;type:varchar(32)" json:"profileId"`
+	Id                string `gorm:"primaryKey;type:varchar(36)" json:"id"`
+	CollectionId      string `gorm:"index:idx_listing;type:varchar(32)" json:"collection_id"`
 	Identifier        string `gorm:"index:idx_listing;type:varchar(32)" json:"identifier"`
 	SaleAmount        uint   `gorm:"index:idx_listing;type:int" json:"sale_amount"`
 	Offerer           string `gorm:"type:varchar(42)" json:"offerer"`

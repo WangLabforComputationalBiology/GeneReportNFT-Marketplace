@@ -1,8 +1,9 @@
 package models
 
 type GNFT struct {
-	ProfileId     string `gorm:"index:idx_gnft;type:varchar(32)" json:"profileId"`
-	Identifier    string `gorm:"index:idx_gnft;type:varchar(32)" json:"identifier"`
+	Id            string `gorm:"primaryKey;type:varchar(36)" json:"id"`
+	CollectionId  string `gorm:"uniqueIndex:idx_gnft;type:varchar(32)" json:"collection_id"`
+	Identifier    string `gorm:"uniqueIndex:idx_gnft;type:varchar(32)" json:"identifier"`
 	Category      string `gorm:"type:varchar(32)" json:"category"`
 	Address       string `gorm:"type:varchar(42)" json:"address"`
 	TokenStandard string `gorm:"type:varchar(32)" json:"token_standard"`

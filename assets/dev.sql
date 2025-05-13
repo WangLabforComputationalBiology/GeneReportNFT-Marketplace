@@ -872,14 +872,15 @@ CREATE TABLE `GNFT_transaction`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='GNFT_transaction';
 
--- 上架单listings表
 drop table if exists `listings`;
+-- 上架单listings表
 CREATE TABLE listings
 (
-    profile_id         VARCHAR(32)  NOT NULL,
-    offerer            VARCHAR(42)  NOT NULL,
+    id                 VARCHAR(36)  NOT NULL,
+    collection_id      VARCHAR(32)  NOT NULL,
     identifier         VARCHAR(32)  NOT NULL,
     sale_amount        VARCHAR(32)  NOT NULL,
+    offerer            VARCHAR(42)  NOT NULL,
     creator_fee        BIGINT       NOT NULL,
     creator            VARCHAR(42)  NOT NULL,
     offerer_fee        BIGINT       NOT NULL,
@@ -887,26 +888,28 @@ CREATE TABLE listings
     signature          VARCHAR(132) NOT NULL,
     remaining_quantity INT          NOT NULL,
     finalized          BOOLEAN DEFAULT FALSE,
-    INDEX idx_listing (profile_id, identifier, sale_amount)
+    INDEX idx_listing (collection_id, identifier, sale_amount)
 );
 
+drop table if exists `collections`;
 -- 藏品集合collections表
 CREATE TABLE collections
 (
-    profile_id      VARCHAR(32) PRIMARY KEY,
-    name            VARCHAR(32),
-    address         VARCHAR(42),
+    id              VARCHAR(32) PRIMARY KEY ,
+    name            VARCHAR(32)             NOT NULL,
+    address         VARCHAR(42)             NOT NULL,
     description     TEXT,
-    creator         VARCHAR(42),
-    creator_earning DECIMAL(10, 2),
-    required_zone   VARCHAR(32),
-    created_at      DATETIME
+    creator         VARCHAR(42)             NOT NULL,
+    creator_earning DECIMAL(10, 2)          NOT NULL,
+    required_zone   VARCHAR(32)             NOT NULL,
+    created_at      DATETIME                NOT NULL
 );
 
+drop table if exists `gnfts`;
 -- 藏品集合下的藏品gnfts表
 CREATE TABLE gnfts
 (
-    profile_id     VARCHAR(32),
+    collection_id  VARCHAR(32),
     identifier     VARCHAR(32),
     category       VARCHAR(32),
     address        VARCHAR(42),
@@ -915,14 +918,34 @@ CREATE TABLE gnfts
     description    TEXT,
     supply         INT,
     is_minted      BOOLEAN DEFAULT FALSE,
-    UNIQUE INDEX idx_gnft (profile_id, identifier)
+    UNIQUE INDEX idx_gnft (collection_id, identifier)
 );
 
+drop table if exists `ownerships`;
 -- 用户与gnft关系中间表
-CREATE TABLE ownerships(
-    owner VARCHAR(42),
+CREATE TABLE ownerships
+(
+    owner      VARCHAR(42),
     profile_id VARCHAR(32),
     identifier VARCHAR(32),
-    quantity INT,
-    UNIQUE INDEX idx_ownership (owner,profile_id, identifier)
+    quantity   INT,
+    UNIQUE INDEX idx_ownership (owner, profile_id, identifier)
+);
+
+drop table if exists `activities`;
+-- 活动activities表
+CREATE TABLE Activity (
+                          id VARCHAR(36) NOT NULL,
+                          user_address VARCHAR(42) NOT NULL,
+                          time DATETIME NOT NULL,
+                          activity_type VARCHAR(255) NOT NULL,
+                          collection_id VARCHAR(32),
+                          identifier VARCHAR(32),
+                          price DECIMAL(20,8) NOT NULL,
+                          quantity INT NOT NULL,
+                          from_address VARCHAR(42) NOT NULL,
+                          to_address VARCHAR(42) NOT NULL,
+                          link VARCHAR(255),
+                          PRIMARY KEY (id),
+                          INDEX idx_activity (user_address, time)
 );
