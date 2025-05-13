@@ -44,7 +44,7 @@ func (u *userDao) UpdateUser(toUpdate dto.UpdateUser) error {
 	return u.DB().Model(&models.User{}).Model(&models.User{}).Where("address = ?", toUpdate.Address).Updates(&models.User{Name: toUpdate.Name}).Error
 }
 
-func (u *userDao) GetUserInfo(address string) (dto.UpdateUser, error) {
-	var userInfo dto.UpdateUser
+func (u *userDao) GetUser(address string) (models.User, error) {
+	var userInfo models.User
 	return userInfo, u.DB().Model(&models.User{}).Where("address = ?", address).First(&userInfo).Error
 }
