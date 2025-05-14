@@ -31,12 +31,15 @@ type Result struct {
 	YParity              string   `json:"yParity"`
 }
 
-type GetGNFTInfoByOwnerReq struct {
-	CollectionID string `json:"collection_id"`
-	Identifier   string `json:"identifier"`
-}
-
-type GetGNFTInfoByOwnerResp struct {
+type GetGNFTInfoResp struct {
 	GNFT       models.GNFT       `json:"gnft"`
 	Collection models.Collection `json:"collection"`
+	Quantity   int               `gorm:"column:quantity" json:"quantity"`
+}
+
+type GetGNFTInfosByOwnerReq struct {
+	Owner string `json:"owner" binding:"required"`
+}
+type GetGNFTInfosByOwnerResp struct {
+	GNFTs []GetGNFTInfoResp `json:"gnfts"`
 }
