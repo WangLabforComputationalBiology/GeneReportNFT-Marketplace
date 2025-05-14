@@ -76,14 +76,7 @@ func registerGNFTRouter(r *gin.RouterGroup) {
 	//生成订单
 	r.POST("/buy", middlewares.AuthMiddleware())
 }
-func registerOrderRouter(r *gin.RouterGroup) {
-	//订单信息
-	r.GET("/info", middlewares.AuthMiddleware())
-	//支付
-	r.POST("/pay", middlewares.AuthMiddleware())
-	//取消订单
-	r.POST("/cancel", middlewares.AuthMiddleware())
-}
+
 func registerStudioRouter(r *gin.RouterGroup) {
 	r.GET("/captcha", controllers.StudioController.GetCATCHA)
 	r.POST("/captcha/check", controllers.StudioController.CheckCaptcha)
@@ -98,13 +91,11 @@ func SetupRouter() *gin.Engine {
 	Test := r.Group("/test")
 	User := r.Group("/user")
 	NFT := r.Group("/nft")
-	Order := r.Group("/order")
 	Studio := r.Group("/studio")
 	registerSwaggerRouter(r)
 	testRouter(Test)
 	registerUserRouter(User)
 	registerGNFTRouter(NFT)
-	registerOrderRouter(Order)
 	registerStudioRouter(Studio)
 
 	//前缀是/test

@@ -20,13 +20,13 @@ var (
 //	@Tags			collection管理
 //	@Accept			json
 //	@Produce		json
-//	@Router			/collection/info [post]
-//	@Body			{collection_id} dto.GetCollectionInfoReq
+//	@Router			/collection/info/id [post]
+//	@Param			Request	         body		dto.GetCollectionInfoByIDReq	true	"获取数据请求"
 //	@Success		200				{object}	dto.Response	"成功获取集合信息"
 //	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
 //	@Failure		503				{object}	dto.ErrResponse	"获取集合失败"
 func GetCollectionInfoByID(ctx *gin.Context) {
-	var req dto.GetCollectionWithGNFTsByIDReq
+	var req dto.GetCollectionInfoByIDReq
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
@@ -54,13 +54,13 @@ func GetCollectionInfoByID(ctx *gin.Context) {
 //	@Tags			collection管理
 //	@Accept			json
 //	@Produce		json
-//	@Router			/collection/info [post]
-//	@Body			{collection_id} dto.GetCollectionsWithGNFTsByCreatorReq
+//	@Router			/collection/info/creator [post]
+//	@Param			Request	         body		dto.GetCollectionsInfosByCreatorReq	  true	"获取数据请求"
 //	@Success		200				{object}	dto.Response	"成功获取集合信息"
 //	@Failure		400				{object}	dto.ErrResponse	"请求体格式错误"
 //	@Failure		503				{object}	dto.ErrResponse	"获取集合失败"
 func GetCollectionInfoByCreator(ctx *gin.Context) {
-	var req dto.GetCollectionsWithGNFTsByCreatorReq
+	var req dto.GetCollectionsInfosByCreatorReq
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,

@@ -1,5 +1,7 @@
 package dto
 
+import "GeneReport_platform/internal/models"
+
 // RpcResponse 用于调用ethscanner的api请求得到的响应数据
 type RpcResponse struct {
 	JSONRPC string `json:"jsonrpc"`
@@ -28,20 +30,13 @@ type Result struct {
 	S                    string   `json:"s"`
 	YParity              string   `json:"yParity"`
 }
-type GetGNFTInfoReq struct {
+
+type GetGNFTInfoByOwnerReq struct {
 	CollectionID string `json:"collection_id"`
 	Identifier   string `json:"identifier"`
 }
 
-type GetGNFTInfoResp struct {
-	Id            string `json:"id"`
-	CollectionId  string `json:"collection_id"`
-	Identifier    string `json:"identifier"`
-	Category      string `json:"category"`
-	Address       string `json:"address"`
-	TokenStandard string `json:"token_standard"`
-	Name          string `json:"name"`
-	Description   string `json:"description"`
-	Supply        int    `json:"supply"`
-	IsMinted      bool   `json:"is_minted"`
+type GetGNFTInfoByOwnerResp struct {
+	GNFT       models.GNFT       `json:"gnft"`
+	Collection models.Collection `json:"collection"`
 }
