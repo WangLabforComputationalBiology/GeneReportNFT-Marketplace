@@ -29,7 +29,19 @@ type Result struct {
 	YParity              string   `json:"yParity"`
 }
 type GetGNFTInfoReq struct {
+	CollectionID string `json:"collection_id"`
+	Identifier   string `json:"identifier"`
 }
 
-type GetGNFTInfoRes struct {
+type GetGNFTInfoResp struct {
+	Id            string `json:"id"`
+	CollectionId  string `json:"collection_id"`
+	Identifier    string `json:"identifier"`
+	Category      string `json:"category"`
+	Address       string `json:"address"`
+	TokenStandard string `json:"token_standard"`
+	Name          string `json:"name"`
+	Description   string `json:"description"`
+	Supply        int    `json:"supply"`
+	IsMinted      bool   `json:"is_minted"`
 }

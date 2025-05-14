@@ -10,19 +10,19 @@ import (
 )
 
 var (
-	orderService *OrderService
+	listingService *ListingService
 )
 
-type OrderService struct {
-	iOrderBase
+type ListingService struct {
+	iListingBase
 }
 
 // 订单基础接口
-type iOrderBase interface {
+type iListingBase interface {
 }
 
 func RegisterOrderService() {
-	orderService = &OrderService{}
+	listingService = &ListingService{}
 }
 
 /*fill your method here*/

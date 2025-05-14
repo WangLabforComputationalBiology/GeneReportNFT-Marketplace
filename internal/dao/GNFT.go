@@ -5,16 +5,28 @@ import (
 	"GeneReport_platform/pkg/appContext"
 	"context"
 	"gorm.io/gorm"
+	"sync"
 )
 
-var gnftDao *GNFTDao
+var (
+	gnftDao  *GNFTDao
+	gnftOnce sync.Once
+)
+
+// GetGNFTDao 导出GNFTDao
+func GetGNFTDao() *GNFTDao {
+	gnftOnce.Do(func() {
+		registerGNFTDao()
+	})
+	return gnftDao
+}
 
 type GNFTDao struct {
 	db  *gorm.DB
 	ctx context.Context
 }
 
-func RegisterGNFTDao() {
+func registerGNFTDao() {
 
 	gnftDao = &GNFTDao{
 		db:  configs.DB,
@@ -22,6 +34,6 @@ func RegisterGNFTDao() {
 	}
 }
 
-func (u *GNFTDao) DB() *gorm.DB {
-	return u.db.WithContext(appContext.NewTimeoutContextByParent(u.ctx))
+func (g *GNFTDao) DB() *gorm.DB {
+	return g.db.WithContext(appContext.NewTimeoutContextByParent(g.ctx))
 }

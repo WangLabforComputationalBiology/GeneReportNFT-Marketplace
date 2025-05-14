@@ -2,7 +2,6 @@ package setup
 
 import (
 	"GeneReport_platform/configs"
-	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/internal/services"
 	"context"
 	"fmt"
@@ -22,11 +21,7 @@ func registerServices() {
 	services.RegisterGNFTService()
 	services.RegisterOrderService()
 }
-func registerDAO() {
-	dao.RegisterUserDao()
-	dao.RegisterGNFTDao()
-	dao.RegisterOrderDao()
-}
+
 func setupMysql() {
 	//初始化数据库连接
 	dsn := configs.GlobalConfig.MysqlConfig.Dsn
@@ -98,7 +93,6 @@ func Setup() {
 		setupMysql()
 		setupRedis()
 		registerServices()
-		registerDAO()
 		initEtherScanConfig()
 	})
 

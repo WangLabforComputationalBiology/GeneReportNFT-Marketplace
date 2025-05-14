@@ -54,7 +54,7 @@ func (u *User) GetNonce(ctx *gin.Context) {
 		return
 	}
 	//获取nonce
-	if nonce, err := services.UserService.GetNonce(address); err != nil {
+	if nonce, err := services.UserServ.GetNonce(address); err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
 	} else {
@@ -107,7 +107,7 @@ func (u *User) Login(ctx *gin.Context) {
 	}
 
 	//2.获取nonce,校验redis中是否有nonce
-	nonce, err := services.UserService.GetNonce(address)
+	nonce, err := services.UserServ.GetNonce(address)
 	if err != nil {
 		log.Println("当前地址无nonce，请重新登录")
 		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
@@ -125,7 +125,7 @@ func (u *User) Login(ctx *gin.Context) {
 	}
 
 	//4，确保用户存在，不存在执行创建
-	if err := services.UserService.EnsureUserExists(address); err != nil {
+	if err := services.UserServ.EnsureUserExists(address); err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
 	}
@@ -201,7 +201,7 @@ func (u *User) EditUserName(ctx *gin.Context) {
 
 	log.Println(" 来自post请求体的json的new_name:" + newName)
 	toUpdate := dto.UpdateUser{Name: newName}
-	if err := services.UserService.UpdateUser(toUpdate); err != nil {
+	if err := services.UserServ.UpdateUser(toUpdate); err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
 	}
@@ -276,7 +276,7 @@ func (u *User) UploadAvatar(ctx *gin.Context) {
 
 	var toUpdate = dto.UpdateUser{Avatar: "/test/" + pictureName}
 	// 修改数据库的内容
-	if err := services.UserService.UpdateUser(toUpdate); err != nil {
+	if err := services.UserServ.UpdateUser(toUpdate); err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, gin.H{"error": "mysql不可用,上传头像失败"})
 		return
 	}
@@ -311,7 +311,7 @@ func (u *User) UploadAvatar(ctx *gin.Context) {
 //	@Router			/user/info [post]
 func (u *User) GetUserInfo(ctx *gin.Context) {
 	address := ctx.GetString("user_address")
-	userInfo, err := services.UserService.GetUserInfo(address)
+	userInfo, err := services.UserServ.GetUserInfoByID(address)
 	if err != nil {
 		ctx.Error(err)
 	}
@@ -514,7 +514,7 @@ func (u *User) SendSMSCode(ctx *gin.Context) {
 		return
 	}
 
-	if err := services.UserService.SendSMSCode(req.Phone); err != nil {
+	if err := services.UserServ.SendSMSCode(req.Phone); err != nil {
 		ctx.Error(err)
 		return
 	}
@@ -527,7 +527,7 @@ func (u *User) VerifySMSCode(ctx *gin.Context) {
 		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查", err))
 		return
 	}
-	if isPass, err := services.UserService.VerifySMSCode(req.Phone, req.Code); err != nil {
+	if isPass, err := services.UserServ.VerifySMSCode(req.Phone, req.Code); err != nil {
 		ctx.Error(err)
 		return
 	} else if isPass {

@@ -7,28 +7,39 @@ import (
 	"GeneReport_platform/pkg/appContext"
 	"context"
 	"gorm.io/gorm"
+	"sync"
 	"time"
 )
 
-var UserDao *userDao
+var (
+	userDao  *UserDao
+	userOnce sync.Once
+)
 
-type userDao struct {
+type UserDao struct {
 	db  *gorm.DB
 	ctx context.Context
 }
 
-func RegisterUserDao() {
-	UserDao = &userDao{
+func GetUserDao() *UserDao {
+	userOnce.Do(func() {
+		registerUserDao()
+	})
+	return userDao
+}
+
+func registerUserDao() {
+	userDao = &UserDao{
 		ctx: context.Background(),
 		db:  configs.DB,
 	}
 }
 
-func (u *userDao) DB() *gorm.DB {
+func (u *UserDao) DB() *gorm.DB {
 	return u.db.WithContext(appContext.NewTimeoutContextByParent(u.ctx))
 }
 
-func (u *userDao) IsExist(address string) (bool, error) {
+func (u *UserDao) IsExist(address string) (bool, error) {
 	var count int64
 	if err := u.DB().Model(&models.User{}).Where("address = ?", address).Count(&count).Error; err != nil {
 		return false, err
@@ -36,15 +47,15 @@ func (u *userDao) IsExist(address string) (bool, error) {
 	return count > 0, nil
 }
 
-func (u *userDao) CreateUser(address string) error {
+func (u *UserDao) CreateUser(address string) error {
 	return u.DB().Model(&models.User{}).Create(&models.User{Address: address, Name: "unnamed", CreateAt: time.Now()}).Error
 }
 
-func (u *userDao) UpdateUser(toUpdate dto.UpdateUser) error {
-	return u.DB().Model(&models.User{}).Model(&models.User{}).Where("address = ?", toUpdate.Address).Updates(&models.User{Name: toUpdate.Name}).Error
+func (u *UserDao) UpdateUser(toUpdate dto.UpdateUser) error {
+	return u.DB().Model(&models.User{}).Where("address = ?", toUpdate.Address).Updates(&models.User{Name: toUpdate.Name}).Error
 }
 
-func (u *userDao) GetUser(address string) (models.User, error) {
+func (u *UserDao) GetUser(address string) (models.User, error) {
 	var userInfo models.User
 	return userInfo, u.DB().Model(&models.User{}).Where("address = ?", address).First(&userInfo).Error
 }

@@ -895,14 +895,17 @@ drop table if exists `collections`;
 -- 藏品集合collections表
 CREATE TABLE collections
 (
-    id              VARCHAR(32) PRIMARY KEY ,
-    name            VARCHAR(32)             NOT NULL,
-    address         VARCHAR(42)             NOT NULL,
-    description     TEXT,
-    creator         VARCHAR(42)             NOT NULL,
-    creator_earning DECIMAL(10, 2)          NOT NULL,
-    required_zone   VARCHAR(32)             NOT NULL,
-    created_at      DATETIME                NOT NULL
+    id               VARCHAR(32) PRIMARY KEY,
+    name             VARCHAR(32)    NOT NULL,
+    address          VARCHAR(42)    NOT NULL,
+    description      TEXT,
+    creator          VARCHAR(42)    NOT NULL,
+    creator_earning  DECIMAL(10, 2) NOT NULL,
+    available_region VARCHAR(32)    NOT NULL,
+    created_at       DATETIME       NOT NULL,
+    explorer_link    varchar(255)   not null,
+    item_amount      int default 8  not null,
+    INDEX idx_creator (creator)
 );
 
 drop table if exists `gnfts`;
@@ -918,6 +921,7 @@ CREATE TABLE gnfts
     description    TEXT,
     supply         INT,
     is_minted      BOOLEAN DEFAULT FALSE,
+    created_at     DATETIME,
     UNIQUE INDEX idx_gnft (collection_id, identifier)
 );
 
@@ -934,18 +938,19 @@ CREATE TABLE ownerships
 
 drop table if exists `activities`;
 -- 活动activities表
-CREATE TABLE activities (
-                          id VARCHAR(36) NOT NULL,
-                          user_address VARCHAR(42) NOT NULL,
-                          time DATETIME NOT NULL,
-                          activity_type VARCHAR(255) NOT NULL,
-                          collection_id VARCHAR(32),
-                          identifier VARCHAR(32),
-                          price DECIMAL(20,8) NOT NULL,
-                          quantity INT NOT NULL,
-                          from_address VARCHAR(42) NOT NULL,
-                          to_address VARCHAR(42) NOT NULL,
-                          link VARCHAR(255),
-                          PRIMARY KEY (id),
-                          INDEX idx_activity (user_address, time)
+CREATE TABLE activities
+(
+    id            VARCHAR(36)    NOT NULL,
+    user_address  VARCHAR(42)    NOT NULL,
+    time          DATETIME       NOT NULL,
+    activity_type VARCHAR(255)   NOT NULL,
+    collection_id VARCHAR(32),
+    identifier    VARCHAR(32),
+    price         DECIMAL(20, 8) NOT NULL,
+    quantity      INT            NOT NULL,
+    from_address  VARCHAR(42)    NOT NULL,
+    to_address    VARCHAR(42)    NOT NULL,
+    link          VARCHAR(255),
+    PRIMARY KEY (id),
+    INDEX idx_activity (user_address, time)
 );

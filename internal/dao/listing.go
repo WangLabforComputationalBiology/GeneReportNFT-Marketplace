@@ -4,23 +4,33 @@ import (
 	"GeneReport_platform/configs"
 	"context"
 	"gorm.io/gorm"
+	"sync"
 )
 
-var orderDao *OrderDao
+var (
+	listingDao  *ListingDao
+	listingOnce sync.Once
+)
 
-type OrderDao struct {
+type ListingDao struct {
 	db  *gorm.DB
 	ctx context.Context
 }
 
-func RegisterOrderDao() {
+func (l *ListingDao) GetListingDao() *ListingDao {
+	listingOnce.Do(func() {
+		registerListingDao()
+	})
+	return listingDao
+}
+func registerListingDao() {
 
-	orderDao = &OrderDao{
+	listingDao = &ListingDao{
 		ctx: context.Background(),
 		db:  configs.DB,
 	}
 }
 
-func (u *OrderDao) DB() *gorm.DB {
-	return u.db.WithContext(u.ctx)
+func (l *ListingDao) DB() *gorm.DB {
+	return l.db.WithContext(l.ctx)
 }

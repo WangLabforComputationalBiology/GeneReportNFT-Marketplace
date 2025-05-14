@@ -20,7 +20,7 @@ type GetToken struct {
 	Scope        string `json:"scope"`
 }
 
-type UserInfoRes struct {
+type UserInfoResp struct {
 	Address string `json:"address" binding:"required"`
 	Name    string `json:"name" binding:"required"`
 	Avatar  string `json:"avatar" binding:"required"`

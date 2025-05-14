@@ -20,7 +20,7 @@ import (
 )
 
 var (
-	UserService *userService
+	UserServ *userService
 )
 
 type userService struct {
@@ -35,12 +35,12 @@ type iUserBase interface {
 }
 
 func RegisterUserService() {
-	UserService = &userService{}
+	UserServ = &userService{}
 }
 
 // IsNewUser 判断用户是否为新用户
 func (u *userService) IsNewUser(userAddress string) (bool, appErrors.IAppError) {
-	isNew, err := dao.UserDao.IsExist(userAddress)
+	isNew, err := dao.GetUserDao().IsExist(userAddress)
 	if err != nil {
 		log.Printf("数据库内部错误为%v\n", err)
 		return false, appErrors.New(http.StatusInternalServerError, "数据库内部错误", err)
@@ -50,10 +50,10 @@ func (u *userService) IsNewUser(userAddress string) (bool, appErrors.IAppError) 
 
 // EnsureUserExists 确保用户存在
 func (u *userService) EnsureUserExists(userAddress string) appErrors.IAppError {
-	if isNew, err := UserService.IsNewUser(userAddress); err != nil {
+	if isNew, err := UserServ.IsNewUser(userAddress); err != nil {
 		return err
 	} else if isNew {
-		if err := dao.UserDao.CreateUser(userAddress); err != nil {
+		if err := dao.GetUserDao().CreateUser(userAddress); err != nil {
 			return appErrors.New(http.StatusInternalServerError, "新建用户失败", err)
 		}
 	}
@@ -81,23 +81,23 @@ func (u *userService) GetNonce(address string) (string, appErrors.IAppError) {
 }
 
 func (u *userService) UpdateUser(toUpdate dto.UpdateUser) appErrors.IAppError {
-	if err := dao.UserDao.UpdateUser(toUpdate); err != nil {
+	if err := dao.GetUserDao().UpdateUser(toUpdate); err != nil {
 		return appErrors.New(http.StatusServiceUnavailable, "服务器内部错误", err)
 	}
 	return nil
 }
 
-func (u *userService) GetUserInfo(address string) (dto.UserInfoRes, error) {
-	user, err := dao.UserDao.GetUser(address)
+func (u *userService) GetUserInfoByID(address string) (dto.UserInfoResp, error) {
+	user, err := dao.GetUserDao().GetUser(address)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return dto.UserInfoRes{}, appErrors.New(http.StatusNotFound, "用户不存在", err)
+			return dto.UserInfoResp{}, appErrors.New(http.StatusNotFound, "用户不存在", err)
 		} else {
-			return dto.UserInfoRes{}, appErrors.New(http.StatusInternalServerError, "服务器内部错误", err)
+			return dto.UserInfoResp{}, appErrors.New(http.StatusInternalServerError, "服务器内部错误", err)
 		}
 	}
 	// 映射转换dto
-	var userInfo dto.UserInfoRes
+	var userInfo dto.UserInfoResp
 	mapstructure.Decode(user, &userInfo)
 	return userInfo, nil
 }
