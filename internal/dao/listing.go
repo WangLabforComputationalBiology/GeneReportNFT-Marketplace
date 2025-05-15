@@ -2,6 +2,7 @@ package dao
 
 import (
 	"GeneReport_platform/configs"
+	"GeneReport_platform/internal/models"
 	"context"
 	"gorm.io/gorm"
 	"sync"
@@ -17,7 +18,7 @@ type ListingDao struct {
 	ctx context.Context
 }
 
-func (l *ListingDao) GetListingDao() *ListingDao {
+func GetListingDao() *ListingDao {
 	listingOnce.Do(func() {
 		registerListingDao()
 	})
@@ -33,4 +34,16 @@ func registerListingDao() {
 
 func (l *ListingDao) DB() *gorm.DB {
 	return l.db.WithContext(l.ctx)
+}
+
+func (l *ListingDao) GetListings(collectionId string, identifier string) (listings []models.Listing, err error) {
+	err = l.DB().Select("*").
+		Table("listings").
+		Where("collection_id = ? and identifier = ?", collectionId, identifier).
+		Order("sale_amount asc").
+		Find(&listings).Error
+	if err != nil {
+		return nil, err
+	}
+	return listings, nil
 }

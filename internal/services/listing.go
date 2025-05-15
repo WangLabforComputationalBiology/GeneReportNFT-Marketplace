@@ -3,6 +3,8 @@ package services
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
+	"GeneReport_platform/internal/dao"
+	"GeneReport_platform/pkg/appErrors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -10,7 +12,7 @@ import (
 )
 
 var (
-	listingService *ListingService
+	ListingServ *ListingService
 )
 
 type ListingService struct {
@@ -22,7 +24,7 @@ type iListingBase interface {
 }
 
 func RegisterOrderService() {
-	listingService = &ListingService{}
+	ListingServ = &ListingService{}
 }
 
 /*fill your method here*/
@@ -50,4 +52,12 @@ func GetDataImpl(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, result)
 
+}
+
+func (s ListingService) GetListings(collection_id, identifier string) (dto.GetListingsResp, error) {
+	targetListings, err := dao.GetListingDao().GetListings(collection_id, identifier)
+	if err != nil {
+		return dto.GetListingsResp{}, appErrors.New(503, "获取上架单失败", err)
+	}
+	return dto.GetListingsResp{Listings: targetListings}, nil
 }

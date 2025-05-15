@@ -34,7 +34,7 @@ type Result struct {
 type GetGNFTInfoResp struct {
 	GNFT       models.GNFT       `json:"gnft"`
 	Collection models.Collection `json:"collection"`
-	Quantity   int               `gorm:"column:quantity" json:"quantity"`
+	Quantity   int               `json:"quantity"`
 }
 
 type GetGNFTInfosByOwnerReq struct {
