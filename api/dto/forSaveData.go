@@ -3,6 +3,7 @@ package dto
 import (
 	"gorm.io/gorm"
 	"reflect"
+	"time"
 )
 
 type Head struct {
@@ -246,6 +247,24 @@ type Demographics struct {
 	Population     string `json:"population" gorm:"column:population"`
 }
 
+// 重复性检测的表
+type UniqueProfiles struct {
+	gorm.Model
+	Address    string    `json:"address" gorm:"column:address"`
+	ProfileId  string    `json:"profile_id" gorm:"column:profile_id"`
+	CreateTime time.Time `json:"create_time" gorm:"column:create_time"`
+	Describe   string    `json:"describe" gorm:"column:describe"`
+	Status     int       `json:"status" gorm:"column:status"`
+}
+
+// 数据访问记录
+type DataVisitRecord struct {
+	gorm.Model
+	Address    string    `json:"address" gorm:"column:address"`
+	ProfileID  string    `json:"profile_id" gorm:"column:profile_id"`
+	CreateTime time.Time `json:"create_time" gorm:"column:create_time"`
+}
+
 // 将有gorm.Mod属性属性的结构体注册到map然后写一个方法可以获取他们的类型
 var typeRegistry = map[string]reflect.Type{
 	//"Genotype":          reflect.TypeOf(Genotype{}),
@@ -260,6 +279,7 @@ var typeRegistry = map[string]reflect.Type{
 	"Ancestry":          reflect.TypeOf(Ancestry{}),
 	"Haplogroups":       reflect.TypeOf(Haplogroups{}),
 	"Demographics":      reflect.TypeOf(Demographics{}),
+	"UniqueProfiles":    reflect.TypeOf(UniqueProfiles{}),
 }
 
 func GetStructType(name string) (reflect.Type, bool) {

@@ -26,6 +26,7 @@ func main() {
 		&dto.Haplogroups{},
 		&dto.Demographics{},
 		&dto.Genotype{},
+		&dto.UniqueProfiles{},
 	)
 
 	rocketmq.Myproducer("ptest")

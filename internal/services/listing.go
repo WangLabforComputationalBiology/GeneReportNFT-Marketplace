@@ -7,6 +7,7 @@ import (
 	"GeneReport_platform/pkg/appErrors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"reflect"
 )
@@ -28,8 +29,39 @@ func RegisterOrderService() {
 }
 
 /*fill your method here*/
-
 func GetDataImpl(ctx *gin.Context) {
+	addressCtx, _ := ctx.Get("user_address")
+	//判断是否拿到地址
+	if addressCtx == nil {
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "地址非法或无效,请重新登录",
+		})
+		//排除异常但程序继续运行
+		log.Println("address is nil")
+		//return
+	}
+	address := addressCtx.(string)
+	profileId := ctx.Query("profileId")
+	unique := dto.UniqueProfiles{}
+	//在数据库查出profileId一样记录
+	if profileId != "" {
+		configs.DB.Where("profile_id = ?", profileId).Find(&unique)
+	}
+	if unique.Status == 0 {
+		ctx.JSON(http.StatusOK, gin.H{"msg": "数据还没处理完成，请稍等!"})
+		return
+	}
+
+	//先将访问数据存到数据库中
+	record := dto.DataVisitRecord{
+		Address:   address,
+		ProfileID: profileId,
+	}
+	configs.DB.Create(&record)
+	//todo 再将数据拼接成string存到链上
+	//
+
 	//获取参数
 	param := ctx.Param("param")
 	t, ok := dto.GetStructType(param)

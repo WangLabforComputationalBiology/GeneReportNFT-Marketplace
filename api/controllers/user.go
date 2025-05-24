@@ -572,6 +572,21 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 	//异步保存数据
 	rocketmq.SendMsg("saveData", sendMsg)
 
+	// 上下文获取address
+	addressCtx, _ := ctx.Get("user_address")
+	if addressCtx == nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "用户未登录或地址无效！"})
+		log.Printf("用户未登录或地址无效！")
+		//return
+	}
+	address := addressCtx.(string)
+	record := &dto.UniqueProfiles{
+		Address:   address,
+		ProfileId: toSave.ProfileId,
+		Status:    0, //0代表正在处理，1代表处理完成
+	}
+	configs.DB.Create(record)
+
 	fmt.Println("成功！异步保存数据：", sendMsg)
 	ctx.JSON(http.StatusOK, gin.H{"msg": "successful!"})
 

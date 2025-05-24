@@ -337,8 +337,17 @@ func getDataFromWegeneSimple[T any](profileId, url, token string) {
 
 }
 
+// 重复性检测
+func checkRepeat(profileId string) bool {
+	var count int64
+	configs.DB.Model(&dto.UniqueProfiles{}).Where("profile_id = ?", profileId).Count(&count)
+	return count > 0
+}
 func SaveAllData(token, profileId string) {
-
+	if checkRepeat(profileId) {
+		fmt.Println("重复性检测：", profileId, "已存在")
+		return
+	}
 	//athletigen、risk、skin、health/carrier、health/metabolism、health/tratis、psychology
 	//health/drug-----Xd
 	//getDataFromWegene[dto.HealthyDrug](forHealthyDrug, profileId, BASEURL+"/health/drug", token)
@@ -353,4 +362,7 @@ func SaveAllData(token, profileId string) {
 	getDataFromWegeneSimple[dto.Ancestry](profileId, BASEURL+"/ancestry", token)
 	getDataFromWegeneSimple[dto.Haplogroups](profileId, BASEURL+"/haplogroups", token)
 	getDataFromWegeneSimple[dto.Demographics](profileId, BASEURL+"/demographics", token)
+
+	//修改状态为已完成,根据profileId查找记录
+	configs.DB.Model(&dto.UniqueProfiles{}).Where("profile_id = ?", profileId).Update("status", 1)
 }
