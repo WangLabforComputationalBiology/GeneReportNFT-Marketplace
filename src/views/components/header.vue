@@ -3,44 +3,42 @@
         <div class="side" @click="toHome">
             L
         </div>
-        <div class="headerWrapper">
+        <div class="header-wrapper">
             <!-- 路由菜单 -->
             <div class="routers">
-                <router-link to="/market" class="routerSelection ">Market</router-link>
-                <router-link to="/create" class="routerSelection">Create</router-link>
-                <!-- <router-link to="/drop" class="routerSelection">Drop</router-link> -->
-                <router-link to="/stats" class="routerSelection">Stats</router-link>
+                <router-link to="/market" class="router-selection ">Market</router-link>
+                <router-link to="/create" class="router-selection">Create</router-link>
+                <router-link to="/stats" class="router-selection">Stats</router-link>
+                <router-link to="/login" class="router-selection" v-if="!account">Login</router-link>
+                <!-- <el-icon class="userIcon" v-if="account">
+                    <router-link to="/user" style="color: #169608;">
+                        <UserFilled />
+                    </router-link>
+                </el-icon> -->
+                <!-- <div v-if="account" >{{ fixedAccount }}</div> -->
             </div>
 
             <!-- 搜索框 -->
-            <span class="navigation">
+            <!-- <span class="navigation">
                 <input id="navigationInput" type="text" placeholder="search..." />
                 <div type="primary" class="searchBtn">
                     <el-icon class="searchIcon" size="large">
                         <Search />
                     </el-icon>
                 </div>
-            </span>
+            </span> -->
             <!-- <button  @click="redirectToOAuth">获取微基因数据</button> -->
-            <!-- 登录路由 -->
-            <router-link to="/login" class="routerSelection"
-                style="position:absolute;right:20px;width:50px" v-if="!account">Login</router-link>
-            <!-- 账户面板 -->
-            <el-icon class="userIcon" v-if="account">
-                <router-link to="/user" style="color: #169608;">
-                    <UserFilled />
-                </router-link>
-            </el-icon>
-            <div v-if="account" style="color: #909399;position: absolute; right: 50px">{{ fixedAccount }}</div>
+
         </div>
         <span class="side">
+            <div class="account" v-if="account">{{ fixedAccount }}</div>
         </span>
     </div>
 </template>
 
 <script>
 import { useWalletStore } from '@/stores/account';
-import { Search, UserFilled } from '@element-plus/icons-vue';
+
 export default {
     name: "Header",
     data() {
@@ -54,7 +52,7 @@ export default {
     },
     computed: {
         fixedAccount() {
-                return this.account.slice(0, 5) + '...' + this.account.slice(-4);
+            return this.account.slice(0, 5) + '...' + this.account.slice(-4);
         }
     }
     ,
@@ -63,9 +61,9 @@ export default {
             this.$router.push('/index');
         }
         ,
-        redirectToOAuth() {
-            window.location.href = import.meta.env.VITE_APP_BASE_URL+'/user/oauth2Wegene';
-        }
+        // redirectToOAuth() {
+        //     window.location.href = import.meta.env.VITE_APP_BASE_URL+'/user/oauth2Wegene';
+        // }
     }
 }
 </script>
@@ -79,73 +77,79 @@ export default {
     position: sticky;
     top: 0;
     transition: background-color 0.5s;
-    background-color: #ffffffee;
-    border-bottom: 1px solid #E4E7ED;
 
     a {
         text-decoration: none;
     }
 
     .side {
+        height: 60px;
         flex: 1;
         min-width: 120px;
         display: flex;
         align-items: center;
+        justify-content: center;
         cursor: pointer;
-        font-size: 40px;
         color: #16952d;
-        font-weight: bold;
+
+        .account {
+            font-size: 20px;
+            font-weight: 700;
+        }
     }
 
-    .headerWrapper {
+    .header-wrapper {
         align-items: center;
+        justify-content: center;
         position: relative;
         width: 85vw;
         min-width: 1200px;
         display: flex;
-        margin: 0 auto;
 
-        .navigation {
-            width: 300px;
-            display: flex;
-            align-items: center;
-            margin: 4px 0 0 20px;
 
-            input {
-                width: 250px;
-                height: 35px;
-                border: 2px solid #E4E7ED;
-                border-radius: 10px;
-            }
+        // .navigation {
+        //     width: 300px;
+        //     display: flex;
+        //     align-items: center;
+        //     margin: 4px 0 0 20px;
 
-            .searchBtn {
-                background-color: #169608;
-                border-radius: 12px;
-                margin-left: 4px;
+        //     input {
+        //         width: 250px;
+        //         height: 35px;
+        //         border: 2px solid #E4E7ED;
+        //         border-radius: 10px;
+        //     }
 
-                .searchIcon {
-                    height: 34px;
-                    width: 45px;
-                    color: #fff;
-                }
+        //     .searchBtn {
+        //         background-color: #169608;
+        //         border-radius: 12px;
+        //         margin-left: 4px;
 
-                &:hover {
-                    background-color: #67C23A;
-                    color: #FFF;
-                    cursor: pointer;
-                }
-            }
-        }
+        //         .searchIcon {
+        //             height: 34px;
+        //             width: 45px;
+        //             color: #fff;
+        //         }
+
+        //         &:hover {
+        //             background-color: #67C23A;
+        //             color: #FFF;
+        //             cursor: pointer;
+        //         }
+        //     }
+        // }
 
         .routers {
-            height: 80px;
+            height: 60px;
             display: flex;
+            position: absolute;
+            right: 0;
         }
 
-        .routerSelection {
+        .router-selection {
             color: #169608;
             margin: 0 25px;
-            font-size: 22px;
+            font-size: 20px;
             align-content: center;
             font-weight: bold;
 
@@ -161,6 +165,8 @@ export default {
 
 
     }
+
+
 }
 
 .userIcon {

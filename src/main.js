@@ -11,6 +11,7 @@ import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue' //导入 ElementPlus 组件库中的所有图标
 
 
+
 import Header from './views/components/header.vue'
 import Footer from './views/components/footer.vue'
 

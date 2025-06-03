@@ -6,94 +6,80 @@
         </div>
     </div>
 </template>
+
 <script>
 export default {
     props: {
-        // 成功之后的函数
-        successFun: {
-            type: Function
-        },
-        //成功图标
-        successIcon: {
-            type: String,
-            default: 'el-icon-success'
-        },
-        //成功文字
-        successText: {
-            type: String,
-            default: 'Verify Success'
-        },
-        //开始的图标
-        startIcon: {
-            type: String,
-            default: 'el-icon-d-arrow-right'
-        },
-        //开始的文字
-        startText: {
-            type: String,
-            default: 'Slide to Verify'
-        },
-        //失败之后的函数
-        errorFun: {
-            type: Function
-        },
-        //或者用值来进行监听
-        status: {
-            type: String
-        }
+        successFun: { type: Function }, // 成功回調函數
+        successIcon: { type: String, default: 'el-icon-success' }, // 成功圖標
+        successText: { type: String, default: 'Success' }, // 成功文字
+        startIcon: { type: String, default: 'el-icon-d-arrow-right' }, // 開始圖標
+        startText: { type: String, default: 'Silde to verify' }, // 開始文字
+        errorFun: { type: Function }, // 失敗回調函數
+        status: { type: String } // 狀態監聽
     },
     data() {
         return {
             disX: 0,
             rangeStatus: false
-        }
+        };
     },
     methods: {
-        //滑块移动
         rangeMove(e) {
-            let ele = e.target
-            let startX = e.clientX
-            let eleWidth = ele.offsetWidth
-            let parentWidth = ele.parentElement.offsetWidth
-            let MaxX = parentWidth - eleWidth
-            if (this.rangeStatus) {
-                //不运行
-                return false
-            }
-            document.onmousemove = e => {
-                let endX = e.clientX
-                this.disX = endX - startX
+            // 如果已驗證，禁止進一步操作
+            if (this.rangeStatus) return;
+
+            let ele = e.target;
+            let startX = e.clientX;
+            let eleWidth = ele.offsetWidth;
+            let parentWidth = ele.parentElement.offsetWidth;
+            let MaxX = parentWidth - eleWidth;
+
+            // 定義滑動事件處理
+            const onMouseMove = (e) => {
+                let endX = e.clientX;
+                this.disX = endX - startX;
+
+                // 限制滑塊移動範圍
                 if (this.disX <= 0) {
-                    this.disX = 0
+                    this.disX = 0;
                 }
-                if (this.disX >= MaxX - eleWidth) {
-                    //减去滑块的宽度,体验效果更好
-                    this.disX = MaxX
+                if (this.disX >= MaxX) {
+                    this.disX = MaxX;
                 }
-                ele.style.transition = '.1s all'
-                ele.style.transform = 'translateX(' + this.disX + 'px)'
-                e.preventDefault()
-            }
-            document.onmouseup = () => {
-                if (this.disX !== MaxX) {
-                    ele.style.transition = '.5s all'
-                    ele.style.transform = 'translateX(0)'
-                    //执行成功的函数
-                    this.errorFun && this.errorFun()
+
+                ele.style.transition = '.1s all';
+                ele.style.transform = `translateX(${this.disX}px)`;
+                e.preventDefault();
+            };
+
+            // 定義鼠標釋放事件處理
+            const onMouseUp = () => {
+                // 清理事件監聽器
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+
+                if (this.disX < MaxX) {
+                    // 驗證失敗，重置滑塊
+                    ele.style.transition = '.5s all';
+                    ele.style.transform = 'translateX(0)';
+                    if (this.errorFun) this.errorFun();
                 } else {
-                    this.rangeStatus = true
+                    // 驗證成功
+                    this.rangeStatus = true;
                     if (this.status) {
-                        this.$parent[this.status] = true
+                        this.$parent[this.status] = true;
                     }
-                    //执行成功的函数
-                    this.successFun && this.successFun()
+                    if (this.successFun) this.successFun();
                 }
-                document.onmousemove = null
-                document.onmouseup = null
-            }
+            };
+
+            // 綁定事件監聽器
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
         }
     }
-}
+};
 </script>
 <style lang="scss" scoped>
 $green: #67C23A;

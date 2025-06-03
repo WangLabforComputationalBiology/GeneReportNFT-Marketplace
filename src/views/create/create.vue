@@ -28,7 +28,7 @@
          <div class="wrapper-left" v-if="this.step === 0">
             <h1>Start your GNFT journey from here</h1>
             <div class="inside-step"><img src="../../icons/status_ing.svg" alt="status icon">
-               <div class="step-tip" style="line-height: 80px; color:#67c23a">Verify your region using phone number.
+               <div class="step-tip" style="line-height: 80px; color:#67c23a;">Verify your region using email.
                </div>
 
             </div>
@@ -53,21 +53,11 @@
          </div>
 
          <div class="wrapper-right" v-if="this.step === 0">
-            <el-form :model="form" label-width="auto" style="max-width: 420px">
-               <el-form-item label="Phone number:">
-                  <el-input v-model="form.number" type="tel" oninput="value=value.replace(/[^0-9]/g,'')" maxlength="11">
-                     <template #prepend>
-                        <el-select v-model="form.country" placeholder="Select" style="width: 64px">
-                           <el-option label="+86" value="cn" />
-                           <el-option label="+1" value="us" />
-                           <el-option label="+7" value="de" />
-                           <el-option label="+44" value="gb" />
-                           <el-option label="+33" value="fr" />
-                        </el-select>
-                     </template>
+            <el-form :model="form" label-width="auto" style="max-width: 480px">
+               <el-form-item label="Your email:">
+                  <el-input v-model="form.number">
                      <template #append>
-                        <img :src="'https://flagcdn.com/32x24/' + form.country + '.png'" :alt="form.country + '国旗'"
-                           class="flags" />
+                           <el-button type="primary" @click="getCode">Send</el-button>
                      </template>
                   </el-input>
                </el-form-item>
@@ -75,15 +65,15 @@
                   <SliderCheck :successFun="handleSuccessFun" :errorFun="handleErrorFun"  style="margin-bottom: 22px;"/>
                
 
-               <el-form-item label="Verification code:">
+               <el-form-item label="Sent code:">
                   <el-input v-model="form.code" type="code" maxlength="6">
                      <template #prepend>
                         <img src="../../icons/verification_code.svg" alt=""
                            style="width: 20px;margin: 5px 2px 0 2px;" />
                      </template>
-                     <template #append>
-                        <el-button type="primary" @click="getCode">Send</el-button>
-                     </template>
+                     <!-- <template #append>
+                        
+                     </template> -->
                   </el-input>
                </el-form-item>
                <el-form-item>
@@ -479,7 +469,7 @@ export default {
    overflow: auto;
    right: 0;
    width: 50%;
-   padding: 100px 180px;
+   padding: 100px 160px;
    height: calc(100vh - 60px);
 
    .platforms {
@@ -653,6 +643,7 @@ export default {
 }
 
 :deep(.el-input__inner) {
+   height: 40px;
    padding: 0;
    border: none;
 

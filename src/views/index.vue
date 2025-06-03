@@ -1,109 +1,144 @@
 <template>
-   <!-- banner区域 -->
-   <body>
-      
-   
-   <div class="wapper">
-      <banner>
-         <div class="banner-left">
-            <h1 style="margin-top: 150px">Explore genetic code &<br> Collect NFTs</h1><br>
-            <h2>NFT Marketplace UI create with Anima for Figma.<br> Collect, Buy and sell art from more than 20k NFT
-               Artists</h2>
-            <div class="getStartBTN" @click="scrollToSection">GET STARTED</div>
-         </div>
-         <img src="../assets/imgs/bioschains.svg">
-      </banner>
-   </div>
+   <div class="container" ref="container" @wheel="handleWheel">
 
-   <!-- 跳转参考线 -->
-   <hr style="border:none; " ref="targetSection">
-
-   <!-- 引导 -->
-   <div class="wapper">
-      <div class="howToDo">
-         <h1>How it works</h1>
-         <div class="howTodo-wrapper">
-            <div class="steps">
-               <div class="content-wrapper">
-                  <h3>Setup your wallet</h3>
-                  <p>Set up your Metamask wallet. Connect it to us by clicking the wallet icon in the top
-                     right corner.</p>
+      <div class="wrapper">
+         <banner>
+            <div class="banner-left">
+               <h1 style="margin-top: 150px">Gain & Share <br>Gene code.</h1><br>
+               <h2>A bio-alliance chain based on FISCO BCOS.
+                  <br>
+                  Unlocking the power of genetic data.
+               </h2>
+               <div class="BTN-wrapper" style="display: flex;">
+                  <div class="getStartBTN" @click="scrollToSection">GET STARTED</div>
+                  <div class="getStartBTN" @click="scrollToSection">Git Hub</div>
                </div>
-            </div>
-            <div class="steps">
-               <div class="content-wrapper">
-                  <h3>Create Collection</h3>
-                  <p>Upload your Wegene data and setup your collection. Add a description, social links and floor price.
-                  </p>
-               </div>
-            </div>
 
-            <div class="steps">
-               <div class="content-wrapper">
-                  <h3>Start Sharing</h3>
-                  <p>Choose fixed-price listings. Get revenue from your sharing or trading
-                     others.</p>
-                  <div class="content-warpper">
+            </div>
+            <img src="../assets/imgs/bioschains.svg">
+         </banner>
+      </div>
+
+      <!-- 跳转参考线 -->
+      <hr style="border:none; " ref="targetSection">
+
+      <!-- 引导 -->
+      <div class="wrapper">
+         <div class="howToDo">
+            <h1>How it works</h1>
+            <div class="howTodo-wrapper">
+               <div class="steps">
+                  <div class="content-wrapper">
+                     <h3>Setup your wallet</h3>
+                     <p>Set up your Metamask wallet. Connect it to us by clicking the wallet icon in the top
+                        right corner.</p>
+                  </div>
+               </div>
+               <div class="steps">
+                  <div class="content-wrapper">
+                     <h3>Create Collection</h3>
+                     <p>Upload your Wegene data and setup your collection. Add a description, social links and floor
+                        price.
+                     </p>
+                  </div>
+               </div>
+
+               <div class="steps">
+                  <div class="content-wrapper">
+                     <h3>Start Sharing</h3>
+                     <p>Choose fixed-price listings. Get revenue from your sharing or trading
+                        others.</p>
+                     <div class="content-warpper">
+                     </div>
                   </div>
                </div>
             </div>
          </div>
       </div>
-   </div>
 
-   <!-- 介绍  -->
-   <div class="wapper">
-      <div class="intro">
-         <h1>Introduction</h1>
-         <el-carousel height="650px" interval="0">
-            <el-carousel-item v-for="item in 4" :key="item">
-               <h3 class="small">{{ item }}</h3>
-            </el-carousel-item>
-         </el-carousel>
+      <!-- 介绍  -->
+      <div class="wrapper">
+         <div class="intro">
+            <h1>Introduction</h1>
+            <el-carousel height="650px" interval="0">
+               <el-carousel-item v-for="item in 4" :key="item">
+                  <h3 class="small">{{ item }}</h3>
+               </el-carousel-item>
+            </el-carousel>
+         </div>
       </div>
    </div>
 
-
-</body>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
+// 滚动状态
+const isScrolling = ref(false);
+const activeSection = ref(0);
+const container = ref(null);
 
-// 使用 ref 绑定目标元素
-const targetSection = ref(null)
-export default {
-   setup() {
-      // 使用 ref 定义 targetSection
-      const targetSection = ref(null)
+// 处理滚轮事件
+const handleWheel = () => {
+   if (isScrolling.value) return;
+   isScrolling.value = true;
 
-      // 滚动方法
-      const scrollToSection = () => {
-         if (targetSection.value) {
-            targetSection.value.scrollIntoView({ behavior: 'smooth' })
-         }
+   setTimeout(() => {
+      isScrolling.value = false;
+      console.log('滚动结束');
+   }, 100);
+
+   let nextIndex = activeSection.value;
+
+   scrollToSection(nextIndex);
+};
+
+// 滚动到指定section
+const scrollToSection = (index) => {
+   const section = document.getElementById(`section${index + 1}`);
+   activeSection.value = index;
+};
+
+// 监听滚动更新导航点
+const updateNavDots = () => {
+   const scrollTop = container.value.scrollTop;
+   let currentIndex = 0;
+
+   sections.forEach((_, index) => {
+      const section = document.getElementById(`section${index + 1}`);
+      const sectionTop = section.offsetTop;
+      if (scrollTop >= sectionTop - window.innerHeight / 2) {
+         currentIndex = index;
       }
+   });
 
-      // 将 ref 和方法暴露给模板
-      return {
-         targetSection,
-         scrollToSection
-      }
-   }
-}
+   activeSection.value = currentIndex;
+};
+
+// 绑定滚动事件
+container.value?.addEventListener('scroll', updateNavDots);
 </script>
 
 
 
 <style lang="scss" scoped>
-body{
-   overflow: auto;
+.container {
+   height: 100vh;
+   overflow-y: scroll;
+   scroll-snap-type: y mandatory;
 }
-.wapper {
+
+.wrapper {
    margin: 60px auto;
-   width: 1400px;
+   width: 100vw;
    background-color: #fff;
-   height: calc(100vh - 60px);
+   height: 100vh;
+
+
+   font-size: 2rem;
+   scroll-snap-align: start;
+
+
 }
 
 h1 {
@@ -124,8 +159,9 @@ banner {
       .getStartBTN {
          width: 200px;
          height: 60px;
-         background-color: #E6A23C;
-         color: #fff;
+         background-color: #fff;
+         color: #67C23A;
+         box-shadow: 0 0 5px #E4E7ED;
          font-size: 24px;
          border-radius: 10px;
          text-align: center;
@@ -135,7 +171,7 @@ banner {
          cursor: pointer;
 
          &:hover {
-            background-color: #e6a23cdd;
+            background-color: #67C23Add;
          }
       }
    }
