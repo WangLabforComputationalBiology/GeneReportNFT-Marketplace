@@ -6,10 +6,11 @@
         <div class="header-wrapper">
             <!-- 路由菜单 -->
             <div class="routers">
+                <router-link to="/index" class="router-selection ">Home</router-link>
                 <router-link to="/market" class="router-selection ">Market</router-link>
                 <router-link to="/create" class="router-selection">Create</router-link>
-                <router-link to="/stats" class="router-selection">Stats</router-link>
                 <router-link to="/login" class="router-selection" v-if="!account">Login</router-link>
+                <router-link to="/about" class="router-selection">About</router-link>
                 <!-- <el-icon class="userIcon" v-if="account">
                     <router-link to="/user" style="color: #169608;">
                         <UserFilled />
@@ -18,15 +19,6 @@
                 <!-- <div v-if="account" >{{ fixedAccount }}</div> -->
             </div>
 
-            <!-- 搜索框 -->
-            <!-- <span class="navigation">
-                <input id="navigationInput" type="text" placeholder="search..." />
-                <div type="primary" class="searchBtn">
-                    <el-icon class="searchIcon" size="large">
-                        <Search />
-                    </el-icon>
-                </div>
-            </span> -->
             <!-- <button  @click="redirectToOAuth">获取微基因数据</button> -->
 
         </div>
@@ -106,39 +98,6 @@ export default {
         min-width: 1200px;
         display: flex;
 
-
-        // .navigation {
-        //     width: 300px;
-        //     display: flex;
-        //     align-items: center;
-        //     margin: 4px 0 0 20px;
-
-        //     input {
-        //         width: 250px;
-        //         height: 35px;
-        //         border: 2px solid #E4E7ED;
-        //         border-radius: 10px;
-        //     }
-
-        //     .searchBtn {
-        //         background-color: #169608;
-        //         border-radius: 12px;
-        //         margin-left: 4px;
-
-        //         .searchIcon {
-        //             height: 34px;
-        //             width: 45px;
-        //             color: #fff;
-        //         }
-
-        //         &:hover {
-        //             background-color: #67C23A;
-        //             color: #FFF;
-        //             cursor: pointer;
-        //         }
-        //     }
-        // }
-
         .routers {
             height: 60px;
             display: flex;
@@ -160,9 +119,7 @@ export default {
             &:first-child {
                 margin-left: 0;
             }
-
         }
-
 
     }
 

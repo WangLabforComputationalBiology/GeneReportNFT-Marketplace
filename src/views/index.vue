@@ -122,23 +122,25 @@ container.value?.addEventListener('scroll', updateNavDots);
 
 
 <style lang="scss" scoped>
+* {
+   /* 隐藏默认的滚动条样式 */
+   scrollbar-width: none;
+   /* Firefox */
+   -ms-overflow-style: none;
+   /* IE and Edge */
+}
+
 .container {
-   height: 100vh;
+   height: calc(100vh - 60px);
+   width: 100vw;
    overflow-y: scroll;
    scroll-snap-type: y mandatory;
 }
 
 .wrapper {
-   margin: 60px auto;
-   width: 100vw;
+   height: calc(100vh - 60px);
    background-color: #fff;
-   height: 100vh;
-
-
-   font-size: 2rem;
    scroll-snap-align: start;
-
-
 }
 
 h1 {
