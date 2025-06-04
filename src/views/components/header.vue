@@ -1,7 +1,8 @@
 <template>
     <div class="header">
         <div class="side" @click="toHome">
-            L
+        <div class="logo"><span style="color: #169608;">Bio</span>Chainer</div>
+            
         </div>
         <div class="header-wrapper">
             <!-- 路由菜单 -->
@@ -23,8 +24,8 @@
             <!-- <button  @click="redirectToOAuth">获取微基因数据</button> -->
 
         </div>
-        <span class="side">
-            <div class="account" v-if="account">{{ fixedAccount }}</div>
+        <span class="side" v-if="account">
+            <div class="account" @click="toUser">{{ fixedAccount }}</div>
         </span>
     </div>
 </template>
@@ -57,6 +58,9 @@ export default {
         // redirectToOAuth() {
         //     window.location.href = import.meta.env.VITE_APP_BASE_URL+'/user/oauth2Wegene';
         // }
+        toUser() {
+            this.$router.push('/user');
+        }
     }
 }
 </script>
@@ -81,13 +85,18 @@ export default {
         min-width: 120px;
         display: flex;
         align-items: center;
-        justify-content: center;
+        // justify-content: center;
         cursor: pointer;
         color: #16952d;
 
         .account {
             font-size: 20px;
             font-weight: 700;
+        }
+        .logo {
+            font-size: 36px;
+            font-weight: 700;
+            color: #333;
         }
     }
 
@@ -108,7 +117,7 @@ export default {
 
         .router-selection {
             position: relative;
-            color: #169608;
+            color: #333;
             margin: 0 25px;
             font-size: 20px;
             align-content: center;
@@ -122,7 +131,7 @@ export default {
                 width: 0;
                 height: 3px;
                 /* 边框厚度 */
-                background: #169608;
+                background: #333;
                 /* 蓝色边框 */
                 transition: width 0.4s ease;
                 /* 动画持续0.4秒 */

@@ -403,7 +403,7 @@ export default {
 
       .title {
          font-size: 70px;
-         color: #67C23A;
+         color: #169608;
          margin-bottom: 20px;
       }
 
