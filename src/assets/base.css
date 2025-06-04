@@ -73,14 +73,6 @@ html::-webkit-scrollbar {
 }
 
 
- /* 全局样式 */
-body {
-    margin: auto;
-    width: 99vw;
-    min-width: 1400px;
-    min-height: calc(100vh - 60px);
-}
-
 
 
 

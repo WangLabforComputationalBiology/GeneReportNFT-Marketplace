@@ -94,6 +94,7 @@ export default {
             font-weight: 700;
         }
         .logo {
+            padding-left: 10px;
             font-size: 36px;
             font-weight: 700;
             color: #333;

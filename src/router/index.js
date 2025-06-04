@@ -1,6 +1,4 @@
 //路由页面
-import index from "@/views/index.vue";
-
 import { createWebHistory } from "vue-router";
 import { createRouter } from "vue-router";
 
@@ -11,7 +9,7 @@ const routes = [
     },
     {
         path: "/index",
-        component: index
+        component: () => import('@/views/home/index.vue')
     },
     {
         path: '/create',
