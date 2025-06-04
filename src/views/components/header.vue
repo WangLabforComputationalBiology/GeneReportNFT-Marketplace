@@ -9,8 +9,9 @@
                 <router-link to="/index" class="router-selection ">Home</router-link>
                 <router-link to="/market" class="router-selection ">Market</router-link>
                 <router-link to="/create" class="router-selection">Create</router-link>
-                <router-link to="/login" class="router-selection" v-if="!account">Login</router-link>
                 <router-link to="/about" class="router-selection">About</router-link>
+                <router-link to="/login" class="router-selection" v-if="!account">Login</router-link>
+
                 <!-- <el-icon class="userIcon" v-if="account">
                     <router-link to="/user" style="color: #169608;">
                         <UserFilled />
@@ -64,7 +65,7 @@ export default {
 .header {
     z-index: 1000;
     width: 99vw;
-    height: 60px;
+    height: 5vh;
     display: flex;
     position: sticky;
     top: 0;
@@ -75,7 +76,7 @@ export default {
     }
 
     .side {
-        height: 60px;
+        height: 5vh;
         flex: 1;
         min-width: 120px;
         display: flex;
@@ -106,18 +107,30 @@ export default {
         }
 
         .router-selection {
+            position: relative;
             color: #169608;
             margin: 0 25px;
             font-size: 20px;
             align-content: center;
             font-weight: bold;
 
-            &:hover {
-                color: #67C23A;
+            &:after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 3px;
+                /* 边框厚度 */
+                background: #169608;
+                /* 蓝色边框 */
+                transition: width 0.4s ease;
+                /* 动画持续0.4秒 */
             }
 
-            &:first-child {
-                margin-left: 0;
+            &:hover:after {
+                width: 100%;
+                /* 鼠标悬停时边框宽度变为100% */
             }
         }
 

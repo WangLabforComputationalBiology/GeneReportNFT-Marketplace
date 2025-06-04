@@ -59,10 +59,13 @@
 }
 
 
-/* 隐藏滚动条 */
+@font-face {
+  font-family: "OPPOFont";
+  src: url("../font/OPPO_Sans.ttf") format("truetype");
+}
+
 html {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
+  font-family: "OPPOFont";
 }
 
 html::-webkit-scrollbar {

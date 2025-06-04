@@ -5,13 +5,13 @@
          <banner>
             <div class="banner-left">
                <h1 style="margin-top: 150px">Gain & Share <br>Gene code.</h1><br>
-               <h2>A bio-alliance chain based on FISCO BCOS.
+               <h2>A Biological alliance-chain based on FISCO BCOS.
                   <br>
                   Unlocking the power of genetic data.
                </h2>
                <div class="BTN-wrapper" style="display: flex;">
                   <div class="getStartBTN" @click="scrollToSection">GET STARTED</div>
-                  <div class="getStartBTN" @click="scrollToSection">Git Hub</div>
+                  <div class="getStartBTN" @click="">Git Hub</div>
                </div>
 
             </div>
@@ -19,8 +19,12 @@
          </banner>
       </div>
 
-      <!-- 跳转参考线 -->
-      <hr style="border:none; " ref="targetSection">
+      <!-- 介绍  -->
+      <div class="wrapper">
+         <div class="intro">
+            <h1>Introduction</h1>
+         </div>
+      </div>
 
       <!-- 引导 -->
       <div class="wrapper">
@@ -56,17 +60,7 @@
          </div>
       </div>
 
-      <!-- 介绍  -->
-      <div class="wrapper">
-         <div class="intro">
-            <h1>Introduction</h1>
-            <el-carousel height="650px" interval="0">
-               <el-carousel-item v-for="item in 4" :key="item">
-                  <h3 class="small">{{ item }}</h3>
-               </el-carousel-item>
-            </el-carousel>
-         </div>
-      </div>
+
    </div>
 
 </template>
@@ -129,27 +123,32 @@ container.value?.addEventListener('scroll', updateNavDots);
    -ms-overflow-style: none;
    /* IE and Edge */
 }
+h1 {
+   font-size: 50px;
+   color: #67C23A;
+}
 
 .container {
-   height: calc(100vh - 60px);
+   height: 95vh;
    width: 100vw;
    overflow-y: scroll;
    scroll-snap-type: y mandatory;
 }
 
 .wrapper {
-   height: calc(100vh - 60px);
+   height: 95vh;
+   width: 80vw;
+   margin: auto;
    background-color: #fff;
    scroll-snap-align: start;
+   padding: 100px 0;
 }
 
-h1 {
-   font-size: 70px;
-   color: #67C23A;
-}
+
 
 banner {
    display: flex;
+   justify-self: center;
 
    .banner-left {
 
@@ -183,32 +182,6 @@ banner {
       width: 300px;
       height: 300px;
    }
-}
-
-.intro {
-
-   h1 {
-      margin-top: 50px;
-      font-size: 70px;
-      color: #67C23A;
-   }
-}
-
-//走马灯样式
-.el-carousel__item h3 {
-   color: #475669;
-   font-size: 14px;
-   opacity: 0.75;
-   line-height: 150px;
-   margin: 0;
-}
-
-.el-carousel__item:nth-child(2n) {
-   background-color: #99a9bf;
-}
-
-.el-carousel__item:nth-child(2n+1) {
-   background-color: #d3dce6;
 }
 
 .howToDo {
