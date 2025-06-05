@@ -8,17 +8,13 @@
 
 </template>
 
-<script>
-export default {
-    name: "Banner",
-    data() {
+<script setup>
 
-    },
-};
 </script>
 
 <style lang="scss" scoped>
 .banner {
+    z-index: 999;
     position: relative;
     margin: 0;
     padding: 0;
@@ -29,6 +25,7 @@ export default {
     justify-content: center;
     align-items: center;
     scroll-snap-align: start;
+    pointer-events: none;
 
 
     /* 绿色条块 */

@@ -8,7 +8,7 @@
             <!-- 路由菜单 -->
             <div class="routers">
                 <router-link to="/index" class="router-selection ">Home</router-link>
-                <router-link to="/market" class="router-selection ">Market</router-link>
+                <router-link to="/market" class="router-selection ">Plaza</router-link>
                 <router-link to="/create" class="router-selection">Create</router-link>
                 <router-link to="/about" class="router-selection">About</router-link>
                 <router-link to="/login" class="router-selection" v-if="!account">Login</router-link>

@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-
+        <Bubbles :balls="balls" />
         <div class="wrapper-left">
             <h1>Sharing Gene code.</h1><br>
             <h2>A Biological alliance-chain based on <span class="click-link" @click="toFB">FISCO BCOS↗</span> from
@@ -10,40 +10,28 @@
                 circulation of genetic information between universities and specific institutions, promote the
                 circulation of genetic information and assist genetic research.
                 <br>
+                <br>
                 <span class="tags">#Non-profit</span>
                 <span class="tags">#Volunteer</span>
                 <span class="tags">#Academic</span>
             </h2>
-            
+
             <div class="Btn-wrapper">
                 <div class="toBTN" @click="">Publication</div>
-                <div class="toBTN" @click="">Wanglab</div>
                 <div class="toBTN" @click="">Git Hub↗</div>
             </div>
-            
+
 
         </div>
     </div>
 </template>
 
-<script>
-export default {
-    name: "Intro1",
-    data() {
-        return {};
-    },
-    methods: {
-        toFB() {
-            window.open('https://www.fisco.com.cn/', '_blank');
-        }
-    }
-};
+<script setup>
+import Bubbles from './bubbles.vue';
 </script>
 
 <style lang="scss" scoped>
-a {
-    
-}
+
 
 .wrapper {
     height: 95vh;
@@ -63,7 +51,7 @@ a {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -70%);
-    
+
 
     h1 {
         font-size: 60px;
@@ -74,7 +62,7 @@ a {
     h2 {
         font-size: 24px;
         color: #333;
-        margin-bottom: 50px;
+        margin-bottom: 30px;
     }
 
     .tags {
@@ -106,7 +94,7 @@ a {
         align-items: center;
         cursor: pointer;
         font-size: 18px;
-        
+
 
         &:hover {
             box-shadow: 0 0 20px #e0e0e0;
@@ -131,5 +119,12 @@ a {
 .click-link {
     cursor: pointer;
     text-decoration: underline;
+}
+
+.ball {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.7;
+    pointer-events: none;
 }
 </style>
