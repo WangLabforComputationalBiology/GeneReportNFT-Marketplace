@@ -9,12 +9,18 @@
                 We advocate the creation of a blockchain-based biological information sharing chain to achieve reliable
                 circulation of genetic information between universities and specific institutions, promote the
                 circulation of genetic information and assist genetic research.
+                <br>
+                <span class="tags">#Non-profit</span>
+                <span class="tags">#Volunteer</span>
+                <span class="tags">#Academic</span>
             </h2>
+            
             <div class="Btn-wrapper">
                 <div class="toBTN" @click="">Publication</div>
-                <div class="toBTN" @click="">About us</div>
+                <div class="toBTN" @click="">Wanglab</div>
                 <div class="toBTN" @click="">Git Hub↗</div>
             </div>
+            
 
         </div>
     </div>
@@ -48,7 +54,6 @@ a {
 }
 
 .wrapper-left {
-    // width: 40%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -58,9 +63,10 @@ a {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -70%);
+    
 
     h1 {
-        font-size: 50px;
+        font-size: 60px;
         color: #169608;
         margin-bottom: 20px;
     }
@@ -68,9 +74,18 @@ a {
     h2 {
         font-size: 24px;
         color: #333;
-        margin-bottom: 40px;
+        margin-bottom: 50px;
     }
 
+    .tags {
+        font-size: 18px;
+        color: #333;
+        font-weight: 700;
+        background-color: #f0f0f0;
+        padding: 5px 10px;
+        border-radius: 12px;
+        margin: 10px;
+    }
 
 }
 
