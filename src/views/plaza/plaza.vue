@@ -14,9 +14,9 @@
                                         <el-form-item label="ID:">
                                             <span>{{ props.row.id }}</span>
                                         </el-form-item>
-                                        <el-form-item label="Name:">
+                                        <!-- <el-form-item label="Name:">
                                             <span>{{ props.row.nft_name }}</span>
-                                        </el-form-item>
+                                        </el-form-item> -->
                                         <el-form-item label="Sales:">
                                             <span>{{ props.row.sales }}</span>
                                             <span></span>
@@ -74,26 +74,26 @@ export default {
             //表单数据
             tableData: [{
                 id: 133,
-                nft_name: 'NFT1',
+                nft_name: 'Name1',
                 sales: 0,
                 limit: 10,
                 address: '上海大学',
                 description: "xxxxx"
             }, {
                 id: 212,
-                nft_name: 'NFT2',
+                nft_name: 'Name1',
                 sales: 0,
                 limit: 10,
                 address: '上海大学'
             }, {
                 id: 331,
-                nft_name: 'NFT3',
+                nft_name: 'Name1',
                 sales: 0,
                 limit: 10,
                 address: '上海大学'
             }, {
                 id: 423,
-                nft_name: 'NFT4',
+                nft_name: 'Name1',
                 sales: 0,
                 limit: 10,
                 address: '上海大学'
