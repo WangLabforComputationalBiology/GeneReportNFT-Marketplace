@@ -99,6 +99,9 @@
             background-repeat: no-repeat;
             background-position: center 0;
             position: relative;
+            &:hover {
+                    box-shadow: 0 0 40px #E4E7ED;
+                }
 
             .step {
                 width: 160px;
@@ -115,6 +118,7 @@
                 top: -30px;
                 left: 50%;
                 transform: translateX(-50%);
+
 
             }
 
@@ -135,7 +139,10 @@
                     color: #666;
                     padding: 10px 10px;
                 }
+
+                
             }
+
         }
 
     }

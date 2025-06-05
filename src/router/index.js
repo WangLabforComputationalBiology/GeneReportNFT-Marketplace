@@ -28,12 +28,12 @@ const routes = [
         component: () => import('@/views/stats.vue')
     },
     {
-        path: "/market",
-        component: () => import('@/views/market/market.vue')
+        path: "/plaza",
+        component: () => import('@/views/plaza/plaza.vue')
     },
     {
         path: '/market/purchase',
-        component: () => import('@/views/market/purchase.vue')
+        component: () => import('@/views/plaza/purchase.vue')
     },
     {
         path: '/verify',

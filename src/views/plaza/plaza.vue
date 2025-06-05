@@ -1,8 +1,8 @@
 <template>
 
-    <body>
+
         <div class="banner">
-            <h1 class="banner-title">Market</h1>
+            <h1 class="banner-title">Plaza</h1>
         </div>
         <div class="marketPage">
             <div class="nfts-wrapper">
@@ -16,9 +16,6 @@
                                         </el-form-item>
                                         <el-form-item label="Name:">
                                             <span>{{ props.row.nft_name }}</span>
-                                        </el-form-item>
-                                        <el-form-item label="price:">
-                                            <span>{{ props.row.price + " ETH" }}</span>
                                         </el-form-item>
                                         <el-form-item label="Sales:">
                                             <span>{{ props.row.sales }}</span>
@@ -38,30 +35,23 @@
                             </el-table-column>
                             <el-table-column prop="id" label="#" width="80px"></el-table-column>
                             <el-table-column prop="nft_name" label="Collection" width="" align="left"></el-table-column>
-                            <el-table-column prop="price" label="Price" width="180px" align="right"></el-table-column>
                             <el-table-column prop="sales" label="Sales" width="200px" align="right"></el-table-column>
                             <el-table-column prop="limit" label="Limit" width="100px" align="right"></el-table-column>
-                            <el-table-column prop="address" label="Address" align="right" width="300px">
+                            <el-table-column prop="address" label="From" align="right" width="300px">
                             </el-table-column>
                             <el-table-column width="120px" align="right">
                                 <template v-slot="scope">
                                     <el-button size="mini"
-                                        @click="purchase(scope.row.id, scope.row.price)">purchase</el-button>
+                                        @click="purchase(scope.row.id, scope.row.price)">Get</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
 
 
 
-                   
-                   
-                
-
-
             </div>
         </div>
 
-    </body>
 </template>
 
 <script>
@@ -84,33 +74,29 @@ export default {
             //表单数据
             tableData: [{
                 id: 133,
-                price: 0.02,
                 nft_name: 'NFT1',
                 sales: 0,
                 limit: 10,
-                address: '上海市普陀区金沙江路',
+                address: '上海大学',
                 description: "xxxxx"
             }, {
                 id: 212,
-                price: 0.02,
                 nft_name: 'NFT2',
                 sales: 0,
                 limit: 10,
-                address: '上海市普陀区金沙江路'
+                address: '上海大学'
             }, {
                 id: 331,
-                price: 0.02,
                 nft_name: 'NFT3',
                 sales: 0,
                 limit: 10,
-                address: '上海市普陀区金沙江路'
+                address: '上海大学'
             }, {
                 id: 423,
-                price: 0.02,
                 nft_name: 'NFT4',
                 sales: 0,
                 limit: 10,
-                address: '上海市普陀区金沙江路'
+                address: '上海大学'
             }]
         };
     },
