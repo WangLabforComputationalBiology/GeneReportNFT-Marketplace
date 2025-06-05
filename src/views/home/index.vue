@@ -1,22 +1,8 @@
 <template>
-   <div class="container" ref="container" @wheel="handleWheel">
+   <div class="container">
       <IndexBanner />
 
-      <div class="wrapper">
-         <banner>
-            <div class="banner-left">
-               <h1 style="margin-top: 150px">Gain & Share <br>Gene code.</h1><br>
-               <h2>A Biological alliance-chain based on FISCO BCOS.
-                  <br>
-                  Unlocking the power of genetic data.
-               </h2>
-
-               <div class="getStartBTN" @click="">Git Hub↗</div>
-
-            </div>
-            <img src="../assets/imgs/bioschains.svg">
-         </banner>
-      </div>
+      <Intro1 />
 
       <!-- 介绍  -->
       <div class="wrapper">
@@ -66,51 +52,9 @@
 
 <script setup>
 import IndexBanner from './banner.vue';
+import Intro1 from './intro_1.vue';
 import { ref } from 'vue'
-// 滚动状态
-const isScrolling = ref(false);
-const activeSection = ref(0);
-const container = ref(null);
 
-// 处理滚轮事件
-const handleWheel = () => {
-   if (isScrolling.value) return;
-   isScrolling.value = true;
-
-   setTimeout(() => {
-      isScrolling.value = false;
-      console.log('滚动结束');
-   }, 100);
-
-   let nextIndex = activeSection.value;
-
-   scrollToSection(nextIndex);
-};
-
-// 滚动到指定section
-const scrollToSection = (index) => {
-   const section = document.getElementById(`section${index + 1}`);
-   activeSection.value = index;
-};
-
-// 监听滚动更新导航点
-const updateNavDots = () => {
-   const scrollTop = container.value.scrollTop;
-   let currentIndex = 0;
-
-   sections.forEach((_, index) => {
-      const section = document.getElementById(`section${index + 1}`);
-      const sectionTop = section.offsetTop;
-      if (scrollTop >= sectionTop - window.innerHeight / 2) {
-         currentIndex = index;
-      }
-   });
-
-   activeSection.value = currentIndex;
-};
-
-// 绑定滚动事件
-container.value?.addEventListener('scroll', updateNavDots);
 </script>
 
 
@@ -143,7 +87,6 @@ h1 {
    scroll-snap-align: start;
    padding: 100px 0;
 }
-
 
 .howToDo {
    .howTodo-wrapper {

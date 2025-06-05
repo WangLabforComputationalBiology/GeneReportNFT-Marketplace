@@ -1,7 +1,7 @@
 <template>
     <div class="banner">
         <div class="green-bar"></div>
-        <div class="main-text">Bio-ifo <br>Sharing</div>
+        <div class="main-text"><span style="color: #169608;">Bio</span>Chainer <br>Sharing</div>
         <div class="sec-text">A platform delivering genetic information.</div>
         <div class="scroll-arrow"><span class="arrow-fadein">↓</span></div>
     </div>
@@ -34,11 +34,11 @@ export default {
     /* 绿色条块 */
     .green-bar {
         position: absolute;
-        top: 48%;
+        top: 50.3%;
         left: 0;
         width: 0;
         /* 初始宽度为0 */
-        height: 200px;
+        height: 206px;
 
         /* 条块高度 */
         background: #169608;
@@ -79,7 +79,7 @@ export default {
 
     .sec-text {
         position: absolute;
-        top: 50%;
+        top: 52%;
         left: 52.5%;
         transform: translate(-50%, -50%);
         line-height: 200px;
