@@ -26,6 +26,10 @@
 </template>
 
 <script setup>
+function toFB(){
+    window.open('https://www.fisco.com.cn/fisco_20.html', '_blank');
+}
+
 </script>
 
 <style lang="scss" scoped>
