@@ -35,7 +35,7 @@
                     </el-table-column>
                     <el-table-column prop="id" label="#id" width="80px"></el-table-column>
                     <el-table-column prop="nft_name" label="Collection" width="" align="left"></el-table-column>
-                    <el-table-column prop="description" label="Description" width="500px"
+                    <el-table-column prop="description" label="Description" width="400px"
                         align="left"></el-table-column>
                     <el-table-column prop="limit" label="Limit" width="100px" align="right"></el-table-column>
                     <el-table-column prop="address" label="From" align="right" width="300px">

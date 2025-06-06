@@ -15,7 +15,7 @@
                     <img src="../../assets/imgs/arrow-drop-right-line.svg" alt="">
                 </div>
                 <div class="steps">
-                    <div class="step">2</div>
+                    <div class="step" style="background-color: #E6A23C;">2</div>
                     <div class="content-wrapper">
                         <h3>Verfiy youself</h3>
                         <p>Please let us make sure your organization is legal.
@@ -26,7 +26,7 @@
                     <img src="../../assets/imgs/arrow-drop-right-line.svg" alt="">
                 </div>
                 <div class="steps">
-                    <div class="step">3</div>
+                    <div class="step" style="background-color: #67C23A;">3</div>
                     <div class="content-wrapper">
                         <h3>Start Sharing</h3>
                         <p>Select the data that may help you in Plaza and get it at any time.
