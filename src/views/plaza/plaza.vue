@@ -1,57 +1,57 @@
 <template>
-
+    <div class="wrapper">
 
         <div class="banner">
-            <h1 class="banner-title">Plaza</h1>
+            <h1 class="banner-title">Data <span style="color: #333;">Plaza</span></h1>
         </div>
-        <div class="marketPage">
+        <div class="market-page">
             <div class="nfts-wrapper">
-                
-                        <el-table style="width:100%;" :title="NFTs" class="nft-table" :data="tableData">
-                            <el-table-column type="expand" width="40px">
-                                <template v-slot="props">
-                                    <el-form label-position="left" class="demo-table-expand">
-                                        <el-form-item label="ID:">
-                                            <span>{{ props.row.id }}</span>
-                                        </el-form-item>
-                                        <!-- <el-form-item label="Name:">
+
+                <el-table style="width:100%;" :title="NFTs" class="nft-table" :data="tableData">
+                    <el-table-column type="expand" width="40px">
+                        <template v-slot="props">
+                            <el-form label-position="left" class="demo-table-expand">
+                                <el-form-item label="ID:">
+                                    <span>{{ props.row.id }}</span>
+                                </el-form-item>
+                                <!-- <el-form-item label="Name:">
                                             <span>{{ props.row.nft_name }}</span>
                                         </el-form-item> -->
-                                        <el-form-item label="Sales:">
-                                            <span>{{ props.row.sales }}</span>
-                                            <span></span>
-                                        </el-form-item>
-                                        <el-form-item label="Address:">
-                                            <span>{{ props.row.address }}</span>
-                                            <span></span>
-                                        </el-form-item>
-                                        <el-form-item label="Description:">
-                                            <span>{{ props.row.description }}</span>
-                                            <span></span>
-                                        </el-form-item>
-                                    </el-form>
-                                </template>
+                                <el-form-item label="Sales:">
+                                    <span>{{ props.row.sales }}</span>
+                                    <span></span>
+                                </el-form-item>
+                                <el-form-item label="Address:">
+                                    <span>{{ props.row.address }}</span>
+                                    <span></span>
+                                </el-form-item>
+                                <el-form-item label="Description:">
+                                    <span>{{ props.row.description }}</span>
+                                    <span></span>
+                                </el-form-item>
+                            </el-form>
+                        </template>
 
-                            </el-table-column>
-                            <el-table-column prop="id" label="#" width="80px"></el-table-column>
-                            <el-table-column prop="nft_name" label="Collection" width="" align="left"></el-table-column>
-                            <el-table-column prop="sales" label="Sales" width="200px" align="right"></el-table-column>
-                            <el-table-column prop="limit" label="Limit" width="100px" align="right"></el-table-column>
-                            <el-table-column prop="address" label="From" align="right" width="300px">
-                            </el-table-column>
-                            <el-table-column width="120px" align="right">
-                                <template v-slot="scope">
-                                    <el-button size="mini"
-                                        @click="purchase(scope.row.id, scope.row.price)">Get</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
+                    </el-table-column>
+                    <el-table-column prop="id" label="#id" width="80px"></el-table-column>
+                    <el-table-column prop="nft_name" label="Collection" width="" align="left"></el-table-column>
+                    <el-table-column prop="description" label="Description" width="500px"
+                        align="left"></el-table-column>
+                    <el-table-column prop="limit" label="Limit" width="100px" align="right"></el-table-column>
+                    <el-table-column prop="address" label="From" align="right" width="300px">
+                    </el-table-column>
+                    <el-table-column width="120px" align="right">
+                        <template v-slot="scope">
+                            <el-button size="mini" @click="purchase(scope.row.id, scope.row.price)">Get</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
 
 
 
             </div>
         </div>
-
+    </div>
 </template>
 
 <script>
@@ -217,48 +217,70 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
 
 <style lang="scss" scoped>
+.wrapper {
+    width: 80vw;
+    min-width: 1200px;
+    margin: auto;
+}
+
 .banner-title {
+    display: flex;
     font-size: 70px;
-    color: #67C23A;
+    color: #169608;
+    animation: slideIn 0.8s ease-in-out forwards;
 }
 
-.marketPage {
-    padding: 10px;
-    min-height: 700px;
-    overflow: hidden;
+@keyframes slideIn {
+    from {
+        transform: translateX(-5%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
-.nfts-wrapper {
-    margin-top: 8px;
-}
+    .market-page {
+        padding: 10px;
+        overflow: hidden;
+    }
 
-//下拉栏样式
-:deep(.el-table__expanded-cell) {
-    color: #67C23A;
-}
+    .nfts-wrapper {
+        margin-top: 8px;
+    }
 
-//表格样式
-:deep(.demo-table-expand) {
-    margin-left: 50px;
-}
+    //下拉栏样式
+    :deep(.el-table__expanded-cell) {
+        color: #67C23A;
+    }
 
-:deep(.el-form-item--label-left) {
-    margin: 0;
-}
+    //表格样式
+    :deep(.demo-table-expand) {
+        margin-left: 50px;
+    }
 
-:deep(.el-button--mini) {
-    border-radius: 10px;
-}
+    :deep(.el-form-item--label-left) {
+        margin: 0;
+    }
 
-:deep(.el-overlay) {
-    background-color: rgba(0, 0, 0, 0.5);
-    width: 100%;
-    overflow: hidden;
+    :deep(.el-button--mini) {
+        border-radius: 10px;
+        color: #169608;
 
-}
-</style>
+        &:hover {
+            border: 1px solid #67C23A;
+            background-color: #fff;
+        }
+    }
+
+    :deep(.el-overlay) {
+        background-color: rgba(0, 0, 0, 0.5);
+        width: 100%;
+        overflow: hidden;
+
+    }</style>

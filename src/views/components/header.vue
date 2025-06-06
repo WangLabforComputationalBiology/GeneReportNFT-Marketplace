@@ -11,13 +11,6 @@
                 <router-link to="/create" class="router-selection">Data Create</router-link>
                 <router-link to="/about" class="router-selection">About</router-link>
                 <router-link to="/login" class="router-selection" v-if="!account">Login</router-link>
-
-                <!-- <el-icon class="userIcon" v-if="account">
-                    <router-link to="/user" style="color: #169608;">
-                        <UserFilled />
-                    </router-link>
-                </el-icon> -->
-                <!-- <div v-if="account" >{{ fixedAccount }}</div> -->
             </div>
 
             <!-- <button  @click="redirectToOAuth">获取微基因数据</button> -->
@@ -83,6 +76,7 @@ export default {
     .side {
 
         height: 5vh;
+
         flex: 1;
         min-width: 200px;
         display: flex;
@@ -91,13 +85,13 @@ export default {
         cursor: pointer;
         color: #16952d;
 
-
         .account {
             font-size: 20px;
             font-weight: 700;
         }
 
         .logo {
+            height: 100%;
             padding-left: 15px;
             font-size: 36px;
             font-weight: 700;
@@ -153,11 +147,4 @@ export default {
 
 
 }
-
-// .userIcon {
-//     position: absolute;
-//     right: 0;
-//     font-size: 30px;
-//     color: #169608;
-//     cursor: pointer;
-// }</style>
+</style>

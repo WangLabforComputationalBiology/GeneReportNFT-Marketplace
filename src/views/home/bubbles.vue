@@ -19,7 +19,7 @@ const balls = ref([]);
 
 // 创建小球
 function createBall() {
-    const size = Math.random() * 120 + 40; // 随机大小 20-50px
+    const size = Math.random() * 150 + 40; // 随机大小 20-50px
     const originX = Math.random() * (window.innerWidth - size);
     const originY = Math.random() * (window.innerHeight - size);
     return {
