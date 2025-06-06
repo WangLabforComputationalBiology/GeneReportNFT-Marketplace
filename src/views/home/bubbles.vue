@@ -1,26 +1,25 @@
 <template>
     <div class="ball-container">
-    <div v-for="(ball, index) in balls" :key="index" class="ball" :style="{
-        width: `${ball.size}px`,
-        height: `${ball.size}px`,
-        background: ball.color,
-        left: `${ball.x}px`,
-        top: `${ball.y}px`
-    }"></div>
+        <div v-for="(ball, index) in balls" :key="index" class="ball" :style="{
+            width: `${ball.size}px`,
+            height: `${ball.size}px`,
+            background: ball.color,
+            left: `${ball.x}px`,
+            top: `${ball.y}px`
+        }"></div>
     </div>
-    
+
 
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 
-// 小球数据
 const balls = ref([]);
 
 // 创建小球
 function createBall() {
-    const size = Math.random() * 30 + 20; // 随机大小 20-50px
+    const size = Math.random() * 120 + 40; // 随机大小 20-50px
     const originX = Math.random() * (window.innerWidth - size);
     const originY = Math.random() * (window.innerHeight - size);
     return {
@@ -30,14 +29,14 @@ function createBall() {
         originY,
         x: originX,
         y: originY,
-        angle: Math.random() * 2 * Math.PI, // 随机初始角度
-        maxOffset: 10, // 最大偏移量
-        speed: 0.05 // 浮动速度
+        angle: Math.random() * 9 * Math.PI, // 随机初始角度
+        maxOffset: 5, // 最大偏移量
+        speed: 0.015 // 浮动速度
     };
 }
 
-// 初始化小球
-for (let i = 0; i < 10; i++) {
+// 小球数量
+for (let i = 0; i < 11; i++) {
     balls.value.push(createBall());
 }
 
@@ -65,21 +64,19 @@ onUnmounted(() => {
 });
 
 // 窗口大小变化时调整小球位置
-window.addEventListener('resize', () => {
-    balls.value.forEach(ball => {
-        const size = ball.size;
-        ball.originX = Math.min(ball.originX, window.innerWidth - size);
-        ball.originY = Math.min(ball.originY, window.innerHeight - size);
-        ball.x = ball.originX + Math.sin(ball.angle) * ball.maxOffset;
-        ball.y = ball.originY + Math.cos(ball.angle) * ball.maxOffset;
-    });
-});
+// window.addEventListener('resize', () => {
+//     balls.value.forEach(ball => {
+//         const size = ball.size;
+//         ball.originX = Math.min(ball.originX, window.innerWidth - size);
+//         ball.originY = Math.min(ball.originY, window.innerHeight - size);
+//         ball.x = ball.originX + Math.sin(ball.angle) * ball.maxOffset;
+//         ball.y = ball.originY + Math.cos(ball.angle) * ball.maxOffset;
+//     });
+// });
 </script>
 
 <style scoped>
 .ball-container {
-    width: 90%;
-    height: 90%;
     pointer-events: none;
 
 }
@@ -87,6 +84,6 @@ window.addEventListener('resize', () => {
 .ball {
     position: absolute;
     border-radius: 50%;
-    opacity: 0.6;
+    opacity: 0.4;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
-
         <div class="how">
+
             <h1>How it works?</h1>
             <div class="inner-wrapper">
                 <div class="steps">
@@ -47,9 +47,8 @@
 <style lang="scss" scoped>
 .wrapper {
     height: 95vh;
-    background-color: #fff;
+    min-width: 1200px;
     scroll-snap-align: start;
-    padding: 100px 0;
     position: relative;
 }
 
@@ -60,10 +59,12 @@
         position: absolute;
         left: 50%;
         top: 50%;
-        transform: translate(-50%, 50%);
-        font-size: 60px;
+        transform: translate(-50%, 150%);
+        font-size: 6vh;
         color: #169608;
         margin-bottom: 50px;
+        font-weight: 500;
+
     }
 
     .inner-wrapper {
@@ -71,16 +72,17 @@
         left: 50%;
         top: 50%;
         transform: translate(-50%, 30%);
-        gap: 80px;
+        gap: 3em;
         display: flex;
         justify-content: space-around;
-        
+
         .arrow {
-            width: 50px;
+            width: 3vw;
+            min-width: 40px;
             height: 300px;
             display: flex;
             justify-content: center;
-            position: relative; 
+            position: relative;
             top: 50%;
 
             img {
@@ -90,7 +92,7 @@
         }
 
         .steps {
-            margin-top: 100px;
+            margin-top: 120px;
             width: 300px;
             height: 400px;
             background-color: #fff;
@@ -99,9 +101,10 @@
             background-repeat: no-repeat;
             background-position: center 0;
             position: relative;
+
             &:hover {
-                    box-shadow: 0 0 40px #E4E7ED;
-                }
+                box-shadow: 0 0 40px #E4E7ED;
+            }
 
             .step {
                 width: 160px;
@@ -118,7 +121,6 @@
                 top: -30px;
                 left: 50%;
                 transform: translateX(-50%);
-
 
             }
 
@@ -140,7 +142,7 @@
                     padding: 10px 10px;
                 }
 
-                
+
             }
 
         }

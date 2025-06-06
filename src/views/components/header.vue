@@ -1,8 +1,7 @@
 <template>
     <div class="header">
         <div class="side" @click="toHome">
-        <div class="logo"><span style="color: #169608;">Bio</span>Chainer</div>
-            
+            <div class="logo"><span style="color: #169608;">Bio</span>Chainer</div>
         </div>
         <div class="header-wrapper">
             <!-- 路由菜单 -->
@@ -68,33 +67,38 @@ export default {
 <style lang="scss" scoped>
 .header {
     z-index: 1000;
-    width: 99vw;
+    width: 100vw;
     height: 5vh;
+    min-width: 1200px;
     display: flex;
     position: sticky;
     top: 0;
     transition: background-color 0.5s;
+    background-color: #fff;
 
     a {
         text-decoration: none;
     }
 
     .side {
+
         height: 5vh;
         flex: 1;
-        min-width: 120px;
+        min-width: 200px;
         display: flex;
         align-items: center;
-        // justify-content: center;
+        justify-content: center;
         cursor: pointer;
         color: #16952d;
+
 
         .account {
             font-size: 20px;
             font-weight: 700;
         }
+
         .logo {
-            padding-left: 10px;
+            padding-left: 15px;
             font-size: 36px;
             font-weight: 700;
             color: #333;
@@ -106,11 +110,11 @@ export default {
         justify-content: center;
         position: relative;
         width: 85vw;
-        min-width: 1200px;
+        min-width: 800px;
         display: flex;
 
         .routers {
-            height: 60px;
+            // height: 60px;
             display: flex;
             position: absolute;
             right: 0;
@@ -119,6 +123,7 @@ export default {
         .router-selection {
             position: relative;
             color: #333;
+            height: 5vh;
             margin: 0 25px;
             font-size: 20px;
             align-content: center;
@@ -149,11 +154,10 @@ export default {
 
 }
 
-.userIcon {
-    position: absolute;
-    right: 0;
-    font-size: 30px;
-    color: #169608;
-    cursor: pointer;
-}
-</style>
+// .userIcon {
+//     position: absolute;
+//     right: 0;
+//     font-size: 30px;
+//     color: #169608;
+//     cursor: pointer;
+// }</style>

@@ -1,6 +1,5 @@
 <template>
     <div class="wrapper">
-        <Bubbles :balls="balls" />
         <div class="wrapper-left">
             <h1>How we do that?</h1><br>
             <h2>
@@ -24,8 +23,6 @@
 </template>
 
 <script setup>
-import Bubbles from './bubbles.vue';
-
 </script>
 
 <style lang="scss" scoped>
@@ -33,7 +30,7 @@ import Bubbles from './bubbles.vue';
 
 .wrapper {
     height: 95vh;
-    background-color: #fff;
+    min-width: 1200px;
     scroll-snap-align: start;
     display: flex;
     position: relative;
@@ -48,19 +45,20 @@ import Bubbles from './bubbles.vue';
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -70%);
+    transform: translate(-50%, -75%);
 
 
     h1 {
-        font-size: 60px;
+        font-size: 6vh;
+        font-weight: 500;
         color: #169608;
         margin-bottom: 20px;
     }
 
     h2 {
-        font-size: 24px;
+        font-size: 2.5vh;
         color: #333;
-        margin-bottom: 50px;
+        margin-bottom: 30px;
     }
 
     .tags {
