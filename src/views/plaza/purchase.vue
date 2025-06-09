@@ -31,7 +31,7 @@
 import { useWalletStore } from "@/stores/account";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import Bubbles from "../home/bubbles.vue";
+import Bubbles from "../components/bubbles.vue";
 
 const wallet = useWalletStore();
 const address = ref(wallet.address);

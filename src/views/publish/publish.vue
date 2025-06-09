@@ -2,25 +2,11 @@
 
    <body>
       <div class="wrapper">
-         <div class="wrapper-left" v-if="this.step === -1">
-            <h1 class="title">Create</h1>
-            <div class="create-button" @click="turnToSteps">
-               <div class="button-wrapper">
-                  <div class="button-title">
-                     <h2>Collectin or item</h2>
-                     <p>
-                        create a new NFT collection or add an NFT to existing one.
-                     </p>
-                  </div>
-                  <el-icon style="font-size: 30px; right: 20px; position: absolute;transform: translateY(-50%);">
-                     <Right />
-                  </el-icon>
-               </div>
-            </div>
-         </div>
-
-
-         <div class="wrapper-right" v-if="this.step === -1">
+         <Bubbles v-if="this.step === -1"/>
+         <div class="wrapper-center" v-if="this.step === -1">
+            <h1 class="title">Data Publish</h1>
+            <span class="tip1">Ready to upload your data and publish it.</span>
+            <div class="start-btn" @click="turnToSteps">Start</div>
          </div>
 
 
@@ -57,13 +43,13 @@
                <el-form-item label="Your email:">
                   <el-input v-model="form.number">
                      <template #append>
-                           <el-button type="primary" @click="getCode">Send</el-button>
+                        <el-button type="primary" @click="getCode">Send</el-button>
                      </template>
                   </el-input>
                </el-form-item>
-               
-                  <SliderCheck :successFun="handleSuccessFun" :errorFun="handleErrorFun"  style="margin-bottom: 22px;"/>
-               
+
+               <SliderCheck :successFun="handleSuccessFun" :errorFun="handleErrorFun" style="margin-bottom: 22px;" />
+
 
                <el-form-item label="Sent code:">
                   <el-input v-model="form.code" type="code" maxlength="6">
@@ -263,19 +249,16 @@
 
 <script lang="js">
 import SliderCheck from '../components/slidecheck.vue';
+import Bubbles from '../components/bubbles.vue';
 // import Api from '../../axios/aixos';
-// 国家代码映射
-const countryCodeMap = {
-   cn: '+86',
-   us: '+1',
-   de: '+49',
-   fr: '+33',
-   gb: '+44',
-};
+
 
 export default {
    name: 'Create',
-   components: { SliderCheck },
+   components: {
+      SliderCheck,
+      Bubbles
+   },
    data() {
       return {
          step: -1,//0:进行手机验证
@@ -389,79 +372,99 @@ export default {
    display: flex;
    position: relative;
 
-   .wrapper-left {
-      overflow: visible;
-      position: absolute;
-      left: 0;
-      width: 50%;
-      padding: 150px 80px 100px 160px;
-      height: calc(100vh - 60px);
+}
 
-      h1{
-         margin: 10px;color:#909399;
+.wrapper-center {
+   height: 95vh;
+   width: 100vw;
+   display: flex;
+   position: absolute;
+   flex-direction: column;
+   gap: 30px;
+   justify-content: center;
+   align-items: center;
+
+   .title {
+      font-size: 70px;
+      color: #169608;
+   }
+
+   .tip1 {
+      font-size: 20px;
+      color: #333;
+   }
+
+   .start-btn {
+      width: 280px;
+      height: 70px;
+      line-height: 70px;
+      background-color: #169608;
+      color: #fff;
+      font-size: 26px;
+      border-radius: 50px;
+      text-align: center;
+
+      &:hover {
+         box-shadow: 0px 0px 20px 1px #e7e4e4 !important;
+         cursor: pointer;
+      }
+   }
+}
+
+
+.wrapper-left {
+   overflow: visible;
+   position: absolute;
+   left: 0;
+   width: 50%;
+   padding: 150px 80px 100px 160px;
+   height: 95vh;
+
+   h1 {
+      margin: 10px;
+      color: #909399;
+   }
+
+   .title {
+      font-size: 70px;
+      color: #169608;
+      margin-bottom: 20px;
+   }
+
+
+   .inside-step {
+      display: flex;
+      width: 100%;
+      height: 80px;
+
+      img {
+         width: 60px;
       }
 
-      .title {
-         font-size: 70px;
-         color: #169608;
-         margin-bottom: 20px;
-      }
-
-      .create-button {
+      .step-tip {
          display: flex;
-         position: relative;
-         align-items: center;
-         width: 100%;
-         height: 130px;
-         box-shadow: 0px 0px 5px 0px #e0e0e0 !important;
-         border-radius: 10px;
-
-         &:hover {
-            box-shadow: 0px 0px 10px 1px #e0e0e0 !important;
-            cursor: pointer;
-         }
-
-         .button-title {
-            font-size: 16px;
-            left: 30px;
-            transform: translateY(-60%);
-            position: absolute;
-         }
+         align-self: center;
+         font-size: 20px;
+         margin-left: 25px;
+         color: #A8ABB2;
       }
 
-      .inside-step {
+      .step-tip-ok {
          display: flex;
-         width: 100%;
-         height: 80px;
-
-         img {
-            width: 60px;
-         }
-
-         .step-tip {
-            display: flex;
-            align-self: center;
-            font-size: 20px;
-            margin-left: 25px;
-            color: #A8ABB2;
-         }
-         .step-tip-ok {
-            display: flex;
-            align-self: center;
-            font-size: 20px;
-            margin-left: 25px;
-            color: #A8ABB2;
-            color: #67C23A;
-         }
+         align-self: center;
+         font-size: 20px;
+         margin-left: 25px;
+         color: #A8ABB2;
+         color: #67C23A;
       }
+   }
 
-      .line {
-         margin-left: 28px;
-         width: 3px;
-         border-radius: 5px;
-         height: 30px;
-         background-color: #A8ABB2;
-      }
+   .line {
+      margin-left: 28px;
+      width: 3px;
+      border-radius: 5px;
+      height: 30px;
+      background-color: #A8ABB2;
    }
 }
 
@@ -470,7 +473,7 @@ export default {
    right: 0;
    width: 50%;
    padding: 100px 160px;
-   height: calc(100vh - 60px);
+   height: 95vh;
 
    .platforms {
       position: relative;
