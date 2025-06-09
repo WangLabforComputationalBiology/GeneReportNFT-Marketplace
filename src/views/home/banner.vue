@@ -66,6 +66,7 @@
         // right: 40%;
         transform: translate(-50%, -50%);
         font-size: 15vh;
+        font-weight: 700;
         color: #333;
         opacity: 0;
         /* 初始不可见 */

@@ -1,254 +1,91 @@
 <template>
     <div class="wrapper">
-        <el-form :model="form" label-width="auto" style="max-width: 420px">
-            <el-form-item label="Phone Number:">
-
-                <el-input v-model="form.number" type="tel" oninput="value=value.replace(/[^0-9]/g,'')" maxlength="11">
-                    <template #prepend>
-                        <el-select v-model="form.country" placeholder="Select" style="width: 64px">
-                            <el-option label="+86" value="cn" />
-                            <el-option label="+1" value="us" />
-                            <el-option label="+7" value="de" />
-                            <el-option label="+44" value="gb" />
-                            <el-option label="+33" value="fr" />
-                        </el-select>
-                    </template>
-                    <template #append>
-                        <img :src="'https://flagcdn.com/32x24/' + form.country + '.png'" :alt="form.country + '国旗'"
-                            class="flags" />
-                    </template>
-                </el-input>
-            </el-form-item>
-            <el-form-item label="Verification code:">
-                <el-input v-model="form.code" type="code" maxlength="6">
-                    <template #append>
-                        <el-button type="primary" @click="getCode">Send</el-button>
-                    </template>
-                </el-input>
-            </el-form-item>
-            <el-form-item>
-
-                <el-button @click="verify">Verify</el-button>
-            </el-form-item>
-        </el-form>
+        <div class="tittle"><span style="color: #169608;">Institutional</span> Accreditation</div>
+        <div class="input-wrapper">
+            <el-input v-model="inputValue"></el-input>
+            <el-button>Search</el-button>
+        </div>
 
     </div>
 </template>
 
-<script>
-import { reactive, computed } from 'vue';
-import Api from '../axios/aixos'
-// 国家代码映射
-const countryCodeMap = {
-    cn: '+86',
-    us: '+1',
-    de: '+49',
-    fr: '+33',
-    gb: '+44',
-};
+<script setup>
+import { ref } from 'vue';
 
-export default {
-    name: 'Verify',
-    data() {
-        return {
-            form: {
-                number: '',
-                code: '',
-                selectVal: '+86',
-                country: 'cn',
-            }
-        };
-    },
-    computed: {
-        phoneNumber() {
-            if (!this.form.country || !this.form.number) {
-                return '';
-            }
-            return `${countryCodeMap[this.form.country]}${this.form.number}`;
-        },
-    }
-    ,
-    methods: {
-        async getCode() {
-            try {
-                // 验证手机号格式（假设需要）
-                if (!this.phoneNumber) {
-                    this.$message.error("Please enter a valid phone number.");
-                    return;
-                }
-
-                const response = await Api.post("/user/send_sms", {
-                    phone: this.phoneNumber,
-                });
-
-                const { data } = response;
-
-                // 确保响应数据结构正确
-                if (!data || typeof data.code === "undefined") {
-                    throw new Error("Invalid response format from server.");
-                }
-
-                // 处理不同的状态码
-                if (data.code === 200) {
-                    this.$message.success("sms.sent_success"); // 使用国际化
-                    return data; // 显式返回数据
-                } else if (data.code === 429) {
-                    this.$message.error
-                    this.$message.error("sms.rate_limit_exceeded"); // 频率限制
-                    return;
-                } else {
-                    this.$message.error(data.message || "sms.send_failed"); // 使用后端返回的错误信息
-                    return;
-                }
-            } catch (error) {
-                console.error("Error sending verification code:", error);
-                // 提取后端返回的错误信息（假设使用 Axios）
-                const errorMessage =
-                    error.response?.data?.message ||
-                    error.message ||
-                    "sms.error";
-                this.$message.error(errorMessage);
-                throw error; // 抛出错误以便调用方处理
-            }
-        },
-
-        async verify() {
-            try {
-                // 验证输入
-                if (!this.form.number || !/^\d{10,}$/.test(this.form.number)) {
-                    this.$message.error(this.$t("verify.invalid_phone")); // 使用国际化
-                    return;
-                }
-                if (!this.form.code || !/^\d{4,6}$/.test(this.form.code)) {
-                    this.$message.error(this.$t("verify.invalid_code")); // 假设验证码为4-6位数字
-                    return;
-                }
-
-                const response = await Api.post(
-                    "/user/verify_sms",
-                    {
-                        phone: this.form.number,
-                        code: this.form.code,
-                    },
-                    { timeout: 10000 } // 设置请求超时
-                );
-
-                const { data } = response;
-
-                // 确保响应数据结构正确
-                if (!data || typeof data.code === "undefined") {
-                    throw new Error("Invalid response format from server.");
-                }
-
-                // 处理不同的状态码
-                if (data.code === 200) {
-                    this.$message.success(this.$t("verify.success"));
-                    return data; // 显式返回数据
-                } else if (data.code === 400) {
-                    this.$message.error(this.$t("verify.invalid_code_error")); // 验证码错误
-                    return;
-                } else if (data.code === 429) {
-                    this.$message.error(this.$t("verify.rate_limit_exceeded")); // 频率限制
-                    return;
-                } else {
-                    this.$message.error(data.message || this.$t("verify.failed")); // 使用后端错误信息
-                    return;
-                }
-            } catch (error) {
-                console.error("Error verifying code:", error);
-                // 提取后端返回的错误信息（假设使用 Axios）
-                const errorMessage =
-                    error.response?.data?.message ||
-                    error.message ||
-                    this.$t("verify.error");
-                this.$message.error(errorMessage);
-                throw error; // 抛出错误以便调用方处理
-            }
-        }
-    }
-};
+const inputValue = ref('');
 </script>
 
 <style lang="scss" scoped>
 .wrapper {
+    width: 30vw;
+    min-width: 500px;
+    height: 95vh;
+    margin: auto;
+    display: flex;
+    position: relative;
+    text-align: center;
+    justify-content: center;
+    // flex-direction: column;
+
+}
+
+.tittle {
+    position: absolute;
+    top: 20%;
+    text-align: center;
+    font-size: 36px;
+
+}
+
+.input-wrapper {
+    position: absolute;
+    top: 28%;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #fff;
-}
-
-.flags {
-    width: 24px;
-    height: 18px;
-    margin-top: 5px;
 }
 </style>
 
 <style lang="scss" scoped>
-:deep(.el-form-item__label) {
-    font-size: 16px;
-    color: #67C23A;
+:deep(.el-input__wrapper) {
+    padding: none !important;
+    height: 50px;
+    width: 82%;
+    font-size: 20px;
+    border-radius: 10px;
+    border: 1px solid #169608;
+    position: absolute;
+    top: 28%;
+    box-shadow: none;
+
+
 }
 
-
-:deep(.el-input__wrapper) {
-    width: 100%;
-
-    &:focus-within {
-        box-shadow: 0px 0px 0px 1px inset #67C23A !important;
-    }
+:deep(.is-focus) {
+    box-shadow: 0 0 0 3px #eeeeee inset;
+    ;
 }
 
 :deep(.el-input__inner) {
-    padding: 0;
+    height: 50px;
+    font-size: 20px;
     border: none;
-
-    &:focus {
-        color: #67C23A;
-    }
+    outline: none;
+    padding-left: 10px;
 }
 
-:deep(.el-input-group__prepend) {
-    width: 10px;
+:deep(.el-button) {
+    position: absolute;
+    top: 25%;
+    right: 0%;
+    width: 15%;
+    height: 50px;
+    min-width: 50px;
+    font-size: 20px;
+    border-radius: 10px;
+    background-color: #169608;
+    color: #fff;
     border: none;
-    background-color: #fff;
-
-}
-
-:deep(.el-select__placeholder){
-    width: 40px;
-}
-
-:deep(.el-input-group__append) {
-    border: none;
-
-}
-
-
-// 下拉框选择器
-:deep(.el-tooltip__trigger) {
-    padding: 10px;
-    height: 42px;
-    border: none !important;
-    box-shadow: none !important;
-
-    &:hover {
-        border: none;
-        box-shadow: none;
-    }
-}
-
-:deep(.el-select__selected-item) {
-    color: #000;
-    line-height: 70px;
-
-
-}
-:deep(.el-button--primary){
-    padding: 0;
-    width: 64px;
-    height: 42px;
-    background-color: #fff;
 }
 </style>

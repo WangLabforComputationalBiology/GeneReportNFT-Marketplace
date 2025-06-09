@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <div class="side" @click="toHome">
-            <div class="logo"><span style="color: #169608;">Bio</span>Chainer</div>
+            <div class="logo" style="cursor: pointer;"><span style="color: #169608;">Bio</span>Chainer</div>
         </div>
         <div class="header-wrapper">
             <!-- 路由菜单 -->
@@ -74,20 +74,18 @@ export default {
     }
 
     .side {
-
         height: 5vh;
-
         flex: 1;
         min-width: 200px;
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
         color: #16952d;
 
         .account {
             font-size: 20px;
             font-weight: 700;
+            cursor: pointer;
         }
 
         .logo {
