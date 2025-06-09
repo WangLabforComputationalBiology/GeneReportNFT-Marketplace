@@ -2,7 +2,7 @@
 
     <body>
         <div class="banner">
-            <h1 class="banner-title">User</h1>
+            <h1 class="banner-title">Account</h1>
         </div>
         <span>{{ address }}</span><br>
         <span>Wallet balance: </span> <span>{{ balance }}</span>

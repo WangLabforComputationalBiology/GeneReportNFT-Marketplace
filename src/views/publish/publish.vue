@@ -1,249 +1,245 @@
 <template>
 
-   <body>
-      <div class="wrapper">
-         <Bubbles v-if="this.step === -1"/>
-         <div class="wrapper-center" v-if="this.step === -1">
-            <h1 class="title">Data Publish</h1>
-            <span class="tip1">Ready to upload your data and publish it.</span>
-            <div class="start-btn" @click="turnToSteps">Start</div>
+   <div class="wrapper">
+      <Bubbles v-if="this.step === -1" />
+      <div class="wrapper-center" v-if="this.step === -1">
+         <h1 class="title">Data <span style="color: #333;">Publish</span></h1>
+         <span class="tip1">Ready to upload your data and publish it.</span>
+         <div class="start-btn" @click="turnToSteps">Start</div>
+      </div>
+
+
+      <!-- 短信验证阶段 0 -->
+      <div class="wrapper-left" v-if="this.step === 0">
+         <h1>Start your GNFT journey from here</h1>
+         <div class="inside-step"><img src="../../icons/status_ing.svg" alt="status icon">
+            <div class="step-tip" style="line-height: 80px; color:#67c23a;">Verify your region using email.
+            </div>
+
          </div>
+         <div class="line" style="background-color: #67c23a;"></div>
+         <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
+            <div class="step-tip">Allow us to access your genetic reports. We ensure that no additonal personal data
+               will be stored by your platform.</div>
 
-
-         <!-- 短信验证阶段 0 -->
-         <div class="wrapper-left" v-if="this.step === 0">
-            <h1>Start your GNFT journey from here</h1>
-            <div class="inside-step"><img src="../../icons/status_ing.svg" alt="status icon">
-               <div class="step-tip" style="line-height: 80px; color:#67c23a;">Verify your region using email.
-               </div>
-
-            </div>
-            <div class="line" style="background-color: #67c23a;"></div>
-            <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
-               <div class="step-tip">Allow us to access your genetic reports. We ensure that no additonal personal data
-                  will be stored by your platform.</div>
-
-            </div>
-            <div class="line"></div>
-            <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
-               <div class="step-tip">Create your unique GNFT. Once your item is minted you will not be able to change
-                  any of its information.</div>
-
-            </div>
-            <div class="line"></div>
-            <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
-               <div class="step-tip" style="line-height: 28px;">Offer your GNFT for sale on the market. Prior listing,
-                  you may delete your GNFT; However, once listed, you will not be able to delete your GNFT.</div>
-
-            </div>
          </div>
+         <div class="line"></div>
+         <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
+            <div class="step-tip">Create your unique GNFT. Once your item is minted you will not be able to change
+               any of its information.</div>
 
-         <div class="wrapper-right" v-if="this.step === 0">
-            <el-form :model="form" label-width="auto" style="max-width: 480px">
-               <el-form-item label="Your email:">
-                  <el-input v-model="form.number">
-                     <template #append>
-                        <el-button type="primary" @click="getCode">Send</el-button>
-                     </template>
-                  </el-input>
-               </el-form-item>
+         </div>
+         <div class="line"></div>
+         <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
+            <div class="step-tip" style="line-height: 28px;">Offer your GNFT for sale on the market. Prior listing,
+               you may delete your GNFT; However, once listed, you will not be able to delete your GNFT.</div>
 
-               <SliderCheck :successFun="handleSuccessFun" :errorFun="handleErrorFun" style="margin-bottom: 22px;" />
+         </div>
+      </div>
+
+      <div class="wrapper-right" v-if="this.step === 0">
+         <el-form :model="form" label-width="auto" style="max-width: 480px">
+            <el-form-item label="Your email:">
+               <el-input v-model="form.number">
+                  <template #append>
+                     <el-button type="primary" @click="getCode">Send</el-button>
+                  </template>
+               </el-input>
+            </el-form-item>
+
+            <SliderCheck :successFun="handleSuccessFun" :errorFun="handleErrorFun" style="margin-bottom: 22px;" />
 
 
-               <el-form-item label="Sent code:">
-                  <el-input v-model="form.code" type="code" maxlength="6">
-                     <template #prepend>
-                        <img src="../../icons/verification_code.svg" alt=""
-                           style="width: 20px;margin: 5px 2px 0 2px;" />
-                     </template>
-                     <!-- <template #append>
+            <el-form-item label="Sent code:">
+               <el-input v-model="form.code" type="code" maxlength="6">
+                  <template #prepend>
+                     <img src="../../icons/verification_code.svg" alt="" style="width: 20px;margin: 5px 2px 0 2px;" />
+                  </template>
+                  <!-- <template #append>
                         
                      </template> -->
-                  </el-input>
-               </el-form-item>
-               <el-form-item>
+               </el-input>
+            </el-form-item>
+            <el-form-item>
 
-                  <el-button class="custom-botton" @click="next">Verify to continue</el-button>
-               </el-form-item>
-               <el-form-item>
-                  <el-button class="custom-botton" @click="back">back</el-button>
-               </el-form-item>
-            </el-form>
-         </div>
+               <el-button class="custom-botton" @click="next">Verify to continue</el-button>
+            </el-form-item>
+            <el-form-item>
+               <el-button class="custom-botton" @click="back">back</el-button>
+            </el-form-item>
+         </el-form>
+      </div>
 
-         <!-- 选择平台阶段 1 -->
-         <div class="wrapper-left" v-if="this.step === 1">
-            <h1 style="margin: 10px; color:#909399">Start your GNFT journey from here</h1>
-            <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
-               <div class="step-tip" style="line-height: 80px; color:#67c23a">Verify your region using phone number.
-               </div>
-
-            </div>
-            <div class="line" style="background-color: #67c23a;"></div>
-            <div class="inside-step"><img src="../../icons/status_ing.svg" alt="status icon">
-               <div class="step-tip">Allow us to access your genetic reports. We ensure that no additonal personal data
-                  will be stored by your platform.</div>
-
-            </div>
-            <div class="line" style="background-color: #67c23a;"></div>
-            <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
-               <div class="step-tip">Create your unique GNFT. Once your item is minted you will not be able to change
-                  any of its information.</div>
-
-            </div>
-            <div class="line"></div>
-            <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
-               <div class="step-tip" style="line-height: 28px;">Offer your GNFT for sale on the market. Prior listing,
-                  you may delete your GNFT; However, once listed, you will not be able to delete your GNFT。</div>
-
-            </div>
-         </div>
-
-         <div class="wrapper-right" style="display: block;" v-if="this.step === 1 && profiles.length <= 0">
-            <div class="platforms" @click="redirectToOAuth">
-               <img src="../../icons/wegene_logo.svg" alt="wegene">
-               <el-icon
-                  style="position: absolute; right:30px; top: 50px; transform: translateY(-50%); font-size: 30px;">
-                  <Right />
-               </el-icon>
-            </div>
-            <div class="platforms"></div>
-            <div class="platforms"></div>
-
-            <div class="button-wrapper" style="display: flex; position:relative;height:200px">
-               <el-button class="botton" @click="back" style="right: 240px; b">back</el-button>
-               <el-button class="botton" @click="next">Continue</el-button>
-               <div class="tips">
-                  If your genetic testing platform is not listed, please to provide feedback, and we will address it
-                  promptly.
-               </div>
-            </div>
-            <div class="wrapper-right" style="display: block;" v-if="this.step === 1 && profiles.length > 0">
-               <p style="color: #99a9bf;">Please select a Profile:</p>
-               <el-table :data="profiles" style="width: 50%" @selection-change="handleSelectionChange">
-                  <!-- Radio button column -->
-                  <el-table-column width="500" label="#Id">
-                     <template #default="{ row }">
-                        <el-radio v-model="selectedProfile" :label="row.id" />
-                     </template>
-                  </el-table-column>
-
-               </el-table>
-            </div>
-         </div>
-
-         <!-- 添加描述阶段 1 -->
-         <div class="wrapper-left" v-if="this.step === 2">
-            <h1>Start your GNFT journey from here</h1>
-            <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
-               <div class="step-tip" style="line-height: 80px; color:#67c23a">Verify your region using phone number.
-               </div>
-
-            </div>
-            <div class="line" style="background-color: #67c23a;"></div>
-            <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
-               <div class="step-tip-ok">Allow us to access your genetic reports. We ensure that no
-                  additonal
-                  personal data
-                  will be stored by your platform.</div>
-
-            </div>
-            <div class="line" style="background-color: #67c23a;"></div>
-            <div class="inside-step"><img src="../../icons/status_ing.svg" alt="status icon">
-               <div class="step-tip-ok">Create your unique GNFT. Once your item is minted you will not be able to change
-                  any of its information.</div>
-
-            </div>
-            <div class="line" style="background-color: #67c23a;"></div>
-            <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
-               <div class="step-tip" style="line-height: 28px;">Offer your GNFT for sale on the market. Prior listing,
-                  you may
-                  delete your GNFT; However, once listed, you will not be able to delete your GNFT.
-               </div>
-
-            </div>
-         </div>
-
-         <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="this.step === 2">
-            <p>Report *</p>
-            <div class="select">
-               <div class="add">+</div>
-               <div>Select the report as collection</div>
-            </div>
-            <p>Name *</p>
-            <el-input class="name-input"></el-input>
-            <p class="introduction" style="margin-bottom: 0;">Since there are several analysis files in the genetic
-               report, your
-               GNFT will be
-               automatically given a unique name depending on the Collection name you provide.</p>
-            <p class="introduction"><span class="click-here">Click here</span> to view an example.</p>
-            <p>supply *</p>
-            <el-input class="supply-input"></el-input>
-            <p class="introduction">The Supply refers to the quantity of each NFT within the Collection.</p>
-            <p>Description</p>
-            <input type="text" class="Description-input"
-               placeholder="Please enter a description of the collection"></input>
-            <p class="introduction">The description will be included in every GNFT in the Collection</p>
-            <p>Trait</p>
-            <p class="introduction">Traits describe attributes of your item. They appear as filters inside your
-               collection page
-               and are also listed out inside your item page.</p>
-            <div class="add-trait">+ Add trait</div>
-            <div class="button-wrapper" style="margin-top: 50px;">
-               <el-button class="botton" @click="back" style="right: 240px; b">back</el-button>
-               <el-button class="botton" @click="next">Create</el-button>
-
+      <!-- 选择平台阶段 1 -->
+      <div class="wrapper-left" v-if="this.step === 1">
+         <h1 style="margin: 10px; color:#909399">Start your GNFT journey from here</h1>
+         <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
+            <div class="step-tip" style="line-height: 80px; color:#67c23a;">Verify your region using phone number.
             </div>
 
          </div>
+         <div class="line" style="background-color: #67c23a;"></div>
+         <div class="inside-step"><img src="../../icons/status_ing.svg" alt="status icon">
+            <div class="step-tip">Allow us to access your genetic reports. We ensure that no additonal personal data
+               will be stored by your platform.</div>
 
+         </div>
+         <div class="line" style="background-color: #67c23a;"></div>
+         <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
+            <div class="step-tip">Create your unique GNFT. Once your item is minted you will not be able to change
+               any of its information.</div>
 
-         <!-- 完成阶段 3 -->
-         <div class="wrapper-left" v-if="this.step === 3">
-            <h1>Start your GNFT journey from here</h1>
-            <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
-               <div class="step-tip" style="line-height: 80px; color:#67c23a">Verify your region using phone number.
-               </div>
+         </div>
+         <div class="line"></div>
+         <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
+            <div class="step-tip" style="line-height: 28px;">Offer your GNFT for sale on the market. Prior listing,
+               you may delete your GNFT; However, once listed, you will not be able to delete your GNFT。</div>
 
-            </div>
-            <div class="line" style="background-color: #67c23a;"></div>
-            <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
-               <div class="step-tip" style="color:#67c23a">Allow us to access your genetic reports. We ensure that no
-                  additonal
-                  personal data
-                  will be stored by your platform.</div>
+         </div>
+      </div>
 
-            </div>
-            <div class="line" style="background-color: #67c23a;"></div>
-            <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
-               <div class="step-tip">Create your unique GNFT. Once your item is minted you will not be able to change
-                  any of its information.</div>
+      <div class="wrapper-right" style="display: block;" v-if="this.step === 1 && profiles.length <= 0">
+         <div class="platforms" @click="redirectToOAuth">
+            <img src="../../icons/wegene_logo.svg" alt="wegene">
+            <el-icon style="position: absolute; right:30px; top: 50px; transform: translateY(-50%); font-size: 30px;">
+               <Right />
+            </el-icon>
+         </div>
+         <div class="platforms"></div>
+         <div class="platforms"></div>
 
-            </div>
-            <div class="line" style="background-color: #67c23a;"></div>
-            <div class="inside-step"><img src="../../icons/status_ing.svg" alt="status icon">
-               <div class="step-tip" style="line-height: 28px;">Offer your GNFT for sale on the market. Prior listing,
-                  you may
-                  delete your GNFT; However, once listed, you will not be able to delete your GNFT.
-               </div>
-
+         <div class="button-wrapper" style="display: flex; position:relative;height:200px">
+            <el-button class="botton" @click="back" style="right: 240px;">back</el-button>
+            <el-button class="botton" @click="next">Continue</el-button>
+            <div class="tips">
+               If your genetic testing platform is not listed, please to provide feedback, and we will address it
+               promptly.
             </div>
          </div>
+         <div class="wrapper-right" style="display: block;" v-if="this.step === 1 && profiles.length > 0">
+            <p style="color: #99a9bf;">Please select a Profile:</p>
+            <el-table :data="profiles" style="width: 50%" @selection-change="handleSelectionChange">
+               <!-- Radio button column -->
+               <el-table-column width="500" label="#Id">
+                  <template #default="{ row }">
+                     <el-radio v-model="selectedProfile" :label="row.id" />
+                  </template>
+               </el-table-column>
 
-         <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="this.step === 3">
-            <h2>Select your collection</h2>
-            <div class="button-wrapper" style="margin-top: 50px;">
-               <el-button class="botton" @click="back" style="right: 240px; b">back</el-button>
-               <el-button class="botton" @click="next">Create</el-button>
-
-            </div>
+            </el-table>
          </div>
+      </div>
 
+      <!-- 添加描述阶段 1 -->
+      <div class="wrapper-left" v-if="this.step === 2">
+         <h1>Start your GNFT journey from here</h1>
+         <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
+            <div class="step-tip" style="line-height: 80px; color:#67c23a">Verify your region using phone number.
+            </div>
 
+         </div>
+         <div class="line" style="background-color: #67c23a;"></div>
+         <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
+            <div class="step-tip-ok">Allow us to access your genetic reports. We ensure that no
+               additonal
+               personal data
+               will be stored by your platform.</div>
+
+         </div>
+         <div class="line" style="background-color: #67c23a;"></div>
+         <div class="inside-step"><img src="../../icons/status_ing.svg" alt="status icon">
+            <div class="step-tip-ok">Create your unique GNFT. Once your item is minted you will not be able to change
+               any of its information.</div>
+
+         </div>
+         <div class="line" style="background-color: #67c23a;"></div>
+         <div class="inside-step"><img src="../../icons/status_ing_grey.svg" alt="status icon">
+            <div class="step-tip" style="line-height: 28px;">Offer your GNFT for sale on the market. Prior listing,
+               you may
+               delete your GNFT; However, once listed, you will not be able to delete your GNFT.
+            </div>
+
+         </div>
+      </div>
+
+      <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="this.step === 2">
+         <p>Report *</p>
+         <div class="select">
+            <div class="add">+</div>
+            <div>Select the report as collection</div>
+         </div>
+         <p>Name *</p>
+         <el-input class="name-input"></el-input>
+         <p class="introduction" style="margin-bottom: 0;">Since there are several analysis files in the genetic
+            report, your
+            GNFT will be
+            automatically given a unique name depending on the Collection name you provide.</p>
+         <p class="introduction"><span class="click-here">Click here</span> to view an example.</p>
+         <p>supply *</p>
+         <el-input class="supply-input"></el-input>
+         <p class="introduction">The Supply refers to the quantity of each NFT within the Collection.</p>
+         <p>Description</p>
+         <input type="text" class="Description-input"
+            placeholder="Please enter a description of the collection"></input>
+         <p class="introduction">The description will be included in every GNFT in the Collection</p>
+         <p>Trait</p>
+         <p class="introduction">Traits describe attributes of your item. They appear as filters inside your
+            collection page
+            and are also listed out inside your item page.</p>
+         <div class="add-trait">+ Add trait</div>
+         <div class="button-wrapper" style="margin-top: 50px;">
+            <el-button class="botton" @click="back" style="right: 240px;">back</el-button>
+            <el-button class="botton" @click="next">Create</el-button>
+
+         </div>
 
       </div>
-   </body>
+
+
+      <!-- 完成阶段 3 -->
+      <div class="wrapper-left" v-if="this.step === 3">
+         <h1>Start your GNFT journey from here</h1>
+         <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
+            <div class="step-tip" style="line-height: 80px; color:#67c23a">Verify your region using phone number.
+            </div>
+
+         </div>
+         <div class="line" style="background-color: #67c23a;"></div>
+         <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
+            <div class="step-tip" style="color:#67c23a">Allow us to access your genetic reports. We ensure that no
+               additonal
+               personal data
+               will be stored by your platform.</div>
+
+         </div>
+         <div class="line" style="background-color: #67c23a;"></div>
+         <div class="inside-step"><img src="../../icons/status_ok.svg" alt="status icon">
+            <div class="step-tip">Create your unique GNFT. Once your item is minted you will not be able to change
+               any of its information.</div>
+
+         </div>
+         <div class="line" style="background-color: #67c23a;"></div>
+         <div class="inside-step"><img src="../../icons/status_ing.svg" alt="status icon">
+            <div class="step-tip" style="line-height: 28px;">Offer your GNFT for sale on the market. Prior listing,
+               you may
+               delete your GNFT; However, once listed, you will not be able to delete your GNFT.
+            </div>
+
+         </div>
+      </div>
+
+      <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="this.step === 3">
+         <h2>Select your collection</h2>
+         <div class="button-wrapper" style="margin-top: 50px;">
+            <el-button class="botton" @click="back" style="right: 240px; b">back</el-button>
+            <el-button class="botton" @click="next">Create</el-button>
+
+         </div>
+      </div>
+
+
+
+   </div>
 </template>
 
 
@@ -358,6 +354,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.wrapper {
+   height: 95vh;
+   min-width: 1200px;
+   overflow: hidden;
+}
+
 .active {
    p {
       color: #67C23A;

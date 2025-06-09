@@ -1,9 +1,9 @@
 <template>
     <div class="wrapper">
         <Bubbles />
-        <div class="purchase-page">
+        <div class="confirm-page">
             <div class="info-wrapper">
-                <h1 style="color: #169608;margin-bottom:10px">Confirm your order</h1>
+                <h1 style="color: #169608;margin-bottom:10px">Confirm imformation</h1>
                 <h1>ID: #{{ purchaseId.id }} </h1>
                 <span class="address-info">Your address: <span style="color: #67C23A; margin: 0 20px;">{{ address
                         }}</span>
@@ -50,7 +50,7 @@ const goBack = () => {
     height: 95vh;
 }
 
-.purchase-page {
+.confirm-page {
     z-index: 999;
     background-color: #ffffffe6;
     position: absolute;
@@ -62,10 +62,7 @@ const goBack = () => {
     border-radius: 25px;
     padding: 50px 50px;
     box-shadow: 0px 0px 16px #DCDFE6;
-    animation: fadeUp 0.8s ease-out forwards;
-
-
-
+    animation: fadeUp 0.5s ease-out forwards;
 
     .info-wrapper {
         width: 50%;
@@ -146,7 +143,7 @@ const goBack = () => {
 @keyframes fadeUp {
     from {
         opacity: 0;
-        transform: translate(-50%, -60%);
+        transform: translate(-50%, -52%);
     }
 
     to {

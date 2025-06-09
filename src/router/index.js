@@ -12,12 +12,12 @@ const routes = [
         component: () => import('@/views/home/index.vue')
     },
     {
-        path: '/create',
-        component: () => import('@/views/create/create.vue')
+        path: '/publish',
+        component: () => import('@/views/publish/publish.vue')
     },
     {
         path: "/create/selectProfile/:lastSegment",//最后面的动态参数不能改
-        component: () => import('@/views/create/selectProfile.vue')
+        component: () => import('@/views/publish/selectProfile.vue')
     },
     {
         path: "/drop",
@@ -32,8 +32,8 @@ const routes = [
         component: () => import('@/views/plaza/plaza.vue')
     },
     {
-        path: '/market/purchase',
-        component: () => import('@/views/plaza/purchase.vue')
+        path: '/market/confirm',
+        component: () => import('@/views/plaza/confirm.vue')
     },
     {
         path: '/verify',
@@ -44,8 +44,8 @@ const routes = [
         component: () => import('@/views/login.vue')
     },
     {
-        path: "/user",
-        component: () => import('@/views/user.vue')
+        path: "/account",
+        component: () => import('@/views/account.vue')
     }
 ]
 

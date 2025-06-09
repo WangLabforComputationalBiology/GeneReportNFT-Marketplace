@@ -2,7 +2,7 @@
     <div class="wrapper">
 
         <div class="banner">
-            <h1 class="banner-title">Data <span style="color: #333;">Plaza</span></h1>
+            <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
         </div>
         <div class="market-page">
             <div class="nfts-wrapper">
@@ -14,9 +14,7 @@
                                 <el-form-item label="ID:">
                                     <span>{{ props.row.id }}</span>
                                 </el-form-item>
-                                <!-- <el-form-item label="Name:">
-                                            <span>{{ props.row.nft_name }}</span>
-                                        </el-form-item> -->
+
                                 <el-form-item label="Sales:">
                                     <span>{{ props.row.sales }}</span>
                                     <span></span>
@@ -204,10 +202,9 @@ export default {
 
         purchase(id, price) {
             this.$router.push({
-                path: '/market/purchase',
+                path: '/market/confirm',
                 query: {
-                    id,
-                    price
+                    id
                 }
             });
         }
