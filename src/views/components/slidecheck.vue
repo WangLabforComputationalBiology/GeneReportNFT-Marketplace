@@ -82,7 +82,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-$green: #67C23A;
+$green: #169608;
 
 @mixin jc-flex {
     display: flex;
@@ -93,7 +93,7 @@ $green: #67C23A;
 .slider-check-box {
     .slider-check {
         background-color: #e9e9e9;
-        border-radius: 6px;
+        border-radius: 10px;
 
         position: relative;
         transition: 1s all;
@@ -119,7 +119,7 @@ $green: #67C23A;
             color: $green;
             background-color: #fff;
             border: 1px solid #d8d8d8;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 24px;
             @include jc-flex;
