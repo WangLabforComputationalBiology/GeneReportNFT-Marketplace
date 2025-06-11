@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-
+        <Bubbles />
         <div class="info">
             <h1 class="title"><span style="color: #169608;">Your</span> information</h1>
             {{ address ? `Address: ${address}` : 'No address connected' }}
@@ -15,16 +15,13 @@
                 </el-button>
             </router-link>
         </div>
-
-
     </div>
 </template>
 
 <script setup>
 import { useWalletStore } from '@/stores/account';
+import Bubbles from './components/bubbles.vue';
 const wallet = useWalletStore();
-
-
 const address = wallet.address;
 
 </script>
@@ -33,10 +30,11 @@ const address = wallet.address;
 .wrapper {
     display: flex;
     position: relative;
-    width: 80vw;
+    width: 100vw;
     min-width: 800px;
     height: 95vh;
     margin: auto;
+    overflow: hidden;
 
 
     .title {

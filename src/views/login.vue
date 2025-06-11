@@ -1,28 +1,22 @@
 <template>
-
-    <body>
-        <div class="outerWrapper">
-            <div class="loginPage">
-                <div class="Wrapper">
-                    <h1>How to begin?</h1>
-                    <p>1.<a href="https://chromewebstore.google.com/search/metamask?utm_source=ext_sidebar"
-                            target="_blank">Download MetaMask as an extension</a> in your Brower and login.</p>
-                    <img style="margin:25px 0 0 50px;width: 64%;border-radius:10px;" src="../assets/imgs/step1.png"
-                        alt="">
-                    <p style="font-size: 16px;color:#C0C4CC">*We do suggest that use Google Chrome.</p>
-                </div>
-                <div class="Wrapper">
-                    <div class="useMeta">
-                        <p>2.Try this:</p>
-                        <span class="meta" @click="connectWallet">
-                            <img class="icon" src="../icons/metalogo.png" />
-                            <p style="color:#C0C4CC;">MetaMask</p>
-                        </span>
-                    </div>
-                </div>
+    <div class="outerWrapper">
+        <div class="wrapper">
+            <h1>How to begin?</h1>
+            <p><a href="https://chromewebstore.google.com/search/metamask?utm_source=ext_sidebar"
+                    target="_blank">Download MetaMask extension</a> in your Brower and setup your wallet.</p>
+            <img style="margin:25px 0 0 50px;width: 64%;border-radius:10px;" src="../assets/imgs/step1.png" alt="">
+            <p style="font-size: 16px;color:#C0C4CC">*We do suggest that use Google Chrome.</p>
+        </div>
+        <div class="wrapper">
+            <div class="useMeta">
+                <span class="meta" @click="connectWallet">
+                    <img class="icon" src="../icons/metalogo.png" />
+                    <p style="color:#333;">MetaMask</p>
+                </span>
             </div>
         </div>
-    </body>
+    </div>
+
 
 </template>
 
@@ -106,7 +100,7 @@ ${nonce}`;
 
 
                 setTimeout(() => {
-                    window.location.href = '/user?t=' + Date.now(); // 加时间戳避免缓存
+                    window.location.href = '/account?t=' + Date.now(); // 加时间戳避免缓存
                 }, 2000); // 2秒后跳转
 
             } catch (error) {
@@ -131,23 +125,22 @@ ${nonce}`;
 </script>
 
 <style lang="scss" scoped>
-.outerWrapper{
-    width: 80vw;
-    margin: 0px auto;
-    padding: 50px;
-}
 
-.loginPage {
+.outerWrapper {
     display: flex;
+    position: relative;
+    height: 95vh;
 
-    .Wrapper {
-        width: 700px;
-        background-color: #fff;
-        overflow: hidden;
+    .wrapper {
+        position: absolute;
+        width: 600px;
+        top: 40%;
+        right: 55%;
+        transform: translateY(-50%);
+
 
         h1 {
             text-align: center;
-            margin-top: 80px;
             font-size: 48px;
             color: #169608;
             margin-bottom: 20px;
@@ -158,36 +151,32 @@ ${nonce}`;
             text-align: left;
             ;
             font-size: 24px;
-            color: #67C23A;
+            color: #333;
         }
 
         a {
-            color: #67C23A;
-
+            color: #333;
             &:hover {
                 text-decoration: underline;
-                color: #E6A23C;
+                color: #169608;
             }
+        }
+
+        &:nth-child(2) {
+            top: 40%;
+            left: 50%;
+            transform: translateY(-50%);
         }
     }
 
     .useMeta {
-        margin-top: 175px;
-        margin-left: 80px;
-
-        p {
-            text-align: left;
-            margin-left: 0;
-            color: #E6A23C;
-        }
 
         .meta {
-            margin-top: 50px;
             display: flex;
-            border-radius: 10px;
+            border-radius: 20px;
             border: 1px solid #E4E7ED;
 
-            .icon{
+            .icon {
                 margin-left: 50px;
             }
 
@@ -200,7 +189,6 @@ ${nonce}`;
             &:hover {
                 cursor: pointer;
                 box-shadow: 0 0 6px #DCDFE6;
-                transition: 200ms;
             }
         }
     }

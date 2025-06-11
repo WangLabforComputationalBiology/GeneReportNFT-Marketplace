@@ -90,7 +90,6 @@ export default {
 
         .logo {
             height: 100%;
-            padding-left: 15px;
             font-size: 36px;
             font-weight: 700;
             color: #333;
@@ -106,7 +105,6 @@ export default {
         display: flex;
 
         .routers {
-            // height: 60px;
             display: flex;
             position: absolute;
             right: 0;

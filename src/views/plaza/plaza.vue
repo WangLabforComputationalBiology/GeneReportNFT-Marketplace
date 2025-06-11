@@ -202,7 +202,7 @@ export default {
 
         purchase(id, price) {
             this.$router.push({
-                path: '/market/confirm',
+                path: '/plaza/confirm',
                 query: {
                     id
                 }
