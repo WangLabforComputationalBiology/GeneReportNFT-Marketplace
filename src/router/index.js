@@ -20,24 +20,16 @@ const routes = [
         component: () => import('@/views/publish/selectProfile.vue')
     },
     {
-        path: "/drop",
-        component: () => import('@/views/drop.vue')
-    },
-    {
-        path: "/stats",
-        component: () => import('@/views/stats.vue')
-    },
-    {
         path: "/plaza",
         component: () => import('@/views/plaza/plaza.vue')
     },
     {
-        path: '/market/confirm',
+        path: '/plaza/confirm',
         component: () => import('@/views/plaza/confirm.vue')
     },
     {
         path: '/verify',
-        component: () => import('@/views/verify.vue')
+        component: () => import('@/views/verify/verify.vue')
     },
     {
         path: "/login",
@@ -53,7 +45,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes,
     scrollBehavior(to, from, savedPosition) {
-        return { top: 0, left: 0 }; // 每次切换路由时回到顶部,这是vue3写法
+        return { top: 0, left: 0 }; // 每次切换路由时回到顶部
     }
 })
 

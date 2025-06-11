@@ -8,27 +8,27 @@
                 placeholder="Please select your institution" @select="handleSelect" />
         </div>
         <!-- <el-button type="primary" @click="handleContinue">Continue</el-button> -->
-        <el-input class="email-input" v-if="step > 0" v-model="emailFront"  placeholder="Please enter your email">
+        <el-input class="email-input" v-if="step > 0" v-model="emailFront" placeholder="Please enter your email">
             <template #append>{{ emailEnd }}</template>
         </el-input>
-        <Slidecheck v-if="step > 0" :email="fullEmail" class="slidecheck" />
-        <el-input class="code" v-if="step > 0" placeholder="Please enterverification code" type="text">
+        <Slidecheck v-if="step > 0" class="slidecheck" @ready="handleReady" />
+        <el-input class="code" v-if="step > 1" placeholder="Please enter verification code" type="text">
             <template #prepend>
             </template>
             <template #append>
-                <div class="send-btn" >Send</div>
+                <div class="send-btn">Send</div>
             </template>
         </el-input>
-        <el-button v-if="step > 0" class="verify" >Verify</el-button>
+        <el-button v-if="step > 1" class="verify">Verify</el-button>
     </div>
 
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import loadUniversities from '@/assets/universities.json';
 import Bubbles from '@/views/components/bubbles.vue';
-import Slidecheck from '@/views/components/slidecheck.vue';
+import Slidecheck from '@/views/verify/slidecheck.vue';
 
 
 const state = ref('')
@@ -64,13 +64,19 @@ const handleSelect = (item) => {
     step.value += 1;
 }
 
+const handleReady = (isReady) => {
+    if (isReady === true) {
+        step.value += 1;
+    }
+}
 
 onMounted(() => {
     universities.value = loadAll()
 })
 
 const emailFront = ref('');
-const fullEmail = emailFront.value + emailEnd.value;
+//邮箱整合
+const fullEmail = computed(() => emailFront.value + emailEnd.value);
 
 </script>
 

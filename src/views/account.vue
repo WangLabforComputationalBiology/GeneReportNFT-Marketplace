@@ -1,54 +1,61 @@
 <template>
+    <div class="wrapper">
 
-    <body>
-        <div class="banner">
-            <h1 class="banner-title">Account</h1>
+        <div class="info">
+            <h1 class="title"><span style="color: #169608;">Your</span> information</h1>
+            {{ address ? `Address: ${address}` : 'No address connected' }}
+            <br>
+
+            {{ insititutionAccreditation ? ` You are from: ${insititution}.`  : 'Your institution accreditation is not verified.' }}
+
+            <router-link to="/verify" style="color: #fff;">
+            
+                <el-button>
+                    verify
+                </el-button>
+            </router-link>
         </div>
-        <span>{{ address }}</span><br>
-        <span>Wallet balance: </span> <span>{{ balance }}</span>
-        <router-link to="/verify" style="color: #fff;">
-            <el-button>
-                verify
-            </el-button>
-        </router-link>
-    </body>
+
+
+    </div>
 </template>
 
-<script>
+<script setup>
 import { useWalletStore } from '@/stores/account';
 const wallet = useWalletStore();
-export default {
-    name: "drop",
-    data() {
-        return {
-            dropList: [],
-            address: wallet.address,
-            balance: wallet.balance,
-        }
-    },
 
-    created() {
-    },
 
-    methods: {
+const address = wallet.address;
 
-    },
-}
 </script>
 
 <style lang="scss" scoped>
-.banner {
+.wrapper {
     display: flex;
+    position: relative;
+    width: 80vw;
+    min-width: 800px;
+    height: 95vh;
+    margin: auto;
 
-    .banner-title {
+
+    .title {
         font-size: 70px;
-        color: #67C23A;
+        color: #333;
+        margin-bottom: 40px;
     }
 
 }
 
-.dropPage {
-    height: 700px;
-}
+.info {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
 
+    font-size: 24px;
+    color: #333;
+    line-height: 50px;
+}
 </style>

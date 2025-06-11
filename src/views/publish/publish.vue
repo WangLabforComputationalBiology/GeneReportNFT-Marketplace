@@ -244,7 +244,7 @@
 
 
 <script lang="js">
-import SliderCheck from '../components/slidecheck.vue';
+import SliderCheck from '../verify/slidecheck.vue';
 import Bubbles from '../components/bubbles.vue';
 // import Api from '../../axios/aixos';
 
