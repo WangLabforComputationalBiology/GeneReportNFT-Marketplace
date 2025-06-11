@@ -1,12 +1,6 @@
 <template>
     <div class="outerWrapper">
-        <div class="wrapper">
-            <h1>How to begin?</h1>
-            <p><a href="https://chromewebstore.google.com/search/metamask?utm_source=ext_sidebar"
-                    target="_blank">Download MetaMask extension</a> in your Brower and setup your wallet.</p>
-            <img style="margin:25px 0 0 50px;width: 64%;border-radius:10px;" src="../assets/imgs/step1.png" alt="">
-            <p style="font-size: 16px;color:#C0C4CC">*We do suggest that use Google Chrome.</p>
-        </div>
+        <Bubbles />
         <div class="wrapper">
             <div class="useMeta">
                 <span class="meta" @click="connectWallet">
@@ -15,18 +9,31 @@
                 </span>
             </div>
         </div>
+        <div class="wrapper">
+            <h1>How to <span style="color:#333;">begin?</span></h1>
+            <p><a href="https://chromewebstore.google.com/search/metamask?utm_source=ext_sidebar"
+                    target="_blank">Download MetaMask extension</a> in your Brower and setup your wallet.</p>
+            <img style="margin:25px 0 0 50px;width: 64%;border-radius:10px;" src="../assets/imgs/step1.png" alt="">
+            <p style="font-size: 16px;color:#333">*We do suggest that use Google Chrome.</p>
+        </div>
+        
     </div>
 
 
 </template>
 
 <script>
+import Bubbles from '@/views/components/bubbles.vue';
 import { ethers, getAddress } from 'ethers';
 import { useWalletStore } from '@/stores/account'
 import Api from '../axios/aixos'
 const wallet = useWalletStore();
 
 export default {
+    name: 'Login',
+    components: {
+        Bubbles
+    },
     data() {
         return {
             address: '',
@@ -170,11 +177,12 @@ ${nonce}`;
     }
 
     .useMeta {
-
+        
         .meta {
             display: flex;
             border-radius: 20px;
             border: 1px solid #E4E7ED;
+            background-color: #fff;
 
             .icon {
                 margin-left: 50px;

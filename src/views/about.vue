@@ -5,14 +5,14 @@
                     alt="Fisco bcos logo" @click="toFB"></h1>
         </div>
         <div class="center">
-            <p><span style="color: #169608;">Bio</span>chainer Team</p>
-            <p>Wanglab@Shenzhen Technology University</p>
+            <p><span style="color: #169608;">Bio</span>Chainer Team</p>
+            <p>WangLab@Shenzhen Technology University</p>
             <p>Phone: 11111111111</p>
             <p>Email: xxxxxxxxx@sztu.edu.cn</p>
         </div>
 
         <div class="bottom">
-            <p style="color: #333; text-align: center; margin-top: 20px;">© 2025 Biochainer Team. All rights reserved.</p>
+            <p style="color: #333; text-align: center; margin-top: 20px;">© 2025 BioChainer Team. All rights reserved.</p>
         </div>
     </div>
 </template>
