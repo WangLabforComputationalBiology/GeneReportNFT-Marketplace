@@ -3,6 +3,7 @@
         <Bubbles />
         <div class="wrapper">
             <div class="useMeta">
+            <p>3. Click to connect</p>
                 <span class="meta" @click="connectWallet">
                     <img class="icon" src="../icons/metalogo.png" />
                     <p style="color:#333;">MetaMask</p>
@@ -11,12 +12,15 @@
         </div>
         <div class="wrapper">
             <h1>How to <span style="color:#333;">begin?</span></h1>
-            <p><a href="https://chromewebstore.google.com/search/metamask?utm_source=ext_sidebar"
+            <p>1. <a href="https://chromewebstore.google.com/search/metamask?utm_source=ext_sidebar"
                     target="_blank">Download MetaMask extension</a> in your Brower and setup your wallet.</p>
-            <img style="margin:25px 0 0 50px;width: 64%;border-radius:10px;" src="../assets/imgs/step1.png" alt="">
+            <img class="step-tip-img" src="../assets/imgs/step1.png" alt="step1">
             <p style="font-size: 16px;color:#333">*We do suggest that use Google Chrome.</p>
+            <br>
+            <p>2. Click the little earth icon, and switch to BioChainer network.</p>
+            <img class="step-tip-img" src="@/assets/imgs/step2.jpg" alt="step2">
         </div>
-        
+
     </div>
 
 
@@ -134,13 +138,13 @@ ${nonce}`;
 </script>
 
 <style lang="scss" scoped>
-
 .outerWrapper {
     display: flex;
     position: relative;
     height: 95vh;
 
     .wrapper {
+        overflow: hidden;
         position: absolute;
         width: 600px;
         top: 40%;
@@ -156,19 +160,25 @@ ${nonce}`;
         }
 
         p {
-            margin-left: 50px;
             text-align: left;
-            ;
             font-size: 24px;
             color: #333;
         }
 
         a {
             color: #333;
+
             &:hover {
                 text-decoration: underline;
                 color: #169608;
             }
+        }
+
+        .step-tip-img {
+            margin: 25px 0 0 50px;
+            width: 64%;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         &:nth-child(2) {
@@ -178,30 +188,33 @@ ${nonce}`;
         }
     }
 
-    .useMeta {
-        
-        .meta {
-            display: flex;
-            border-radius: 20px;
-            border: 1px solid #E4E7ED;
-            background-color: #fff;
 
-            .icon {
-                margin-left: 50px;
-            }
 
-            p {
-                font-size: 36px;
-                line-height: 120px;
-                margin-left: 100px;
-            }
+}
 
-            &:hover {
-                cursor: pointer;
-                box-shadow: 0 0 6px #DCDFE6;
-            }
+.useMeta {
+
+    .meta {
+        margin-top: 20px;
+        display: flex;
+        border-radius: 20px;
+        border: 1px solid #E4E7ED;
+        background-color: #fff;
+
+        .icon {
+            margin-left: 50px !important;
+        }
+
+        p {
+            font-size: 36px;
+            line-height: 120px;
+            margin-left: 100px;
+        }
+
+        &:hover {
+            cursor: pointer;
+            box-shadow: 0 0 6px #DCDFE6;
         }
     }
-
 }
 </style>
