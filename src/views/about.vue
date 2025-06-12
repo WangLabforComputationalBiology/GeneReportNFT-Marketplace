@@ -7,8 +7,7 @@
         <div class="center">
             <p><span style="color: #169608;">Bio</span>Chainer Team</p>
             <p>WangLab@Shenzhen Technology University</p>
-            <p>Phone: 11111111111</p>
-            <p>Email: xxxxxxxxx@sztu.edu.cn</p>
+            <p>Email: wangxin@sztu.edu.cn</p>
         </div>
 
         <div class="bottom">

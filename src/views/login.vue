@@ -88,6 +88,8 @@ ${nonce}`;
                 this.message = this.structureMessage(this.address, this.nonce);
                 console.log(this.message);
 
+                this.$message.success('Connecting...');
+
                 // 5. 请求签名
                 const signature = await window.ethereum.request({
                     method: "personal_sign",

@@ -4,51 +4,50 @@
         <div class="banner">
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
         </div>
-        <div class="market-page">
-            <div class="nfts-wrapper">
+        <!-- <div class="market-page"> -->
+        <!-- <div class="nfts-wrapper"> -->
 
-                <el-table style="width:100%;" :title="NFTs" class="nft-table" :data="tableData">
-                    <el-table-column type="expand" width="40px">
-                        <template v-slot="props">
-                            <el-form label-position="left" class="demo-table-expand">
-                                <el-form-item label="ID:">
-                                    <span>{{ props.row.id }}</span>
-                                </el-form-item>
+        <el-table style="width:100%;" :title="NFTs" class="nft-table" :data="tableData">
+            <el-table-column type="expand" width="40px">
+                <template v-slot="props">
+                    <el-form label-position="left" class="demo-table-expand">
+                        <el-form-item label="ID:">
+                            <span>{{ props.row.id }}</span>
+                        </el-form-item>
 
-                                <el-form-item label="Sales:">
-                                    <span>{{ props.row.sales }}</span>
-                                    <span></span>
-                                </el-form-item>
-                                <el-form-item label="Address:">
-                                    <span>{{ props.row.address }}</span>
-                                    <span></span>
-                                </el-form-item>
-                                <el-form-item label="Description:">
-                                    <span>{{ props.row.description }}</span>
-                                    <span></span>
-                                </el-form-item>
-                            </el-form>
-                        </template>
+                        <el-form-item label="Sales:">
+                            <span>{{ props.row.sales }}</span>
+                            <span></span>
+                        </el-form-item>
+                        <el-form-item label="Address:">
+                            <span>{{ props.row.address }}</span>
+                            <span></span>
+                        </el-form-item>
+                        <el-form-item label="Description:">
+                            <span>{{ props.row.description }}</span>
+                            <span></span>
+                        </el-form-item>
+                    </el-form>
+                </template>
 
-                    </el-table-column>
-                    <el-table-column prop="id" label="#id" width="80px"></el-table-column>
-                    <el-table-column prop="nft_name" label="Collection" width="" align="left"></el-table-column>
-                    <el-table-column prop="description" label="Description" width="400px"
-                        align="left"></el-table-column>
-                    <el-table-column prop="limit" label="Limit" width="100px" align="right"></el-table-column>
-                    <el-table-column prop="address" label="From" align="right" width="300px">
-                    </el-table-column>
-                    <el-table-column width="120px" align="right">
-                        <template v-slot="scope">
-                            <el-button size="mini" @click="purchase(scope.row.id, scope.row.price)">Get</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-
+            </el-table-column>
+            <el-table-column prop="id" label="#id" width="80px"></el-table-column>
+            <el-table-column prop="nft_name" label="Collection" width="" align="left"></el-table-column>
+            <el-table-column prop="description" label="Description" width="400px" align="left"></el-table-column>
+            <el-table-column prop="limit" label="Limit" width="100px" align="right"></el-table-column>
+            <el-table-column prop="address" label="From" align="right" width="300px">
+            </el-table-column>
+            <el-table-column width="120px" align="right">
+                <template v-slot="scope">
+                    <el-button size="mini" @click="purchase(scope.row.id, scope.row.price)">Get</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
 
 
-            </div>
-        </div>
+
+        <!-- </div> -->
+        <!-- </div> -->
     </div>
 </template>
 
@@ -242,42 +241,58 @@ export default {
     }
 }
 
-    .market-page {
-        padding: 10px;
-        overflow: hidden;
+.market-page {
+    padding: 10px;
+    overflow: hidden;
+}
+
+.nfts-wrapper {
+    margin-top: 8px;
+}
+
+//下拉栏样式
+:deep(.el-table__expanded-cell) {
+    color: #67C23A;
+}
+
+//表格样式
+:deep(.demo-table-expand) {
+    margin-left: 50px;
+}
+
+:deep(.el-form-item--label-left) {
+    margin: 0;
+}
+
+:deep(.el-button--mini) {
+    border-radius: 10px;
+    color: #169608;
+
+    &:hover {
+        border: 1px solid #67C23A;
+        background-color: #fff;
     }
+}
 
-    .nfts-wrapper {
-        margin-top: 8px;
-    }
+:deep(.el-overlay) {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    overflow: hidden;
 
-    //下拉栏样式
-    :deep(.el-table__expanded-cell) {
-        color: #67C23A;
-    }
+}
 
-    //表格样式
-    :deep(.demo-table-expand) {
-        margin-left: 50px;
-    }
+:deep(.el-table__header-wrapper) {
+    background-color: #6b4848;
+    color: #333;
+}
 
-    :deep(.el-form-item--label-left) {
-        margin: 0;
-    }
+:deep(.el-table__row){
+    height: 6vh;
+    border: none !important;
+}
 
-    :deep(.el-button--mini) {
-        border-radius: 10px;
-        color: #169608;
+:deep(.el-table__cell){
+    padding: none !important;
 
-        &:hover {
-            border: 1px solid #67C23A;
-            background-color: #fff;
-        }
-    }
-
-    :deep(.el-overlay) {
-        background-color: rgba(0, 0, 0, 0.5);
-        width: 100%;
-        overflow: hidden;
-
-    }</style>
+}
+</style>
