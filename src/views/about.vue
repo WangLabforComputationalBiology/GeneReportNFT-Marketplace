@@ -5,13 +5,13 @@
                     alt="Fisco bcos logo" @click="toFB"></h1>
         </div>
         <div class="center">
-            <p><span style="color: #169608;">Bio</span>Chainer Team</p>
             <p>WangLab@Shenzhen Technology University</p>
             <p>Email: wangxin@sztu.edu.cn</p>
+            <p class="pub">Publication</p>
         </div>
 
         <div class="bottom">
-            <p style="color: #333; text-align: center; margin-top: 20px;">© 2025 BioChainer Team. All rights reserved.</p>
+            <p>© 2025 BioChainer Team. All rights reserved.</p>
         </div>
     </div>
 </template>
@@ -35,7 +35,7 @@ function toFB() {
 
 .top {
     position: absolute;
-    top: 15%;
+    top: 25%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 600px;
@@ -44,6 +44,10 @@ function toFB() {
     line-height: 80px;
     text-align: center;
 
+    h1 {
+        cursor: default;
+    }
+
     img {
         cursor: pointer;
     }
@@ -51,17 +55,28 @@ function toFB() {
 
 .center {
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -40%);
     width: 600px;
     height: 400px;
 
-    P{
+    P {
         font-size: 24px;
         color: #333;
         margin: 20px 0;
         text-align: center;
+    }
+    .pub {
+        font-size: 20px;
+        color: #333;
+        text-decoration: underline;
+        cursor: pointer;
+
+        &:hover {
+            color: #169608;
+            
+        }
     }
 }
 
@@ -73,5 +88,12 @@ function toFB() {
     width: 100%;
     text-align: center;
     color: #333;
+    pointer-events: none;
+
+    p {
+        color: #333;
+        text-align: center;
+        margin-top: 20px;
+    }
 }
 </style>

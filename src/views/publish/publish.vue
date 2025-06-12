@@ -126,7 +126,6 @@
          <div class="button-wrapper" style="margin-top: 50px;">
             <el-button class="button" @click="back" style="right: 240px; b">back</el-button>
             <el-button class="button" @click="next">Create</el-button>
-
          </div>
       </div>
 
