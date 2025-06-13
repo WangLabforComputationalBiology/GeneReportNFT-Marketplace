@@ -1,6 +1,6 @@
 {
-  "name": "demo",
-  "version": "0.1.0",
+  "name": "biochainer",
+  "version": "0.9.0",
   "private": true,
   "type": "module",
   "scripts": {
