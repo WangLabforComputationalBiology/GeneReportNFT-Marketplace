@@ -3,7 +3,7 @@
         <Bubbles />
         <div class="wrapper">
             <div class="useMeta">
-            <p>3. Click to connect</p>
+                <p>3. Click to connect</p>
                 <span class="meta" @click="connectWallet">
                     <img class="icon" src="../icons/metalogo.png" />
                     <p style="color:#333;">MetaMask</p>
@@ -71,6 +71,9 @@ ${nonce}`;
         // MetaMask连接并获取账户
         async connectWallet() {
             this.error = '';
+            this.address = '';
+            this.nonce = '';
+            this.message = '';
             try {
                 // 1. 检查MetaMask是否安装
                 if (!window.ethereum) {
@@ -81,53 +84,50 @@ ${nonce}`;
                 const provider = new ethers.BrowserProvider(window.ethereum);
                 const accounts = await provider.send("eth_requestAccounts", []);
                 this.address = accounts[0];
-                const balanceWei = await provider.getBalance(this.address);// 获取余额（返回值为 BigNumber，单位为 wei）
-                wallet.balance = ethers.formatEther(balanceWei);// 将余额转换为 ETH 单位
-                console.log(balanceWei)
-                // 3. 获取nonce
-                const nonceResponse = await Api.get(`/user/nonce/${this.address}`);//必须等待异步完成避免拿不到nonce
-                this.nonce = nonceResponse.data.data.nonce;
 
-                // 4. 构造消息
-                this.message = this.structureMessage(this.address, this.nonce);
-                console.log(this.message);
+                if (!this.error) {
+                    // 3. 获取nonce
+                    const nonceResponse = await Api.get(`/user/nonce/${this.address}`);
+                    this.nonce = nonceResponse.data.data.nonce;
 
-                this.$message.success('Connecting...');
+                    // 4. 构造消息
+                    this.message = this.structureMessage(this.address, this.nonce);
 
-                // 5. 请求签名
-                const signature = await window.ethereum.request({
-                    method: "personal_sign",
-                    params: [this.message, this.address],
-                });
+                    // 5. 请求签名
+                    const signature = await window.ethereum.request({
+                        method: "personal_sign",
+                        params: [this.message, this.address],
+                    });
 
-                // 6. 发送登录请求
-                const loginResponse = await Api.post("/user/login", {
-                    user_address: this.address,
-                    signature: signature,
-                });
+                    // 6. 发送登录请求
+                    const loginResponse = await Api.post("/user/login", {
+                        user_address: this.address,
+                        signature: signature,
+                    });
 
-                console.log('Login success:', loginResponse.data);
-                this.$message.success('Login successful!');
+                    console.log('Login success:', loginResponse.data);
+                    this.$message.success('Login successful!');
 
-                wallet.address = this.address; // 更新store中的账户
+                    wallet.address = this.address; // 更新store中的账户
 
-
-                setTimeout(() => {
-                    window.location.href = '/account?t=' + Date.now(); // 加时间戳避免缓存
-                }, 2000); // 2秒后跳转
-
-            } catch (error) {
-                console.error('Error:', error);
-
-                if (error.code === 4001) {
-                    this.error = 'You denied the wallet connection';
-                } else if (error.response) {
-                    this.error = error.response.data.message || 'Login failed';
-                } else {
-                    this.error = error.message || 'Unknown error occurred';
+                    setTimeout(() => {
+                        window.location.href = '/account?t=' + Date.now(); // 加时间戳避免缓存
+                    }, 1500);
                 }
 
-                this.$message.error(this.error);
+
+            } catch (error) {
+                console.error('Error::', error.message);
+                if (error.message.includes('404')) {
+                    this.$message.error('Network error.');
+
+                }
+                if (error.message.includes('-32002')) {
+                    this.$message.error('MetaMask is not accessible.Please unlock your wallet and try again.');
+                }
+                if (error.code === 4001) {
+                    this.$message.warning('You denied the wallet connection');
+                } 
             }
         }
     }
@@ -142,6 +142,7 @@ ${nonce}`;
     display: flex;
     position: relative;
     height: 95vh;
+    overflow: hidden;
 
     .wrapper {
         overflow: hidden;

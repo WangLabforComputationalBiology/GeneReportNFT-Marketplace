@@ -7,7 +7,7 @@
         <!-- <div class="market-page"> -->
         <!-- <div class="nfts-wrapper"> -->
 
-        <el-table style="width:100%;" :title="NFTs" class="nft-table" :data="tableData">
+        <!-- <el-table style="width:100%;" :title="NFTs" class="nft-table" :data="tableData">
             <el-table-column type="expand" width="40px">
                 <template v-slot="props">
                     <el-form label-position="left" class="demo-table-expand">
@@ -43,7 +43,7 @@
                 </template>
             </el-table-column>
         </el-table>
-
+ -->
 
 
         <!-- </div> -->
