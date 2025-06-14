@@ -30,7 +30,9 @@ const routes = [
     },
     {
         path: '/verify',
-        component: () => import('@/views/verify/verify.vue')
+        component: () => import('@/views/verify/verify.vue'),
+        meta: { requiresAuth: true },
+        beforeEnter: walletAuthGuard,
     },
     {
         path: "/login",

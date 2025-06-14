@@ -1,53 +1,18 @@
 <template>
     <div class="wrapper">
-
         <div class="banner">
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
         </div>
-        <!-- <div class="market-page"> -->
-        <!-- <div class="nfts-wrapper"> -->
-
-        <!-- <el-table style="width:100%;" :title="NFTs" class="nft-table" :data="tableData">
-            <el-table-column type="expand" width="40px">
-                <template v-slot="props">
-                    <el-form label-position="left" class="demo-table-expand">
-                        <el-form-item label="ID:">
-                            <span>{{ props.row.id }}</span>
-                        </el-form-item>
-
-                        <el-form-item label="Sales:">
-                            <span>{{ props.row.sales }}</span>
-                            <span></span>
-                        </el-form-item>
-                        <el-form-item label="Address:">
-                            <span>{{ props.row.address }}</span>
-                            <span></span>
-                        </el-form-item>
-                        <el-form-item label="Description:">
-                            <span>{{ props.row.description }}</span>
-                            <span></span>
-                        </el-form-item>
-                    </el-form>
-                </template>
-
-            </el-table-column>
-            <el-table-column prop="id" label="#id" width="80px"></el-table-column>
-            <el-table-column prop="nft_name" label="Collection" width="" align="left"></el-table-column>
-            <el-table-column prop="description" label="Description" width="400px" align="left"></el-table-column>
-            <el-table-column prop="limit" label="Limit" width="100px" align="right"></el-table-column>
-            <el-table-column prop="address" label="From" align="right" width="300px">
-            </el-table-column>
-            <el-table-column width="120px" align="right">
-                <template v-slot="scope">
-                    <el-button size="mini" @click="purchase(scope.row.id, scope.row.price)">Get</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
- -->
-
-
-        <!-- </div> -->
-        <!-- </div> -->
+        <div class="plaza-page">
+            <div class="card">
+                <div class="icon">
+                </div>
+            </div>
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
+        </div>
     </div>
 </template>
 
@@ -222,7 +187,16 @@ export default {
     margin: auto;
 }
 
+.banner {
+    height: 150px;
+    display: flex;
+    position: relative;
+    border-bottom: #169608 3px solid;
+}
+
 .banner-title {
+    position: absolute;
+    bottom: 0%;
     display: flex;
     font-size: 70px;
     color: #169608;
@@ -241,58 +215,39 @@ export default {
     }
 }
 
-.market-page {
-    padding: 10px;
-    overflow: hidden;
-}
+.plaza-page {
+    padding: 15px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
 
-.nfts-wrapper {
-    margin-top: 8px;
-}
-
-//下拉栏样式
-:deep(.el-table__expanded-cell) {
-    color: #67C23A;
-}
-
-//表格样式
-:deep(.demo-table-expand) {
-    margin-left: 50px;
-}
-
-:deep(.el-form-item--label-left) {
-    margin: 0;
-}
-
-:deep(.el-button--mini) {
-    border-radius: 10px;
-    color: #169608;
-
-    &:hover {
-        border: 1px solid #67C23A;
+    .card {
+        display: flex;
+        position: relative;
+        flex: 0 0 calc(33.33% - 10px);
+        box-sizing: border-box;
+        width: 31%;
+        height: 200px;
         background-color: #fff;
+        box-shadow: 0 0 0 1px #eee;
+        border-radius: 20px;
+
+        &:hover {
+            box-shadow: 0 0 5px #ddd;
+
+        }
+
+        .icon{
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 20px;
+            width: 140px;
+            height: 70%;
+            border: #169608 1px solid;
+            border-radius: 15px;
+        }
     }
-}
-
-:deep(.el-overlay) {
-    background-color: rgba(0, 0, 0, 0.5);
-    width: 100%;
-    overflow: hidden;
-
-}
-
-:deep(.el-table__header-wrapper) {
-    background-color: #6b4848;
-    color: #333;
-}
-
-:deep(.el-table__row){
-    height: 6vh;
-    border: none !important;
-}
-
-:deep(.el-table__cell){
-    padding: none !important;
 
 }
 </style>
