@@ -5,7 +5,7 @@
             <div class="useMeta">
                 <p>3. Click to connect</p>
                 <span class="meta" @click="connectWallet">
-                    <img class="icon" src="../icons/metalogo.png" />
+                    <img class="icon" src="@/icons/metalogo.png" />
                     <p style="color:#333;">MetaMask</p>
                 </span>
             </div>
@@ -14,7 +14,7 @@
             <h1>How to <span style="color:#333;">begin?</span></h1>
             <p>1. <a href="https://chromewebstore.google.com/search/metamask?utm_source=ext_sidebar"
                     target="_blank">Download MetaMask extension</a> in your Brower and setup your wallet.</p>
-            <img class="step-tip-img" src="../assets/imgs/step1.png" alt="step1">
+            <img class="step-tip-img" src="@/assets/imgs/step1.png" alt="step1">
             <p style="font-size: 16px;color:#333">*We do suggest that use Google Chrome.</p>
             <br>
             <p>2. Click the little earth icon, and switch to BioChainer network.</p>
@@ -30,7 +30,7 @@
 import Bubbles from '@/views/components/bubbles.vue';
 import { ethers, getAddress } from 'ethers';
 import { useWalletStore } from '@/stores/account'
-import Api from '../axios/aixos'
+import Api from '../../axios/aixos'
 const wallet = useWalletStore();
 
 export default {

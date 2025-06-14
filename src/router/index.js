@@ -1,6 +1,7 @@
 //路由页面
 import { createWebHistory } from "vue-router";
 import { createRouter } from "vue-router";
+import walletAuthGuard from "./accountGuard";
 
 const routes = [
     {
@@ -33,11 +34,13 @@ const routes = [
     },
     {
         path: "/login",
-        component: () => import('@/views/login.vue')
+        component: () => import('@/views/account/login.vue')
     },
     {
         path: "/account",
-        component: () => import('@/views/account.vue')
+        component: () => import('@/views/account/account.vue'),
+        meta: { requiresAuth: true },
+        beforeEnter: walletAuthGuard,
     },
     {
         path: "/about",
