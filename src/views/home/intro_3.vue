@@ -7,8 +7,8 @@
                 <div class="steps">
                     <div class="step">1</div>
                     <div class="content-wrapper">
-                        <h3>Setup your wallet</h3>
-                        <p>Set up your Metamask wallet. Download MetaMask from the browser extension</p>
+                        <h3>Setup MetaMask</h3>
+                        <p>Download MetaMask for the Brower as an extension.Setup your MetaMask wallet. </p>
                     </div>
                 </div>
                 <div class="arrow">
@@ -17,7 +17,7 @@
                 <div class="steps">
                     <div class="step" style="background-color: #E6A23C;">2</div>
                     <div class="content-wrapper">
-                        <h3>Verfiy youself</h3>
+                        <h3>Verfication</h3>
                         <p>Please let us make sure your organization is legal.
                         </p>
                     </div>
@@ -29,8 +29,8 @@
                     <div class="step" style="background-color: #67C23A;">3</div>
                     <div class="content-wrapper">
                         <h3>Start Sharing</h3>
-                        <p>Select the data that may help you in Plaza and get it at any time.
-                            You can also upload your data to promote community development.</p>
+                        <p>Select the data that may help you in Data Plaza.
+                            You can also upload data to promote community development.</p>
                         <div class="content-warpper">
                         </div>
                     </div>

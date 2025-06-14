@@ -11,7 +11,7 @@
             </div>
         </div>
         <div class="wrapper">
-            <h1>How to <span style="color:#333;">begin?</span></h1>
+            <h1>Login to <span style="color:#333;">begin.</span></h1>
             <p>1. <a href="https://chromewebstore.google.com/search/metamask?utm_source=ext_sidebar"
                     target="_blank">Download MetaMask extension</a> in your Brower and setup your wallet.</p>
             <img class="step-tip-img" src="@/assets/imgs/step1.png" alt="step1">
