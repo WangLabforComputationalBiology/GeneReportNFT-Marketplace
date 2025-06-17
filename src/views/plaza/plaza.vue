@@ -1,5 +1,6 @@
 <template>
     <div class="wrapper">
+        <Bubbles />
         <div class="banner">
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
         </div>
@@ -22,6 +23,7 @@ import { ref, onMounted } from "vue";
 import { ethers } from "ethers";
 import { useWalletStore } from "@/stores/account";
 import Api from "@/axios/aixos";
+import Bubbles from "../components/bubbles.vue";
 
 const wallet = useWalletStore();
 const account = ref("");
@@ -147,8 +149,6 @@ onMounted(() => {
     getList();
 });
 </script>
-
-<style lang="scss" scoped></style>
 
 <style lang="scss" scoped>
 .wrapper {
