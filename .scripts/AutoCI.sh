@@ -10,11 +10,7 @@ cd ..
 cd cmd/main/
 
 # 编译 Go 程序，输出到上一级目录的 gin-server
-go run main.go
-
-cd ../saveData
-go run main.go
-
+go build -o ../../gin-server main.go
 
 # 检查 tmux 会话是否存在，如果不存在则创建
 tmux has-session -t gin-server 2>/dev/null

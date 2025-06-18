@@ -1,12 +1,12 @@
 package sharingPlatformContract
 
 import (
-	"context"
 	"encoding/hex"
 	"github.com/FISCO-BCOS/go-sdk/v3/abi/bind"
 	"github.com/FISCO-BCOS/go-sdk/v3/client"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+	"golang.org/x/net/context"
 	"log"
 	"math/big"
 )
@@ -47,14 +47,14 @@ func init() {
 
 	// 配置节点信息
 	config := &client.Config{
-		IsSMCrypto:  false,             // 非国密
-		GroupID:     "group0",          // 确认群组ID是否为 group0
-		PrivateKey:  privateKey,        // 私钥
-		Host:        "127.0.0.1",       // 节点 IP
-		Port:        20200,             // Channel 端口
-		TLSCaFile:   ".\\conf\\ca.crt", // Windows 路径
-		TLSKeyFile:  ".\\conf\\sdk.key",
-		TLSCertFile: ".\\conf\\sdk.crt",
+		IsSMCrypto:  false,           // 非国密
+		GroupID:     "group0",        // 确认群组ID是否为 group0
+		PrivateKey:  privateKey,      // 私钥
+		Host:        "127.0.0.1",     // 节点 IP
+		Port:        20200,           // Channel 端口
+		TLSCaFile:   "./conf/ca.crt", // Windows 路径
+		TLSKeyFile:  "./conf/sdk.key",
+		TLSCertFile: "./conf/sdk.crt",
 		DisableSsl:  false, // 生产环境建议 false
 	}
 
