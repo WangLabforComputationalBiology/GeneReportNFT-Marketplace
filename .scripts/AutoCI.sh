@@ -7,11 +7,12 @@ cd ..
 # swag init -g ./cmd/main.go
 
 # 进入 cmd 目录
-cd cmd/main/
+cd /cmd/main/
 
 # 编译 Go 程序，输出到上一级目录的 gin-server
-go build -o ../../gin-server main.go
+go run ../../gin-server main.go
 
+go run ../../saveData saveDataFromWegene.go
 # 检查 tmux 会话是否存在，如果不存在则创建
 tmux has-session -t gin-server 2>/dev/null
 if [ $? != 0 ]; then
