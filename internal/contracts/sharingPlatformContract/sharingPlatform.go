@@ -4,7 +4,6 @@
 package sharingPlatformContract
 
 import (
-	"fmt"
 	"math/big"
 	"strings"
 

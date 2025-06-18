@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/models"
 	"GeneReport_platform/pkg/appContext"
@@ -19,6 +18,13 @@ var (
 type UserDao struct {
 	db  *gorm.DB
 	ctx context.Context
+}
+
+// UpdateUser userModel for update
+type UpdateUser struct {
+	Address string `json:"address"`
+	Name    string `json:"name"`
+	Avatar  string `json:"avatar"`
 }
 
 func GetUserDao() *UserDao {
@@ -51,7 +57,7 @@ func (u *UserDao) CreateUser(address string) error {
 	return u.DB().Model(&models.User{}).Create(&models.User{Address: address, Name: "unnamed", CreateAt: time.Now()}).Error
 }
 
-func (u *UserDao) UpdateUser(toUpdate dto.UpdateUser) error {
+func (u *UserDao) UpdateUser(toUpdate UpdateUser) error {
 	return u.DB().Model(&models.User{}).Where("address = ?", toUpdate.Address).Updates(&models.User{Name: toUpdate.Name}).Error
 }
 

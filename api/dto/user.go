@@ -5,13 +5,6 @@ type LoginReq struct {
 	Signature   string `json:"signature" binding:"required"`
 }
 
-// UpdateUser userModel for update
-type UpdateUser struct {
-	Address string `json:"address"`
-	Name    string `json:"name"`
-	Avatar  string `json:"avatar"`
-}
-
 type UserInfoResp struct {
 	Address string `json:"address" binding:"required"`
 	Name    string `json:"name" binding:"required"`

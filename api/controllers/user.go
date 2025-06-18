@@ -3,6 +3,7 @@ package controllers
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
+	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/internal/services"
 	"GeneReport_platform/pkg/appErrors"
 	"GeneReport_platform/pkg/auth"
@@ -188,7 +189,7 @@ func (u *User) Logout(ctx *gin.Context) {
 //	@Router			/user/edit/name [post]
 func (u *User) EditUserName(ctx *gin.Context) {
 	log.Println("进入编辑用户名接口！")
-	var req dto.UpdateUser
+	var req dao.UpdateUser
 	if err := ctx.ShouldBindJSON(&req); err != nil || req.Name == "" {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
@@ -200,7 +201,7 @@ func (u *User) EditUserName(ctx *gin.Context) {
 	newName := req.Name
 
 	log.Println(" 来自post请求体的json的new_name:" + newName)
-	toUpdate := dto.UpdateUser{Name: newName}
+	toUpdate := dao.UpdateUser{Name: newName}
 	if err := services.UserServ.UpdateUser(toUpdate); err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
@@ -274,7 +275,7 @@ func (u *User) UploadAvatar(ctx *gin.Context) {
 	log.Println("用户:", address, "正在更改头像！")
 	//更改数据库的picture字段
 
-	var toUpdate = dto.UpdateUser{Avatar: "/test/" + pictureName}
+	var toUpdate = dao.UpdateUser{Avatar: "/test/" + pictureName}
 	// 修改数据库的内容
 	if err := services.UserServ.UpdateUser(toUpdate); err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, gin.H{"error": "mysql不可用,上传头像失败"})

@@ -79,7 +79,7 @@ func (u *userService) GetNonce(address string) (string, appErrors.IAppError) {
 	return "", appErrors.New(http.StatusServiceUnavailable, "获取nonce失败", strCmd.Err())
 }
 
-func (u *userService) UpdateUser(toUpdate dto.UpdateUser) appErrors.IAppError {
+func (u *userService) UpdateUser(toUpdate dao.UpdateUser) appErrors.IAppError {
 	if err := dao.GetUserDao().UpdateUser(toUpdate); err != nil {
 		return appErrors.New(http.StatusServiceUnavailable, "服务器内部错误", err)
 	}
