@@ -47,14 +47,14 @@ func init() {
 
 	// 配置节点信息
 	config := &client.Config{
-		IsSMCrypto:  false,           // 非国密
-		GroupID:     "group0",        // 确认群组ID是否为 group0
-		PrivateKey:  privateKey,      // 私钥
-		Host:        "127.0.0.1",     // 节点 IP
-		Port:        20200,           // Channel 端口
-		TLSCaFile:   "./conf/ca.crt", // Windows 路径
-		TLSKeyFile:  "./conf/sdk.key",
-		TLSCertFile: "./conf/sdk.crt",
+		IsSMCrypto:  false,                          // 非国密
+		GroupID:     "group0",                       // 确认群组ID是否为 group0
+		PrivateKey:  privateKey,                     // 私钥
+		Host:        "10.108.10.51",                 // 节点 IP
+		Port:        20200,                          // Channel 端口
+		TLSCaFile:   "./assets/fisco_config/ca.crt", // Windows 路径
+		TLSKeyFile:  "./assets/fisco_config/sdk.key",
+		TLSCertFile: "./assets/fisco_config/sdk.crt",
 		DisableSsl:  false, // 生产环境建议 false
 	}
 
