@@ -3,8 +3,6 @@ package services
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
-	"GeneReport_platform/internal/dao"
-	"GeneReport_platform/pkg/appErrors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -29,6 +27,8 @@ func RegisterOrderService() {
 }
 
 /*fill your method here*/
+
+// GetDataImpl 获取GeneType数据
 func GetDataImpl(ctx *gin.Context) {
 	addressCtx, _ := ctx.Get("user_address")
 	//判断是否拿到地址
@@ -84,12 +84,4 @@ func GetDataImpl(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, result)
 
-}
-
-func (s ListingService) GetListings(collection_id, identifier string) (dto.GetListingsResp, error) {
-	targetListings, err := dao.GetListingDao().GetListings(collection_id, identifier)
-	if err != nil {
-		return dto.GetListingsResp{}, appErrors.New(503, "获取上架单失败", err)
-	}
-	return dto.GetListingsResp{Listings: targetListings}, nil
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-contract sharingPlatform  is ERC20 {
+contract sharingPlatform_v1 is ERC20 {
 
     constructor (uint256 initialSupply_, address admin_) ERC20("GeneCoin", "GNC") payable {
         _admin = admin_;
@@ -44,6 +44,9 @@ contract sharingPlatform  is ERC20 {
 
         //是否为有效的许可
         bool isValid;
+
+        //次数
+        uint256 count;
     }
 
     // 溯源元数据

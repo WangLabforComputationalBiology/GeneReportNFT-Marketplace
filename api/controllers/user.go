@@ -365,9 +365,36 @@ func (u *User) GetProfileOfUser(c *gin.Context) {
 	c.Data(http.StatusOK, "image/png", data)
 }
 
-// GetGNFTList 获取用户已获取到数据的GNFT列表
-func (u *User) GetGNFTList(ctx *gin.Context) {
+// SendEmailCode 通过手机号码获取验证码并存入redis
+func (u *User) SendEmailCode(ctx *gin.Context) {
+	var req dto.SendEmailCodeReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查"))
+		return
+	}
 
+	if err := services.UserServ.SendEmailCode(ctx.GetString("user_address"), req.Email); err != nil {
+		ctx.Error(err)
+		return
+	}
+}
+
+// VerifyEmailCode 验证手机验证码
+func (u *User) VerifyEmailCode(ctx *gin.Context) {
+	var req dto.VerifyEmailCodeReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查", err))
+		return
+	}
+	if isPass, err := services.UserServ.VerifyEmailCode(req.Email, req.Code); err != nil {
+		ctx.Error(err)
+		return
+	} else if isPass {
+		ctx.JSON(http.StatusOK, dto.Response{
+			Code:    http.StatusOK,
+			Message: "邮箱验证成功",
+		})
+	}
 }
 
 //====================================OAuth2======================================
@@ -506,38 +533,6 @@ func getReportId(token string) (usersProfile dto.GetReportId) {
 	return
 }
 
-// SendSMSCode 通过手机号码获取验证码并存入redis
-func (u *User) SendSMSCode(ctx *gin.Context) {
-	var req dto.SendSMSCodeReq
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查"))
-		return
-	}
-
-	if err := services.UserServ.SendSMSCode(req.Phone); err != nil {
-		ctx.Error(err)
-		return
-	}
-}
-
-// VerifySMSCode 验证手机验证码
-func (u *User) VerifySMSCode(ctx *gin.Context) {
-	var req dto.VerifySMSCodeReq
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查", err))
-		return
-	}
-	if isPass, err := services.UserServ.VerifySMSCode(req.Phone, req.Code); err != nil {
-		ctx.Error(err)
-		return
-	} else if isPass {
-		ctx.JSON(http.StatusOK, dto.Response{
-			Code:    http.StatusOK,
-			Message: "短信验证成功",
-		})
-	}
-}
-
 // GetUsersProfileByCode 重定向将token的kv映射传给前端，前端那这个key请求基因报告数据供用户选择
 func (u *User) GetUsersProfileByCode(ctx *gin.Context) {
 	//在get请求路径里面获取code
@@ -551,8 +546,8 @@ func (u *User) GetUsersProfileByCode(ctx *gin.Context) {
 		return
 	}
 	usersProfile := getReportId(token)
-	usersProfile.Profiles = append(usersProfile.Profiles, dto.Profile{Id: "fabc-8555-cdalse", Name: "xxx", Sex: 0})
-	usersProfile.Profiles = append(usersProfile.Profiles, dto.Profile{Id: "6abc-1626299398-copy", Name: "XXXX", Sex: 0})
+	usersProfile.Profiles = append(usersProfile.Profiles, dto.Profile{ID: "fabc-8555-cdalse", Name: "xxx", Sex: 0})
+	usersProfile.Profiles = append(usersProfile.Profiles, dto.Profile{ID: "6abc-1626299398-copy", Name: "XXXX", Sex: 0})
 	ctx.JSON(http.StatusOK, usersProfile)
 }
 

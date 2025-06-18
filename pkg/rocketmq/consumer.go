@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// 定义一个处理消息的函数类型
+// MessageHandler 定义一个处理消息的函数类型
 type MessageHandler func(ctx context.Context, msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error)
 
 func Consumer(handler MessageHandler, group, topic string) {
@@ -55,15 +55,7 @@ func Consumer(handler MessageHandler, group, topic string) {
 	fmt.Println("测试消费者已启动，正在监听消息...")
 
 	// 持续运行，直到手动停止
-	select {} //select {} 是 Go 语言中的一种特殊语法，表示一个没有分支的 select 语句。它的作用是让当前 Goroutine 进入永久阻塞状态，直到程序被手动终止（例如通过信号或外部干预）。
-	//阻塞就意味着他不能往下执行，直到被手动终止。
-	//阻塞主线程
-	//time.Sleep(time.Hour)
-	//关闭连接
-	//err = c.Shutdown()
-	//if err != nil {
-	//	fmt.Printf("shutdown Consumer error: %s", err.Error())
-	//}
+	select {}
 }
 func HandleMsgPrint(ctx context.Context, msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
 	for i := range msgs {

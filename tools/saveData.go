@@ -343,6 +343,7 @@ func checkRepeat(profileId string) bool {
 	configs.DB.Model(&dto.UniqueProfiles{}).Where("profile_id = ?", profileId).Count(&count)
 	return count > 0
 }
+
 func SaveAllData(token, profileId string) {
 	if checkRepeat(profileId) {
 		fmt.Println("重复性检测：", profileId, "已存在")

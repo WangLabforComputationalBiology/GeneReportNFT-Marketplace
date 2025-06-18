@@ -12,19 +12,18 @@ type UpdateUser struct {
 	Avatar  string `json:"avatar"`
 }
 
+type UserInfoResp struct {
+	Address string `json:"address" binding:"required"`
+	Name    string `json:"name" binding:"required"`
+	Avatar  string `json:"avatar" binding:"required"`
+	Country string `json:"country" binding:"required"`
+}
 type GetToken struct {
 	AccessToken  string `json:"access_token"`
 	TokenType    string `json:"token_type"`
 	ExpiresIn    int    `json:"expires_in"`
 	RefreshToken string `json:"refresh_token"`
 	Scope        string `json:"scope"`
-}
-
-type UserInfoResp struct {
-	Address string `json:"address" binding:"required"`
-	Name    string `json:"name" binding:"required"`
-	Avatar  string `json:"avatar" binding:"required"`
-	Country string `json:"country" binding:"required"`
 }
 
 type GetReportId struct {
@@ -35,7 +34,7 @@ type GetReportId struct {
 }
 
 type Profile struct {
-	Id     string `json:"id"`
+	ID     string `json:"id"`
 	Format string `json:"format"`
 	Name   string `json:"name"`
 	Sex    int    `json:"sex"`
@@ -44,4 +43,20 @@ type Profile struct {
 type ToSave struct {
 	Code      string `json:"code"`
 	ProfileId string `json:"profileId"`
+}
+
+// CheckCAPTCHAReq 人机校验
+type CheckCAPTCHAReq struct {
+	Angle int `json:"angle"`
+}
+
+// SendEmailCodeReq 发送邮箱验证码
+type SendEmailCodeReq struct {
+	Email string `json:"email" binding:"required"`
+}
+
+// VerifyEmailCodeReq 验证邮箱验证码
+type VerifyEmailCodeReq struct {
+	Email string `json:"email" binding:"required"`
+	Code  string `json:"code" binding:"required"`
 }

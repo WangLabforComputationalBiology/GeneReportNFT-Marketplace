@@ -43,7 +43,7 @@ wegene:
 
 
 rocketmq:
-  name_server: 127.0.0.1:9876
+  name_server: 120.24.168.132:9876
   group: rocketmq_group
   topic: rocketmq_topic
   tag: rocketmq_tag
