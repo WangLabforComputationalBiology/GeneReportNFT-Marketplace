@@ -15,6 +15,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -139,24 +140,24 @@ func (u *userService) SendEmailCode(userAddress, email string) error {
 // VerifyEmailCode 验证短信验证码
 // Redis存储格式 key:"Email:{phone}" value:{"code":{code},"attempts":{attempts}}
 // expiry:3min
-func (u *userService) VerifyEmailCode(phone string, code string) (bool, error) {
+func (u *userService) VerifyEmailCode(email string, code string) (bool, error) {
 	var correctCode string
-	var attempts int64
-	vals, err := configs.RedisClient.HMGet(context.Background(), "email:"+phone, "code", "attempts").Result()
+	var attempts int
+	vals, err := configs.RedisClient.HGetAll(context.Background(), "email:"+email).Result()
 	if err != nil {
 		return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
-	} else if vals[0] == nil {
+	} else if vals["code"] == "" {
 		//验证码过期
 		return false, appErrors.New(http.StatusBadRequest, "验证码已过期，请重新获取", err)
 	} else {
-		correctCode = vals[0].(string)
-		attempts = vals[1].(int64)
+		correctCode = vals["code"]
+		attempts, _ = strconv.Atoi(vals["attempts"])
 		if attempts >= 5 {
 			return false, appErrors.New(http.StatusTooManyRequests, "验证码错误次数过多，请三分钟后再试", err)
 		}
 
 		if correctCode != code {
-			defer configs.RedisClient.HIncrBy(context.Background(), "SMS_phone:"+phone, "attempts", 1)
+			defer configs.RedisClient.HIncrBy(context.Background(), "SMS_phone:"+email, "attempts", 1)
 			return false, appErrors.New(http.StatusBadRequest, "验证码错误", errors.New("验证码错误"))
 
 		}
