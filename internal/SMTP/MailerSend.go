@@ -8,7 +8,7 @@ import (
 	"github.com/mailersend/mailersend-go"
 )
 
-var APIKey = "mlsn.000038e6bccd11ad4741f9dd0357a441c63e3903a8282c3a2887dd5e17cc0db8mlsn.000038e6bccd11ad4741f9dd0357a441c63e3903a8282c3a2887dd5e17cc0db8"
+var APIKey = "mlsn.d82c5a91a0da6195a66e31183b48c3e4bab1f4838046f92893b5046bdffb94ca"
 var SMTPServ *mailersend.Mailersend
 
 func init() {
@@ -19,14 +19,14 @@ func GenerateVerifyCode() string {
 	return fmt.Sprintf("%06d", time.Now().UnixNano()%1000000)
 }
 
-func SendEmailCode(code, name, userAddress, email string) {
+func SendEmailCode(code, name, userAddress, email string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	subject := "your Verification Code"
 
 	from := mailersend.From{
 		Name:  "biochainer",
-		Email: "biochainer@demo.com",
+		Email: "test-r9084zvw9m8gw63d.mlsender.net",
 	}
 
 	recipients := []mailersend.Recipient{
@@ -57,6 +57,9 @@ func SendEmailCode(code, name, userAddress, email string) {
 	message.SetPersonalization(personalization)
 
 	message.SetTags(tags)
-	_, _ = SMTPServ.Email.Send(ctx, message)
-
+	_, err := SMTPServ.Email.Send(ctx, message)
+	if err != nil {
+		return err
+	}
+	return nil
 }

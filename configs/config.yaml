@@ -28,13 +28,6 @@ context:
   timeout: 3
 logger:
 
-# sepolia测试网
-ether_scan:
-  apikey: PS6539ETQH1ZKUE3FVIYH6BVFHE3KT93RB
-  endpoint: https://api-sepolia.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=%s&apikey=%s
-  proxy: true
-  proxy_url: http://127.0.0.1:7897
-
 wegene:
   id: szjsbiolab
   secret: cgioHbVHp6xp2rZzPthkkp6BRNfsDOr3

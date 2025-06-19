@@ -378,6 +378,10 @@ func (u *User) SendEmailCode(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
+	ctx.JSON(http.StatusOK, dto.Response{
+		Code:    http.StatusOK,
+		Message: "发送成功",
+	})
 }
 
 // VerifyEmailCode 验证手机验证码

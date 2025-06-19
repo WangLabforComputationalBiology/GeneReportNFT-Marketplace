@@ -105,15 +105,17 @@ func (u *userService) GetUserInfoByID(address string) (dto.UserInfoResp, error) 
 // Redis存储格式 key:"email:{email}" value:{"code":{code},"attempts":0}
 // expire: 3min
 func (u *userService) SendEmailCode(userAddress, email string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	codeToSave := SMTP.GenerateVerifyCode()
 
 	User, _ := dao.GetUserDao().GetUser(userAddress)
 
 	// 发送验证码邮件
-	SMTP.SendEmailCode(codeToSave, User.Name, userAddress, email)
-
+	err := SMTP.SendEmailCode(codeToSave, User.Name, userAddress, email)
+	if err != nil {
+		return appErrors.New(http.StatusInternalServerError, "SMTP服务繁忙", err)
+	}
 	// 创建 Pipeline
 	pipe := configs.RedisClient.Pipeline()
 
@@ -127,7 +129,7 @@ func (u *userService) SendEmailCode(userAddress, email string) error {
 	pipe.Expire(ctx, "email:"+email, 3*time.Minute)
 
 	// 执行 Pipeline
-	_, err := pipe.Exec(ctx)
+	_, err = pipe.Exec(ctx)
 	if err != nil {
 		return appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
