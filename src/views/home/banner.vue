@@ -70,7 +70,7 @@
         color: #333;
         opacity: 0;
         /* 初始不可见 */
-        animation: fadeIn 0.6s ease-in forwards 0.8s;
+        animation: fadeIn 0.6s ease-in forwards 0.4s;
         /* 延迟0.8s淡入 */
     }
 
@@ -84,7 +84,7 @@
         color: #333;
         opacity: 0;
         /* 初始不可见 */
-        animation: fadeIn 0.6s ease-in forwards 1.2s;
+        animation: fadeIn 0.5s ease-in forwards 0.8s;
         /* 延迟0.8s淡入 */
     }
 

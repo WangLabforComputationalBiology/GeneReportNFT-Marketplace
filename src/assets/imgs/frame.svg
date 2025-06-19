@@ -1,0 +1,19 @@
+<svg width="620" height="460" xmlns="http://www.w3.org/2000/svg">
+
+ <g>
+  <title>Layer 1</title>
+  <rect stroke-width="0.1" opacity="0.5" rx="50" id="svg_2" height="460" width="620" y="-0.00001" x="0" stroke="#000" fill="#7DD8B5"/>
+  <path opacity="0.8" id="svg_3" d="m45,36.05c0,-8.15068 6.84932,-15 15,-15l500,0c8.15068,0 15,6.84932 15,15l0,86c0,8.15069 -6.84932,15 -15,15l-500,0c-8.15068,0 -15,-6.84931 -15,-15" stroke-width="0.1" stroke="#000" fill="#EDFFFF"/>
+  <path stroke="#000" id="svg_4" d="m158.5,186.05c0,-8.15068 5.40873,-15 11.84512,-15l389.30974,0c6.43639,0 11.84512,6.84932 11.84512,15l0,65c0,8.15068 -5.40873,15 -11.84512,15l-389.30974,0c-6.43639,0 -11.84512,-6.84932 -11.84512,-15l0,-65z" opacity="undefined" stroke-width="0.1" fill="#FFFA8D"/>
+  <rect stroke="#000" rx="15" opacity="0.8" id="svg_5" height="107.00002" width="523.00001" y="303.75631" x="48.5" stroke-width="0" fill="#FFA9A2"/>
+  <path id="svg_6" d="m331.99997,200c0,-5.43379 4.56621,-10 10,-10l202.00001,0c5.43379,0 10,4.56621 10,10l0,36c0,5.43379 -4.56621,10 -10,10l-202.00001,0c-5.43379,0 -10,-4.56621 -10,-10l0,-18l0,-9l0,-4.5l0,-2.25l0,-1.125l0,-0.5625l0,-0.28125l0,-0.14062l0,-0.14063z" opacity="undefined" stroke-width="0.1" stroke="#000" fill="#FABA6F"/>
+  <text xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_9" y="226.48738" x="408.61168" stroke-width="0" stroke="#000" fill="#000000">User</text>
+  <text xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_10" y="225.48739" x="195.73949" stroke-width="0" stroke="#000" fill="#000000">Institution</text>
+  <text xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_11" y="368.73953" x="257.69888" stroke-width="0" stroke="#000" fill="#000000">Database</text>
+  <text xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_12" y="92.75631" x="172.63026" stroke-width="0.1" stroke="#000" fill="#000000">Blockchain(FISCO BCOS)</text>
+  <path stroke="#666666" id="svg_13" d="m274.76134,148.1957l21.00001,-45.8896l21.00001,45.8896l-10.50001,0l0,46.11041l-21.00001,0l0,-46.11041l-10.50001,0z" stroke-width="0" fill="#999999"/>
+  <path transform="rotate(-180 104.671 223.956)" stroke="#000" id="svg_16" d="m78.67135,223.67169l26.00001,-118.21559l26.00001,118.21559l-13.00001,0l0,118.78443l-26.00001,0l0,-118.78443l-13.00001,0z" stroke-width="0" fill="#999999"/>
+  <path stroke="#0f0f00" id="svg_17" d="m414.89134,283.1425l20.99999,-51.3764l20.99999,51.3764l-10.5,0l0,51.62361l-20.99999,0l0,-51.62361l-10.5,0z" stroke-width="0" fill="#999999"/>
+  <text xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_19" y="450.36977" x="247.71568" stroke-width="0.1" stroke="#000" fill="#000000">BioChainer</text>
+ </g>
+</svg>

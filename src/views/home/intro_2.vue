@@ -19,6 +19,10 @@
 
 
         </div>
+        <div class="wrapper-right">
+        <h2>Framework</h2>
+            <img src="@/assets/imgs/framework.svg" alt="">
+        </div>
     </div>
 </template>
 
@@ -26,8 +30,6 @@
 </script>
 
 <style lang="scss" scoped>
-
-
 .wrapper {
     height: 95vh;
     min-width: 1200px;
@@ -43,21 +45,25 @@
     align-items: center;
     text-align: center;
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -75%);
+    width: 50%;
+    height: 95vh;
+    border-bottom: #fff 1px solid;
+    left: 0%;
+    // top: 50%;
+    background-color: #169608;
+    // transform: translate(0%, -60%);
 
 
     h1 {
         font-size: 6vh;
         font-weight: 500;
-        color: #169608;
+        color: #fff;
         margin-bottom: 20px;
     }
 
     h2 {
         font-size: 2.5vh;
-        color: #333;
+        color: #fff;
         margin-bottom: 30px;
     }
 
@@ -71,5 +77,31 @@
         margin: 10px;
     }
 
+}
+
+.wrapper-right {
+    position: absolute;
+    left: 50%;
+    // top: 50%;
+    width: 50%;
+    height: 95vh;
+    background-color: #fff;
+
+    // transform: translate(0%, -70%);
+    img {
+        position: absolute;
+        top: 50%;
+        left: 25%;
+        transform: translate(0%, -50%);
+    }
+    h2{
+        position: absolute;
+        top: 25%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #169608;
+        font-weight: 700;
+        font-size: 30px;
+    }
 }
 </style>

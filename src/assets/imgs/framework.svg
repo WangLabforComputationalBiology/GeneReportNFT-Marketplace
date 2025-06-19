@@ -1,0 +1,18 @@
+<svg width="522" height="460" xmlns="http://www.w3.org/2000/svg">
+
+ <g>
+  <title>Layer 1</title>
+  <rect rx="20" id="svg_21" height="90" width="405.00001" y="191.99999" x="115.5" stroke-width="0" stroke="#000" fill="#e6a23c"/>
+  <rect rx="20" id="svg_22" height="61" width="163" y="206.5" x="321.62003" stroke-width="0" stroke="#B8D078" fill="#E6C36A"/>
+  <rect rx="25" stroke="#169608" id="svg_20" height="100" width="520" y="42.6494" x="1" stroke-width="0" fill="#169608"/>
+  <rect stroke="#7AD6CA" rx="25" id="svg_5" height="100" width="520" y="315.75631" x="1" stroke-width="0.2" fill="#67c23c"/>
+  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_9" y="247.4874" x="379.61168" stroke-width="0" stroke="#000" fill="#000000">User</text>
+  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_10" y="247.4874" x="159.73949" stroke-width="0" stroke="#000" fill="#000000">Institution</text>
+  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_11" y="375.73953" x="205.6989" stroke-width="0" stroke="#000" fill="#000000">Database</text>
+  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_12" y="102.75631" x="122.63027" stroke-width="0.1" stroke="#000" fill="#000000">Blockchain(FISCO BCOS)</text>
+  <path stroke="#666666" id="svg_13" d="m222.76134,155.1957l21.00001,-45.8896l21.00001,45.8896l-10.50001,0l0,46.11041l-21.00001,0l0,-46.11041l-10.50001,0z" stroke-width="0" fill="#DDDDDD"/>
+  <path transform="rotate(-180 68.6713 230.956)" stroke="#000" id="svg_16" d="m42.67135,230.67169l26.00001,-118.21559l26.00001,118.21559l-13.00001,0l0,118.78443l-26.00001,0l0,-118.78443l-13.00001,0z" stroke-width="0" fill="#DDDDDD"/>
+  <path stroke="#0f0f00" id="svg_17" d="m381.89134,303.1425l20.99999,-51.3764l20.99999,51.3764l-10.5,0l0,51.62361l-20.99999,0l0,-51.62361l-10.5,0z" stroke-width="0" fill="#DDDDDD"/>
+  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_19" y="449.36977" x="195.71571" stroke-width="0.1" stroke="#000" fill="#000000">BioChainer</text>
+ </g>
+</svg>
