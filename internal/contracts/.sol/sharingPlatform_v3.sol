@@ -91,7 +91,7 @@ contract SharingPlatform is ERC20 {
     }
 
     function createEmptyGeneSharingFromCreativeWorkSpace() external returns (address) {
-        GeneSharing newSharing = new GeneSharing(sharingID,address(this),false);
+        GeneSharing newSharing = new GeneSharing(address(this),false);
         address contractAddress = address(newSharing);
         _geneSharingContracts.push(contractAddress);
         _geneSharingContract[contractAddress] = true;
