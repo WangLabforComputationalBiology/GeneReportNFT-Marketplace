@@ -55,9 +55,9 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//用户授权哪份报告
 	r.POST("/saveProfile" /*middlewares.AuthMiddleware(), */, controllers.UserController.SaveProfileInfo)
 	//发送验证码
-	r.POST("/send_email", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.UserController.SendEmailCode)
+	r.POST("/send_email" /*middlewares.AuthMiddleware(), */, middlewares.ZapMiddleware(), controllers.UserController.SendEmailCode)
 	//验证验证码
-	r.POST("/verify_email", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.UserController.VerifyEmailCode)
+	r.POST("/verify_email" /*middlewares.AuthMiddleware(), */, middlewares.ZapMiddleware(), controllers.UserController.VerifyEmailCode)
 	//获取用户的基因数据
 	r.GET("/getData/:param" /*, middlewares.AuthMiddleware()*/, controllers.MetadataController.GetData)
 }
