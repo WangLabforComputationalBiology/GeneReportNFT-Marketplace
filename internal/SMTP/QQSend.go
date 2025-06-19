@@ -28,9 +28,6 @@ func SendEmailCode(code, name, userAddress, email string) error {
 		Address: userAddress,
 	}
 
-	//ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	//defer cancel()
-
 	m := gomail.NewMessage()
 	m.SetHeader("From", "1356088661@qq.com")
 	m.SetHeader("To", email)
@@ -47,7 +44,7 @@ func SendEmailCode(code, name, userAddress, email string) error {
 	}
 	m.SetBody("text/html", buf.String())
 	// 发送邮件
-	d := gomail.NewDialer("smtp.qq.com", 587, "1356088661@qq.com", "your_auth_code")
+	d := gomail.NewDialer("smtp.qq.com", 587, "1356088661@qq.com", AuthCode)
 	if err := d.DialAndSend(m); err != nil {
 		return err
 	}
