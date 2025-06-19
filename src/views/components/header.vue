@@ -2,21 +2,22 @@
     <div class="header">
         <div class="side" @click="toHome">
             <div class="logo" style="cursor: pointer;"><img src="@/assets/logo.svg" alt="">
-            <span style="color: #169608;">Bio</span>Chainer
+                <span style="color: #169608;">Bio</span>Chainer
             </div>
         </div>
         <div class="header-wrapper">
             <!-- 路由菜单 -->
             <div class="routers">
-                <router-link to="/index" class="router-selection ">Home</router-link>
-                <router-link to="/plaza" class="router-selection ">Data Plaza</router-link>
-                <router-link to="/publish" class="router-selection">Data Publish</router-link>
-                <router-link to="/about" class="router-selection">About</router-link>
+                <router-link to="/index"
+                    :class="['router-selection', { 'active': $route.path === '/index' }]">Home</router-link>
+                <router-link to="/plaza" :class="['router-selection', { 'active': $route.path === '/plaza' }]">Data
+                    Plaza</router-link>
+                <router-link to="/publish" :class="['router-selection', { 'active': $route.path === '/publish'}]">Data
+                    Publish</router-link>
+                <router-link to="/about"
+                    :class="['router-selection', { 'active': $route.path === '/about' }]">About</router-link>
                 <router-link to="/login" class="router-selection" v-if="!account">Login</router-link>
             </div>
-
-            <!-- <button  @click="redirectToOAuth">获取微基因数据</button> -->
-
         </div>
         <span class="side" v-if="account">
             <div class="account" @click="toAccount">{{ fixedAccount }}</div>
@@ -24,38 +25,26 @@
     </div>
 </template>
 
-<script>
-import { useWalletStore } from '@/stores/account';
+<script setup>
+import { useWalletStore } from '@/stores/account'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
-export default {
-    name: "Header",
-    data() {
-        return {
-            account: null,
-        }
-    },
-    created() {
-        const wallet = useWalletStore();
-        this.account = wallet.address;
-    },
-    computed: {
-        fixedAccount() {
-            return this.account.slice(0, 5) + '...' + this.account.slice(-4);
-        }
-    }
-    ,
-    methods: {
-        toHome() {
-            this.$router.push('/index');
-        }
-        ,
-        // redirectToOAuth() {
-        //     window.location.href = import.meta.env.VITE_APP_BASE_URL+'/user/oauth2Wegene';
-        // }
-        toAccount() {
-            this.$router.push('/account');
-        }
-    }
+const wallet = useWalletStore()
+const account = computed(() => wallet.address)
+const router = useRouter()
+
+const fixedAccount = computed(() => {
+    if (!account.value) return ''
+    return account.value.slice(0, 8) + '...' + account.value.slice(-6)
+})
+
+function toHome() {
+    router.push('/index')
+}
+
+function toAccount() {
+    router.push('/account')
 }
 </script>
 
@@ -78,7 +67,7 @@ export default {
     .side {
         height: 5vh;
         flex: 1;
-        min-width: 200px;
+        min-width: 250px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -96,7 +85,7 @@ export default {
             font-weight: 700;
             color: #333;
 
-            img{
+            img {
                 height: 2.4vh;
             }
         }
@@ -142,6 +131,14 @@ export default {
             &:hover:after {
                 width: 100%;
                 /* 鼠标悬停时边框宽度变为100% */
+            }
+        }
+
+        .active {
+            color: #169608;
+
+            &::after{
+                width: 100%;
             }
         }
 

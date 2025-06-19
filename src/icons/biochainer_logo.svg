@@ -1,0 +1,12 @@
+<svg viewBox="0 0 210.5 215.5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="210.5" height="215.5" fill="none" customFrame="#000000">
+	<g id="组合 1">
+		<path id="svg_2" d="M98 0L98 80C98 91.0457 89.0457 100 78 100L0 100L0 10C0 4.47715 4.47715 0 10 0L98 0Z" fill="rgb(51,51,51)" fill-rule="evenodd" />
+		<path id="svg_2" d="M98 0L98 80C98 91.0457 89.0457 100 78 100L0 100L0 10C0 4.47715 4.47715 0 10 0L98 0Z" fill-rule="evenodd" stroke="rgb(0,0,0)" stroke-width="0" />
+		<path id="svg_4" d="M97.6744 115L97.6744 215L10 215C4.47715 215 0 210.523 0 205L0 115L97.6744 115Z" fill="rgb(22,150,8)" fill-rule="evenodd" />
+		<path id="svg_4" d="M97.6744 115L97.6744 215L10 215C4.47715 215 0 210.523 0 205L0 115L97.6744 115Z" fill-rule="evenodd" stroke="rgb(0,0,0)" stroke-width="0" />
+		<path id="svg_5" d="M97.6744 0L97.6744 80C97.6744 91.0457 88.7201 100 77.6744 100L0 100L0 5C0 2.23858 2.23858 0 5 0L97.6744 0Z" fill="rgb(51,51,51)" fill-rule="evenodd" transform="matrix(-1,0,0,-1,210,215)" />
+		<path id="svg_5" d="M97.6744 0L97.6744 80C97.6744 91.0457 88.7201 100 77.6744 100L0 100L0 5C0 2.23858 2.23858 0 5 0L97.6744 0Z" fill-rule="evenodd" stroke="rgb(0,0,0)" stroke-width="1" transform="matrix(-1,0,0,-1,210,215)" />
+		<path id="svg_7" d="M200 0C205.523 0 210 4.47715 210 10L210 100L112 100L112 0L200 0Z" fill="rgb(22,150,8)" fill-rule="evenodd" />
+		<path id="svg_7" d="M200 0C205.523 0 210 4.47715 210 10L210 100L112 100L112 0L200 0Z" fill-rule="evenodd" stroke="rgb(0,0,0)" stroke-width="0" />
+	</g>
+</svg>

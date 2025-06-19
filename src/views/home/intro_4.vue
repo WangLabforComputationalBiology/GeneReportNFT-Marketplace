@@ -2,7 +2,7 @@
     <div class="wrapper">
         <div class="how">
 
-            <h1>How it works?</h1>
+            <h1>How <span style="color: #333;"> it works?</span></h1>
             <div class="inner-wrapper">
                 <div class="steps">
                     <div class="step">1</div>

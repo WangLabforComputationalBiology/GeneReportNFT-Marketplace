@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
         <div class="wrapper-left">
-            <h1>Sharing Gene code.</h1><br>
+            <h1>Sharing <span style="color: #333;"> Gene code.</span></h1><br>
             <h2>A Biological alliance-chain based on <span class="click-link" @click="toFB">FISCO BCOS↗</span> from
                 SZTU@Wanglab.
                 <br>

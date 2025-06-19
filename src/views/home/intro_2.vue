@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
         <div class="wrapper-left">
-            <h1>How we do that?</h1><br>
+            <h1>How <span style="color: #333;">we do that?</span></h1><br>
             <h2>
                 Through blockchain and smart contracts, we enable the recording and traceability of
                 genetic information transfers. The process of logging transfer records on the chain is decentralized,
@@ -57,6 +57,7 @@
     }
 
     h2 {
+        width: 35vw;
         font-size: 2.5vh;
         color: #fff;
         margin-bottom: 30px;
