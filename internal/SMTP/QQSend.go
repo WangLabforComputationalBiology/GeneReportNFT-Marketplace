@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"gopkg.in/gomail.v2"
 	"html/template"
-	"log"
 	"time"
 )
 
@@ -21,11 +20,11 @@ func GenerateVerifyCode() string {
 
 func SendEmailCode(code, name, userAddress, email string) error {
 	data := struct {
-		Code    string
 		Address string
+		Code    string
 	}{
-		Code:    code,
 		Address: userAddress,
+		Code:    code,
 	}
 
 	m := gomail.NewMessage()
@@ -35,13 +34,11 @@ func SendEmailCode(code, name, userAddress, email string) error {
 
 	var buf bytes.Buffer
 	tmpl, err := template.ParseFiles("email_template.html")
-
-	if err := tmpl.Execute(&buf, data); err != nil {
-		log.Fatal("Execute template failed:", err)
-	}
+	err = tmpl.Execute(&buf, data)
 	if err != nil {
-		log.Fatal("Parse template failed:", err)
+		return err
 	}
+
 	m.SetBody("text/html", buf.String())
 	// 发送邮件
 	d := gomail.NewDialer("smtp.qq.com", 587, "1356088661@qq.com", AuthCode)
