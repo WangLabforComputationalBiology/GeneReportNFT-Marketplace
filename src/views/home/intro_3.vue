@@ -1,152 +1,85 @@
 <template>
     <div class="wrapper">
-        <div class="how">
-
-            <h1>How it works?</h1>
-            <div class="inner-wrapper">
-                <div class="steps">
-                    <div class="step">1</div>
-                    <div class="content-wrapper">
-                        <h3>Setup MetaMask</h3>
-                        <p>Download MetaMask for the Brower as an extension.Setup your MetaMask wallet. </p>
-                    </div>
-                </div>
-                <div class="arrow">
-                    <img src="../../assets/imgs/arrow-drop-right-line.svg" alt="">
-                </div>
-                <div class="steps">
-                    <div class="step" style="background-color: #E6A23C;">2</div>
-                    <div class="content-wrapper">
-                        <h3>Verfication</h3>
-                        <p>Please let us make sure your organization is legal.
-                        </p>
-                    </div>
-                </div>
-                <div class="arrow">
-                    <img src="../../assets/imgs/arrow-drop-right-line.svg" alt="">
-                </div>
-                <div class="steps">
-                    <div class="step" style="background-color: #67C23A;">3</div>
-                    <div class="content-wrapper">
-                        <h3>Start Sharing</h3>
-                        <p>Select the data that may help you in Data Plaza.
-                            You can also upload data to promote community development.</p>
-                        <div class="content-warpper">
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <h1>What we want to do?</h1>
+        <div class="page">
+            <div class="des ch1">有利于基因信息的流通、处理与研究</div>
+            <div class="des ch2">信息流通透明、可溯源</div>
+            <div class="des ch3">支持其他物种</div>
+            <div class="des ch4">公益性、学术性</div>
         </div>
     </div>
+
 </template>
 
-<script setup>
-
-</script>
-
-<style lang="scss" scoped>
+<style scoped>
 .wrapper {
     height: 95vh;
     min-width: 1200px;
     scroll-snap-align: start;
+    display: flex;
     position: relative;
 }
 
-.how {
-    position: relative;
+h1 {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%, -50%);
+    font-size: 6vh;
+    color: #169608;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
 
-    h1 {
+.page {
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 50vh;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    background-color: #169608;
+
+  
+
+    .des {
         position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, 150%);
-        font-size: 6vh;
-        color: #169608;
-        margin-bottom: 50px;
-        font-weight: 500;
 
+        width: 20%;
+        height: 160px;
+        font-size: 1.5vh;
+        color: #333;
+        text-align: center;
+        padding: 20px;
+        line-height: 1.6;
+        background-color: #fff;
+        border-radius: 20px;
     }
 
-    .inner-wrapper {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, 30%);
-        gap: 3em;
-        display: flex;
-        justify-content: space-around;
-
-        .arrow {
-            width: 3vw;
-            min-width: 40px;
-            height: 300px;
-            display: flex;
-            justify-content: center;
-            position: relative;
-            top: 50%;
-
-            img {
-                width: 200%;
-                height: 200%;
-            }
-        }
-
-        .steps {
-            margin-top: 120px;
-            width: 300px;
-            height: 400px;
-            background-color: #fff;
-            box-shadow: 0 0 15px #E4E7ED;
-            border-radius: 20px;
-            background-repeat: no-repeat;
-            background-position: center 0;
-            position: relative;
-
-            &:hover {
-                box-shadow: 0 0 40px #E4E7ED;
-            }
-
-            .step {
-                width: 160px;
-                height: 160px;
-                background-color: #169608;
-                color: #fff;
-                font-size: 54px;
-                font-weight: bold;
-                border-radius: 50%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                position: absolute;
-                top: -30px;
-                left: 50%;
-                transform: translateX(-50%);
-
-            }
-
-            .content-wrapper {
-                margin-top: 180px;
-                width: 100%;
-                text-align: center;
-                padding: 10px 10px;
-
-                h3 {
-                    font-size: 24px;
-                    color: #333;
-                    font-weight: 700;
-                }
-
-                p {
-                    margin-top: 20px;
-                    color: #666;
-                    padding: 10px 10px;
-                }
-
-
-            }
-
-        }
-
+    .ch1 {
+        top: 15%;
+        right: 52%;
     }
+
+    .ch2 {
+        top: 15%;
+        left: 52%;
+    }
+
+    .ch3 {
+        bottom: 15%;
+        right: 52%;
+    }
+
+    .ch4 {
+        bottom: 15%;
+        left: 52%;
+    }
+
+
+
+
 }
 </style>

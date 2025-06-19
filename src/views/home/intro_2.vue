@@ -15,9 +15,6 @@
                 <span class="tags">#Coinless blockchain</span>
                 <span class="tags">#Traceable</span>
             </h2>
-
-
-
         </div>
         <div class="wrapper-right">
             <h2>Framework</h2>
@@ -49,9 +46,7 @@
     height: 95vh;
     border-bottom: #fff 1px solid;
     left: 0%;
-    // top: 50%;
     background-color: #169608;
-    // transform: translate(0%, -60%);
 
 
     h1 {
