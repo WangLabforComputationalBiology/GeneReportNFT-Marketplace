@@ -65,3 +65,10 @@ func (u *UserDao) GetUser(address string) (models.User, error) {
 	var userInfo models.User
 	return userInfo, u.DB().Model(&models.User{}).Where("address = ?", address).First(&userInfo).Error
 }
+
+func (u *UserDao) GetEmailSuffix(institutionName string) (results string, err error) {
+	err = u.DB().Select("institutions.email").
+		Where("institutions.name = ?", institutionName).
+		Scan(&results).Error
+	return results, err
+}

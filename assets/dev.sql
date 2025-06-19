@@ -18,21 +18,22 @@ drop table if exists users;
 -- 创建用户列表表
 CREATE TABLE `users`
 (
-    `address`   varchar(42) NOT NULL PRIMARY KEY COMMENT '钱包账户地址',
-    `name`      varchar(32) NOT NULL COMMENT '用户名',
-    `avatar`    varchar(32) NOT NULL DEFAULT '默认头像path' COMMENT '头像地址/文件',
-    `create_at` datetime    NOT NULL COMMENT '账户注册时间',
-    `email`     varchar(32)  default 'UNKNOWN' COMMENT '机构邮箱'
+    `address`     varchar(42) NOT NULL PRIMARY KEY COMMENT '钱包账户地址',
+    `name`        varchar(32) NOT NULL COMMENT '用户名',
+    `avatar`      varchar(32) NOT NULL DEFAULT '默认头像path' COMMENT '头像地址/文件',
+    `create_at`   datetime    NOT NULL COMMENT '账户注册时间',
+    `institution` varchar(32)          default 'UNKNOWN' COMMENT '机构名称',
+    `email`       varchar(32)          default 'UNKNOWN' COMMENT '机构邮箱'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='用户列表';
 
 
 insert into users
-values ('0xAc6b478Ae65E7D955F64ED80E65E613ea34c820f', '陈焕凯', '/test/1.png', NOW(), 'UNKNOWN'),
-       ('0x9D0bf56A50090bE7F7f8Fad07DDa4949FBc6Cd17', '黄瑞升', '/test/2.png', NOW(), 'UNKNOWN'),
-       ('0x8e174fC25f7d4373b589DAcAaC884985C1C6D053', '唐嘉铭', '/test/3.png', NOW(), 'UNKNOWN'),
-       ('0x02729118740a8b9D6a6eF171b7Fe30fEBeDe34F2', '林锐轩', '/test/4.png', now(), 'UNKNOWN'),
-       ('0xdD27Ef37a5c09E4c940C2EDd900ABB9B5d220a13', 'lin林', '/test/5.png', now(), 'UNKNOWN');
+values ('0xAc6b478Ae65E7D955F64ED80E65E613ea34c820f', '陈焕凯', '/test/1.png', NOW(), 'UNKNOWN', 'UNKNOWN'),
+       ('0x9D0bf56A50090bE7F7f8Fad07DDa4949FBc6Cd17', '黄瑞升', '/test/2.png', NOW(), 'UNKNOWN', 'UNKNOWN'),
+       ('0x8e174fC25f7d4373b589DAcAaC884985C1C6D053', '唐嘉铭', '/test/3.png', NOW(), 'UNKNOWN', 'UNKNOWN'),
+       ('0x02729118740a8b9D6a6eF171b7Fe30fEBeDe34F2', '林锐轩', '/test/4.png', now(), 'UNKNOWN', 'UNKNOWN'),
+       ('0xdD27Ef37a5c09E4c940C2EDd900ABB9B5d220a13', 'lin林', '/test/5.png', now(), 'UNKNOWN', 'UNKNOWN');
 
 
 drop table if exists GNFT_basic;
@@ -857,14 +858,14 @@ drop table if exists `geneSharings`;
 CREATE TABLE geneSharings
 (
     `contract_address` VARCHAR(42) COMMENT 'geneSharing集合地址',
-    `name` VARCHAR(32) COMMENT 'geneSharing集合名称',
-    `description` TEXT COMMENT 'geneSharing集合描述',
-    `creator_address` VARCHAR(42) COMMENT 'geneSharing集合创建者',
-    `created_at` DATETIME COMMENT '创建时间',
-    `explorer_link` VARCHAR(255) COMMENT '链上合约链接',
-    `item_amount` INT COMMENT 'MetaData数量',
-    `is_official` TINYINT(1) COMMENT '是否第三方官方授权构建',
-    `tags` VARCHAR(255) COMMENT '标签，以分号分隔，,ex:third party:wegene;...',
+    `name`             VARCHAR(32) COMMENT 'geneSharing集合名称',
+    `description`      TEXT COMMENT 'geneSharing集合描述',
+    `creator_address`  VARCHAR(42) COMMENT 'geneSharing集合创建者',
+    `created_at`       DATETIME COMMENT '创建时间',
+    `explorer_link`    VARCHAR(255) COMMENT '链上合约链接',
+    `item_amount`      INT COMMENT 'MetaData数量',
+    `is_official`      TINYINT(1) COMMENT '是否第三方官方授权构建',
+    `tags`             VARCHAR(255) COMMENT '标签，以分号分隔，,ex:third party:wegene;...',
     INDEX idx_creator (creator_address)
 );
 
@@ -872,25 +873,25 @@ drop table if exists `metadatas`;
 -- genSharing集合下的metadatas表
 CREATE TABLE metadatas
 (
-    `data_hash` VARCHAR(32) PRIMARY KEY COMMENT '数据哈希',
-    `profile_id` VARCHAR(36) NOT NULL COMMENT '对应的第三方基因报告id',
-    `format` VARCHAR(32) COMMENT '基因报告格式',
-    `sex` VARCHAR(32) COMMENT '性别',
-    `category` VARCHAR(32) COMMENT '报告研究类型',
-    `owner` VARCHAR(32) COMMENT '拥有者',
-    `name` VARCHAR(32) COMMENT '元数据名称',
-    `description` TEXT COMMENT '元数据描述',
+    `data_hash`        VARCHAR(32) PRIMARY KEY COMMENT '数据哈希',
+    `profile_id`       VARCHAR(36) NOT NULL COMMENT '对应的第三方基因报告id',
+    `format`           VARCHAR(32) COMMENT '基因报告格式',
+    `sex`              VARCHAR(32) COMMENT '性别',
+    `category`         VARCHAR(32) COMMENT '报告研究类型',
+    `owner`            VARCHAR(32) COMMENT '拥有者',
+    `name`             VARCHAR(32) COMMENT '元数据名称',
+    `description`      TEXT COMMENT '元数据描述',
     `contract_address` VARCHAR(42) COMMENT '合约地址',
-    `is_sharable` TINYINT(1) COMMENT '可共享状态',
-    `is_hidden` TINYINT(1) COMMENT '隐藏状态',
-    `created_at` DATETIME COMMENT '创建时间'
+    `is_sharable`      TINYINT(1) COMMENT '可共享状态',
+    `is_hidden`        TINYINT(1) COMMENT '隐藏状态',
+    `created_at`       DATETIME COMMENT '创建时间'
 );
 
 drop table if exists `geneSharing_metadatas`;
 CREATE TABLE geneSharing_metadatas
 (
     `geneSharing_contract_address` VARCHAR(32) NOT NULL COMMENT '基因报告地址',
-    `metadata_hash` VARCHAR(32) NOT NULL COMMENT '基因报告元数据哈希',
+    `metadata_hash`                VARCHAR(32) NOT NULL COMMENT '基因报告元数据哈希',
     PRIMARY KEY (`geneSharing_contract_address`, `metadata_hash`)
 );
 
@@ -902,11 +903,11 @@ CREATE TABLE activities
 (
     id            VARCHAR(36)    NOT NULL,
     user_address  VARCHAR(42)    NOT NULL,
-    `tx_hash`    varchar(64) NOT NULL COMMENT '交易哈希',
-    `from`       varchar(64) NOT NULL COMMENT '客户地址',
-    `to`         varchar(64) NOT NULL COMMENT '商家地址',
-    `gas`        varchar(50) NOT NULL COMMENT '交易产生的gas',
-    `profile_id` varchar(32) NOT NULL COMMENT '交易的基因报告id',
+    `tx_hash`     varchar(64)    NOT NULL COMMENT '交易哈希',
+    `from`        varchar(64)    NOT NULL COMMENT '客户地址',
+    `to`          varchar(64)    NOT NULL COMMENT '商家地址',
+    `gas`         varchar(50)    NOT NULL COMMENT '交易产生的gas',
+    `profile_id`  varchar(32)    NOT NULL COMMENT '交易的基因报告id',
     time          DATETIME       NOT NULL,
     activity_type VARCHAR(255)   NOT NULL,
     collection_id VARCHAR(32),

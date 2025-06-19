@@ -16,6 +16,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -100,6 +101,17 @@ func (u *userService) GetUserInfoByID(address string) (dto.UserInfoResp, error) 
 	var userInfo dto.UserInfoResp
 	mapstructure.Decode(user, &userInfo)
 	return userInfo, nil
+}
+
+func (u *userService) VerifyInstitutionEmail(institutionName, email string) (isValid bool, err error) {
+	suffix, err := dao.GetUserDao().GetEmailSuffix(institutionName)
+	if err != nil {
+		return false, appErrors.New(http.StatusInternalServerError, "服务器内部错误", err)
+	}
+	if strings.Split(email, "@")[1] == suffix[0:] {
+		return true, nil
+	}
+	return false, nil
 }
 
 // SendEmailCode 发送短信验证码
