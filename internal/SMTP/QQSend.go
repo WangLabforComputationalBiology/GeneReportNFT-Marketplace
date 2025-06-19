@@ -33,7 +33,7 @@ func SendEmailCode(code, name, userAddress, email string) error {
 	m.SetHeader("Subject", "your Verification Code")
 
 	var buf bytes.Buffer
-	tmpl, err := template.ParseFiles("email_template.html")
+	tmpl, err := template.ParseFiles("/home/blockchain/GeneReportNFT-Marketplace/internal/SMTP/email_template.html")
 	err = tmpl.Execute(&buf, data)
 	if err != nil {
 		return err
