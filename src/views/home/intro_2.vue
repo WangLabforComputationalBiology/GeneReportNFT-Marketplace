@@ -6,7 +6,9 @@
                 Through blockchain and smart contracts, we enable the recording and traceability of
                 genetic information transfers. The process of logging transfer records on the chain is decentralized,
                 while the storage of genetic data remains centralized—a decision made for regulatory compliance and
-                security considerations. We advocate for the participation of universities and legitimate institutions,
+                security considerations.
+                <br>
+                We advocate for the participation of universities and legitimate institutions,
                 with the goal of advancing academic research.
                 <br>
                 <br>
@@ -18,7 +20,7 @@
 
         </div>
         <div class="wrapper-right">
-        <h2>Framework</h2>
+            <h2>Framework</h2>
             <img src="@/assets/imgs/framework.svg" alt="">
         </div>
     </div>
@@ -93,7 +95,8 @@
         transform: translate(0%, -50%);
         width: 25vw;
     }
-    h2{
+
+    h2 {
         position: absolute;
         top: 25vh;
         left: 25vw;

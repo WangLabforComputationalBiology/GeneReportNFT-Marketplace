@@ -9,9 +9,6 @@
       <Intro2 />
       <Intro3 />
       <!-- 引导 -->
-      
-
-
    </div>
 
 </template>
@@ -27,13 +24,7 @@ import Bubbles from '../components/bubbles.vue';
 
 
 <style lang="scss" scoped>
-* {
-   /* 隐藏默认的滚动条样式 */
-   scrollbar-width: none;
-   /* Firefox */
-   -ms-overflow-style: none;
-   /* IE and Edge */
-}
+
 
 
 .container {

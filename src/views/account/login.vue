@@ -117,7 +117,7 @@ ${nonce}`;
 
 
             } catch (error) {
-                console.error('Error::', error.message);
+                console.error('Error::', error.message, error.code);
                 if (error.message.includes('404')) {
                     this.$message.error('Network error.');
 
@@ -127,6 +127,9 @@ ${nonce}`;
                 }
                 if (error.code === 4001) {
                     this.$message.warning('You denied the wallet connection');
+                } 
+                if (error.code === 500 || error.code === 501 || error.code === 502 || error.code === 503 || error.message.includes('503')) {
+                    alert('Server error, please try again later.');
                 } 
             }
         }

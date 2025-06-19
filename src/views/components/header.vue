@@ -1,7 +1,9 @@
 <template>
     <div class="header">
         <div class="side" @click="toHome">
-            <div class="logo" style="cursor: pointer;"><span style="color: #169608;">Bio</span>Chainer</div>
+            <div class="logo" style="cursor: pointer;"><img src="@/assets/logo.svg" alt="">
+            <span style="color: #169608;">Bio</span>Chainer
+            </div>
         </div>
         <div class="header-wrapper">
             <!-- 路由菜单 -->
@@ -93,6 +95,10 @@ export default {
             font-size: 36px;
             font-weight: 700;
             color: #333;
+
+            img{
+                height: 2.4vh;
+            }
         }
     }
 
@@ -127,7 +133,7 @@ export default {
                 width: 0;
                 height: 3px;
                 /* 边框厚度 */
-                background: #333;
+                background: #169608;
                 /* 蓝色边框 */
                 transition: width 0.4s ease;
                 /* 动画持续0.4秒 */

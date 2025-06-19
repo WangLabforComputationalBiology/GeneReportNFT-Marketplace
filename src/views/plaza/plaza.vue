@@ -5,7 +5,7 @@
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
         </div>
         <div class="plaza-page">
-            <div class="card" v-for="(item, index) in List" :key="index">
+            <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible">
                 <div class="icon" />
                 <div class="ifo">
                     <p>Id: <span class="ifo-item"> &nbsp; {{ item.ID }}</span></p>
@@ -15,7 +15,17 @@
                 </div>
             </div>
         </div>
+
     </div>
+    <el-drawer v-model="drawer" title="Detail" :direction="ltr" :before-close="handleClose">
+        <span>Hi, there!</span>
+        <template #footer>
+            <div style="flex: auto">
+                <!-- <el-button @click="cancelClick">cancel</el-button> -->
+                <el-button type="primary" @click="confirmClick">Get</el-button>
+            </div>
+        </template>
+    </el-drawer>
 </template>
 
 <script setup>
@@ -24,6 +34,7 @@ import { ethers } from "ethers";
 import { useWalletStore } from "@/stores/account";
 import Api from "@/axios/aixos";
 import Bubbles from "../components/bubbles.vue";
+// import { isVisible } from "element-plus/es/utils";
 
 const wallet = useWalletStore();
 const account = ref("");
@@ -145,6 +156,12 @@ function purchase(id, price) {
         }
     });
 }
+
+const drawer = ref(false);
+const isVisible = () => {
+    drawer.value = true;
+};
+
 onMounted(() => {
     getList();
 });
@@ -230,14 +247,19 @@ onMounted(() => {
             padding: 10px 0 0 25px;
             height: 70%;
 
-            p{
+            p {
                 color: #333;
             }
+
             .ifo-item {
                 color: #67C23A;
             }
         }
     }
 
+}
+
+:deep(.el-popup-parent--hidden) {
+    width: 100% !important;
 }
 </style>

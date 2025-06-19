@@ -6,7 +6,7 @@
                 SZTU@Wanglab.
                 <br>
                 We advocate the creation of a blockchain-based biological information sharing chain to achieve reliable
-                circulation of genetic information between universities and specific institutions, promote the
+                circulation of genetic information, promote the
                 circulation of genetic information and assist genetic research.
                 <br>
                 <br>

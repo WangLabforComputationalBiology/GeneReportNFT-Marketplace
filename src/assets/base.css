@@ -70,5 +70,19 @@ html {
 }
 
 html::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+* {
+  /* 隐藏默认的滚动条样式 */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}
+
+body {
+  /* 防止el-drawer挤占页面 */
+  width: 100% !important;
 }
