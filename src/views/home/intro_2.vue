@@ -3,8 +3,7 @@
         <div class="wrapper-left">
             <h1>How we do that?</h1><br>
             <h2>
-                We leverage a non-cryptocurrency blockchain for implementation, with FISCO BCOS providing robust
-                technical support. Through blockchain and smart contracts, we enable the recording and traceability of
+                Through blockchain and smart contracts, we enable the recording and traceability of
                 genetic information transfers. The process of logging transfer records on the chain is decentralized,
                 while the storage of genetic data remains centralized—a decision made for regulatory compliance and
                 security considerations. We advocate for the participation of universities and legitimate institutions,
@@ -13,7 +12,6 @@
                 <br>
                 <span class="tags">#Coinless blockchain</span>
                 <span class="tags">#Traceable</span>
-                <!-- <span class="tags">#Academic</span> -->
             </h2>
 
 
@@ -93,11 +91,12 @@
         top: 50%;
         left: 25%;
         transform: translate(0%, -50%);
+        width: 25vw;
     }
     h2{
         position: absolute;
-        top: 25%;
-        left: 50%;
+        top: 25vh;
+        left: 25vw;
         transform: translate(-50%, -50%);
         color: #169608;
         font-weight: 700;

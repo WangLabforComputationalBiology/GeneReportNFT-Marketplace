@@ -1,4 +1,5 @@
 [
+    { "value": "深圳技术大学(学生)", "email": "@stumail.sztu.edu.cn" },
     { "value": "清华大学", "email": "@tsinghua.edu.cn" },
     { "value": "北京大学", "email": "@pku.edu.cn" },
     { "value": "复旦大学", "email": "@fudan.edu.cn" },

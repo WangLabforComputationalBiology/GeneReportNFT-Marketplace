@@ -9,7 +9,7 @@
                 <router-link to="/index" class="router-selection ">Home</router-link>
                 <router-link to="/plaza" class="router-selection ">Data Plaza</router-link>
                 <router-link to="/publish" class="router-selection">Data Publish</router-link>
-                <router-link to="/about" class="router-selection">About us</router-link>
+                <router-link to="/about" class="router-selection">About</router-link>
                 <router-link to="/login" class="router-selection" v-if="!account">Login</router-link>
             </div>
 

@@ -7,30 +7,30 @@
             <el-autocomplete v-model="state" :fetch-suggestions="querySearch" clearable class="inline-input"
                 placeholder="Please select your institution" @select="handleSelect" />
         </div>
-        <!-- <el-button type="primary" @click="handleContinue">Continue</el-button> -->
-        <el-input class="email-input" v-if="step > 0" v-model="emailFront" placeholder="Please enter your email">
+        <el-input class="email-input" v-if="step > 0" v-model="emailFront" placeholder="Please enter email">
             <template #append>{{ emailEnd }}</template>
         </el-input>
         <Slidecheck v-if="step > 0" class="slidecheck" @ready="handleReady" />
-        <el-input class="code" v-if="step > 1" placeholder="Please enter verification code" type="text">
+        <el-input class="code" v-if="Ready" placeholder="Please enter verification code" type="text" v-model="code">
             <template #prepend>
             </template>
             <template #append>
-                <div class="send-btn">Send</div>
+                <div class="send-btn" @click="resEmail">{{ sendBTN }}</div>
             </template>
         </el-input>
-        <el-button v-if="step > 1" class="verify">Verify</el-button>
+        <el-button v-if="Ready" class="verify" @click="verify">Verify</el-button>
     </div>
 
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import loadUniversities from '@/assets/universities.json';
 import Bubbles from '@/views/components/bubbles.vue';
 import Slidecheck from '@/views/verify/slidecheck.vue';
+import Api from '@/axios/aixos';
 
-
+/* 大学列表 && 检索 */
 const state = ref('')
 const universities = ref([])
 const querySearch = (queryString, cb) => {
@@ -57,16 +57,23 @@ const loadAll = () => {
 }
 
 let emailEnd = ref('');
-let step = ref(0);
 
+// 选择大学后，设置emailEnd为对应的email
+let step = ref(0);
 const handleSelect = (item) => {
     emailEnd.value = item.email;;
-    step.value += 1;
+    step.value = 1;//显示人机验证
 }
 
+/* 人机验证
+ * 通过滑动验证来确认用户是人类
+ * 如果验证通过，设置Ready为true
+ * 后续显示发送验证码页面
+*/
+const Ready = ref(false);
 const handleReady = (isReady) => {
     if (isReady === true) {
-        step.value += 1;
+        Ready.value = true;
     }
 }
 
@@ -74,10 +81,105 @@ onMounted(() => {
     universities.value = loadAll()
 })
 
-const emailFront = ref('');
+
 //邮箱整合
+const emailFront = ref('');
 const fullEmail = computed(() => emailFront.value + emailEnd.value);
 
+// 是否可验证
+const isSent = ref(false);
+
+/* 发送邮箱验证请求 */
+const resEmail = async () => {
+    if (!emailFront.value) {
+        // 可以在这里添加提示：请输入完整的邮箱信息
+        alert('Please enter your email address.');
+        return;
+    }
+    try {
+        const emailResponse = await Api.post("/user/send_email", {
+            email: fullEmail.value
+        });
+        if (emailResponse.data.code === 200) {
+            // 成功提示
+            alert('Email sent successfully!');
+            isSent = true;
+            BTNstatus = true;//btn进入倒数状态
+        } else {
+            // 可败提示
+            alert('Failed to send email: ' + (emailResponse.data.message || 'Unknown error'));
+        }
+    } catch (error) {
+        alert('Error sending email: ' + (error.message || error));
+        console.error('Error sending email:', error);
+    }
+}
+
+/*
+ * 发送验证码按钮状态
+ * 如果按钮状态为true且倒计时大于0，则显示倒计时
+ * 否则显示“发送”按钮
+ */
+const BTNstatus = ref(false);
+const sendBTN = computed(() => {
+    if (BTNstatus.value && countdown.value > 0) {
+        return `Resend (${countdown.value}s)`;
+    }
+    return 'Send';
+});
+
+const countdown = ref(60);
+let timer = null;
+
+watch(BTNstatus, (val) => {
+    if (val) {
+        countdown.value = 60;
+        timer = setInterval(() => {
+            if (countdown.value > 0) {
+                countdown.value--;
+            } else {
+                BTNstatus.value = false;
+                clearInterval(timer);
+                timer = null;
+            }
+        }, 1000);
+    } else {
+        if (timer) {
+            clearInterval(timer);
+            timer = null;
+        }
+    }
+});
+
+
+/* 验证码输入 */
+const code = ref('');
+const verify = async () => {
+    if (!emailFront.value || !Ready.value || !isSent.value) {
+        // this.$message.warning('Please enter your email and select your institution.');
+        return;
+    }
+    if (!code.value) {
+        alert('Please enter the verification code.');
+        return;
+    }
+    try {
+        const response = await Api.post("/user/verify_email", {
+            code: code.value
+        });
+        if (response.data.code === 200) {
+            this.$message.success('Verification successful!');
+            setTimeout(() => {
+                window.location.href = '/account;' // 跳转到账户页面
+            }, 1500);
+        } else {
+            this.$message.error('Verification failed: ' + (response.data.message || 'Unknown error'));
+        }
+    } catch (error) {
+        this.$message.error('Error verifying email: ' + (error.message || error));
+        console.error('Error verifying email:', error);
+    }
+}
 </script>
 
 <style lang="scss" scoped>
