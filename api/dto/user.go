@@ -45,8 +45,8 @@ type CheckCAPTCHAReq struct {
 
 // SendEmailCodeReq 发送邮箱验证码
 type SendEmailCodeReq struct {
-	InstitutionName string `json:"institution_name" binding:"required"`
-	Email           string `json:"email" binding:"required"`
+	Institution string `json:"institution" binding:"required"`
+	Email       string `json:"email" binding:"required"`
 }
 
 // VerifyEmailCodeReq 验证邮箱验证码

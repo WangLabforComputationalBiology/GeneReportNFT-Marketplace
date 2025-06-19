@@ -920,3 +920,13 @@ CREATE TABLE activities
     PRIMARY KEY (id),
     INDEX idx_activity (user_address, time)
 );
+
+
+drop table if exists `institutions`;
+-- 活动activities表
+CREATE TABLE institutions
+(
+    `name`        VARCHAR(32) PRIMARY KEY COMMENT '机构名称',
+    `suffix`    VARCHAR(32) NOT NULL COMMENT '机构邮箱后缀'
+
+);
