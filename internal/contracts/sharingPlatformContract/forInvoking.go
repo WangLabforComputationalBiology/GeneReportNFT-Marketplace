@@ -13,7 +13,7 @@ import (
 
 var ChainClient *client.Client
 
-var ContractAddressHex string
+var PlatformContractAddressHex string
 
 var AdminPrivateKeyHex string
 
@@ -21,11 +21,6 @@ var ContractIns *SharingPlatformContract
 
 func GetContractIns() *SharingPlatformContract {
 	return ContractIns
-}
-
-func GetClient() *client.Client {
-	//todo 补充重连机制
-	return ChainClient
 }
 
 func NewAdminTransactor() *bind.TransactOpts {
@@ -39,8 +34,10 @@ func NewAdminTransactor() *bind.TransactOpts {
 }
 
 func init() {
+	AdminPrivateKeyHex = "9f5eb599dd2ff51f67724a793a6d702bcc273b3afe3e3bbc0e2870ed11594432"
+
 	// 解码私钥
-	privateKey, err := hex.DecodeString("145e247e170ba3afd6ae97e88f00dbc976c2345d511b0f6713355d19d8b80b58")
+	privateKeyBytes, err := hex.DecodeString(AdminPrivateKeyHex)
 	if err != nil {
 		log.Fatalf("解码私钥失败: %v", err)
 	}
@@ -49,7 +46,7 @@ func init() {
 	config := &client.Config{
 		IsSMCrypto:  false,                          // 非国密
 		GroupID:     "group0",                       // 确认群组ID是否为 group0
-		PrivateKey:  privateKey,                     // 私钥
+		PrivateKey:  privateKeyBytes,                // 私钥
 		Host:        "10.108.10.51",                 // 节点 IP
 		Port:        20200,                          // Channel 端口
 		TLSCaFile:   "./assets/fisco_config/ca.crt", // Windows 路径
@@ -64,11 +61,11 @@ func init() {
 		log.Fatalf("连接 FISCO BCOS v3 节点失败: %v", err)
 	}
 
-	// 初始化已部署的合约地址
-	ContractAddressHex = ""
+	// 初始化已部署的sharingPlatform_v3合约地址
+	PlatformContractAddressHex = "0xd74630037b238A72b0B33378985de62884768f5D"
 
 	// 实例化合约
-	ContractIns, err = NewSharingPlatformContract(common.HexToAddress(ContractAddressHex), ChainClient)
+	ContractIns, err = NewSharingPlatformContract(common.HexToAddress(PlatformContractAddressHex), ChainClient)
 	if err != nil {
 		log.Fatalf("Failed to instantiate contract: %v", err)
 	}

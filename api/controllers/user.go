@@ -399,7 +399,7 @@ func (u *User) VerifyEmailCode(ctx *gin.Context) {
 		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查", err))
 		return
 	}
-	if isPass, err := services.UserServ.VerifyEmailCode(req.Email, req.Code); err != nil {
+	if isPass, err := services.UserServ.VerifyEmailCode(req.Email, req.Code, ctx.GetString("user_address")); err != nil {
 		ctx.Error(err)
 		return
 	} else if isPass {

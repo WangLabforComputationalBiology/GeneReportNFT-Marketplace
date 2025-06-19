@@ -4,12 +4,14 @@ import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/SMTP"
+	"GeneReport_platform/internal/contracts/sharingPlatformContract"
 	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/pkg/appContext"
 	"GeneReport_platform/pkg/appErrors"
 	"GeneReport_platform/pkg/auth"
 	"context"
 	"errors"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/go-redis/redis/v8"
 	"github.com/mitchellh/mapstructure"
 	"gorm.io/gorm"
@@ -132,18 +134,18 @@ func (u *userService) SendEmailCode(userAddress, email string) error {
 	// 创建 Pipeline
 	pipe := configs.RedisClient.Pipeline()
 
-	// 在 Pipeline 中添加 HSet 命令
-	pipe.HSet(ctx, "email:"+email, map[string]interface{}{
+	// 添加 HSet 命令
+	setCmd := pipe.HSet(ctx, "email:"+email, map[string]interface{}{
 		"code":     codeToSave,
 		"attempts": 0,
 	})
 
-	// 在 Pipeline 中添加 Expire 命令
-	pipe.Expire(ctx, "email:"+email, 3*time.Minute)
+	// 添加 Expire 命令
+	expiryCmd := pipe.Expire(ctx, "email:"+email, 3*time.Minute)
 
 	// 执行 Pipeline
 	_, err = pipe.Exec(ctx)
-	if err != nil {
+	if err != nil || expiryCmd.Err() != nil || setCmd.Err() != nil {
 		return appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
 	return nil
@@ -152,26 +154,41 @@ func (u *userService) SendEmailCode(userAddress, email string) error {
 // VerifyEmailCode 验证短信验证码
 // Redis存储格式 key:"Email:{phone}" value:{"code":{code},"attempts":{attempts}}
 // expiry:3min
-func (u *userService) VerifyEmailCode(email string, code string) (bool, error) {
+func (u *userService) VerifyEmailCode(email string, code string, userAddress string) (bool, error) {
 	var correctCode string
 	var attempts int
-	vals, err := configs.RedisClient.HGetAll(context.Background(), "email:"+email).Result()
-	if err != nil {
+	// 创建 Pipeline
+	pipe := configs.RedisClient.Pipeline()
+
+	_ = pipe.HIncrBy(context.Background(), "email:"+email, "attempts", 1)
+	getAllCmd := pipe.HGetAll(context.Background(), "email:"+email)
+	// 执行 Pipeline
+	_, err := pipe.Exec(context.Background())
+
+	if err != nil || getAllCmd.Err() != nil {
 		return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
-	} else if vals["code"] == "" {
+	} else if vals, _ := getAllCmd.Result(); vals["code"] == "" {
 		//验证码过期
 		return false, appErrors.New(http.StatusBadRequest, "验证码已过期，请重新获取", err)
 	} else {
 		correctCode = vals["code"]
 		attempts, _ = strconv.Atoi(vals["attempts"])
+
+		//若尝试次数过多
 		if attempts >= 5 {
 			return false, appErrors.New(http.StatusTooManyRequests, "验证码错误次数过多，请三分钟后再试", err)
 		}
 
+		//若验证码错误
 		if correctCode != code {
 			defer configs.RedisClient.HIncrBy(context.Background(), "SMS_phone:"+email, "attempts", 1)
 			return false, appErrors.New(http.StatusBadRequest, "验证码错误", errors.New("验证码错误"))
 
+		}
+		//验证码正确，调合约
+		_, receipt, err := sharingPlatformContract.GetContractIns().SetUserAuthStatus(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress))
+		if err != nil || receipt.Status != 1 {
+			return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 		}
 		return true, nil
 	}
