@@ -28,11 +28,11 @@ CREATE TABLE `users`
 
 
 insert into users
-values ('0xAc6b478Ae65E7D955F64ED80E65E613ea34c820f', '陈焕凯', '/test/1.png', NOW(), 'China'),
-       ('0x9D0bf56A50090bE7F7f8Fad07DDa4949FBc6Cd17', '黄瑞升', '/test/2.png', NOW(), 'America'),
-       ('0x8e174fC25f7d4373b589DAcAaC884985C1C6D053', '唐嘉铭', '/test/3.png', NOW(), 'China'),
-       ('0x02729118740a8b9D6a6eF171b7Fe30fEBeDe34F2', '林锐轩', '/test/4.png', now(), 'German'),
-       ('0xdD27Ef37a5c09E4c940C2EDd900ABB9B5d220a13', 'lin林', '/test/5.png', now(), 'Canada');
+values ('0xAc6b478Ae65E7D955F64ED80E65E613ea34c820f', '陈焕凯', '/test/1.png', NOW(), 'UNKNOWN'),
+       ('0x9D0bf56A50090bE7F7f8Fad07DDa4949FBc6Cd17', '黄瑞升', '/test/2.png', NOW(), 'UNKNOWN'),
+       ('0x8e174fC25f7d4373b589DAcAaC884985C1C6D053', '唐嘉铭', '/test/3.png', NOW(), 'UNKNOWN'),
+       ('0x02729118740a8b9D6a6eF171b7Fe30fEBeDe34F2', '林锐轩', '/test/4.png', now(), 'UNKNOWN'),
+       ('0xdD27Ef37a5c09E4c940C2EDd900ABB9B5d220a13', 'lin林', '/test/5.png', now(), 'UNKNOWN');
 
 
 drop table if exists GNFT_basic;
