@@ -1,8 +1,8 @@
 <template>
    <div class="container">
       <Bubbles />
-      <swiper :direction="'vertical'" :slides-per-view="1" :mousewheel="true" :speed="800" @slideChange="onSlideChange" :allowSlidePrev="allowPrev"
-         :modules="modules" class="fullpage-swiper">
+      <swiper :direction="'vertical'" :slides-per-view="1" :touchRatio="0" :mousewheel="true" :speed="800"
+         @slideChange="onSlideChange" :allowSlidePrev="allowPrev" :modules="modules" class="fullpage-swiper">
          <Swiper-slide>
             <IndexBanner />
          </Swiper-slide>
@@ -45,7 +45,7 @@ const modules = [Pagination, Navigation, Mousewheel];
 
 /* 首屏禁止上滚 */
 const allowPrev = ref(false)
-const onSlideChange= (swiper) => {
+const onSlideChange = (swiper) => {
    allowPrev.value = swiper.activeIndex > 0
 }
 </script>

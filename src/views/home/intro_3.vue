@@ -1,14 +1,23 @@
 <template>
     <div class="wrapper">
-        <h1>What <span style="color: #333;">we  want to do?</span></h1>
+        <h1>What <span style="color: #333">we want to do?</span></h1>
         <div class="page">
-            <div class="des ch1"> <img src="@/icons/transfer.svg" alt="">Circulation, processing and research of genetic information</div>
-            <div class="des ch2"> <img src="@/icons/transparent.svg" alt="">Transparent and traceable information circulation</div>
-            <div class="des ch3"> <img src="@/icons/animals.svg" alt="">More species support</div>
-            <div class="des ch4"> <img src="@/icons/academic.svg" alt="">Public welfare and academic</div>
+            <div class="des ch1">
+                <img src="@/icons/transfer.svg" alt="" />Circulation, processing and research of
+                genetic information
+            </div>
+            <div class="des ch2">
+                <img src="@/icons/transparent.svg" alt="" />Transparent and traceable information
+                circulation
+            </div>
+            <div class="des ch3">
+                <img src="@/icons/animals.svg" alt="" />More species support
+            </div>
+            <div class="des ch4">
+                <img src="@/icons/academic.svg" alt="" />Public welfare and academic
+            </div>
         </div>
     </div>
-
 </template>
 
 <style scoped>
@@ -38,11 +47,7 @@ h1 {
     transform: translate(-50%, -50%);
     width: 100%;
     height: 50vh;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
-    background-color: #169608;
-
-
 
     .des {
         position: absolute;
@@ -58,13 +63,14 @@ h1 {
         border-radius: 20px;
         align-items: center;
         text-align: left;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
-        &:hover{
+        &:hover {
             transform: translateY(-3%);
             transition: all 0.5s;
         }
 
-        img{
+        img {
             height: 10vh;
             margin-right: 30px;
         }
@@ -89,9 +95,5 @@ h1 {
         bottom: 15%;
         left: 52%;
     }
-
-
-
-
 }
 </style>
