@@ -8,8 +8,6 @@
             top: `${ball.y}px`
         }"></div>
     </div>
-
-
 </template>
 
 <script setup>
@@ -19,19 +17,19 @@ const balls = ref([]);
 
 // 创建小球
 function createBall() {
-    const size = Math.random() * 150 + 40; // 随机大小 20-50px
-    const originX = Math.random() * (window.innerWidth - size);
-    const originY = Math.random() * (window.innerHeight - size);
+    const size = Math.random() * 200 + 20; // 随机大小
+    const originX = Math.random() * (window.innerWidth - size - 20);
+    const originY = Math.random() * (window.innerHeight - size - 20);
     return {
         size,
-        color: `hsl(${Math.random() * 360}, 70%, 50%)`, // 随机颜色
+        color: `hsl(${Math.random() * 200}, 70%, 50%)`, // 随机颜色
         originX,
         originY,
         x: originX,
         y: originY,
         angle: Math.random() * 9 * Math.PI, // 随机初始角度
-        maxOffset: 5, // 最大偏移量
-        speed: 0.015 // 浮动速度
+        // maxOffset: 15, // 最大偏移量
+        // speed: 0.1 // 浮动速度
     };
 }
 
@@ -40,28 +38,28 @@ for (let i = 0; i < 11; i++) {
     balls.value.push(createBall());
 }
 
-// 动画更新
-let animationFrameId = null;
-function update() {
-    balls.value.forEach(ball => {
-        ball.angle += ball.speed;
-        ball.x = ball.originX + Math.sin(ball.angle) * ball.maxOffset;
-        ball.y = ball.originY + Math.cos(ball.angle) * ball.maxOffset;
-    });
-    animationFrameId = requestAnimationFrame(update);
-}
+// // 动画更新
+// let animationFrameId = null;
+// function update() {
+//     balls.value.forEach(ball => {
+//         // ball.angle += ball.speed;
+//         ball.x = ball.originX + Math.sin(ball.angle) * ball.maxOffset;
+//         ball.y = ball.originY + Math.cos(ball.angle) * ball.maxOffset;
+//     });
+//     animationFrameId = requestAnimationFrame(update);
+// }
 
-// 启动动画
-onMounted(() => {
-    animationFrameId = requestAnimationFrame(update);
-});
+// // 启动动画
+// onMounted(() => {
+//     animationFrameId = requestAnimationFrame(update);
+// });
 
-// 清理动画
-onUnmounted(() => {
-    if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-    }
-});
+//清理动画
+// onUnmounted(() => {
+//     if (animationFrameId) {
+//         cancelAnimationFrame(animationFrameId);
+//     }
+// });
 
 // 窗口大小变化时调整小球位置
 // window.addEventListener('resize', () => {
@@ -83,7 +81,7 @@ onUnmounted(() => {
 
 .ball {
     position: absolute;
-    border-radius: 50%;
+    border-radius: 20%;
     opacity: 0.4;
 }
 </style>

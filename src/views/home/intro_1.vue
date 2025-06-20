@@ -2,12 +2,16 @@
     <div class="wrapper">
         <div class="wrapper-left">
             <h1>Sharing <span style="color: #333;"> Gene code.</span></h1><br>
-            <h2>A Biological alliance-chain based on <span class="click-link" @click="toFB">FISCO BCOS↗</span> from
+            <h2>
+                <div class="des">
+                A Biological alliance-chain based on <span class="click-link" @click="toFB">FISCO BCOS↗</span> from
                 SZTU@Wanglab.
                 <br>
                 We advocate the creation of a blockchain-based biological information sharing chain to achieve reliable
                 circulation of genetic information, promote the
                 circulation of genetic information and assist genetic research.
+                </div>
+                
                 <br>
                 <br>
                 <span class="tags">#Non-profit</span>
@@ -63,6 +67,7 @@ function toFB(){
     }
 
     h2 {
+        height: 15vh;
         font-size: 2.5vh;
         color: #333;
         margin-bottom: 30px;
@@ -75,13 +80,21 @@ function toFB(){
         background-color: #f0f0f0;
         padding: 5px 10px;
         border-radius: 12px;
-        margin: 10px;
+        margin: 0 10px;
+    }
+
+    .des {
+        background-color: #ffffffc7;
+        border-radius: 40px;
+        line-height: 3.5vh;
+        // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
 }
 
 .Btn-wrapper {
     display: flex;
+    margin-top: 100px;
     justify-content: center;
     align-items: center;
     gap: 20px;
