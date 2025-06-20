@@ -374,15 +374,7 @@ func (u *User) SendEmailCode(ctx *gin.Context) {
 		return
 	}
 
-	if isValid, err := services.UserServ.VerifyInstitutionEmail(req.Institution, req.Email); err != nil {
-		ctx.Error(appErrors.New(http.StatusInternalServerError, "服务端错误"))
-		return
-	} else if !isValid {
-		ctx.Error(appErrors.New(http.StatusBadRequest, "邮箱格式不正确"))
-		return
-	}
-
-	if err := services.UserServ.SendEmailCode(ctx.GetString("user_address"), req.Email); err != nil {
+	if err := services.UserServ.SendEmailCode(ctx.GetString("user_address"), req.Institution, req.Email); err != nil {
 		ctx.Error(err)
 		return
 	}

@@ -74,3 +74,26 @@ func (u *UserDao) GetEmailSuffix(institutionName string) (results string, err er
 		Scan(&results).Error
 	return results, err
 }
+
+func (u *UserDao) IsEmailUsed(email string) (bool, error) {
+	var count int
+	err := u.DB().Select("count(*)").
+		Table("users").
+		Where("email = ?", email).
+		Scan(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+func (u *UserDao) UpdateUserInstitution(userAddress, institution, email string) error {
+	// 使用Updates方法更新多个字段
+	err := u.DB().Table("users").
+		Where("address = ?", userAddress).
+		Updates(map[string]interface{}{
+			"institution": institution,
+			"email":       email,
+		}).Error
+	return err
+}

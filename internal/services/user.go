@@ -17,7 +17,6 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -117,9 +116,28 @@ func (u *userService) VerifyInstitutionEmail(institutionName, email string) (isV
 }
 
 // SendEmailCode 发送短信验证码
-// Redis存储格式 key:"email:{email}" value:{"code":{code},"attempts":0}
-// expire: 3min
-func (u *userService) SendEmailCode(userAddress, email string) error {
+// Redis存储格式
+// key:"email_code:{email}" value:{"code":{code},"institution":{institution}} expire: 3min
+// key:"email_attempts:{email}" value:0 expire: 4min
+func (u *userService) SendEmailCode(userAddress, institutionName, email string) error {
+	//验证邮箱是否已被使用
+	isUsed, err := dao.GetUserDao().IsEmailUsed(email)
+	if err != nil {
+		return appErrors.New(http.StatusInternalServerError, "服务器内部错误", err)
+	}
+	if isUsed {
+		return appErrors.New(http.StatusConflict, "邮箱已被使用")
+	}
+
+	//验证邮箱后缀合法性
+	suffix, err := dao.GetUserDao().GetEmailSuffix(institutionName)
+	if err != nil {
+		return appErrors.New(http.StatusInternalServerError, "服务器内部错误", err)
+	}
+	if strings.Split(email, "@")[1] != suffix[1:] {
+		return appErrors.New(http.StatusBadRequest, "邮箱格式不正确")
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	codeToSave := SMTP.GenerateVerifyCode()
@@ -127,7 +145,7 @@ func (u *userService) SendEmailCode(userAddress, email string) error {
 	User, _ := dao.GetUserDao().GetUser(userAddress)
 
 	// 发送验证码邮件
-	err := SMTP.SendEmailCode(codeToSave, User.Name, userAddress, email)
+	err = SMTP.SendEmailCode(codeToSave, User.Name, userAddress, email)
 	if err != nil {
 		return appErrors.New(http.StatusInternalServerError, "SMTP服务繁忙", err)
 	}
@@ -135,13 +153,13 @@ func (u *userService) SendEmailCode(userAddress, email string) error {
 	pipe := configs.RedisClient.Pipeline()
 
 	// 添加 HSet 命令
-	setCmd := pipe.HSet(ctx, "email:"+email, map[string]interface{}{
-		"code":     codeToSave,
-		"attempts": 0,
+	setCmd := pipe.HSet(ctx, "email_code:"+email, map[string]interface{}{
+		"code":        codeToSave,
+		"institution": institutionName,
 	})
-
+	pipe.Expire(ctx, "email_code:"+email, 3*time.Minute)
 	// 添加 Expire 命令
-	expiryCmd := pipe.Expire(ctx, "email:"+email, 3*time.Minute)
+	expiryCmd := pipe.Set(ctx, "email_attempts:"+email, 0, 4*time.Minute)
 
 	// 执行 Pipeline
 	_, err = pipe.Exec(ctx)
@@ -152,28 +170,28 @@ func (u *userService) SendEmailCode(userAddress, email string) error {
 }
 
 // VerifyEmailCode 验证短信验证码
-// Redis存储格式 key:"Email:{phone}" value:{"code":{code},"attempts":{attempts}}
-// expiry:3min
+// Redis存储格式
+// key:"email_code:{email}" value:{"code":{code},"institution":{institution}} expire: 3min
+// key:"email_attempts:{email}" value:0 expire: 4min
 func (u *userService) VerifyEmailCode(email string, code string, userAddress string) (bool, error) {
-	var correctCode string
-	var attempts int
 	// 创建 Pipeline
 	pipe := configs.RedisClient.Pipeline()
 
-	incrCmd := pipe.HIncrBy(context.Background(), "email:"+email, "attempts", 1)
-	getAllCmd := pipe.HGetAll(context.Background(), "email:"+email)
+	getAllCmd := pipe.HGetAll(context.Background(), "email_code:"+email)
+	incrCmd := pipe.IncrBy(context.Background(), "email_attempts:"+email, 1)
+
 	// 执行 Pipeline
 	_, err := pipe.Exec(context.Background())
 
-	if err != nil || getAllCmd.Err() != nil || incrCmd.Err() != nil {
+	if err != nil {
+		//过期判断
 		if errors.Is(getAllCmd.Err(), redis.Nil) || errors.Is(incrCmd.Err(), redis.Nil) {
 			return false, appErrors.New(http.StatusBadRequest, "验证码已过期，请重新获取")
 		}
 		return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	} else {
 		vals, _ := getAllCmd.Result()
-		correctCode = vals["code"]
-		attempts, _ = strconv.Atoi(vals["attempts"])
+		attempts, _ := incrCmd.Result()
 
 		//若尝试次数过多
 		if attempts >= 5 {
@@ -181,9 +199,16 @@ func (u *userService) VerifyEmailCode(email string, code string, userAddress str
 		}
 
 		//若验证码错误
-		if correctCode != code {
+		if vals["code"] != code {
 			return false, appErrors.New(http.StatusBadRequest, "验证码错误", errors.New("验证码错误"))
 		}
+
+		//验证码正确，更新到用户表字段
+		err := dao.GetUserDao().UpdateUserInstitution(userAddress, vals["institution"], email)
+		if err != nil {
+			return false, err
+		}
+
 		//验证码正确，调合约
 		_, receipt, err := sharingPlatformContract.GetContractIns().SetUserAuthStatus(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress))
 		if err != nil || receipt.Status != 1 {
