@@ -182,26 +182,18 @@ func (u *userService) VerifyEmailCode(email string, code string, userAddress str
 
 	// 执行 Pipeline
 	_, err := pipe.Exec(context.Background())
-
-	if err != nil {
-		//过期判断
-		if errors.Is(getAllCmd.Err(), redis.Nil) || errors.Is(incrCmd.Err(), redis.Nil) {
-			return false, appErrors.New(http.StatusBadRequest, "验证码已过期，请重新获取")
-		}
+	if err != nil || getAllCmd.Err() != nil || incrCmd.Err() != nil {
 		return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+	}
+
+	if vals, err := getAllCmd.Result(); errors.Is(err, redis.Nil) {
+		return false, appErrors.New(http.StatusBadRequest, "验证码已过期，请重新获取")
 	} else {
-		vals, err := getAllCmd.Result()
-		if errors.Is(err, redis.Nil) {
-			return false, appErrors.New(http.StatusBadRequest, "验证码已过期，请重新获取")
-		}
-
 		attempts, _ := incrCmd.Result()
-
 		//若尝试次数过多
 		if attempts >= 5 {
 			return false, appErrors.New(http.StatusTooManyRequests, "验证码错误次数过多，请三分钟后再试")
 		}
-
 		//若验证码错误
 		if vals["code"] != code {
 			return false, appErrors.New(http.StatusBadRequest, "验证码错误", errors.New("验证码错误"))
@@ -220,4 +212,5 @@ func (u *userService) VerifyEmailCode(email string, code string, userAddress str
 		}
 		return true, nil
 	}
+
 }
