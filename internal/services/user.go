@@ -186,8 +186,10 @@ func (u *userService) VerifyEmailCode(email string, code string, userAddress str
 		return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
 
-	if vals, err := getAllCmd.Result(); errors.Is(err, redis.Nil) {
-		return false, appErrors.New(http.StatusBadRequest, "验证码已过期，请重新获取")
+	if vals, err := getAllCmd.Result(); err != nil {
+		return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+	} else if vals["code"] == "" {
+		return false, appErrors.New(http.StatusBadRequest, "验证码已过期")
 	} else {
 		attempts, _ := incrCmd.Result()
 		//若尝试次数过多

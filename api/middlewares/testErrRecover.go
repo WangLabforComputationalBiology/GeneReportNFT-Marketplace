@@ -3,8 +3,6 @@ package middlewares
 import (
 	"GeneReport_platform/pkg/appErrors"
 	"bytes"
-	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -68,15 +66,12 @@ func ZapMiddleware() gin.HandlerFunc {
 		// 处理请求
 		ctx.Next()
 
-		var err appErrors.AppError
-
+		var appErr appErrors.AppError
 		//从gin上下文中响应错误
 		if len(ctx.Errors) > 0 {
-			errors.As(ctx.Errors.Last(), &err)
-			ctx.JSON(err.Code, err.ToErrResponse())
-
-			//结构化打印appError结构体
-			fmt.Println(err.ErrorWithDetail())
+			err := ctx.Errors.Last().Err
+			appErr, _ = err.(appErrors.AppError)
+			ctx.JSON(appErr.Code, appErr.ToErrResponse())
 		}
 
 		// 计算请求耗时
@@ -92,8 +87,8 @@ func ZapMiddleware() gin.HandlerFunc {
 				zap.Int("status", status),
 				zap.Duration("latency", latency),
 				zap.String("client_ip", ctx.ClientIP()),
-				zap.String("request_body", requestBody),     // 添加请求体
-				zap.String("errors", err.ErrorWithDetail()), // 记录 Gin 上下文中的错误
+				zap.String("request_body", requestBody),        // 添加请求体
+				zap.String("errors", appErr.ErrorWithDetail()), // 记录 Gin 上下文中的错误
 			)
 		} else {
 			AppLogger.Info("Info output",
@@ -103,8 +98,8 @@ func ZapMiddleware() gin.HandlerFunc {
 				zap.Int("status", status),
 				zap.Duration("latency", latency),
 				zap.String("client_ip", ctx.ClientIP()),
-				zap.String("request_body", requestBody),     // 添加请求体
-				zap.String("errors", err.ErrorWithDetail()), // 记录 Gin 上下文中的错误
+				zap.String("request_body", requestBody),        // 添加请求体
+				zap.String("errors", appErr.ErrorWithDetail()), // 记录 Gin 上下文中的错误
 			)
 		}
 	}

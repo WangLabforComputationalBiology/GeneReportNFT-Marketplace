@@ -41,7 +41,7 @@ func (e AppError) Error() string {
 // ErrorWithDetail 用于控制台输出调试附带详情
 func (e AppError) ErrorWithDetail() string {
 	yellowBold := color.New(color.FgYellow, color.Bold)
-	return yellowBold.Sprintf("↘↘↘ code: %d;\n message: %s;\n detail: %s;\n", e.Code, e.Message, e.Detail)
+	return yellowBold.Sprintf("\n↘↘↘ code: %d;\n↘↘↘  message: %s;\n↘↘↘  detail: %s;\n", e.Code, e.Message, e.Detail)
 }
 
 // ToErrResponse 转换为ErrResponse 进行响应
