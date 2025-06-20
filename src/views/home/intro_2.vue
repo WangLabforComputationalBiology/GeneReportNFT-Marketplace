@@ -17,7 +17,7 @@
             </h2>
         </div>
         <div class="wrapper-right">
-            <h2>Framework</h2>
+            <!-- <h2>Framework</h2> -->
             <img src="@/assets/imgs/framework.svg" alt="">
         </div>
     </div>

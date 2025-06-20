@@ -1,7 +1,7 @@
 <template>
    <div class="container">
       <Bubbles />
-      <swiper :direction="'vertical'" :slides-per-view="1" :mousewheel="true" :speed="800" @slideChange="onSlideChange"
+      <swiper :direction="'vertical'" :slides-per-view="1" :mousewheel="true" :speed="800" @slideChange="onSlideChange" :allowSlidePrev="allowPrev"
          :modules="modules" class="fullpage-swiper">
          <Swiper-slide>
             <IndexBanner />
@@ -28,6 +28,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Mousewheel, Pagination, Navigation } from 'swiper'
 import 'swiper/css'
@@ -41,6 +42,12 @@ import Intro4 from './intro_4.vue';
 import Bubbles from '../components/bubbles.vue';
 
 const modules = [Pagination, Navigation, Mousewheel];
+
+/* 首屏禁止上滚 */
+const allowPrev = ref(false)
+const onSlideChange= (swiper) => {
+   allowPrev.value = swiper.activeIndex > 0
+}
 </script>
 
 

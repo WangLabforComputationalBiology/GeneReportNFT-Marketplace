@@ -8,6 +8,7 @@
             <p>WangLab@Shenzhen Technology University</p>
             <p>Email: wangxin@sztu.edu.cn</p>
             <p class="pub">Publication</p>
+            <p class="pub">Github</p>
         </div>
 
         <div class="bottom">
