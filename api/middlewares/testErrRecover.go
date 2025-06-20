@@ -4,6 +4,7 @@ import (
 	"GeneReport_platform/pkg/appErrors"
 	"bytes"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -73,7 +74,11 @@ func ZapMiddleware() gin.HandlerFunc {
 		if len(ctx.Errors) > 0 {
 			errors.As(ctx.Errors.Last(), &err)
 			ctx.JSON(err.Code, err.ToErrResponse())
+
+			//结构化打印appError结构体
+			fmt.Println(err.ErrorWithDetail())
 		}
+
 		// 计算请求耗时
 		latency := time.Since(start)
 		status := ctx.Writer.Status()

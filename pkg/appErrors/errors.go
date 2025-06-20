@@ -42,7 +42,7 @@ func (e AppError) Error() string {
 func (e AppError) ErrorWithDetail() string {
 	redBold := color.New(color.FgRed, color.Bold)
 	yellowBold := color.New(color.FgYellow, color.Bold)
-	return redBold.Sprintf(fmt.Sprintf("↘↘↘ code: %d; message: %s;", e.Code, e.Message)) + yellowBold.Sprintf(fmt.Sprintf(" detail: %s;", e.Detail))
+	return redBold.Sprintf(fmt.Sprintf("↘↘↘ code: %d\n; message: %s\n;", e.Code, e.Message)) + yellowBold.Sprintf(fmt.Sprintf(" detail: %s;\n", e.Detail))
 }
 
 // ToErrResponse 转换为ErrResponse 进行响应
