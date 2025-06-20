@@ -65,9 +65,11 @@ function logout(){
 
 
 :deep(.custom-button) {
+    font-size: 18px;
     background-color: #169608;
     color: #fff;
     width: 200px;
+    height: 40px;
     box-shadow: none !important;
     border: #169608 solid 1px;
 
@@ -79,5 +81,7 @@ function logout(){
         background-color: #fff;
         color: #169608;
     }
+
+
 }
 </style>

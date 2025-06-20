@@ -5,7 +5,9 @@
       <br />
       <h2>
         Through blockchain and smart contracts, we enable the recording and traceability
-        of genetic information transfers. The process of logging transfer records on the
+        of genetic information transfers.
+        <br />
+        The process of logging transfer records on the
         chain is decentralized, while the storage of genetic data remains centralized—a
         decision made for regulatory compliance and security considerations.
         <br />
@@ -15,6 +17,7 @@
         <br />
         <span class="tags">#Coinless blockchain</span>
         <span class="tags">#Traceable</span>
+        <span class="tags">#Decentralisation</span>
       </h2>
     </div>
 
@@ -35,7 +38,6 @@
 
 <script setup>
 import { ref } from 'vue';
-
 const isVisible1 = ref(false);
 const isVisible2 = ref(false);
 </script>
@@ -70,7 +72,7 @@ const isVisible2 = ref(false);
   width: 50%;
   min-width: 600px;
   height: 95vh;
-  border-bottom: #fff 1px solid;
+  border-bottom: #fff 2px solid;
   left: 0%;
   background-color: #169608;
 
@@ -88,6 +90,7 @@ const isVisible2 = ref(false);
     font-size: 2.5vh;
     color: #fff;
     margin-bottom: 30px;
+    text-align: left;
   }
 
   .tags {
@@ -132,7 +135,6 @@ const isVisible2 = ref(false);
   .des-btn-wrapper {
     display: flex;
     position: absolute;
-    // width: 120px;
     height: 5vh;
     bottom: 20%;
     left: 50%;
@@ -173,6 +175,20 @@ const isVisible2 = ref(false);
     color: #333;
     width: 25vw;
     height: 18vh;
+    transition: all 0.5s ease-in-out;
+    opacity: 0;
+    overflow: hidden;
+    animation: fadeIN 0.4s ease-in-out 0.1s forwards;
+
+    @keyframes fadeIN {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
   }
 }
 </style>

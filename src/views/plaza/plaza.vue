@@ -180,6 +180,7 @@ onMounted(() => {
     display: flex;
     position: relative;
     border-bottom: #E6A23C 3px solid;
+    background-color: #ffffff;
 }
 
 .banner-title {

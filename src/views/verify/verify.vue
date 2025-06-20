@@ -87,7 +87,7 @@ const emailFront = ref('');
 const fullEmail = computed(() => emailFront.value + emailEnd.value);
 
 // 是否可验证
-const isSent = ref(false);
+let isSent = ref(false);
 
 /* 发送邮箱验证请求 */
 const resEmail = async () => {
@@ -120,7 +120,7 @@ const resEmail = async () => {
  * 如果按钮状态为true且倒计时大于0，则显示倒计时
  * 否则显示“发送”按钮
  */
-const BTNstatus = ref(false);
+let BTNstatus = ref(false);
 const sendBTN = computed(() => {
     if (BTNstatus.value && countdown.value > 0) {
         return `Resend (${countdown.value}s)`;

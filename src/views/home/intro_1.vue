@@ -64,7 +64,7 @@ function toFB(){
         font-weight: 500;
         color: #169608;
         margin-bottom: 20px;
-        text-shadow: 0 5px 10px #bbb;
+        text-shadow: 0 5px 5px #ccc;
     }
 
     h2 {
@@ -72,7 +72,7 @@ function toFB(){
         font-size: 2.5vh;
         color: #333;
         margin-bottom: 30px;
-        text-shadow: 0 3px 8px #bbb;
+        text-shadow: 0 5px 5px #ccc;
     }
 
     .tags {

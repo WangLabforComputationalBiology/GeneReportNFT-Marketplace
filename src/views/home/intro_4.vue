@@ -4,8 +4,11 @@
 
             <h1>How <span style="color: #333;"> it works?</span></h1>
             <div class="inner-wrapper">
-                <div class="steps">
-                    <div class="step">1</div>
+                <div class="steps" @mouseover="hovered1 = true" @mouseleave="hovered1 = false">
+                    <div class="step">
+                        <p v-if="!hovered1">1</p>
+                        <img src="@/icons/metamask.svg" alt="" v-if="hovered1" class="icon">
+                    </div>
                     <div class="content-wrapper">
                         <h3>Setup MetaMask</h3>
                         <p>Download MetaMask for the Brower as an extension.Setup your MetaMask wallet. </p>
@@ -14,8 +17,11 @@
                 <div class="arrow">
                     <img src="../../assets/imgs/arrow-drop-right-line.svg" alt="">
                 </div>
-                <div class="steps">
-                    <div class="step" style="background-color: #E6A23C;">2</div>
+                <div class="steps" @mouseover="hovered2 = true" @mouseleave="hovered2 = false">
+                    <div class="step" style="background-color: #E6A23C;">
+                        <p v-if="!hovered2">2</p>
+                        <img src="@/icons/academic2.svg" alt="" v-if="hovered2" class="icon">
+                    </div>
                     <div class="content-wrapper">
                         <h3>Verfication</h3>
                         <p>Please let us make sure your organization is legal.
@@ -25,8 +31,11 @@
                 <div class="arrow">
                     <img src="../../assets/imgs/arrow-drop-right-line.svg" alt="">
                 </div>
-                <div class="steps">
-                    <div class="step" style="background-color: #67C23A;">3</div>
+                <div class="steps" @mouseover="hovered3 = true" @mouseleave="hovered3 = false">
+                    <div class="step" style="background-color: #67C23A;">
+                        <p v-if="!hovered3">3</p>
+                        <img src="@/icons/plane.svg" alt="" v-if="hovered3" class="icon">
+                    </div>
                     <div class="content-wrapper">
                         <h3>Start Sharing</h3>
                         <p>Select the data that may help you in Data Plaza.
@@ -41,7 +50,10 @@
 </template>
 
 <script setup>
-
+import { ref } from 'vue'
+let hovered1 = ref(false)
+let hovered2 = ref(false)
+let hovered3 = ref(false)
 </script>
 
 <style lang="scss" scoped>
@@ -64,7 +76,7 @@
         color: #169608;
         margin-bottom: 50px;
         font-weight: 500;
-        text-shadow: 0 5px 10px #bbb;
+        text-shadow: 0 5px 5px #dddddd;
     }
 
     .inner-wrapper {
@@ -83,11 +95,10 @@
             display: flex;
             justify-content: center;
             position: relative;
-            top: 50%;
 
             img {
-                width: 200%;
-                height: 200%;
+                position: absolute;
+                top: 75%;
             }
         }
 
@@ -110,9 +121,7 @@
                 width: 160px;
                 height: 160px;
                 background-color: #169608;
-                color: #fff;
                 font-size: 54px;
-                font-weight: bold;
                 border-radius: 50%;
                 display: flex;
                 justify-content: center;
@@ -122,6 +131,10 @@
                 left: 50%;
                 transform: translateX(-50%);
 
+                p {
+                    color: #fff;
+                    font-weight: 700;
+                }
             }
 
             .content-wrapper {
@@ -140,6 +153,23 @@
                     margin-top: 20px;
                     color: #666;
                     padding: 10px 10px;
+                }
+
+
+            }
+
+            .icon {
+                width: 60%;
+                animation: fadeIN 0.4s ease-in-out 0s forwards;
+
+                @keyframes fadeIN {
+                    0% {
+                        opacity: 0;
+                    }
+
+                    100% {
+                        opacity: 1;
+                    }
                 }
 
 
