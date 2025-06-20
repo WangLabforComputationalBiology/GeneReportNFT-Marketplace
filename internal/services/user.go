@@ -190,7 +190,11 @@ func (u *userService) VerifyEmailCode(email string, code string, userAddress str
 		}
 		return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	} else {
-		vals, _ := getAllCmd.Result()
+		vals, err := getAllCmd.Result()
+		if errors.Is(err, redis.Nil) {
+			return false, appErrors.New(http.StatusBadRequest, "验证码已过期，请重新获取")
+		}
+
 		attempts, _ := incrCmd.Result()
 
 		//若尝试次数过多
@@ -204,7 +208,7 @@ func (u *userService) VerifyEmailCode(email string, code string, userAddress str
 		}
 
 		//验证码正确，更新到用户表字段
-		err := dao.GetUserDao().UpdateUserInstitution(userAddress, vals["institution"], email)
+		err = dao.GetUserDao().UpdateUserInstitution(userAddress, vals["institution"], email)
 		if err != nil {
 			return false, err
 		}
