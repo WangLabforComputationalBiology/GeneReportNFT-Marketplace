@@ -67,8 +67,10 @@ func (u *UserDao) GetUser(address string) (models.User, error) {
 }
 
 func (u *UserDao) GetEmailSuffix(institutionName string) (results string, err error) {
-	err = u.DB().Select("institutions.email").
+	err = u.DB().Select("institutions.suffix").
+		Table("institutions").
 		Where("institutions.name = ?", institutionName).
+		Limit(1).
 		Scan(&results).Error
 	return results, err
 }

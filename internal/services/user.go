@@ -110,7 +110,7 @@ func (u *userService) VerifyInstitutionEmail(institutionName, email string) (isV
 	if err != nil {
 		return false, appErrors.New(http.StatusInternalServerError, "服务器内部错误", err)
 	}
-	if strings.Split(email, "@")[1] == suffix[0:] {
+	if strings.Split(email, "@")[1] == suffix[1:] {
 		return true, nil
 	}
 	return false, nil
@@ -167,23 +167,21 @@ func (u *userService) VerifyEmailCode(email string, code string, userAddress str
 
 	if err != nil || getAllCmd.Err() != nil {
 		return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
-	} else if vals, _ := getAllCmd.Result(); vals["code"] == "" {
+	} else if vals, _ := getAllCmd.Result(); vals == nil {
 		//验证码过期
-		return false, appErrors.New(http.StatusBadRequest, "验证码已过期，请重新获取", err)
+		return false, appErrors.New(http.StatusBadRequest, "验证码已过期，请重新获取")
 	} else {
 		correctCode = vals["code"]
 		attempts, _ = strconv.Atoi(vals["attempts"])
 
 		//若尝试次数过多
 		if attempts >= 5 {
-			return false, appErrors.New(http.StatusTooManyRequests, "验证码错误次数过多，请三分钟后再试", err)
+			return false, appErrors.New(http.StatusTooManyRequests, "验证码错误次数过多，请三分钟后再试")
 		}
 
 		//若验证码错误
 		if correctCode != code {
-			defer configs.RedisClient.HIncrBy(context.Background(), "SMS_phone:"+email, "attempts", 1)
 			return false, appErrors.New(http.StatusBadRequest, "验证码错误", errors.New("验证码错误"))
-
 		}
 		//验证码正确，调合约
 		_, receipt, err := sharingPlatformContract.GetContractIns().SetUserAuthStatus(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress))

@@ -51,7 +51,6 @@ type SendEmailCodeReq struct {
 
 // VerifyEmailCodeReq 验证邮箱验证码
 type VerifyEmailCodeReq struct {
-	Institution string `json:"institution" binding:"required"`
-	Email       string `json:"email" binding:"required"`
-	Code        string `json:"code" binding:"required"`
+	Email string `json:"email" binding:"required"`
+	Code  string `json:"code" binding:"required"`
 }
