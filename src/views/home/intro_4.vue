@@ -64,7 +64,7 @@
         color: #169608;
         margin-bottom: 50px;
         font-weight: 500;
-
+        text-shadow: 0 5px 10px #bbb;
     }
 
     .inner-wrapper {

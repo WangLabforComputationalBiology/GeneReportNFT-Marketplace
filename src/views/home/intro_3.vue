@@ -38,6 +38,7 @@ h1 {
     color: #169608;
     margin-bottom: 20px;
     font-weight: 500;
+    text-shadow: 0 5px 10px #bbb;
 }
 
 .page {

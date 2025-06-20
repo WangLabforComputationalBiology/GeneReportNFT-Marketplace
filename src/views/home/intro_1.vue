@@ -64,6 +64,7 @@ function toFB(){
         font-weight: 500;
         color: #169608;
         margin-bottom: 20px;
+        text-shadow: 0 5px 10px #bbb;
     }
 
     h2 {
@@ -71,6 +72,7 @@ function toFB(){
         font-size: 2.5vh;
         color: #333;
         margin-bottom: 30px;
+        text-shadow: 0 3px 8px #bbb;
     }
 
     .tags {
@@ -83,12 +85,11 @@ function toFB(){
         margin: 0 10px;
     }
 
-    .des {
-        background-color: #ffffffc7;
-        border-radius: 40px;
-        line-height: 3.5vh;
-        // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+    // .des {
+    //     background-color: #ffffffc7;
+    //     border-radius: 40px;
+    //     line-height: 3.5vh;
+    // }
 
 }
 

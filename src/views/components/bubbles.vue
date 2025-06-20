@@ -22,7 +22,7 @@ function createBall() {
     const originY = Math.random() * (window.innerHeight - size - 20);
     return {
         size,
-        color: `hsl(${Math.random() * 200}, 70%, 50%)`, // 随机颜色
+        color: `hsl(${Math.random() * 260}, 70%, 50%)`, // 随机颜色
         originX,
         originY,
         x: originX,

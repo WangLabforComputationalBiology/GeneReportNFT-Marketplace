@@ -68,6 +68,7 @@ const isVisible2 = ref(false);
   text-align: center;
   position: absolute;
   width: 50%;
+  min-width: 600px;
   height: 95vh;
   border-bottom: #fff 1px solid;
   left: 0%;
@@ -82,6 +83,7 @@ const isVisible2 = ref(false);
   }
 
   h2 {
+    min-width: 445px;
     width: 35vw;
     font-size: 2.5vh;
     color: #fff;
@@ -103,11 +105,13 @@ const isVisible2 = ref(false);
   position: absolute;
   left: 50%;
   width: 50%;
+  min-width: 600px;
   height: 95vh;
   background-color: #fff;
   pointer-events: auto;
 
   img {
+    min-width: 350px;
     position: absolute;
     top: 50%;
     left: 25%;
@@ -128,15 +132,15 @@ const isVisible2 = ref(false);
   .des-btn-wrapper {
     display: flex;
     position: absolute;
-    width: 120px;
-    height: 50px;
+    // width: 120px;
+    height: 5vh;
     bottom: 20%;
     left: 50%;
     transform: translate(-50%, -50%);
     gap: 20px;
 
     .des-btn {
-      width: 50px;
+      width: 5vh;
       font-size: 20px;
       font-weight: 700;
       display: flex;
