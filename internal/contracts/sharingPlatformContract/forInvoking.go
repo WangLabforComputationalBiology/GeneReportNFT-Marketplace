@@ -17,9 +17,14 @@ var PlatformContractAddressHex string
 
 var AdminPrivateKeyHex string
 
-var ContractIns *SharingPlatformContract
-
 func GetContractIns() *SharingPlatformContract {
+
+	// 初始化已部署的sharingPlatform_v3合约地址
+	PlatformContractAddressHex = "0xd74630037b238A72b0B33378985de62884768f5D"
+
+	// 实例化合约
+	ContractIns, _ := NewSharingPlatformContract(common.HexToAddress(PlatformContractAddressHex), ChainClient)
+
 	return ContractIns
 }
 
@@ -56,24 +61,8 @@ func init() {
 	}
 
 	// 初始化客户端
-	ChainClient, err := client.DialContext(context.Background(), config)
+	ChainClient, err = client.DialContext(context.Background(), config)
 	if err != nil {
 		log.Fatalf("连接 FISCO BCOS v3 节点失败: %v", err)
-	}
-
-	// 初始化已部署的sharingPlatform_v3合约地址
-	PlatformContractAddressHex = "0xd74630037b238A72b0B33378985de62884768f5D"
-
-	// 实例化合约
-	ContractIns, err = NewSharingPlatformContract(common.HexToAddress(PlatformContractAddressHex), ChainClient)
-	if err != nil {
-		log.Fatalf("Failed to instantiate contract: %v", err)
-	}
-}
-
-func NewTransactorSession() SharingPlatformContractTransactorSession {
-	return SharingPlatformContractTransactorSession{
-		Contract:     &ContractIns.SharingPlatformContractTransactor,
-		TransactOpts: *NewAdminTransactor(),
 	}
 }
