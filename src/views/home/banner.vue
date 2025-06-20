@@ -1,8 +1,10 @@
 <template>
     <div class="banner">
         <div class="green-bar"></div>
-        <div class="main-text"><img class="logo" src="@/assets/logo.svg" alt=""><span
-                style="color: #169608;">Bio</span>Chainer <br>Shares</div>
+        <div class="main-text">
+            <img class="logo" src="@/assets/logo.svg" alt="">
+            <span style="color: #169608;">Bio</span>Chainer <br>Shares
+        </div>
         <div class="sec-text">A platform delivering genetic information.</div>
         <div class="scroll-arrow"><span class="arrow-fadein">↓</span></div>
     </div>

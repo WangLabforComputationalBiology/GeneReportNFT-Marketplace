@@ -85,12 +85,6 @@ function toFB(){
         margin: 0 10px;
     }
 
-    // .des {
-    //     background-color: #ffffffc7;
-    //     border-radius: 40px;
-    //     line-height: 3.5vh;
-    // }
-
 }
 
 .Btn-wrapper {

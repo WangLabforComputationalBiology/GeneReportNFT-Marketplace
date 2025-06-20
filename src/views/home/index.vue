@@ -65,5 +65,9 @@ const onSlideChange = (swiper) => {
 .swiper-slide {
    width: 100%;
    height: 100%;
+   &:nth-child(3) {
+   border: #fff solid 1px;
+      
+   }
 }
 </style>
