@@ -22,7 +22,7 @@ type AppError struct {
 // New 仿errors.New
 // 创建一个新的AppError实例
 func New(code int, message string, errs ...error) AppError {
-	if len(errs) > 0 {
+	if len(errs) > 0 && errs[0] != nil {
 		return AppError{
 			Code: code, Message: message, Detail: errs[0].Error(),
 		}
