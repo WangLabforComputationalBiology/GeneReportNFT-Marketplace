@@ -47,7 +47,11 @@ const txHash = ref("");
 /* 获取plaza卡片数据列表 */
 let List = ref([]);
 async function getList() {
-    const res = await Api.get('/user/getData/Skin');
+    const res = await Api.get('/user/getData/Skin',{
+        params: {
+            
+        }
+    });
     List.value = res.data;
     console.log(List.value)
 }

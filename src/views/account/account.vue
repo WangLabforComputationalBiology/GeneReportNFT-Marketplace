@@ -3,13 +3,15 @@
         <Bubbles />
         <div class="info">
             <h1 class="title"><span style="color: #169608;">Account</span> information</h1>
-            {{ address ? `Address: ${address}` : 'No address connected' }}
+            {{ walletStore.address ? `Address: ${walletStore.address}` : 'No address connected' }}
             <br>
 
-            {{ insititutionAccreditation ? ` You are from: ${insititution}.` : 'Your institution accreditation is not verified.' }}
+            {{ walletStore.insititution ? ` You are from: ${walletStore.insititution}.` : 'Your institution accreditation is not verified.' }}
+            <br>
+            {{ walletStore.email ? `Email: ${walletStore.email}` : 'No email connected'}}
             <router-link to="/verify" style="color: #fff;">
-
-                <el-button class="custom-button" >
+            
+                <el-button class="custom-button">
                     verify
                 </el-button>
             </router-link>
@@ -20,17 +22,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
 import { useWalletStore } from '@/stores/account';
+import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus'
 import Bubbles from '@/views/components/bubbles.vue'
-const wallet = useWalletStore();
-const address = wallet.address;
-function logout(){
-    wallet.$reset();//登出重置
-    window.location.href = '/login';
+
+
+const walletStore = useWalletStore();
+const router = useRouter();
+const logout = () => {
+    walletStore.$reset();//登出重置
+    ElMessage.success('Log out successful!');
+    setTimeout(() => {
+        router.push('/login');
+    }, 1500);
+    
 }
 
-const  getVerification = async () => {
+const getVerification = async () => {
     // const response = 
 }
 </script>
@@ -80,7 +89,8 @@ const  getVerification = async () => {
     &:hover {
         box-shadow: 0 0 0 5px #ccc;
     }
-    &:nth-child(1){
+
+    &:nth-child(1) {
         width: 60px;
         background-color: #fff;
         color: #169608;

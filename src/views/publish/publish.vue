@@ -1,14 +1,14 @@
 <template>
    <div class="wrapper">
-      <Bubbles v-if="this.step === -1" />
-      <div class="wrapper-center" v-if="this.step === -1">
+      <Bubbles v-if="showIndexPage" />
+      <div class="wrapper-center" v-if="showIndexPage">
          <h1 class="title">Data <span style="color: #333;">Publish</span></h1>
          <span class="tip1">Ready to upload your data and publish it.</span>
          <div class="start-btn" @click="turnToSteps">Start</div>
       </div>
 
       <div class="wrapper-left" v-if="this.step >= 0">
-         <h1>Start your journey from here</h1>
+         <h1><span style="color: #169608;">Start your journey</span> from here</h1>
          <div class="inside-step">
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="this.step == 0">
             <img src="../../icons/status_ok.svg" alt="status icon" v-if="this.step > 0">
@@ -139,7 +139,8 @@
 import SliderCheck from '../verify/slidecheck.vue';
 import Bubbles from '../components/bubbles.vue';
 // import Api from '../../axios/aixos';
-
+import { useWalletStore } from '@/stores/account';
+const walletStore = useWalletStore();
 
 export default {
    name: 'Create',
@@ -153,7 +154,8 @@ export default {
          code: this.$route.params.lastSegment || '默认标题',
          profiles: [],
          selectedProfile: null,
-         showAlert: false // 添加状态变量
+         showAlert: false, // 添加状态变量
+         showIndexPage: true,
       }
    },
    mounted() {
@@ -197,8 +199,14 @@ export default {
    },
    methods: {
       turnToSteps() {
-         this.step = 0;
+         this.showIndexPage = false;
+         if (this.showIndexPage === false && walletStore.insititution) {
+            this.step += 1;
+         }
+         this.step += 1;
       },
+
+
       toVerify() {
          this.$router.push('/verify');
       },
@@ -263,8 +271,6 @@ export default {
       handleSuccessFun() {
          this.login_model.status = true
       },
-      // 滑块验证失败回调
-      handleErrorFun() { },
    }
 }
 </script>

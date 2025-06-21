@@ -31,7 +31,7 @@ import Bubbles from '@/views/components/bubbles.vue';
 import { ethers, getAddress } from 'ethers';
 import { useWalletStore } from '@/stores/account'
 import Api from '../../axios/aixos'
-const wallet = useWalletStore();
+const walletStore = useWalletStore();
 
 export default {
     name: 'Login',
@@ -106,12 +106,15 @@ ${nonce}`;
                     });
 
                     console.log('Login success:', loginResponse.data);
+                    walletStore.setAddress(this.address);
+                    walletStore.setInstitution(loginResponse.data.data.user.institution);
+                    walletStore.setToken(loginResponse.data.data.access_token);
+                    walletStore.setEmail(loginResponse.data.data.user.email);
                     this.$message.success('Login successful!');
 
-                    wallet.address = this.address; // 更新store中的账户
 
                     setTimeout(() => {
-                        window.location.href = '/account?t=' + Date.now(); // 加时间戳避免缓存
+                        this.$router.push('/account');
                     }, 1500);
                 }
 
@@ -127,10 +130,10 @@ ${nonce}`;
                 }
                 if (error.code === 4001) {
                     this.$message.warning('You denied the wallet connection');
-                } 
+                }
                 if (error.code === 500 || error.code === 501 || error.code === 502 || error.code === 503 || error.message.includes('503')) {
                     alert('Server error, please try again later.');
-                } 
+                }
             }
         }
     }
