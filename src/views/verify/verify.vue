@@ -1,7 +1,6 @@
 <template>
     <Bubbles />
     <div class="wrapper">
-
         <div class="tittle"><span style="color: #169608;">Institutional</span> Accreditation</div>
         <div class="input-wrapper">
             <el-autocomplete v-model="institution" :fetch-suggestions="querySearch" clearable class="inline-input"
@@ -110,8 +109,13 @@ const resEmail = async () => {
             alert('Failed to send email: ' + (emailResponse.data.message || 'Unknown error'));
         }
     } catch (error) {
-        alert('Error sending email: ' + (error.message || error));
-        console.error('Error sending email:', error);
+        if (error.response.status === 401) {
+            alert('Token expired.Please log in again');
+        }
+        if (error.response.status === 404) {
+            alert('Network error.');
+        }
+        console.error('Error:', error.response.status);
     }
 }
 
@@ -186,7 +190,7 @@ const verify = async () => {
         else {
             alert('Verification failed, please try again.');
         }
-        console.error('Error verifying email:', error);
+        console.error('Error verifying email:', AxiosError.response.status);
     }
 }
 </script>
@@ -196,11 +200,9 @@ const verify = async () => {
     width: 20vw;
     min-width: 450px;
     height: 95vh;
-    min-height: 750px;
     margin: auto;
-    display: flex;
     position: relative;
-    flex-direction: column;
+    flex-direction: column-reverse;
 }
 
 .tittle {
