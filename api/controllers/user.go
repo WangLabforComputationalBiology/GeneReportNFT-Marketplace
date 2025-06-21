@@ -538,7 +538,7 @@ func (u *User) VerifySMSCode(ctx *gin.Context) {
 	}
 }
 
-// GetUsersProfileByCode 重定向将token的kv映射传给前端，前端那这个key请求基因报告数据供用户选择
+// GetUsersProfileByCode 重定向将token的kv映射传给前端，前端那这个key请求基因报告数据供用户选择，这个code就是那个uuid
 func (u *User) GetUsersProfileByCode(ctx *gin.Context) {
 	//在get请求路径里面获取code
 	code := ctx.Query("code")

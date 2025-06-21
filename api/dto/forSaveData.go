@@ -14,6 +14,9 @@ type Head struct {
 // Genotype 表示单个基因型信息
 type Genotype struct {
 	gorm.Model
+	ProfileId   string `json:"profile_id" gorm:"column:profile_id"`
+	ReportId    int    `json:"report_id" gorm:"column:report_id"`
+	Type        string `json:"type" gorm:"column:type"`
 	ForKey      uint   `gorm:"column:for_key"`
 	Genotype    string `json:"genotype" gorm:"column:genotype"`
 	Summary     string `json:"summary" gorm:"column:summary"`
@@ -265,6 +268,22 @@ type DataVisitRecord struct {
 	CreateTime time.Time `json:"create_time" gorm:"column:create_time"`
 }
 
+// metadatas 用于记录数据的哈希
+type Metadatas struct {
+	gorm.Model
+	DataHash        string `gorm:"column:data_hash;type:varchar(64)" json:"data_hash"`
+	ProfileID       string `gorm:"column:profile_id;type:varchar(36)" json:"profile_id"`
+	Format          string `gorm:"column:format;type:varchar(32)" json:"format"`
+	Sex             string `gorm:"column:sex;type:varchar(32)" json:"sex"`
+	Category        string `gorm:"column:category;type:varchar(32)" json:"category"`
+	Owner           string `gorm:"column:owner;type:varchar(32)" json:"owner"`
+	Name            string `gorm:"column:name;type:varchar(32)" json:"name"`
+	Description     string `gorm:"column:description;type:text" json:"description"`
+	ContractAddress string `gorm:"column:contract_address;type:varchar(42)" json:"contract_address"`
+	IsSharable      bool   `gorm:"column:is_sharable;type:tinyint(1)" json:"is_sharable"`
+	IsHidden        bool   `gorm:"column:is_hidden;type:tinyint(1)" json:"is_hidden"`
+}
+
 // 将有gorm.Mod属性属性的结构体注册到map然后写一个方法可以获取他们的类型
 var typeRegistry = map[string]reflect.Type{
 	//"Genotype":          reflect.TypeOf(Genotype{}),
@@ -280,6 +299,8 @@ var typeRegistry = map[string]reflect.Type{
 	"Haplogroups":       reflect.TypeOf(Haplogroups{}),
 	"Demographics":      reflect.TypeOf(Demographics{}),
 	"UniqueProfiles":    reflect.TypeOf(UniqueProfiles{}),
+	"DataVisitRecord":   reflect.TypeOf(DataVisitRecord{}),
+	"Metadatas":         reflect.TypeOf(Metadatas{}),
 }
 
 func GetStructType(name string) (reflect.Type, bool) {

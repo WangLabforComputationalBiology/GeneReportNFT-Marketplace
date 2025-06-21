@@ -3,6 +3,8 @@ package tools
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -145,7 +147,8 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 	//responseData := reflect.New(tType).Elem() // 使用反射创建 T 类型的实例但是在json.Unmarshal会得到空的数据
 	//获取这个结构体的名称
 	name := tType.Name()
-
+	var allJsonStrToHashBulider []byte
+	var exitGenotypr bool = false
 	for _, v := range id {
 		payload := strings.NewReader(fmt.Sprintf("report_id=%d", v))
 		client := &http.Client{}
@@ -161,7 +164,7 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 		}
 		//判断状态码是否为200
 		if res.StatusCode != 200 {
-			fmt.Println("请求失败")
+			fmt.Println("请求失败-", name, "-", profileId, "-reportId:", v)
 			continue
 		}
 		defer res.Body.Close()
@@ -233,17 +236,32 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 			//=======================上面的操作不知道body具体是什么类型，所以一直用反射，下面确定具体类型的直接转==================
 			//利用反射判断是否存在Genotypes这个属性
 			genotypesValue := val.FieldByName("Genotypes")
-			// 遍历 Genotypes 属性的值
-			for i := 0; i < genotypesValue.Len(); i++ {
-				//将每个Genotypes的值转换为dto.Genotype类型
-				genotype := genotypesValue.Index(i).Interface().(dto.Genotype)
-				genotype.ForKey = fekId //如果上面成功prk必定有值
-				result := configs.DB.Create(&genotype)
-				if result.Error != nil {
-					fmt.Println("逻辑外键关联的genotype插入失败:", result.Error)
+			if genotypesValue.IsValid() { //存在genotype属性
+				exitGenotypr = true
+				// 遍历 Genotypes 属性的值
+				for i := 0; i < genotypesValue.Len(); i++ {
+					//将每个Genotypes的值转换为dto.Genotype类型
+					genotype := genotypesValue.Index(i).Interface().(dto.Genotype)
+					genotype.ProfileId = profileId //添加profile_id
+					genotype.ReportId = v          //添加report_id
+					genotype.Type = name           //属于哪个结构体的名称
+					genotype.ForKey = fekId        //如果上面成功prk必定有值
+					result := configs.DB.Create(&genotype)
+					if result.Error != nil {
+						fmt.Println("逻辑外键关联的genotype插入失败:", result.Error)
+					}
 				}
-			}
+				fmt.Println("Genotypes插入成功")
+				//序列化这个数组
+				jsonStrToHash, err := json.Marshal(genotypesValue.Interface()) //使用 .Interface() 获取实际值
+				if err != nil {
+					fmt.Println("序列化genotypesValue（一个切片）成json字符串时出错:", err)
+				}
+				allJsonStrToHashBulider = append(allJsonStrToHashBulider, jsonStrToHash...)
 
+			} else {
+				fmt.Println("没有Genotypes属性")
+			}
 			//判断val里是否有“Result”这个属性
 			resultValue := val.FieldByName("Result")
 			if resultValue.IsValid() {
@@ -282,6 +300,23 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 			fmt.Println("responseData不是一个结构体")
 		}
 
+	}
+	if exitGenotypr {
+		//计算jsonStrToHash这个字符串的哈希
+		hash := sha256.New()
+		hash.Write(allJsonStrToHashBulider)
+		hashString := hex.EncodeToString(hash.Sum(nil))
+		metadata := dto.Metadatas{
+			DataHash:  hashString,
+			ProfileID: profileId,
+			Category:  name,
+		}
+		res := configs.DB.Create(&metadata)
+		if res.Error == nil {
+			fmt.Println(name, "的genotype哈希保存成功")
+		} else {
+			fmt.Println(name, "的genotype哈希保存失败", res.Error)
+		}
 	}
 }
 func getDataFromWegeneSimple[T any](profileId, url, token string) {
@@ -347,6 +382,8 @@ func SaveAllData(token, profileId string) {
 	if checkRepeat(profileId) {
 		fmt.Println("重复性检测：", profileId, "已存在")
 		return
+	} else {
+		fmt.Println("不重复通过检测。开始保存数据：", profileId)
 	}
 	//athletigen、risk、skin、health/carrier、health/metabolism、health/tratis、psychology
 	//health/drug-----Xd
