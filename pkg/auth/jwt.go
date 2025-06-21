@@ -4,10 +4,10 @@ import (
 	"GeneReport_platform/configs"
 	"GeneReport_platform/pkg/appContext"
 	"errors"
+	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
-	"log"
 	"time"
 )
 
@@ -20,7 +20,7 @@ type CustomClaims struct {
 var SecretKey = []byte("SZTU")
 
 // TokenExpireDuration 默认过期时间
-var TokenExpireDuration = time.Minute * 3
+var TokenExpireDuration = time.Minute * 3000
 
 // GenerateJTI 生成JTI
 func GenerateJTI() string {
@@ -29,14 +29,7 @@ func GenerateJTI() string {
 }
 
 // GenerateToken 生成JWT
-func GenerateToken(userAddress string, optionalArgs ...int) (string, error) {
-	if len(optionalArgs) > 0 {
-		log.Println("手动设置过期时间: ", optionalArgs[0], "分钟！")
-		// 将optionalArgs[0]转换为time.Duration类型
-		TokenExpireDuration = time.Duration(optionalArgs[0]) * time.Minute
-	} else {
-		log.Println("默认设置token过期时间为3分钟！")
-	}
+func GenerateToken(userAddress string) (string, error) {
 
 	// 实例化声明
 	c := CustomClaims{
@@ -49,6 +42,7 @@ func GenerateToken(userAddress string, optionalArgs ...int) (string, error) {
 	}
 	// 使用指定的签名方法创建签名对象
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
+	fmt.Println(token.SignedString(SecretKey))
 	// 使用指定的secret签名并获得完整的编码后的字符串token
 	return token.SignedString(SecretKey)
 }

@@ -84,7 +84,6 @@ func (u *User) GetNonce(ctx *gin.Context) {
 //	@Failure		503				{object}	dto.ErrResponse	"服务不可用，获取nonce失败"
 //	@Failure		401				{object}	dto.ErrResponse	"签名验证失败"
 func (u *User) Login(ctx *gin.Context) {
-	log.Println("进入登录接口！")
 
 	var req dto.LoginReq
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -127,7 +126,7 @@ func (u *User) Login(ctx *gin.Context) {
 
 	//4，确保用户存在，不存在执行创建
 	if err := services.UserServ.EnsureUserExists(address); err != nil {
-		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
+		ctx.Error(appErrors.New(http.StatusInternalServerError, "用户创建失败,请重新登录", err))
 		return
 	}
 
@@ -137,10 +136,10 @@ func (u *User) Login(ctx *gin.Context) {
 		Code:    http.StatusOK,
 		Message: "成功登录",
 		Data: gin.H{
-			"access_token": jwt,
+			"access_token": "Bearer " + jwt,
 		},
 	})
-	log.Printf("签名验证成功！\n用户地址: %v;用户签名: %v\n", address, signature)
+	log.Printf("签名验证成功！\n")
 }
 
 // Logout
@@ -317,9 +316,6 @@ func (u *User) GetUserInfo(ctx *gin.Context) {
 		ctx.Error(err)
 	}
 	ctx.JSON(http.StatusOK, userInfo)
-
-	// 打印查询到的用户信息
-	log.Printf("找到用户: %+v\n", userInfo)
 
 }
 

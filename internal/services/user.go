@@ -52,7 +52,7 @@ func (u *userService) IsNewUser(userAddress string) (bool, appErrors.IAppError) 
 }
 
 // EnsureUserExists 确保用户存在
-func (u *userService) EnsureUserExists(userAddress string) appErrors.IAppError {
+func (u *userService) EnsureUserExists(userAddress string) error {
 	if isNew, err := UserServ.IsNewUser(userAddress); err != nil {
 		return err
 	} else if isNew {

@@ -1,15 +1,18 @@
 package dto
 
+import "time"
+
 type LoginReq struct {
 	UserAddress string `json:"user_address" binding:"required"`
 	Signature   string `json:"signature" binding:"required"`
 }
 
 type UserInfoResp struct {
-	Address string `json:"address" binding:"required"`
-	Name    string `json:"name" binding:"required"`
-	Avatar  string `json:"avatar" binding:"required"`
-	Country string `json:"country" binding:"required"`
+	Address  string    `json:"address" binding:"required"`
+	Name     string    `json:"name" binding:"required"`
+	Avatar   string    `json:"avatar" binding:"required"`
+	CreateAt time.Time `json:"create_at"  binding:"required"`
+	Email    string    `json:"email"    binding:"required"`
 }
 type GetToken struct {
 	AccessToken  string `json:"access_token"`
