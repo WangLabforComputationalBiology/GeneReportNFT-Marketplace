@@ -20,6 +20,7 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
 import { useWalletStore } from '@/stores/account';
 import Bubbles from '@/views/components/bubbles.vue'
 const wallet = useWalletStore();
@@ -29,6 +30,9 @@ function logout(){
     window.location.href = '/login';
 }
 
+const  getVerification = async () => {
+    // const response = 
+}
 </script>
 
 <style lang="scss" scoped>

@@ -4,7 +4,7 @@
 
         <div class="tittle"><span style="color: #169608;">Institutional</span> Accreditation</div>
         <div class="input-wrapper">
-            <el-autocomplete v-model="state" :fetch-suggestions="querySearch" clearable class="inline-input"
+            <el-autocomplete v-model="institution" :fetch-suggestions="querySearch" clearable class="inline-input"
                 placeholder="Please select your institution" @select="handleSelect" />
         </div>
         <el-input class="email-input" v-if="step > 0" v-model="emailFront" placeholder="Please enter email">
@@ -15,7 +15,7 @@
             <template #prepend>
             </template>
             <template #append>
-                <div class="send-btn" @click="resEmail">{{ sendBTN }}</div>
+                <div class="send-btn" @click="resEmail" :disabled="isSent && countdown > 0">{{ sendBTN }}</div>
             </template>
         </el-input>
         <el-button v-if="Ready" class="verify" @click="verify">Verify</el-button>
@@ -29,9 +29,10 @@ import loadUniversities from '@/assets/universities.json';
 import Bubbles from '@/views/components/bubbles.vue';
 import Slidecheck from '@/views/verify/slidecheck.vue';
 import Api from '@/axios/aixos';
-
+import { useWalletStore } from '@/stores/account';
+const walletStore = useWalletStore();
 /* 大学列表 && 检索 */
-const state = ref('')
+const institution = ref('')
 const universities = ref([])
 const querySearch = (queryString, cb) => {
     const results = queryString
@@ -88,7 +89,6 @@ const fullEmail = computed(() => emailFront.value + emailEnd.value);
 
 // 是否可验证
 let isSent = ref(false);
-
 /* 发送邮箱验证请求 */
 const resEmail = async () => {
     if (!emailFront.value) {
@@ -98,13 +98,13 @@ const resEmail = async () => {
     }
     try {
         const emailResponse = await Api.post("/user/send_email", {
-            email: fullEmail.value
+            email: fullEmail.value,
+            institution: institution.value,
         });
         if (emailResponse.data.code === 200) {
             // 成功提示
             alert('Email sent successfully!');
             isSent = true;
-            BTNstatus = true;//btn进入倒数状态
         } else {
             // 可败提示
             alert('Failed to send email: ' + (emailResponse.data.message || 'Unknown error'));
@@ -120,25 +120,23 @@ const resEmail = async () => {
  * 如果按钮状态为true且倒计时大于0，则显示倒计时
  * 否则显示“发送”按钮
  */
-let BTNstatus = ref(false);
+let countdown = ref(60);
+let timer = null;
 const sendBTN = computed(() => {
-    if (BTNstatus.value && countdown.value > 0) {
-        return `Resend (${countdown.value}s)`;
+    if (isSent.value === true && countdown.value > 0) {
+        return `${countdown.value}s`;
     }
     return 'Send';
 });
-
-const countdown = ref(60);
-let timer = null;
-
-watch(BTNstatus, (val) => {
+/* 倒计时函数 */
+watch(isSent, (val) => {
     if (val) {
         countdown.value = 60;
         timer = setInterval(() => {
             if (countdown.value > 0) {
                 countdown.value--;
             } else {
-                BTNstatus.value = false;
+                isSent.value = false;
                 clearInterval(timer);
                 timer = null;
             }
@@ -153,30 +151,41 @@ watch(BTNstatus, (val) => {
 
 
 /* 验证码输入 */
-const code = ref('');
+let code = ref('');
 const verify = async () => {
-    if (!emailFront.value || !Ready.value || !isSent.value) {
-        // this.$message.warning('Please enter your email and select your institution.');
+    if (emailFront.value === false || isSent.value === false) {
+        alert('Please enter your email and select your institution.');
         return;
     }
-    if (!code.value) {
+    if (code.value === false) {
         alert('Please enter the verification code.');
         return;
     }
     try {
         const response = await Api.post("/user/verify_email", {
+            email: fullEmail.value,
             code: code.value
         });
         if (response.data.code === 200) {
-            this.$message.success('Verification successful!');
+            alert('Verification successful!');
             setTimeout(() => {
-                window.location.href = '/account;' // 跳转到账户页面
+                window.location.href = '/account' // 跳转到账户页面
             }, 1500);
-        } else {
-            this.$message.error('Verification failed: ' + (response.data.message || 'Unknown error'));
         }
     } catch (error) {
-        this.$message.error('Error verifying email: ' + (error.message || error));
+        if (error.response.status === 401) {
+            alert('Token expired, please log in again.');
+            setTimeout(() => {
+                window.location.href = '/login' // 跳转到登录页面
+            }, 1500);
+        } else if (error.response.status === 403) {
+            alert('Verification code incorrect, please try again.');
+        } else if (error.response.status === 404) {
+            alert('Network error, please try again later.');
+        }
+        else {
+            alert('Verification failed, please try again.');
+        }
         console.error('Error verifying email:', error);
     }
 }

@@ -3,8 +3,7 @@ import { defineStore } from "pinia";
 export const useWalletStore = defineStore("Wallet", {
     state: () => ({
         address: null,
-        balance: 0,
-        country: null,
+        insitution: null,
     }),
     mutations: {
         
@@ -13,8 +12,8 @@ export const useWalletStore = defineStore("Wallet", {
         setAddress(address) {
             this.address = address;
         },
-        setBalance(balance) {
-            this.balance = balance;
+        setInsitution(insitution) {
+            this.insitution = insitution;
         },
     },
     persist: true,
