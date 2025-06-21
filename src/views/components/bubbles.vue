@@ -81,7 +81,8 @@ for (let i = 0; i < 11; i++) {
 
 .ball {
     position: absolute;
-    border-radius: 20%;
+    border-radius: 10%;
     opacity: 0.4;
+    transform: rotate(45deg);
 }
 </style>

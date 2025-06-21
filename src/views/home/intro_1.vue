@@ -4,7 +4,7 @@
             <h1>Sharing <span style="color: #333;"> Gene code.</span></h1><br>
             <h2>
                 <div class="des">
-                A Biological alliance-chain based on <span class="click-link" @click="toFB">FISCO BCOS↗</span> from
+                A Biological alliance-chain based on <span class="click-link" @click="toFB">FISCO BCOS</span> from
                 SZTU@Wanglab.
                 <br>
                 We advocate the creation of a blockchain-based biological information sharing chain to achieve reliable

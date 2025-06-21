@@ -66,8 +66,6 @@
         position: absolute;
         top: 24.9%;
         left: 25%;
-        // bottom: 32%;
-        // right: 40%;
         transform: translate(-50%, -50%);
         font-size: 15vh;
         font-weight: 700;

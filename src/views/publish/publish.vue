@@ -50,8 +50,8 @@
       </div>
 
       <div class="wrapper-right" v-if="this.step === 0">
-         <el-button @click="toVerify" class="custom-button">
-            click to verify your organization
+         <el-button @click="toVerify" class="custom-button" style="width: 400px;">
+            Click to verify your organization
          </el-button>
       </div>
 
@@ -65,9 +65,9 @@
          <div class="platforms"></div>
          <div class="platforms"></div>
 
-         <div class="button-wrapper" style="display: flex; position:relative;height:200px">
-            <el-button class="button" @click="back" style="right: 240px;">back</el-button>
-            <el-button class="button" @click="next">Continue</el-button>
+         <div class="button-wrapper" style="height:150px">
+            <!-- <el-button class="button" @click="back" style="right: 120px;">back</el-button> -->
+            <el-button class="button" @click="next" style="right: 0;">Continue</el-button>
             <div class="tips">
                If your genetic testing platform is not listed, please to provide feedback, and we will address it
                promptly.
@@ -114,8 +114,8 @@
             and are also listed out inside your item page.</p>
          <div class="add-trait">+ Add trait</div>
          <div class="button-wrapper" style="margin-top: 50px;">
-            <el-button class="button" @click="back" style="right: 240px;">back</el-button>
-            <el-button class="button" @click="next">Create</el-button>
+            <el-button class="button" @click="back" style="right: 120px;">back</el-button>
+            <el-button class="button" @click="next" style="right: 0px;">Create</el-button>
 
          </div>
 
@@ -124,12 +124,10 @@
       <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="this.step === 3">
          <h2>Select your collection</h2>
          <div class="button-wrapper" style="margin-top: 50px;">
-            <el-button class="button" @click="back" style="right: 240px; b">back</el-button>
+            <el-button class="button" @click="back">back</el-button>
             <el-button class="button" @click="next">Create</el-button>
          </div>
       </div>
-
-
 
    </div>
 </template>
@@ -274,8 +272,9 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
    height: 95vh;
-   min-width: 1200px;
+   width: 100vw !important;
    overflow: hidden;
+   min-width: 1200px !important;
    animation: fadeIn 0.2s ease-in-out 0s forwards;
 
    @keyframes fadeIn {
@@ -293,15 +292,12 @@ export default {
    color: #67C23A !important;
 }
 
-.wrapper {
-   display: flex;
-   position: relative;
-
-}
 
 .wrapper-center {
    height: 95vh;
    width: 100vw;
+   min-width: 1200px;
+   
    display: flex;
    position: absolute;
    flex-direction: column;
@@ -346,7 +342,8 @@ h1 {
    overflow: visible;
    position: absolute;
    left: 0;
-   width: 50%;
+   width: 50vw;
+   min-width: 600px;
    padding: 150px 80px 100px 160px;
    height: 95vh;
 
@@ -397,16 +394,19 @@ h1 {
    overflow: auto;
    right: 0;
    width: 50%;
+   min-width: 600px !important;
    padding: 100px 160px;
-   height: 95vh;
+   height: 95vh !important;
+   overflow: auto;
 
    .platforms {
       position: relative;
       margin: 50px auto;
       width: 60%;
+      min-width: 240px;
       height: 100px;
       border: #e0e0e0 1px solid;
-      border-radius: 10px;
+      border-radius: 20px;
       box-shadow: 0px 0px 2px 0px #e0e0e0 !important;
 
       &:hover {
@@ -423,7 +423,11 @@ h1 {
    .button-wrapper {
       display: flex;
       position: relative;
-      height: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      position: relative;
+      // height: 100px;
 
 
 
@@ -437,22 +441,18 @@ h1 {
 
 :deep(.button) {
    position: absolute;
-   right: 132px;
-
    width: 100px;
    height: 42px;
    background-color: #67C23A;
    color: #fff;
-   font-size: 16px;
+   font-size: 18px;
    border-radius: 10px;
    border: none !important;
-   text-align: center;
-   box-shadow: 0px 0px 5px 0px #e0e0e0 !important;
 
    &:hover {
       color: #67C23A;
       background-color: #fff;
-      box-shadow: 0px 0px 10px 1px #e0e0e0 !important;
+      border: #67C23A 1px solid !important;
       cursor: pointer;
    }
 }
