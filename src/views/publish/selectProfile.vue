@@ -1,43 +1,36 @@
 <template>
 
-    <body>
-        <div style="max-width: 600px">
-            <el-alert title="Success alert" type="success" description="More text description" show-icon />
-        </div>
-        
+    <div class="wrapper">
         <div class="banner">
-            <span class="banner-title">Create</span><span class="tip"> <p>Wegene Connected: </p>
-            <p style="color: #E6A23C;">{{ code }} </p>   
+            <span class="tip">
+                <h1><span style="color: #169608;">Wegene</span> Connected</h1>
             </span>
-        </div>
 
+        </div>
+        <h3 class="user">User code: {{ code }} </h3>
         <div class="card-body">
             <div v-if="profiles.length > 0">
-                <p style="color: #99a9bf;">Please select a Profile:</p>
-                <el-table :data="profiles" style="width: 50%" @selection-change="handleSelectionChange">
-                    <!-- Radio button column -->
-                    <el-table-column width="500" label="#Id">
+                <p style="color: #E6A23C;">Please select a Profile:</p>
+                <el-table :data="profiles" @selection-change="handleSelectionChange">
+                    <el-table-column>
                         <template #default="{ row }">
                             <el-radio v-model="selectedProfile" :label="row.id" />
                         </template>
                     </el-table-column>
-                    <!-- Profile ID column -->
-                    <!-- <el-table-column prop="id" label="Profile ID" /> -->
                 </el-table>
-
-                <!-- <label v-for="(profile, index) in profiles" :key="index" class="radio-label">
-                    <input type="radio" v-model="selectedProfile" :value="profile.id" />
-                    {{ profile.id }}
-                </label> -->
             </div>
             <div v-else>
-                <p>No Profiles.</p>
+                <p>No Profiles.Please request again.</p>
             </div>
-            <p>Selected Profile: {{ selectedProfile }}</p>
-            <!-- <p>{{ content }}</p> -->
+            <p class="selected-profile">Selected Profile: {{ selectedProfile }}</p>
         </div>
-        <button @click="authorizeProfile">Verify Profile</button>
-    </body>
+        <!-- <button @click="authorizeProfile">Verify Profile</button> -->
+        <div class="btn-wrapper">
+            <el-button @click="back">Back</el-button>
+            <el-button @click="authorizeProfile" :disable="selectedProfile == null">Confirm</el-button>
+        </div>
+
+    </div>
 </template>
 
 <script>
@@ -65,11 +58,14 @@ export default {
         }
     },
     mounted() {
-        console.log('Mounted title:', this.code); // 打印挂载时的 title 值
-        console.log('Environment variable VITE_APP_BASE_URL:', import.meta.env.VITE_APP_BASE_URL); // 打印环境变量
+        // console.log('Mounted title:', this.code); // 打印挂载时的 title 值
+        // console.log('Environment variable VITE_APP_BASE_URL:', import.meta.env.VITE_APP_BASE_URL); // 打印环境变量
         this.fetchData(); // 在组件挂载时发起请求
     },
     methods: {
+        back() {
+            this.$router.push('/publish')
+        },
         async fetchData() {
             try {
                 //const response = await fetch(`http://127.0.0.1:4523/m1/4576706-4225408-default/user/getProfileIds`);
@@ -89,6 +85,10 @@ export default {
         },
         async authorizeProfile() {
             // 在这里处理授权逻辑
+            if (this.selectedProfile == null) {
+                this.$message.error('Please select a profile');
+                return
+            }
             try {
                 const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/saveProfile`, {
                     method: 'POST',
@@ -110,8 +110,6 @@ export default {
             } catch (error) {
                 console.error('Error authorizing profile:', error);
             }
-
-
         }
     }
 }
@@ -120,41 +118,70 @@ export default {
 
 
 <style lang="scss" scoped>
-.el-alert {
-    margin: 20px 0 0;
+p {
+    font-size: 24px;
 }
 
-.el-alert:first-child {
-    margin: 0;
+.wrapper {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    min-width: 410px;
+    height: 50vh;
+
 }
 
+.user {
+    font-size: 26px;
+    width: 100%;
+    color: #99a9bf;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.selected-profile {
+    color: #99a9bf;
+    height: 50px;
+    line-height: 50px;
+}
 
 .banner {
     display: flex;
+
     .banner-title {
         font-size: 70px;
         color: #67C23A;
     }
 
     .tip {
-        margin: 30px 0 0 20px;
-        font-size: 20px;
-        color: #99a9bf;
+        width: 100%;
+        font-size: 30px;
+        color: #333;
+        text-align: center;
     }
 }
 
-.radio-label {
-    display: block; // 每个选项独立成行
-    margin-bottom: 33px;
-    cursor: pointer; // 鼠标悬停时显示指针
+:deep(.el-button) {
+    width: 80px;
+    height: 50px;
+    border-radius: 15px;
+    font-size: 18px;
 
     &:hover {
-        font-size: 1.7em; // 字体放大
-        color: blue; // 字体颜色变蓝
+        color: #67C23A;
+        background-color: #fff;
+        border: #67c23ab6 1px solid;
     }
+}
 
-    input[type="radio"] {
-        margin-right: 10px; // 单选按钮和文本之间的间距
-    }
+:deep(.el-radio__label) {
+    font-size: 18px;
+}
+
+.btn-wrapper {
+    position: absolute;
+    right: 0%;
 }
 </style>

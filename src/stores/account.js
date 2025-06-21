@@ -29,6 +29,8 @@ export const useWalletStore = defineStore("account", {
             this.email = email;
         }
     },
-    persist: true,
+    persist: {
+        storage: sessionStorage, // 使用 sessionStorage 而不是 localStorage
+    },
 
 })

@@ -193,7 +193,7 @@ onMounted(() => {
     display: flex;
     font-size: 70px;
     color: #169608;
-    animation: slideIn 0.8s ease-in-out forwards;
+    animation: slideIn 0.4s ease-in-out forwards;
 }
 
 @keyframes slideIn {

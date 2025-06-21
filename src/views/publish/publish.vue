@@ -267,10 +267,6 @@ export default {
             console.error('Error authorizing profile:', error);
          }
       },
-      // 滑块验证成功回调
-      handleSuccessFun() {
-         this.login_model.status = true
-      },
    }
 }
 </script>
@@ -280,6 +276,17 @@ export default {
    height: 95vh;
    min-width: 1200px;
    overflow: hidden;
+   animation: fadeIn 0.2s ease-in-out 0s forwards;
+
+   @keyframes fadeIn {
+      0% {
+         opacity: 0;
+      }
+
+      100% {
+         opacity: 1;
+      }
+   }
 }
 
 .active {

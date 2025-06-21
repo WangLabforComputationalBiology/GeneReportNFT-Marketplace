@@ -26,121 +26,125 @@
 
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import Bubbles from '@/views/components/bubbles.vue';
 import { ethers, getAddress } from 'ethers';
 import { useWalletStore } from '@/stores/account'
 import Api from '../../axios/aixos'
+import { ElLoading } from 'element-plus'
+
+const fullscreenLoading = ref(false)
 const walletStore = useWalletStore();
+const router = useRouter();
 
-export default {
-    name: 'Login',
-    components: {
-        Bubbles
-    },
-    data() {
-        return {
-            address: '',
-            balance: '',
-            message: '',
-            nonce: '',
-            error: ''
-        }
-    },
-    created() {
-    },
+const address = ref('');
+const message = ref('');
+const nonce = ref('');
+const error = ref('');
 
-    methods: {
-        //验签信息构造函数
-        structureMessage(address, nonce) {
-            const template = `Welcome to GeneReport_platform!
+function structureMessage(addressVal, nonceVal) {
+    const template = `Welcome to GeneReport_platform!
 
 Click to sign in and accept the OpenSeaTerms of Service and Privacy Policy.
 
 This request will not trigger a blockchain transaction or cost any gas fees.
 
 Wallet address:
-${address}
+${addressVal}
 
 Nonce:
-${nonce}`;
+${nonceVal}`;
 
-            return template;
-        },
-
-        // MetaMask连接并获取账户
-        async connectWallet() {
-            this.error = '';
-            this.address = '';
-            this.nonce = '';
-            this.message = '';
-            try {
-                // 1. 检查MetaMask是否安装
-                if (!window.ethereum) {
-                    throw new Error('Please install MetaMask');
-                }
-
-                // 2. 创建provider并请求账户
-                const provider = new ethers.BrowserProvider(window.ethereum);
-                const accounts = await provider.send("eth_requestAccounts", []);
-                this.address = accounts[0];
-
-                if (!this.error) {
-                    // 3. 获取nonce
-                    const nonceResponse = await Api.get(`/user/nonce/${this.address}`);
-                    this.nonce = nonceResponse.data.data.nonce;
-
-                    // 4. 构造消息
-                    this.message = this.structureMessage(this.address, this.nonce);
-
-                    // 5. 请求签名
-                    const signature = await window.ethereum.request({
-                        method: "personal_sign",
-                        params: [this.message, this.address],
-                    });
-
-                    // 6. 发送登录请求
-                    const loginResponse = await Api.post("/user/login", {
-                        user_address: this.address,
-                        signature: signature,
-                    });
-
-                    console.log('Login success:', loginResponse.data);
-                    walletStore.setAddress(this.address);
-                    walletStore.setInstitution(loginResponse.data.data.user.institution);
-                    walletStore.setToken(loginResponse.data.data.access_token);
-                    walletStore.setEmail(loginResponse.data.data.user.email);
-                    this.$message.success('Login successful!');
-
-
-                    setTimeout(() => {
-                        this.$router.push('/account');
-                    }, 1500);
-                }
-
-
-            } catch (error) {
-                console.error('Error::', error.message, error.code);
-                if (error.message.includes('404')) {
-                    this.$message.error('Network error.');
-
-                }
-                if (error.message.includes('-32002')) {
-                    this.$message.error('MetaMask is not accessible.Please unlock your wallet and try again.');
-                }
-                if (error.code === 4001) {
-                    this.$message.warning('You denied the wallet connection');
-                }
-                if (error.code === 500 || error.code === 501 || error.code === 502 || error.code === 503 || error.message.includes('503')) {
-                    alert('Server error, please try again later.');
-                }
-            }
-        }
-    }
-
-
+    return template;
 }
 
+// MetaMask连接并获取账户
+async function connectWallet() {
+    error.value = '';
+    address.value = '';
+    nonce.value = '';
+    message.value = '';
+    try {
+        // 1. 检查MetaMask是否安装
+        if (!window.ethereum) {
+            throw new Error('Please install MetaMask');
+        }
+
+        // 2. 创建provider并请求账户
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const accounts = await provider.send("eth_requestAccounts", []);
+        address.value = accounts[0];
+
+        if (!error.value) {
+            // 3. 获取nonce
+            const nonceResponse = await Api.get(`/user/nonce/${address.value}`);
+            nonce.value = nonceResponse.data.data.nonce;
+
+            // 4. 构造消息
+            message.value = structureMessage(address.value, nonce.value);
+
+            // 5. 请求签名
+            const signature = await window.ethereum.request({
+                method: "personal_sign",
+                params: [message.value, address.value],
+            });
+
+            // 6. 发送登录请求
+            const loginResponse = await Api.post("/user/login", {
+                user_address: address.value,
+                signature: signature,
+            });
+
+            // console.log('Login success:', loginResponse.data);
+            walletStore.setAddress(address.value);
+            walletStore.setInstitution(loginResponse.data.data.user.institution);
+            walletStore.setToken(loginResponse.data.data.access_token);
+            walletStore.setEmail(loginResponse.data.data.user.email);
+            // Use globalProperties for $message in script setup
+            if (typeof window !== 'undefined' && window.__VUE_APP__ && window.__VUE_APP__.config.globalProperties.$message) {
+                window.__VUE_APP__.config.globalProperties.$message.success('Login successful!');
+            }
+
+            toAccount();
+
+        }
+
+    } catch (err) {
+        console.error('Error::', err.message, err.code);
+        // Use globalProperties for $message in script setup
+        const $message = typeof window !== 'undefined' && window.__VUE_APP__ && window.__VUE_APP__.config.globalProperties.$message
+            ? window.__VUE_APP__.config.globalProperties.$message
+            : null;
+        if (err.message && err.message.includes('404')) {
+            $message && $message.error('Network error.');
+        }
+        if (err.message && err.message.includes('-32002')) {
+            $message && $message.error('MetaMask is not accessible.Please unlock your wallet and try again.');
+        }
+        if (err.code === 4001) {
+            $message && $message.warning('You denied the wallet connection');
+        }
+        if (err.code === 500 || err.code === 501 || err.code === 502 || err.code === 503 || (err.message && err.message.includes('503'))) {
+            alert('Server error, please try again later.');
+        }
+    }
+}
+
+const toAccount = () => {
+    const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading...',
+        background: 'rgba(0, 0, 0, 0.7)',
+        customClass: 'loading',
+    })
+    setTimeout(() => {
+        loading.close()
+        router.push('/account');
+
+    }, 1500)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -149,6 +153,17 @@ ${nonce}`;
     position: relative;
     height: 95vh;
     overflow: hidden;
+    animation: fadeIn 0.2s ease-in-out 0s forwards;
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
 
     .wrapper {
         overflow: hidden;

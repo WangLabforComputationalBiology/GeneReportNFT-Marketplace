@@ -44,7 +44,7 @@
         background: #169608;
         /* 绿色 */
         transform: translateY(-50%);
-        animation: extend 0.8s ease-out forwards;
+        animation: extend 0.6s ease-out forwards;
         /* 延长动画 */
         border-top-right-radius: 48px;
     }
@@ -74,7 +74,7 @@
         color: #333;
         opacity: 0;
         /* 初始不可见 */
-        animation: fadeIn 0.6s ease-in forwards 0.4s;
+        animation: fadeIn 0.6s ease-in forwards 0.1s; 
         /* 延迟0.8s淡入 */
     }
 
@@ -88,7 +88,7 @@
         color: #333;
         opacity: 0;
         /* 初始不可见 */
-        animation: fadeIn 0.5s ease-in forwards 0.8s;
+        animation: fadeIn 0.4s ease-in forwards 0.6s;
         /* 延迟0.8s淡入 */
     }
 

@@ -6,7 +6,7 @@
             {{ walletStore.address ? `Address: ${walletStore.address}` : 'No address connected' }}
             <br>
 
-            {{ walletStore.insititution ? ` You are from: ${walletStore.insititution}.` : 'Your institution accreditation is not verified.' }}
+            {{ walletStore.insititution ? ` Institution: ${walletStore.insititution}.` : 'Your institution accreditation is not verified.' }}
             <br>
             {{ walletStore.email ? `Email: ${walletStore.email}` : 'No email connected'}}
             <router-link to="/verify" style="color: #fff;">
@@ -53,6 +53,17 @@ const getVerification = async () => {
     height: 95vh;
     margin: auto;
     overflow: hidden;
+    animation: fadeIn 0.2s ease-in-out 0s forwards;
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
 
 
     .title {

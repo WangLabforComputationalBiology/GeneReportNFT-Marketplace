@@ -71,8 +71,7 @@ const isVisible2 = ref(false);
   position: absolute;
   width: 50%;
   min-width: 600px;
-  height: 95vh;
-  border-bottom: #fff 2px solid;
+  height: 94.9vh;
   left: 0%;
   background-color: #169608;
 
