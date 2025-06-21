@@ -18,7 +18,7 @@ func main() {
 	setup.Setup()
 	r := gin.Default()
 	r = router.SetupRouter()
-
-	_ = r.Run("0.0.0.0:7070")       //在配置的端口运行
 	go rocketmq.Myproducer("psave") //启动生产者
+	_ = r.Run("0.0.0.0:7070")       //在配置的端口运行
+
 }

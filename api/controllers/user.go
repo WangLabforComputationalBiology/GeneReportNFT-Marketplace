@@ -130,13 +130,23 @@ func (u *User) Login(ctx *gin.Context) {
 		return
 	}
 
-	//5.生成token
+	//5.1 验证成功，返回userInfo
+	userInfo, _ := services.UserServ.GetUserInfoByID(address)
+
+	//5.2生成token
 	jwt, _ := auth.GenerateToken(address)
 	ctx.JSON(200, dto.Response{
 		Code:    http.StatusOK,
 		Message: "成功登录",
 		Data: gin.H{
 			"access_token": "Bearer " + jwt,
+			"user": gin.H{
+				"address":     userInfo.Address,
+				"name":        userInfo.Name,
+				"institution": userInfo.Institution,
+				"email":       userInfo.Email,
+				"created_at":  userInfo.CreateAt,
+			},
 		},
 	})
 	log.Printf("签名验证成功！\n")
@@ -403,7 +413,7 @@ func (u *User) VerifyEmailCode(ctx *gin.Context) {
 func (u *User) Oauth2Wegene(ctx *gin.Context) {
 	fmt.Println("开始重定向到wegene授权页面")
 	ctx.Redirect(http.StatusMovedPermanently, "https://api.wegene.com/authorize/?redirect_uri="+
-		"http://"+configs.WegeneRedirectHost+":8080/user/receiveCode&response_type=code&client_id=szjsbiolab&"+
+		"http://"+configs.WegeneRedirectHost+":7070/user/receiveCode&response_type=code&client_id=szjsbiolab&"+
 		//fixme 时间证明，rsXX的位置必须放在前面而且在basic的后面，认证会报错！
 		"scope=basic rs670139 rs17749164"+ //前者是数据库记录有的，后者是记录没有的但是txt文件有
 		" athletigen skin psychology risk health ancestry haplogroups demographics web"+
@@ -422,7 +432,7 @@ func (u *User) ReceiveCode(ctx *gin.Context) {
 
 	//生成一个uuid
 	uuid := uuid.New().String()
-	//将uuid和toen的映射存到redis，5分钟后过期
+	//将uuid和token的映射存到redis，5分钟后过期
 	configs.RedisClient.Set(ctx, uuid, token, 5*time.Minute)
 	fmt.Println("存到redis的uuid：token = ", uuid, "------", token)
 	if code == "" {

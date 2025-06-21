@@ -8,11 +8,11 @@ type LoginReq struct {
 }
 
 type UserInfoResp struct {
-	Address  string    `json:"address" binding:"required"`
-	Name     string    `json:"name" binding:"required"`
-	Avatar   string    `json:"avatar" binding:"required"`
-	CreateAt time.Time `json:"create_at"  binding:"required"`
-	Email    string    `json:"email"    binding:"required"`
+	Address     string    `json:"address" binding:"required"`
+	Name        string    `json:"name" binding:"required"`
+	Institution string    `json:"institution" binding:"required"`
+	CreateAt    time.Time `json:"create_at"  binding:"required"`
+	Email       string    `json:"email"    binding:"required"`
 }
 type GetToken struct {
 	AccessToken  string `json:"access_token"`

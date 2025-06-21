@@ -20,7 +20,6 @@ CREATE TABLE `users`
 (
     `address`     varchar(42) NOT NULL PRIMARY KEY COMMENT '钱包账户地址',
     `name`        varchar(32) NOT NULL COMMENT '用户名',
-    `avatar`      varchar(32) NOT NULL DEFAULT '默认头像path' COMMENT '头像地址/文件',
     `create_at`   datetime    NOT NULL COMMENT '账户注册时间',
     `institution` varchar(32)          default 'UNKNOWN' COMMENT '机构名称',
     `email`       varchar(32)          default 'UNKNOWN' COMMENT '机构邮箱'

@@ -32,7 +32,7 @@ wegene:
   id: szjsbiolab
   secret: cgioHbVHp6xp2rZzPthkkp6BRNfsDOr3
   #redirect_host: localhost
-  redirect_host: 120.24.168.132
+  redirect_host: 10.108.10.51
 
 
 rocketmq:
