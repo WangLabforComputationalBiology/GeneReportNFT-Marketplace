@@ -3,12 +3,12 @@ package services
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
+	"GeneReport_platform/internal/contracts/sharingPlatformContract"
 	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/pkg/appErrors"
-	"GeneReport_platform/tools/utils"
-	"bytes"
 	"encoding/json"
 	"errors"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/mitchellh/mapstructure"
 	"gorm.io/gorm"
 	"net/http"
@@ -47,13 +47,14 @@ func (m *MetadataService) GetMetadataOverviewByOwner(owner string) (dto.GetMetad
 }
 
 func (m *MetadataService) GetAllMetadataOverview(page int) (dto.GetAllMetadataOverviewResp, error) {
-	results, err := dao.GetMetadataDao().GetAllMetadataOverview(page)
+	results, pageNum, err := dao.GetMetadataDao().GetAllMetadataOverview(page)
 	if err != nil {
 		return dto.GetAllMetadataOverviewResp{}, appErrors.New(503, "", err)
 	}
 
 	return dto.GetAllMetadataOverviewResp{
 		MultiMetadata: results,
+		PageNum:       pageNum,
 	}, nil
 }
 
@@ -183,41 +184,49 @@ func (m *MetadataService) GetDataImpl(profileId, category string) (map[string]in
 //
 //		return iv, pr, nil
 //	}
-func (m *MetadataService) GetGenoTypeZip(dataHash, userAddress, pubKey string) ([]byte, error) {
+func (m *MetadataService) GetGenoTypeZip(dataHash, userAddress, pubKey string) (dto.GetGenoTypeZipResp, error) {
 	// 检查是否通过机构认证
 	user, err := dao.GetUserDao().GetUser(userAddress)
 	if err != nil {
-		return nil, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
 	if user.Email == "UNKNOWN" {
-		return nil, appErrors.New(http.StatusUnauthorized, "请先进行机构邮箱认证")
+		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusForbidden, "请先进行机构邮箱认证")
 	}
 
 	// 根据 hash 取 metadata
 	metadata, err := dao.GetMetadataDao().GetMetadataOverviewByDataHash(dataHash)
 	if err != nil {
-		return nil, appErrors.New(503, "获取Metadata详细信息失败", err)
+		return dto.GetGenoTypeZipResp{}, appErrors.New(503, "获取Metadata详细信息失败", err)
 	}
 
 	// 检查metadata当前是否可共享
 	if metadata.IsSharable == false {
-		return nil, appErrors.New(403, "该基因型数据当前非共享", err)
+		return dto.GetGenoTypeZipResp{}, appErrors.New(403, "该基因型数据当前非共享", err)
 	}
 
 	// 检查用户的viewAccess状态
 	activity, err := dao.GetActivityDao().GetLatestViewAccess(userAddress, metadata.DataHash)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
+	// viewAccess状态为过期或不存在
 	if errors.Is(err, gorm.ErrRecordNotFound) || activity.Expiry.Before(time.Now()) {
-		return nil, appErrors.NewWithData(http.StatusForbidden, "当前查看许可不存在或已过期，请申请", map[string]interface{}{"need_to_apply": 1})
+		return dto.GetGenoTypeZipResp{DownloadURL: "", AccessStatus: false}, nil
 	}
 
-	//该用户当前有仍在有效期的查看许可，获取基因型数据
-	data, err := dao.GetMetadataDao().GetGenoType(metadata.ProfileID, metadata.Category)
+	//验证通过，发放短链接
+	shortURL, err := DownloadServ.GenerateDownloadLink(dataHash, userAddress, pubKey)
 	if err != nil {
-		return nil, appErrors.New(503, "获取详细基因型数据失败", err)
+		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
+	return dto.GetGenoTypeZipResp{DownloadURL: shortURL, AccessStatus: true}, nil
+
+	//该用户当前有仍在有效期的查看许可，获取基因型数据
+	//data, err := dao.GetMetadataDao().GetGenoType(metadata.ProfileID, metadata.Category)
+	//if err != nil {
+	//	return nil, appErrors.New(503, "获取详细基因型数据失败", err)
+	//}
 
 	////链上交互
 	//_, receipt, err := sharingPlatformContract.GetContractIns().AddViewAccess(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress), [32]byte(common.Hex2Bytes(metadata.DataHash)), "")
@@ -225,16 +234,56 @@ func (m *MetadataService) GetGenoTypeZip(dataHash, userAddress, pubKey string) (
 	//	return nil, appErrors.New(503, "链上交互失败", err)
 	//}
 
-	// 创建XLSX缓冲区
-	var buf bytes.Buffer
-	err = utils.GenerateXLSX(&buf, data)
-	if err != nil {
-		return nil, err
-	}
-
-	return buf.Bytes(), nil
+	//// 创建XLSX缓冲区
+	//var buf bytes.Buffer
+	//err = utils.GenerateXLSX(&buf, data)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//return buf.Bytes(), nil
 }
 
-func (m *MetadataService) NewViewAccess(dataHash, userAddress, remark, pubKey string) ([]byte, error) {
-	return nil, nil
+func (m *MetadataService) NewViewAccess(dataHash, userAddress, remark, pubKey string) (dto.NewViewAccessResp, error) {
+	// 检查是否通过机构认证
+	user, err := dao.GetUserDao().GetUser(userAddress)
+	if err != nil {
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+	}
+	if user.Email == "UNKNOWN" {
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusUnauthorized, "请先进行机构邮箱认证")
+	}
+
+	// 根据 hash 取 metadata
+	metadata, err := dao.GetMetadataDao().GetMetadataOverviewByDataHash(dataHash)
+	if err != nil {
+		return dto.NewViewAccessResp{}, appErrors.New(503, "获取Metadata详细信息失败", err)
+	}
+
+	// 检查metadata当前是否可共享
+	if metadata.IsSharable == false {
+		return dto.NewViewAccessResp{}, appErrors.New(403, "该基因型数据当前非共享", err)
+	}
+
+	// 检查用户的viewAccess状态
+	activity, err := dao.GetActivityDao().GetLatestViewAccess(userAddress, metadata.DataHash)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+	}
+	if activity.Expiry.After(time.Now()) {
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusForbidden, "当前已存在有效的查看许可，请勿重复申请")
+	}
+
+	//链上交互
+	_, receipt, err := sharingPlatformContract.GetContractIns().AddViewAccess(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress), [32]byte(common.Hex2Bytes(metadata.DataHash)), remark)
+	if err != nil || receipt.Status != 0 {
+		return dto.NewViewAccessResp{}, appErrors.New(503, "链上交互失败", err)
+	}
+
+	//生成短链接
+	shortURL, err := DownloadServ.GenerateDownloadLink(dataHash, userAddress, pubKey)
+	if err != nil {
+		return dto.NewViewAccessResp{}, appErrors.New(503, "生成短链接失败", err)
+	}
+	return dto.NewViewAccessResp{DownloadURL: shortURL}, nil
 }

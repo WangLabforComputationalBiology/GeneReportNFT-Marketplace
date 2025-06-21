@@ -902,16 +902,16 @@ drop table if exists `activities`;
 -- 活动activities表
 CREATE TABLE activities
 (
-    `id`            VARCHAR(36)  NOT NULL,
-    `user_address`  VARCHAR(42)  NOT NULL COMMENT '用户地址',
-    `tx_hash`       varchar(64)  NOT NULL COMMENT '交易哈希',
-    `from`          varchar(64)  NOT NULL COMMENT '发起者地址',
-    `to`            varchar(64)  NOT NULL COMMENT '接收者地址',
-    `time`          DATETIME     NOT NULL Comment '时间戳',
-    `expiry`        DATETIME COMMENT '过期时间',
-    `event`         VARCHAR(255) NOT NULL Comment '活动类型',
-    `geneSharing`   VARCHAR(32) Comment 'geneSharing合集地址',
-    `metadata`    VARCHAR(32) Comment '标识',
+    `id`           VARCHAR(36)  NOT NULL,
+    `user_address` VARCHAR(42)  NOT NULL COMMENT '用户地址',
+    `tx_hash`      varchar(64)  NOT NULL COMMENT '交易哈希',
+    `from`         varchar(64)  NOT NULL COMMENT '发起者地址',
+    `to`           varchar(64)  NOT NULL COMMENT '接收者地址',
+    `time`         DATETIME     NOT NULL Comment '时间戳',
+    `expiry`       DATETIME COMMENT '过期时间',
+    `event`        VARCHAR(255) NOT NULL Comment '活动类型',
+    `geneSharing`  VARCHAR(32) Comment 'geneSharing合集地址',
+    `metadata`     VARCHAR(32) Comment 'metadata数据哈希',
     PRIMARY KEY (id),
     INDEX idx_activity (user_address, time)
 );
@@ -924,4 +924,18 @@ CREATE TABLE institutions
     `name`   VARCHAR(32) PRIMARY KEY COMMENT '机构名称',
     `suffix` VARCHAR(32) NOT NULL COMMENT '机构邮箱后缀'
 
+);
+
+
+drop table if exists `download_links`;
+CREATE TABLE download_links
+(
+    id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    short_code   VARCHAR(8)  NOT NULL UNIQUE,
+    user_address VARCHAR(50) NOT NULL COMMENT '下载用户地址',
+    data_hash    VARCHAR(50) NOT NULL COMMENT '文件数据哈希',
+    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at   TIMESTAMP   NOT NULL COMMENT '链接有效期',
+    access_count INT       DEFAULT 0 COMMENT '访问计数',
+    max_access   INT       DEFAULT 2 COMMENT '最大访问次数'
 );

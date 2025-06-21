@@ -20,7 +20,7 @@ func (m *Metadata) GetMetadataOverviewByOwner(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
-			Message: "请求体格式错误,请重新登录",
+			Message: "请求体格式错误",
 		})
 		return
 	}
@@ -60,9 +60,17 @@ func (m *Metadata) GetMetadataDetailByDataHash(ctx *gin.Context) {
 }
 
 func (m *Metadata) GetAllMetadataOverview(ctx *gin.Context) {
-	page := ctx.Param("page")
-	pagei, _ := strconv.Atoi(page)
-	multiMetadata, err := services.MetadataServ.GetAllMetadataOverview(pagei)
+
+	page, err := strconv.Atoi(ctx.Param("page"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "请求参数格式错误",
+		})
+		return
+	}
+
+	toResp, err := services.MetadataServ.GetAllMetadataOverview(page)
 	if err != nil {
 		_ = ctx.Error(err)
 		return
@@ -71,7 +79,7 @@ func (m *Metadata) GetAllMetadataOverview(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dto.Response{
 		Code:    http.StatusOK,
 		Message: "success",
-		Data:    multiMetadata,
+		Data:    toResp,
 	})
 }
 
@@ -85,18 +93,24 @@ func (m *Metadata) GetGenoTypeZip(ctx *gin.Context) {
 		return
 	}
 
-	zipData, err := services.MetadataServ.GetGenoTypeZip(dataHash, ctx.GetString("user_address"), ctx.GetString("pub_key"))
+	toResp, err := services.MetadataServ.GetGenoTypeZip(dataHash, ctx.GetString("user_address"), ctx.GetString("pub_key"))
 	if err != nil {
 		_ = ctx.Error(err)
 		return
 	}
 
-	// 设置下载响应头
-	ctx.Header("Content-Type", "application/xlsx")
-	ctx.Header("Content-Disposition", `attachment; filename="data.xlsx"`)
-	// contentLength 为-1即流数据长度未知
-	//ctx.DataFromReader(http.StatusOK, -1, "application/xlsx", bytes.NewReader(zipData), nil
-	ctx.Data(http.StatusOK, "application/xlsx", zipData)
+	ctx.JSON(http.StatusOK, dto.Response{
+		Code:    http.StatusOK,
+		Message: "success",
+		Data:    toResp,
+	})
+
+	//// 设置下载响应头
+	//ctx.Header("Content-Type", "application/xlsx")
+	//ctx.Header("Content-Disposition", `attachment; filename="data.xlsx"`)
+	//// contentLength 为-1即流数据长度未知
+	////ctx.DataFromReader(http.StatusOK, -1, "application/xlsx", bytes.NewReader(zipData), nil
+	//ctx.Data(http.StatusOK, "application/xlsx", zipData)
 }
 
 func (m *Metadata) NewViewAccess(ctx *gin.Context) {
@@ -109,16 +123,21 @@ func (m *Metadata) NewViewAccess(ctx *gin.Context) {
 		return
 	}
 
-	zipData, err := services.MetadataServ.NewViewAccess(req.DataHash, ctx.GetString("user_address"), req.Remark, ctx.GetString("pub_key"))
+	toResp, err := services.MetadataServ.NewViewAccess(req.DataHash, ctx.GetString("user_address"), req.Remark, ctx.GetString("pub_key"))
 	if err != nil {
 		_ = ctx.Error(err)
 		return
 	}
 
-	// 设置下载响应头
-	ctx.Header("Content-Type", "application/xlsx")
-	ctx.Header("Content-Disposition", `attachment; filename="data.xlsx"`)
-	// contentLength 为-1即流数据长度未知
-	//ctx.DataFromReader(http.StatusOK, -1, "application/xlsx", bytes.NewReader(zipData), nil
-	ctx.Data(http.StatusOK, "application/xlsx", zipData)
+	ctx.JSON(http.StatusOK, dto.Response{
+		Code:    http.StatusOK,
+		Message: "success",
+		Data:    toResp,
+	})
+	//// 设置下载响应头
+	//ctx.Header("Content-Type", "application/xlsx")
+	//ctx.Header("Content-Disposition", `attachment; filename="data.xlsx"`)
+	//// contentLength 为-1即流数据长度未知
+	////ctx.DataFromReader(http.StatusOK, -1, "application/xlsx", bytes.NewReader(zipData), nil
+	//ctx.Data(http.StatusOK, "application/xlsx", zipData)
 }

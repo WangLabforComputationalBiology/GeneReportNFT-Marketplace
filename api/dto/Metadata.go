@@ -40,9 +40,19 @@ type GetMetadataOverviewByOwnerResp struct {
 
 type GetAllMetadataOverviewResp struct {
 	MultiMetadata []MetadataOverview `json:"multi_metadata"`
+	PageNum       int                `json:"page_num"`
+}
+
+type GetGenoTypeZipResp struct {
+	DownloadURL  string `json:"download_url"`
+	AccessStatus bool   `json:"access_status"`
 }
 
 type NewViewAccessReq struct {
 	DataHash string `json:"data_hash" binding:"required"`
 	Remark   string `json:"remark" binding:"required"`
+}
+
+type NewViewAccessResp struct {
+	DownloadURL string `json:"download_url"`
 }

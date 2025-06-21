@@ -25,7 +25,7 @@ func (g *GeneSharing) GetGeneSharingDetailsByContractAddress(ctx *gin.Context) {
 	}
 	toResp, err := services.GeneSharingServ.GetGeneSharingDetailsByContractAddress(req.GeneSharingContractAddress)
 	if err != nil {
-		ctx.Error(err)
+		_ = ctx.Error(err)
 		return
 	}
 	ctx.JSON(http.StatusOK, dto.Response{
@@ -48,7 +48,7 @@ func (g *GeneSharing) GetGeneSharingByCreator(ctx *gin.Context) {
 	}
 	toResp, err := services.GeneSharingServ.GetGeneSharingOverviewByCreator(req.CreatorAddress)
 	if err != nil {
-		ctx.Error(err)
+		_ = ctx.Error(err)
 		return
 	}
 	ctx.JSON(http.StatusOK, dto.Response{

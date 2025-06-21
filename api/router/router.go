@@ -78,8 +78,13 @@ func registerMetadataRouter(r *gin.RouterGroup) {
 
 func registerGeneTypeRouter(r *gin.RouterGroup) {
 	r.GET("/:dataHash", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.MetadataController.GetGenoTypeZip)
-}
 
+	r.POST("/newAccess", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.MetadataController.NewViewAccess)
+
+}
+func registerDownloadRouter(r *gin.RouterGroup) {
+	r.GET("/:shortCode", middlewares.ZapMiddleware(), controllers.DownloadController.DownloadFile)
+}
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(middlewares.CORS())
@@ -89,12 +94,13 @@ func SetupRouter() *gin.Engine {
 	Plaza := r.Group("/plaza")
 	Metadata := r.Group("/metadata")
 	GeneType := r.Group("/gene_type")
+	Download := r.Group("/dl")
 	registerSwaggerRouter(r)
 	registerUserRouter(User)
 	registerStudioRouter(Studio)
 	registerMetadataRouter(Metadata)
 	registerPlazaRouter(Plaza)
 	registerGeneTypeRouter(GeneType)
-
+	registerDownloadRouter(Download)
 	return r
 }

@@ -27,7 +27,7 @@ func (s *Studio) CreateFromThirdParty(ctx *gin.Context) {
 
 	//fixme sse分阶段响应
 	if toResp, err := services.StudioServ.CreateAllFromThirdPartyOnChain(ctx.GetString("user_address"), req); err != nil {
-		ctx.Error(err)
+		_ = ctx.Error(err)
 		return
 	} else {
 		ctx.JSON(http.StatusOK, dto.Response{
@@ -44,7 +44,7 @@ func (s *Studio) GetProfileIds(ctx *gin.Context) {
 	userAddress := ctx.GetString("user_address")
 	ids, err := services.StudioServ.GetProfileIdsByUser(userAddress)
 	if err != nil {
-		ctx.Error(err)
+		_ = ctx.Error(err)
 		return
 	}
 	ctx.JSON(http.StatusOK, dto.Response{

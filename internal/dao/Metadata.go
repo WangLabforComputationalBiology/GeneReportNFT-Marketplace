@@ -4,6 +4,7 @@ import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/models"
+	"cmp"
 	"context"
 	"encoding/json"
 	"gorm.io/gorm"
@@ -78,18 +79,26 @@ func (m *Metadata) GetMetadataDetailByProfileId(profileID string) (results []mod
 	return results, nil
 }
 
-func (m *Metadata) GetAllMetadataOverview(page int) (results []dto.MetadataOverview, err error) {
-	err = m.DB().Select("metadatas.*").
+func (m *Metadata) GetAllMetadataOverview(page int) (results []dto.MetadataOverview, pageNum int, err error) {
+	//获取metadata数据
+	err1 := m.DB().Select("metadatas.*").
 		Table("metadatas").
 		Where("metadatas.is_hidden = 0 AND metadatas.data_hash!='' ").
 		Order("metadatas.created_at asc").
 		Offset((page - 1) * 30).
 		Limit(30).
 		Scan(&results).Error
-	if err != nil {
-		return nil, err
+
+	//返回总页数
+	err2 := m.DB().Select("count(*)").
+		Table("metadatas").
+		Scan(&pageNum).Error
+
+	if err = cmp.Or(err1, err2); err != nil {
+		return nil, 0, err
 	}
-	return results, nil
+
+	return results, pageNum, nil
 }
 
 // CompleteMetadataInfo 补全预构建的数据库的Metadata信息

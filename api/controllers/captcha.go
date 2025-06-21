@@ -12,7 +12,7 @@ func (s *Studio) GetCATCHA(ctx *gin.Context) {
 	user, _ := ctx.Get("user_address")
 	masterImage, thumbImage, err := CAPTCHA.GetRotateCAPTCHA(user.(string))
 	if err != nil {
-		ctx.Error(err)
+		_ = ctx.Error(err)
 		return
 	}
 	ctx.JSON(200, dto.Response{Code: 200, Message: "加载人机验证成功", Data: gin.H{"master_image": masterImage, "thumb_image": thumbImage}})
@@ -31,7 +31,7 @@ func (s *Studio) CheckCaptcha(ctx *gin.Context) {
 	}
 	isPass, err := CAPTCHA.CheckRotateCAPTCHA(user.(string), req.Angle)
 	if err != nil {
-		ctx.Error(err)
+		_ = ctx.Error(err)
 		return
 	}
 	if isPass {

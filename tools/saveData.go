@@ -15,9 +15,9 @@ import (
 	"strings"
 )
 
-var BASEURL string = "https://api.wegene.com"
+var BASEURL = "https://api.wegene.com"
 
-var forRisk []int = []int{
+var forRisk = []int{
 	//risk的profile_id
 	38, 39, 40, 42, 44, 46, 47, 48, 49, 50, 51, 52, 53, 54, 56, 57, 58,
 	59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 79,
@@ -28,39 +28,39 @@ var forRisk []int = []int{
 	1550, 1551, 1552, 1553, 1554, 1555, 1585, 1586, 1587, 1645, 1646, 1647, 1648, 1649, 1650,
 }
 
-var forHealthyTraits []int = []int{
+var forHealthyTraits = []int{
 	///health/traits
 	1, 2, 3, 12, 17, 31, 34, 43, 170, 244, 162, 348, 1440,
 }
 
-var forHealthyCarrier []int = []int{
+var forHealthyCarrier = []int{
 	//healthy_carrier的profile_id
 	171, 172, 173, 174, 175, 176, 177, 178, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193,
 	194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 205, 206, 207, 208, 209, 210, 211, 212, 214, 223, 232, 1530,
 	1531, 1532, 1533, 1534, 1535, 1536, 1537, 1538, 1539, 1540, 1541, 1542, 1543, 1570, 1571, 1572, 1573, 1574,
 	1575, 1576, 1577, 1578, 1579, 1580, 1581, 1582, 1583, 1584, 1588,
 }
-var forHealthyDrug []int = []int{
+var forHealthyDrug = []int{
 	///health/drug的report_id
 	1461, 1462, 1463, 1464, 1465, 1469, 1470, 1471, 1472, 1474, 1477, 1479, 1480, 1481,
 }
 
-var forHealthyMetabolism []int = []int{
+var forHealthyMetabolism = []int{
 	//healthy_metabolism的report_id
 	5, 22, 225, 247, 249, 250, 251, 253, 256,
 }
 
-var forAthletigen []int = []int{
+var forAthletigen = []int{
 	///athletigen的report_id
 	1486, 1487, 1488, 1489, 1490, 1491, 1492, 1493, 1494, 1495, 1496, 1497, 1498, 1499, 1500, 1501, 1502,
 }
 
-var forSkin []int = []int{
+var forSkin = []int{
 	///skin的report_id
 	1522, 1523, 1524, 1525, 1526, 1527, 1528, 1529, 1556, 1565, 1566, 1567, 1568, 1569,
 }
 
-var forPsychology []int = []int{
+var forPsychology = []int{
 	///psychology的report_id
 	1557, 1558, 1559, 1560, 1561, 1562, 1563, 1564,
 }
@@ -146,7 +146,7 @@ func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT
 	//获取这个结构体的名称
 	name := tType.Name()
 	var allJsonStrToHashBulider []byte
-	var exitGenotypr bool = false
+	var exitGenotypr = false
 	for _, v := range id {
 		payload := strings.NewReader(fmt.Sprintf("report_id=%d", v))
 		client := &http.Client{}
@@ -391,12 +391,10 @@ func SaveAllData(Msg string) {
 	formatT := parts[3]
 	sexT := parts[4]
 	fmt.Printf("token:%s\nprofileId:%s", parts[0], parts[1])
-	//test
-	fmt.Println(Msg)
 	if checkRepeat(profileId) {
 		fmt.Println("重复性检测：", profileId, "已存在")
-		//FIXME 这里的retunr控制是重复新检测不通过要不要存数，用于开发环境！
-		//return
+		//FIXME 这里的return控制是重复新检测不通过要不要存数，用于开发环境！
+		return
 	} else {
 		fmt.Println("重复性检测通过，开始保存数据：", profileId)
 	}

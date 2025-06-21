@@ -21,6 +21,7 @@ func registerServices() {
 	services.RegisterMetadataService()
 	services.RegisterStudioService()
 	services.RegisterGeneSharingService()
+	services.RegisterDownloadService()
 }
 
 func setupMysql() {

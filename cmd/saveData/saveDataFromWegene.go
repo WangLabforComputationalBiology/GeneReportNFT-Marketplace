@@ -45,7 +45,5 @@ func main() {
 		fmt.Scanln(&msg)
 		rocketmq.SendMsg("test", msg)
 	}
-	// 阻塞主线程，防止程序立即退出
-	select {}
 
 }

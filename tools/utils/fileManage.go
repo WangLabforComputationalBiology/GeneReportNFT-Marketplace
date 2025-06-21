@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"crypto/rand"
 	"fmt"
 	"github.com/xuri/excelize/v2"
 	"io"
@@ -45,4 +46,17 @@ func GenerateXLSX(w io.Writer, data any) error {
 	}
 	_, err := f.WriteTo(w)
 	return err
+}
+
+// GenerateShortCode 生成 8 位短链接
+func GenerateShortCode() string {
+	const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	b := make([]byte, 8)
+	if _, err := rand.Read(b); err != nil {
+		panic(err) // 生产环境中应记录日志并返回错误
+	}
+	for i := 0; i < 8; i++ {
+		b[i] = chars[b[i]%62] // 映射到字符集
+	}
+	return string(b)
 }

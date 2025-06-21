@@ -325,7 +325,7 @@ func (u *User) GetUserInfo(ctx *gin.Context) {
 	address := ctx.GetString("user_address")
 	userInfo, err := services.UserServ.GetUserInfoByID(address)
 	if err != nil {
-		ctx.Error(err)
+		_ = ctx.Error(err)
 	}
 	ctx.JSON(http.StatusOK, userInfo)
 
@@ -378,12 +378,12 @@ func (u *User) GetProfileOfUser(c *gin.Context) {
 func (u *User) SendEmailCode(ctx *gin.Context) {
 	var req dto.SendEmailCodeReq
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查"))
+		_ = ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查"))
 		return
 	}
 
 	if err := services.UserServ.SendEmailCode(ctx.GetString("user_address"), req.Institution, req.Email); err != nil {
-		ctx.Error(err)
+		_ = ctx.Error(err)
 		return
 	}
 	ctx.JSON(http.StatusOK, dto.Response{
@@ -396,11 +396,11 @@ func (u *User) SendEmailCode(ctx *gin.Context) {
 func (u *User) VerifyEmailCode(ctx *gin.Context) {
 	var req dto.VerifyEmailCodeReq
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查", err))
+		_ = ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查", err))
 		return
 	}
 	if isPass, err := services.UserServ.VerifyEmailCode(req.Email, req.Code, ctx.GetString("user_address")); err != nil {
-		ctx.Error(err)
+		_ = ctx.Error(err)
 		return
 	} else if isPass {
 		ctx.JSON(http.StatusOK, dto.Response{
@@ -607,9 +607,9 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 		}
 		res := configs.DB.Create(record)
 		if res.Error == nil {
-			fmt.Println("重复新检测数据保存成功")
+			fmt.Println("重复性检测数据保存成功")
 		} else {
-			fmt.Println("重复新检测数保存失败", res.Error)
+			fmt.Println("重复性检测数保存失败", res.Error)
 		}
 	}
 	//记录profileid到metadatas，因为保存微基因数据的服务和这个不是一个

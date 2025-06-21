@@ -101,7 +101,7 @@ func (u *userService) GetUserInfoByID(address string) (dto.UserInfoResp, error) 
 	}
 	// 映射转换dto
 	var userInfo dto.UserInfoResp
-	mapstructure.Decode(user, &userInfo)
+	_ = mapstructure.Decode(user, &userInfo)
 	return userInfo, nil
 }
 
