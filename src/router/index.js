@@ -17,7 +17,7 @@ const routes = [
         component: () => import('@/views/publish/publish.vue')
     },
     {
-        path: "/create/selectProfile/:lastSegment",//最后面的动态参数不能改
+        path: "/publish/selectProfile/:lastSegment",//最后面的动态参数不能改
         component: () => import('@/views/publish/selectProfile.vue')
     },
     {

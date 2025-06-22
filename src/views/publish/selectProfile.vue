@@ -103,7 +103,8 @@ export default {
 
                 if (response.ok) { // 检查响应状态码是否为 200
                     this.showAlert = true; // 显示 alert
-                    console.log('Profile authorized successfully');
+                    this.$message.success('Profile authorized successfully');
+                    // console.log('Profile authorized successfully');
                 } else {
                     console.error('Failed to authorize profile:', response.statusText);
                 }

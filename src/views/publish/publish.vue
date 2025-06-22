@@ -101,9 +101,6 @@
             GNFT will be
             automatically given a unique name depending on the Collection name you provide.</p>
          <p class="introduction"><span class="click-here">Click here</span> to view an example.</p>
-         <p>supply *</p>
-         <el-input class="supply-input"></el-input>
-         <p class="introduction">The Supply refers to the quantity of each NFT within the Collection.</p>
          <p>Description</p>
          <input type="text" class="Description-input"
             placeholder="Please enter a description of the collection"></input>
@@ -258,6 +255,7 @@ export default {
             if (response.ok) { // 检查响应状态码是否为 200
                this.showAlert = true; // 显示 alert
                console.log('Profile authorized successfully');
+               this.$router.push('/publish');
             } else {
                console.error('Failed to authorize profile:', response.statusText);
             }
