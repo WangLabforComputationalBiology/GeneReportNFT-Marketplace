@@ -1,6 +1,7 @@
 package rocketmq
 
 import (
+	"GeneReport_platform/configs"
 	"GeneReport_platform/tools"
 	"context"
 	"fmt"
@@ -15,9 +16,10 @@ import (
 type MessageHandler func(ctx context.Context, msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error)
 
 func Consumer(handler MessageHandler, group, topic string) {
+	host := configs.GlobalConfig.RocketMqCfg.NameServer
 	//启动recketmq并设置负载均衡的Group
 	c, _ := rocketmq.NewPushConsumer(
-		consumer.WithNameServer([]string{"120.24.168.132:9876"}),
+		consumer.WithNameServer([]string{host}),
 		consumer.WithGroupName(group),
 	)
 	//订阅消息方式1：

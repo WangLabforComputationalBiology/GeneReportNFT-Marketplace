@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"reflect"
@@ -302,6 +303,8 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 
 	}
 	if exitGenotypr {
+		var originMetaData dto.Metadatas
+		configs.DB.Where("profile_id = ? and data_hash=''", profileId).First(&originMetaData)
 		//计算jsonStrToHash这个字符串的哈希
 		hash := sha256.New()
 		hash.Write(allJsonStrToHashBulider)
@@ -309,7 +312,10 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 		metadata := dto.Metadatas{
 			DataHash:  hashString,
 			ProfileID: profileId,
-			Category:  name,
+			Category:  name, //属于那个类型，skin、risk……
+			Format:    originMetaData.Format,
+			Name:      originMetaData.Name,
+			Sex:       originMetaData.Sex,
 		}
 		res := configs.DB.Create(&metadata)
 		if res.Error == nil {
@@ -381,9 +387,10 @@ func checkRepeat(profileId string) bool {
 func SaveAllData(token, profileId string) {
 	if checkRepeat(profileId) {
 		fmt.Println("重复性检测：", profileId, "已存在")
-		return
+		//FIXME 这里的retunr控制是重复新检测不通过要不要存数，用于开发环境！
+		//return
 	} else {
-		fmt.Println("不重复通过检测。开始保存数据：", profileId)
+		fmt.Println("重复性检测通过，开始保存数据：", profileId)
 	}
 	//athletigen、risk、skin、health/carrier、health/metabolism、health/tratis、psychology
 	//health/drug-----Xd
@@ -400,6 +407,7 @@ func SaveAllData(token, profileId string) {
 	getDataFromWegeneSimple[dto.Haplogroups](profileId, BASEURL+"/haplogroups", token)
 	getDataFromWegeneSimple[dto.Demographics](profileId, BASEURL+"/demographics", token)
 
+	log.Println("数据异步保存完成")
 	//修改状态为已完成,根据profileId查找记录
 	configs.DB.Model(&dto.UniqueProfiles{}).Where("profile_id = ?", profileId).Update("status", 1)
 }

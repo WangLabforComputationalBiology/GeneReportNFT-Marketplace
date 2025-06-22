@@ -253,11 +253,10 @@ type Demographics struct {
 // 重复性检测的表
 type UniqueProfiles struct {
 	gorm.Model
-	Address    string    `json:"address" gorm:"column:address"`
-	ProfileId  string    `json:"profile_id" gorm:"column:profile_id"`
-	CreateTime time.Time `json:"create_time" gorm:"column:create_time"`
-	Describe   string    `json:"describe" gorm:"column:describe"`
-	Status     int       `json:"status" gorm:"column:status"`
+	Address   string `json:"address" gorm:"column:address"`
+	ProfileId string `json:"profile_id" gorm:"column:profile_id"`
+	Describe  string `json:"describe" gorm:"column:describe"`
+	Status    int    `json:"status" gorm:"column:status"`
 }
 
 // 数据访问记录
