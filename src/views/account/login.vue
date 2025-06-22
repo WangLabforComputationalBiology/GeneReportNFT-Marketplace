@@ -79,6 +79,14 @@ async function connectWallet() {
 
         if (!error.value) {
             // 3. 获取nonce
+            const loading = ElLoading.service({
+                lock: true,
+                text: 'Loading...',
+                background: 'rgba(0, 0, 0, 0.7)',
+                customClass: 'loading',
+            })
+
+
             const nonceResponse = await Api.get(`/user/nonce/${address.value}`);
             nonce.value = nonceResponse.data.data.nonce;
 
@@ -97,21 +105,20 @@ async function connectWallet() {
                 signature: signature,
             });
 
-            // console.log('Login success:', loginResponse.data);
             walletStore.setAddress(address.value);
             walletStore.setInstitution(loginResponse.data.data.user.institution);
             walletStore.setToken(loginResponse.data.data.access_token);
             walletStore.setEmail(loginResponse.data.data.user.email);
-            // Use globalProperties for $message in script setup
+
             if (typeof window !== 'undefined' && window.__VUE_APP__ && window.__VUE_APP__.config.globalProperties.$message) {
                 window.__VUE_APP__.config.globalProperties.$message.success('Login successful!');
             }
-
             toAccount();
 
         }
 
     } catch (err) {
+        loading.close();
         console.error('Error::', err.message, err.code);
         // Use globalProperties for $message in script setup
         const $message = typeof window !== 'undefined' && window.__VUE_APP__ && window.__VUE_APP__.config.globalProperties.$message
@@ -132,6 +139,7 @@ async function connectWallet() {
     }
 }
 
+
 const toAccount = () => {
     const loading = ElLoading.service({
         lock: true,
@@ -139,11 +147,8 @@ const toAccount = () => {
         background: 'rgba(0, 0, 0, 0.7)',
         customClass: 'loading',
     })
-    setTimeout(() => {
         loading.close()
         router.push('/account');
-
-    }, 1500)
 }
 </script>
 

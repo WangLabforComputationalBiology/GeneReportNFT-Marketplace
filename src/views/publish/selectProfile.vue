@@ -104,6 +104,8 @@ export default {
                 if (response.ok) { // 检查响应状态码是否为 200
                     this.showAlert = true; // 显示 alert
                     this.$message.success('Profile authorized successfully');
+                    this.$router.push('/publish?authorized=true')
+                    this.$emit('profileAuthorized', true); // 触发父组件的自定义事件
                     // console.log('Profile authorized successfully');
                 } else {
                     console.error('Failed to authorize profile:', response.statusText);

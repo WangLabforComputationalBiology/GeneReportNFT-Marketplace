@@ -2,13 +2,11 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-// import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    // vueDevTools(),
   ],
   resolve: {
     alias: {
@@ -22,5 +20,10 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    host: '0.0.0.0', // 允许所有IP访问
+    port: 5173,      // 确保端口未被占用
+    strictPort: true // 如果端口被占用则报错
+  }
 
 })

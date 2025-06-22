@@ -12,7 +12,7 @@
          <div class="inside-step">
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="this.step == 0">
             <img src="../../icons/status_ok.svg" alt="status icon" v-if="this.step > 0">
-            <div :class="{ 'step-tip': true, 'active': isActive1 }">Verify your
+            <div :class="{ 'step-tip': true, 'active': this.step >=0 ? true : false }">Verify your account. We will send you a
                organization by email.
             </div>
 
@@ -22,7 +22,7 @@
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="this.step == 1">
             <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="this.step < 1">
             <img src="../../icons/status_ok.svg" alt="status icon" v-if="this.step > 1">
-            <div :class="{ 'step-tip': true, 'active': isActive2 }">Allow us to access your genetic reports. We ensure
+            <div :class="{ 'step-tip': true, 'active': this.step >= 1 ? true : false }">Allow us to access your genetic reports. We ensure
                that no additonal personal data
                will be stored by your platform.</div>
 
@@ -32,7 +32,7 @@
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="this.step == 2">
             <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="this.step < 2">
             <img src="../../icons/status_ok.svg" alt="status icon" v-if="this.step > 2">
-            <div :class="{ 'step-tip': true, 'active': isActive3 }">Create your unique data. Once your item is minted
+            <div :class="{ 'step-tip': true, 'active': this.step >= 2 ? true : false }">Create your unique data. Once your item is minted
                you will not be able to change
                any of its information.</div>
 
@@ -42,7 +42,7 @@
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="this.step == 3">
             <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="this.step < 3">
             <img src="../../icons/status_ok.svg" alt="status icon" v-if="this.step > 3">
-            <div :class="{ 'step-tip': true, 'active': isActive4 }" style="line-height: 28px;">Offer your data for sale
+            <div :class="{ 'step-tip': true, 'active': this.step >= 3 ? true : false }" style="line-height: 28px;">Offer your data for sale
                on the plaza. Prior listing,
                you may delete your data; However, once listed, you will not be able to delete your data.</div>
 
@@ -58,9 +58,6 @@
       <div class="wrapper-right" style="display: block;" v-if="this.step === 1 && profiles.length <= 0">
          <div class="platforms" @click="redirectToOAuth">
             <img src="../../icons/wegene_logo.svg" alt="wegene">
-            <el-icon style="position: absolute; right:30px; top: 50px; transform: translateY(-50%); font-size: 30px;">
-               <Right />
-            </el-icon>
          </div>
          <div class="platforms"></div>
          <div class="platforms"></div>
@@ -72,18 +69,6 @@
                If your genetic testing platform is not listed, please to provide feedback, and we will address it
                promptly.
             </div>
-         </div>
-         <div class="wrapper-right" style="display: block;" v-if="this.step === 1 && profiles.length > 0">
-            <p style="color: #99a9bf;">Please select a Profile:</p>
-            <el-table :data="profiles" style="width: 50%" @selection-change="handleSelectionChange">
-               <!-- Radio button column -->
-               <el-table-column width="500" label="#Id">
-                  <template #default="{ row }">
-                     <el-radio v-model="selectedProfile" :label="row.id" />
-                  </template>
-               </el-table-column>
-
-            </el-table>
          </div>
       </div>
 
@@ -146,50 +131,10 @@ export default {
    data() {
       return {
          step: -1,//0:进行手机验证
-         code: this.$route.params.lastSegment || '默认标题',
          profiles: [],
-         selectedProfile: null,
          showAlert: false, // 添加状态变量
          showIndexPage: true,
-      }
-   },
-   mounted() {
-      console.log('Mounted title:', this.code); // 打印挂载时的 title 值
-      console.log('Environment variable VITE_APP_BASE_URL:', import.meta.env.VITE_APP_BASE_URL); // 打印环境变量
-      this.fetchData(); // 在组件挂载时发起请求
-   },
-   computed: {
-      isActive1() {
-         if (this.step >= 0) {
-            return true;
-         }
-         return false;
-      },
-      isActive2() {
-         if (this.step >= 1) {
-            return true;
-         }
-         return false;
-      },
-      isActive3() {
-         if (this.step >= 2) {
-            return true;
-         }
-         return false;
-      },
-      isActive4() {
-         if (this.step >= 3) {
-            return true;
-         }
-         return false;
-      }
-
-   },
-   watch: {
-      // Watch for changes in the route parameter
-      '$route.params.lastSegment': function (newSegment) {
-         this.code = newSegment || '默认标题';
-         this.fetchData(); // 重新获取数据
+         authorized: false,
       }
    },
    methods: {
@@ -220,49 +165,6 @@ export default {
          console.log('Sending verification code...');
       },
 
-      // 处理授权
-      async fetchData() {
-         try {
-            //const response = await fetch(`http://127.0.0.1:4523/m1/4576706-4225408-default/user/getProfileIds`);
-            const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/getProfileIds?code=${this.code}`);
-            if (!response.ok) {
-               throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            this.profiles = data.profiles || [];
-            console.log('Fetched data:', this.profiles);
-            // 你可以在这里更新 content 或其他数据
-            this.content = data.content || '默认内容'; // 假设服务器返回的数据中有一个 content 字段
-         } catch (error) {
-            console.error('Error fetching data:', error);
-            this.content = '请求失败，请重试'; // 更新 content 以显示错误信息
-         }
-      },
-      async authorizeProfile() {
-         // 在这里处理授权逻辑
-         try {
-            const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/saveProfile`, {
-               method: 'POST',
-               headers: {
-                  'Content-Type': 'application/json'
-               },
-               body: JSON.stringify({
-                  code: this.code,
-                  profileId: this.selectedProfile
-               })
-            });
-
-            if (response.ok) { // 检查响应状态码是否为 200
-               this.showAlert = true; // 显示 alert
-               console.log('Profile authorized successfully');
-               this.$router.push('/publish');
-            } else {
-               console.error('Failed to authorize profile:', response.statusText);
-            }
-         } catch (error) {
-            console.error('Error authorizing profile:', error);
-         }
-      },
    }
 }
 </script>

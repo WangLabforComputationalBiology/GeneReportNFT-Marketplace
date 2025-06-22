@@ -81,12 +81,12 @@ function toAccount() {
 
         .logo {
             height: 100%;
-            font-size: 36px;
+            font-size: 3vh;
             font-weight: 700;
             color: #333;
 
             img {
-                height: 2.4vh;
+                height: 2.3vh;
             }
         }
     }
