@@ -2,6 +2,7 @@ package dto
 
 import "time"
 
+// LoginReq 登录请求
 type LoginReq struct {
 	UserAddress string `json:"user_address" binding:"required"`
 	Signature   string `json:"signature" binding:"required"`
