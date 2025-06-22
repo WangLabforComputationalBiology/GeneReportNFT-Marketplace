@@ -5,8 +5,6 @@ import (
 	"GeneReport_platform/internal/contracts/sharingPlatformContract"
 	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/pkg/appErrors"
-	"encoding/base64"
-	"errors"
 	"github.com/ethereum/go-ethereum/common"
 	"net/http"
 )
@@ -30,7 +28,7 @@ type iStudioBase interface {
 // CreateAllFromThirdPartyOnChain 从第三方平台创建（链上操作）
 func (s *StudioService) CreateAllFromThirdPartyOnChain(userAddressHex string, req dto.CreateAllFromThirdPartyReq) (dto.CreateAllFromThirdPartyResp, error) {
 	//验证对应的Metadata数据是否已经存在，geneSharing_contract_address，并根据profileId读取dataHash数组
-	results, err := dao.GetMetadataDao().GetMetadataDetailByProfileId(req.Profile.Id)
+	results, err := dao.GetMetadataDao().GetMetadataDetailByProfileId(req.ProfileId)
 	if err != nil {
 		return dto.CreateAllFromThirdPartyResp{}, appErrors.New(http.StatusInternalServerError, "请重试", err)
 	}
@@ -39,17 +37,9 @@ func (s *StudioService) CreateAllFromThirdPartyOnChain(userAddressHex string, re
 	var tempDataHashBytes32 [32]byte
 	//验证预构建的Metadata的合法性
 	for _, result := range results {
-		if result.Owner != userAddressHex {
-			return dto.CreateAllFromThirdPartyResp{}, appErrors.New(http.StatusBadRequest, "该Metadata数据不属于该用户", errors.New("参数有误"))
-		}
-		if result.GeneSharingContractAddress != "" {
-			return dto.CreateAllFromThirdPartyResp{}, appErrors.New(http.StatusBadRequest, "该Metadata数据已创建", errors.New("参数有误"))
-		}
-		// Base64 字符串解码为字节切片
-		dataHashBytes, err := base64.StdEncoding.DecodeString(result.DataHash)
-		if err != nil {
-			return dto.CreateAllFromThirdPartyResp{}, appErrors.New(http.StatusInternalServerError, "请重试", err)
-		}
+		// 十六进制字符串解码为字节切片
+		dataHashBytes := common.Hex2Bytes(result.DataHash)
+
 		//类型转换为[32]byte
 		copy(tempDataHashBytes32[:], dataHashBytes)
 
