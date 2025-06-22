@@ -30,7 +30,7 @@ type GetReportId struct {
 }
 
 type Profile struct {
-	ID     string `json:"id"`
+	Id     string `json:"id"`
 	Format string `json:"format"`
 	Name   string `json:"name"`
 	Sex    int    `json:"sex"`

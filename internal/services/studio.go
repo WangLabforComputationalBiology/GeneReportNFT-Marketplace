@@ -30,7 +30,7 @@ type iStudioBase interface {
 // CreateAllFromThirdPartyOnChain 从第三方平台创建（链上操作）
 func (s *StudioService) CreateAllFromThirdPartyOnChain(userAddressHex string, req dto.CreateAllFromThirdPartyReq) (dto.CreateAllFromThirdPartyResp, error) {
 	//验证对应的Metadata数据是否已经存在，geneSharing_contract_address，并根据profileId读取dataHash数组
-	results, err := dao.GetMetadataDao().GetMetadataDetailByProfileId(req.Profile.ID)
+	results, err := dao.GetMetadataDao().GetMetadataDetailByProfileId(req.Profile.Id)
 	if err != nil {
 		return dto.CreateAllFromThirdPartyResp{}, appErrors.New(http.StatusInternalServerError, "请重试", err)
 	}
