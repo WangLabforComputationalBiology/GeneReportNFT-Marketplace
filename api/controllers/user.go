@@ -440,7 +440,7 @@ func (u *User) ReceiveCode(ctx *gin.Context) {
 		fmt.Println("授权码为空，第二次进入这个接口，无需重定向！")
 		return
 	}
-	ctx.Redirect(http.StatusMovedPermanently, "http://localhost:5173/create/selectProfile/"+uuid)
+	ctx.Redirect(http.StatusMovedPermanently, "http://localhost:5173/publish/selectProfile/"+uuid)
 
 }
 
@@ -582,14 +582,14 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 	// 上下文获取address
 	addressCtx, _ := ctx.Get("user_address")
 	if addressCtx == nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "用户未登录或地址无效！"})
+		//ctx.JSON(http.StatusBadRequest, gin.H{"error": "用户未登录或地址无效！"})
 		log.Printf("用户未登录或地址无效！")
 		//return
 	}
 
 	address, ok := addressCtx.(string)
 	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "用户未登录或地址无效！"})
+		//ctx.JSON(http.StatusBadRequest, gin.H{"error": "用户未登录或地址无效！"})
 		log.Printf("用户未登录或地址无效！")
 		address = ""
 		//return
@@ -599,7 +599,7 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 	configs.DB.Where("profile_id = ?", toSave.ProfileId).Find(&unique)
 	if unique.ID != 0 {
 		log.Println("数据已经保存过！是否保存决定权再saveData服务")
-		ctx.JSON(http.StatusOK, gin.H{"msg": "数据已经保存过！是否保存决定权再saveData服务"})
+		//ctx.JSON(http.StatusOK, gin.H{"msg": "数据已经保存过！是否保存决定权再saveData服务"})
 
 	} else {
 		record := &dto.UniqueProfiles{
