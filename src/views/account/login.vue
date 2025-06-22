@@ -79,14 +79,12 @@ async function connectWallet() {
 
         if (!error.value) {
             // 3. 获取nonce
-            const loading = ElLoading.service({
+            var loading = ElLoading.service({
                 lock: true,
                 text: 'Loading...',
                 background: 'rgba(0, 0, 0, 0.7)',
                 customClass: 'loading',
             })
-
-
             const nonceResponse = await Api.get(`/user/nonce/${address.value}`);
             nonce.value = nonceResponse.data.data.nonce;
 
@@ -113,13 +111,14 @@ async function connectWallet() {
             if (typeof window !== 'undefined' && window.__VUE_APP__ && window.__VUE_APP__.config.globalProperties.$message) {
                 window.__VUE_APP__.config.globalProperties.$message.success('Login successful!');
             }
-            toAccount();
+            loading.close()
+            router.push('/account');
 
         }
 
     } catch (err) {
-        loading.close();
-        console.error('Error::', err.message, err.code);
+        loading.close()
+        alert(err)
         // Use globalProperties for $message in script setup
         const $message = typeof window !== 'undefined' && window.__VUE_APP__ && window.__VUE_APP__.config.globalProperties.$message
             ? window.__VUE_APP__.config.globalProperties.$message
@@ -140,16 +139,7 @@ async function connectWallet() {
 }
 
 
-const toAccount = () => {
-    const loading = ElLoading.service({
-        lock: true,
-        text: 'Loading...',
-        background: 'rgba(0, 0, 0, 0.7)',
-        customClass: 'loading',
-    })
-        loading.close()
-        router.push('/account');
-}
+
 </script>
 
 <style lang="scss" scoped>

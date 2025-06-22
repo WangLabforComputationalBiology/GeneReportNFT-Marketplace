@@ -82,6 +82,7 @@ function toAccount() {
         .logo {
             height: 100%;
             font-size: 3vh;
+            line-height: 5vh;
             font-weight: 700;
             color: #333;
 

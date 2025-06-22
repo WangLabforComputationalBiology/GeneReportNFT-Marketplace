@@ -194,12 +194,7 @@ const getProfileIds = async () => {
 let selectedProfile = ref(null);
 let name = ref('');
 let description = ref('');
-const table = ref({
-   profileId: selectedProfile,
-   GeneSharingName: name,
-   description: description,
-   tags: null
-});
+let tags = ref('');
 
 const confirmClick = () => {
    isVisible.value = false;
@@ -208,7 +203,10 @@ const confirmClick = () => {
 const createData = async () => {
    try {
       const res = await Api.post('/studio/createFromThirdParty', {
-         table: table
+         profile_id: selectedProfile.value,
+         name: name.value,
+         description: description.value,
+         tags: tags.value
       });
       if (res.data.code === 200) {
          console.log('Data created successfully:', res.data);
