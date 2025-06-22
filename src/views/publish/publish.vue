@@ -7,55 +7,59 @@
          <div class="start-btn" @click="turnToSteps">Start</div>
       </div>
 
-      <div class="wrapper-left" v-if="this.step >= 0">
+      <div class="wrapper-left" v-if="step >= 0">
          <h1><span style="color: #169608;">Start your journey</span> from here</h1>
          <div class="inside-step">
-            <img src="../../icons/status_ing.svg" alt="status icon" v-if="this.step == 0">
-            <img src="../../icons/status_ok.svg" alt="status icon" v-if="this.step > 0">
-            <div :class="{ 'step-tip': true, 'active': this.step >=0 ? true : false }">Verify your account. We will send you a
+            <img src="../../icons/status_ing.svg" alt="status icon" v-if="step == 0">
+            <img src="../../icons/status_ok.svg" alt="status icon" v-if="step > 0">
+            <div :class="{ 'step-tip': true, 'active': step >= 0 ? true : false }">Verify your account. We will send you
+               a
                organization by email.
             </div>
 
          </div>
          <div class="line"></div>
          <div class="inside-step">
-            <img src="../../icons/status_ing.svg" alt="status icon" v-if="this.step == 1">
-            <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="this.step < 1">
-            <img src="../../icons/status_ok.svg" alt="status icon" v-if="this.step > 1">
-            <div :class="{ 'step-tip': true, 'active': this.step >= 1 ? true : false }">Allow us to access your genetic reports. We ensure
+            <img src="../../icons/status_ing.svg" alt="status icon" v-if="step == 1">
+            <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="step < 1">
+            <img src="../../icons/status_ok.svg" alt="status icon" v-if="step > 1">
+            <div :class="{ 'step-tip': true, 'active': step >= 1 ? true : false }">Allow us to access your genetic
+               reports. We ensure
                that no additonal personal data
                will be stored by your platform.</div>
 
          </div>
          <div class="line"></div>
          <div class="inside-step">
-            <img src="../../icons/status_ing.svg" alt="status icon" v-if="this.step == 2">
-            <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="this.step < 2">
-            <img src="../../icons/status_ok.svg" alt="status icon" v-if="this.step > 2">
-            <div :class="{ 'step-tip': true, 'active': this.step >= 2 ? true : false }">Create your unique data. Once your item is minted
+            <img src="../../icons/status_ing.svg" alt="status icon" v-if="step == 2">
+            <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="step < 2">
+            <img src="../../icons/status_ok.svg" alt="status icon" v-if="step > 2">
+            <div :class="{ 'step-tip': true, 'active': step >= 2 ? true : false }">Create your unique data. Once your
+               item is minted
                you will not be able to change
                any of its information.</div>
 
          </div>
          <div class="line"></div>
          <div class="inside-step">
-            <img src="../../icons/status_ing.svg" alt="status icon" v-if="this.step == 3">
-            <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="this.step < 3">
-            <img src="../../icons/status_ok.svg" alt="status icon" v-if="this.step > 3">
-            <div :class="{ 'step-tip': true, 'active': this.step >= 3 ? true : false }" style="line-height: 28px;">Offer your data for sale
+            <img src="../../icons/status_ing.svg" alt="status icon" v-if="step == 3">
+            <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="step < 3">
+            <img src="../../icons/status_ok.svg" alt="status icon" v-if="step > 3">
+            <div :class="{ 'step-tip': true, 'active': step >= 3 ? true : false }" style="line-height: 28px;">Offer your
+               data for sale
                on the plaza. Prior listing,
                you may delete your data; However, once listed, you will not be able to delete your data.</div>
 
          </div>
       </div>
 
-      <div class="wrapper-right" v-if="this.step === 0">
+      <div class="wrapper-right" v-if="step === 0">
          <el-button @click="toVerify" class="custom-button" style="width: 400px;">
             Click to verify your organization
          </el-button>
       </div>
 
-      <div class="wrapper-right" style="display: block;" v-if="this.step === 1 && profiles.length <= 0">
+      <div class="wrapper-right" style="display: block;" v-if="step === 1 && profiles.length <= 0">
          <div class="platforms" @click="redirectToOAuth">
             <img src="../../icons/wegene_logo.svg" alt="wegene">
          </div>
@@ -73,37 +77,38 @@
       </div>
 
 
-      <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="this.step === 2">
+      <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="step === 2">
          <p>Report *</p>
-         <div class="select">
-            <div class="add">+</div>
-            <div>Select the report as collection</div>
+         <div class="select" @click="getProfileIds">
+            <div class="add" v-if="!selectedProfile">+</div>
+            <div v-if="!selectedProfile">Select the report as collection</div>
+            <div v-if="selectedProfile">{{ selectedProfile }}</div>
          </div>
          <p>Name *</p>
-         <el-input class="name-input"></el-input>
+         <el-input class="name-input" v-model="name" placeholder="Please enter the name of the collection"></el-input>
          <p class="introduction" style="margin-bottom: 0;">Since there are several analysis files in the genetic
             report, your
             GNFT will be
             automatically given a unique name depending on the Collection name you provide.</p>
          <p class="introduction"><span class="click-here">Click here</span> to view an example.</p>
          <p>Description</p>
-         <input type="text" class="Description-input"
-            placeholder="Please enter a description of the collection"></input>
-         <p class="introduction">The description will be included in every GNFT in the Collection</p>
-         <p>Trait</p>
+         <input type="text" class="Description-input" placeholder="Please enter a description of the collection"
+            v-model="description"></input>
+         <!-- <p class="introduction">The description will be included in every GNFT in the Collection</p> -->
+         <!-- <p>Trait</p>
          <p class="introduction">Traits describe attributes of your item. They appear as filters inside your
             collection page
-            and are also listed out inside your item page.</p>
-         <div class="add-trait">+ Add trait</div>
+            and are also listed out inside your item page.</p> -->
+         <!-- <div class="add-trait">+ Add trait</div> -->
          <div class="button-wrapper" style="margin-top: 50px;">
             <el-button class="button" @click="back" style="right: 120px;">back</el-button>
-            <el-button class="button" @click="next" style="right: 0px;">Create</el-button>
+            <el-button class="button" @click="createData" style="right: 0px;">Create</el-button>
 
          </div>
 
       </div>
 
-      <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="this.step === 3">
+      <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="step === 3">
          <h2>Select your collection</h2>
          <div class="button-wrapper" style="margin-top: 50px;">
             <el-button class="button" @click="back">back</el-button>
@@ -112,60 +117,112 @@
       </div>
 
    </div>
+   <el-drawer v-model="isVisible" title="Please select a profile" :direction="ltr" :before-close="handleClose">
+      <el-table :data="profiles" @selection-change="handleSelectionChange">
+         <el-table-column>
+            <template #default="{ row }">
+               <el-radio v-model="selectedProfile" :label="row" />
+            </template>
+         </el-table-column>
+      </el-table>
+      <p class="selected-profile">Selected Profile: {{ selectedProfile }}</p>
+      <template #footer>
+         <div style="flex: auto">
+            <el-button @click="confirmClick">Confirm</el-button>
+         </div>
+      </template>
+   </el-drawer>
 </template>
 
 
-<script lang="js">
-import SliderCheck from '../verify/slidecheck.vue';
+<script lang="js" setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import Bubbles from '../components/bubbles.vue';
-// import Api from '../../axios/aixos';
+import Api from '../../axios/aixos';
 import { useWalletStore } from '@/stores/account';
+
 const walletStore = useWalletStore();
+const router = useRouter();
 
-export default {
-   name: 'Create',
-   components: {
-      SliderCheck,
-      Bubbles
-   },
-   data() {
-      return {
-         step: -1,//0:进行手机验证
-         profiles: [],
-         showAlert: false, // 添加状态变量
-         showIndexPage: true,
-         authorized: false,
-      }
-   },
-   methods: {
-      turnToSteps() {
-         this.showIndexPage = false;
-         if (this.showIndexPage === false && walletStore.insititution) {
-            this.step += 1;
-         }
-         this.step += 1;
-      },
+const step = ref(-1); // 0:进行手机验证
+
+const showIndexPage = ref(true);
 
 
-      toVerify() {
-         this.$router.push('/verify');
-      },
-      next() {
-         this.step++;
-      },
-      back() {
-         this.step--;
-      },
-
-      redirectToOAuth() {
-         window.location.href = import.meta.env.VITE_APP_BASE_URL + '/user/oauth2Wegene';
-      },
-      getCode() {
-         // Add logic to send verification code
-         console.log('Sending verification code...');
-      },
-
+function turnToSteps() {
+   showIndexPage.value = false;
+   if (showIndexPage.value === false && walletStore.insititution) {
+      step.value += 1;
    }
+   step.value += 1;
+}
+
+function toVerify() {
+   router.push('/verify');
+}
+
+function next() {
+   step.value++;
+}
+
+function back() {
+   step.value--;
+}
+
+function redirectToOAuth() {
+   window.location.href = import.meta.env.VITE_APP_BASE_URL + '/user/oauth2Wegene';
+}
+
+let profiles = ref([]);
+let isVisible = ref(false);
+const getProfileIds = async () => {
+   isVisible.value = true;
+   try {
+      const res = await Api.get('/studio/getProfileIds');
+      if (res.data.code === 200) {
+         profiles.value = res.data.data.profile_ids
+         profileName.value = res.data.data.profile_name
+         console.log(profiles);
+      }
+   } catch (error) {
+      console.error(error);
+   }
+}
+
+/* 表单提交 */
+let selectedProfile = ref(null);
+let name = ref('');
+let description = ref('');
+const table = ref({
+   profileId: selectedProfile,
+   GeneSharingName: name,
+   description: description,
+   tags: null
+});
+
+const confirmClick = () => {
+   isVisible.value = false;
+}
+
+const createData = async () => {
+   try {
+      const res = await Api.post('/studio/createFromThirdParty', {
+         table: table
+      });
+      if (res.data.code === 200) {
+         console.log('Data created successfully:', res.data);
+         // next();
+         console.log('Data created successfully:', res.data);
+      } else {
+         console.error('Error creating data:', res.data);
+      }
+   } catch (error) {
+      console.error('Error creating data:', error);
+   }
+};
+
+const handleSelectionChange = (val) => {
 }
 </script>
 
@@ -197,13 +254,24 @@ export default {
    height: 95vh;
    width: 100vw;
    min-width: 1200px;
-   
+
    display: flex;
    position: absolute;
    flex-direction: column;
    gap: 30px;
    justify-content: center;
    align-items: center;
+   animation: fadeIn 0.2s ease-in-out 0s forwards;
+
+   @keyframes fadeIn {
+      0% {
+         opacity: 0;
+      }
+
+      100% {
+         opacity: 1;
+      }
+   }
 
    .title {
       font-size: 70px;
@@ -246,6 +314,17 @@ h1 {
    min-width: 600px;
    padding: 150px 80px 100px 160px;
    height: 95vh;
+   animation: fadeIn 0.2s ease-in-out 0s forwards;
+
+   @keyframes fadeIn {
+      0% {
+         opacity: 0;
+      }
+
+      100% {
+         opacity: 1;
+      }
+   }
 
 
    .title {
@@ -298,6 +377,17 @@ h1 {
    padding: 100px 160px;
    height: 95vh !important;
    overflow: auto;
+   animation: fadeIn 0.2s ease-in-out 0s forwards;
+
+   @keyframes fadeIn {
+      0% {
+         opacity: 0;
+      }
+
+      100% {
+         opacity: 1;
+      }
+   }
 
    .platforms {
       position: relative;

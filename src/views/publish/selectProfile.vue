@@ -7,7 +7,7 @@
             </span>
 
         </div>
-        <h3 class="user">User code: {{ code }} </h3>
+        <!-- <h3 class="user">User code: {{ code }} </h3> -->
         <div class="card-body">
             <div v-if="profiles.length > 0">
                 <p style="color: #E6A23C;">Please select a Profile:</p>
