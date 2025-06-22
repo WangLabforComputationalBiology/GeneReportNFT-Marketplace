@@ -3,6 +3,7 @@ package controllers
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
+	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/internal/services"
 	"GeneReport_platform/pkg/appErrors"
 	"GeneReport_platform/pkg/auth"
@@ -84,7 +85,6 @@ func (u *User) GetNonce(ctx *gin.Context) {
 //	@Failure		503				{object}	dto.ErrResponse	"服务不可用，获取nonce失败"
 //	@Failure		401				{object}	dto.ErrResponse	"签名验证失败"
 func (u *User) Login(ctx *gin.Context) {
-	log.Println("进入登录接口！")
 
 	var req dto.LoginReq
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -127,20 +127,30 @@ func (u *User) Login(ctx *gin.Context) {
 
 	//4，确保用户存在，不存在执行创建
 	if err := services.UserServ.EnsureUserExists(address); err != nil {
-		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
+		ctx.Error(appErrors.New(http.StatusInternalServerError, "用户创建失败,请重新登录", err))
 		return
 	}
 
-	//5.生成token
+	//5.1 验证成功，返回userInfo
+	userInfo, _ := services.UserServ.GetUserInfoByID(address)
+
+	//5.2生成token
 	jwt, _ := auth.GenerateToken(address)
 	ctx.JSON(200, dto.Response{
 		Code:    http.StatusOK,
 		Message: "成功登录",
 		Data: gin.H{
-			"access_token": jwt,
+			"access_token": "Bearer " + jwt,
+			"user": gin.H{
+				"address":     userInfo.Address,
+				"name":        userInfo.Name,
+				"institution": userInfo.Institution,
+				"email":       userInfo.Email,
+				"created_at":  userInfo.CreateAt,
+			},
 		},
 	})
-	log.Printf("签名验证成功！\n用户地址: %v;用户签名: %v\n", address, signature)
+	log.Printf("签名验证成功！\n")
 }
 
 // Logout
@@ -189,7 +199,7 @@ func (u *User) Logout(ctx *gin.Context) {
 //	@Router			/user/edit/name [post]
 func (u *User) EditUserName(ctx *gin.Context) {
 	log.Println("进入编辑用户名接口！")
-	var req dto.UpdateUser
+	var req dao.UpdateUser
 	if err := ctx.ShouldBindJSON(&req); err != nil || req.Name == "" {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
@@ -201,7 +211,7 @@ func (u *User) EditUserName(ctx *gin.Context) {
 	newName := req.Name
 
 	log.Println(" 来自post请求体的json的new_name:" + newName)
-	toUpdate := dto.UpdateUser{Name: newName}
+	toUpdate := dao.UpdateUser{Name: newName}
 	if err := services.UserServ.UpdateUser(toUpdate); err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
 		return
@@ -275,7 +285,7 @@ func (u *User) UploadAvatar(ctx *gin.Context) {
 	log.Println("用户:", address, "正在更改头像！")
 	//更改数据库的picture字段
 
-	var toUpdate = dto.UpdateUser{Avatar: "/test/" + pictureName}
+	var toUpdate = dao.UpdateUser{Avatar: "/test/" + pictureName}
 	// 修改数据库的内容
 	if err := services.UserServ.UpdateUser(toUpdate); err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, gin.H{"error": "mysql不可用,上传头像失败"})
@@ -317,9 +327,6 @@ func (u *User) GetUserInfo(ctx *gin.Context) {
 		ctx.Error(err)
 	}
 	ctx.JSON(http.StatusOK, userInfo)
-
-	// 打印查询到的用户信息
-	log.Printf("找到用户: %+v\n", userInfo)
 
 }
 
@@ -366,9 +373,40 @@ func (u *User) GetProfileOfUser(c *gin.Context) {
 	c.Data(http.StatusOK, "image/png", data)
 }
 
-// GetGNFTList 获取用户已获取到数据的GNFT列表
-func (u *User) GetGNFTList(ctx *gin.Context) {
+// SendEmailCode 通过手机号码获取验证码并存入redis
+func (u *User) SendEmailCode(ctx *gin.Context) {
+	var req dto.SendEmailCodeReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查"))
+		return
+	}
 
+	if err := services.UserServ.SendEmailCode(ctx.GetString("user_address"), req.Institution, req.Email); err != nil {
+		ctx.Error(err)
+		return
+	}
+	ctx.JSON(http.StatusOK, dto.Response{
+		Code:    http.StatusOK,
+		Message: "发送成功",
+	})
+}
+
+// VerifyEmailCode 验证手机验证码
+func (u *User) VerifyEmailCode(ctx *gin.Context) {
+	var req dto.VerifyEmailCodeReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查", err))
+		return
+	}
+	if isPass, err := services.UserServ.VerifyEmailCode(req.Email, req.Code, ctx.GetString("user_address")); err != nil {
+		ctx.Error(err)
+		return
+	} else if isPass {
+		ctx.JSON(http.StatusOK, dto.Response{
+			Code:    http.StatusOK,
+			Message: "邮箱验证成功",
+		})
+	}
 }
 
 //====================================OAuth2======================================
@@ -395,7 +433,7 @@ func (u *User) ReceiveCode(ctx *gin.Context) {
 
 	//生成一个uuid
 	uuid := uuid.New().String()
-	//将uuid和toen的映射存到redis，5分钟后过期
+	//将uuid和token的映射存到redis，5分钟后过期
 	configs.RedisClient.Set(ctx, uuid, token, 5*time.Minute)
 	fmt.Println("存到redis的uuid：token = ", uuid, "------", token)
 	if code == "" {
@@ -552,8 +590,8 @@ func (u *User) GetUsersProfileByCode(ctx *gin.Context) {
 		return
 	}
 	usersProfile := getReportId(token)
-	usersProfile.Profiles = append(usersProfile.Profiles, dto.Profile{Id: "fabc-8555-cdalse", Name: "xxx", Sex: 0})
-	usersProfile.Profiles = append(usersProfile.Profiles, dto.Profile{Id: "6abc-1626299398-copy", Name: "XXXX", Sex: 0})
+	usersProfile.Profiles = append(usersProfile.Profiles, dto.Profile{ID: "fabc-8555-cdalse", Name: "xxx", Sex: 0})
+	usersProfile.Profiles = append(usersProfile.Profiles, dto.Profile{ID: "6abc-1626299398-copy", Name: "XXXX", Sex: 0})
 	ctx.JSON(http.StatusOK, usersProfile)
 }
 

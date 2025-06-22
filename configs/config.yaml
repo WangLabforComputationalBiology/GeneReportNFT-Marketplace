@@ -28,22 +28,15 @@ context:
   timeout: 3
 logger:
 
-# sepolia测试网
-ether_scan:
-  apikey: PS6539ETQH1ZKUE3FVIYH6BVFHE3KT93RB
-  endpoint: https://api-sepolia.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=%s&apikey=%s
-  proxy: true
-  proxy_url: http://127.0.0.1:7897
-
 wegene:
   id: szjsbiolab
   secret: cgioHbVHp6xp2rZzPthkkp6BRNfsDOr3
   #redirect_host: localhost
-  redirect_host: 120.24.168.132
+  redirect_host: 10.108.10.51
 
 
 rocketmq:
-  name_server: 127.0.0.1:9876
+  name_server: 120.24.168.132:9876
   group: rocketmq_group
   topic: rocketmq_topic
   tag: rocketmq_tag

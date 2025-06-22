@@ -16,12 +16,6 @@ func registerSwaggerRouter(r *gin.Engine) {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
-func testRouter(r *gin.RouterGroup) {
-	//测试的接口
-	r.GET("/user", controllers.UserController.Test)
-	r.GET("/txinfo", controllers.GetTransactionInfo)
-}
-
 func registerUserRouter(r *gin.RouterGroup) {
 
 	//todo get请求，  - url：/user/nonce/:账号 ,使用https，path和参数会被加密，account可以直接放在url
@@ -47,8 +41,7 @@ func registerUserRouter(r *gin.RouterGroup) {
 	r.POST("/logout", middlewares.AuthMiddleware(), controllers.UserController.Logout)
 	//用户主页信息
 	r.GET("/info", middlewares.AuthMiddleware(), controllers.UserController.GetUserInfo)
-	//获取用户收藏列表
-	r.GET("/gnfts", middlewares.AuthMiddleware(), controllers.UserController.GetGNFTList)
+
 	//获取用户头像
 	r.GET("/profile", middlewares.AuthMiddleware(), controllers.UserController.GetProfileOfUser)
 	//用户订单信息
@@ -62,11 +55,11 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//用户授权哪份报告
 	r.POST("/saveProfile" /*middlewares.AuthMiddleware(), */, controllers.UserController.SaveProfileInfo)
 	//发送验证码
-	r.POST("/send_sms", controllers.UserController.SendSMSCode)
+	r.POST("/send_email", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.UserController.SendEmailCode)
 	//验证验证码
-	r.POST("/verify_sms", controllers.UserController.VerifySMSCode)
+	r.POST("/verify_email", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.UserController.VerifyEmailCode)
 	//获取用户的基因数据
-	r.GET("/getData/:param" /*, middlewares.AuthMiddleware()*/, controllers.OrderCtrller.GetData)
+	r.GET("/getData/:param", middlewares.AuthMiddleware(), controllers.MetadataController.GetData)
 }
 func registerGNFTRouter(r *gin.RouterGroup) {
 	//藏品图片
@@ -88,17 +81,13 @@ func SetupRouter() *gin.Engine {
 	//商城首页
 	r.GET("/")
 
-	Test := r.Group("/test")
 	User := r.Group("/user")
 	NFT := r.Group("/nft")
 	Studio := r.Group("/studio")
 	registerSwaggerRouter(r)
-	testRouter(Test)
 	registerUserRouter(User)
 	registerGNFTRouter(NFT)
 	registerStudioRouter(Studio)
 
-	//前缀是/test
-	controllers.MyTestRoute(r)
 	return r
 }

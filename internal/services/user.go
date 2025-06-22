@@ -3,19 +3,22 @@ package services
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
+	"GeneReport_platform/internal/SMTP"
+	"GeneReport_platform/internal/contracts/sharingPlatformContract"
 	"GeneReport_platform/internal/dao"
-	"GeneReport_platform/internal/smsVerify"
 	"GeneReport_platform/pkg/appContext"
 	"GeneReport_platform/pkg/appErrors"
 	"GeneReport_platform/pkg/auth"
 	"context"
 	"errors"
-	unisms "github.com/apistd/uni-go-sdk/sms"
+	"fmt"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/go-redis/redis/v8"
 	"github.com/mitchellh/mapstructure"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -49,7 +52,7 @@ func (u *userService) IsNewUser(userAddress string) (bool, appErrors.IAppError) 
 }
 
 // EnsureUserExists 确保用户存在
-func (u *userService) EnsureUserExists(userAddress string) appErrors.IAppError {
+func (u *userService) EnsureUserExists(userAddress string) error {
 	if isNew, err := UserServ.IsNewUser(userAddress); err != nil {
 		return err
 	} else if isNew {
@@ -80,7 +83,7 @@ func (u *userService) GetNonce(address string) (string, appErrors.IAppError) {
 	return "", appErrors.New(http.StatusServiceUnavailable, "获取nonce失败", strCmd.Err())
 }
 
-func (u *userService) UpdateUser(toUpdate dto.UpdateUser) appErrors.IAppError {
+func (u *userService) UpdateUser(toUpdate dao.UpdateUser) appErrors.IAppError {
 	if err := dao.GetUserDao().UpdateUser(toUpdate); err != nil {
 		return appErrors.New(http.StatusServiceUnavailable, "服务器内部错误", err)
 	}
@@ -102,67 +105,116 @@ func (u *userService) GetUserInfoByID(address string) (dto.UserInfoResp, error) 
 	return userInfo, nil
 }
 
-// SendSMSCode 发送短信验证码
-// Redis存储格式 key:"SMS_phone:{phone}" value:{"code":{code},"attempts":0} expire:10min
-func (u *userService) SendSMSCode(phone string) error {
-	message := unisms.BuildMessage()
-	message.SetTo(phone)
-	message.SetSignature("林锐轩")
-	message.SetTemplateId("pub_verif_en_ttl2")
-
-	codeToSave := smsVerify.GenerateSMSCode()
-	// 设置模板数据（code,ttl）
-	message.SetTemplateData(map[string]string{"code": codeToSave, "ttl": "10"})
-	// 设置上下文超时
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	// 发送短信
-	_, err := smsVerify.UniSMSClient.Send(message)
-
+func (u *userService) VerifyInstitutionEmail(institutionName, email string) (isValid bool, err error) {
+	suffix, err := dao.GetUserDao().GetEmailSuffix(institutionName)
 	if err != nil {
-		return appErrors.New(http.StatusServiceUnavailable, "服务繁忙，请稍后再试", err)
+		return false, appErrors.New(http.StatusInternalServerError, "服务器内部错误", err)
+	}
+	if strings.Split(email, "@")[1] == suffix[1:] {
+		return true, nil
+	}
+	return false, nil
+}
+
+// SendEmailCode 发送短信验证码
+// Redis存储格式
+// key:"email_code:{email}" value:{"code":{code},"institution":{institution}} expire: 3min
+// key:"email_attempts:{email}" value:0 expire: 4min
+func (u *userService) SendEmailCode(userAddress, institutionName, email string) error {
+	//验证邮箱是否已被使用
+	isUsed, err := dao.GetUserDao().IsEmailUsed(email)
+	if err != nil {
+		return appErrors.New(http.StatusInternalServerError, "服务器内部错误", err)
+	}
+	if isUsed {
+		return appErrors.New(http.StatusConflict, "邮箱已被使用")
 	}
 
+	//验证邮箱后缀合法性
+	suffix, err := dao.GetUserDao().GetEmailSuffix(institutionName)
+	if err != nil {
+		return appErrors.New(http.StatusInternalServerError, "服务器内部错误", err)
+	}
+	if strings.Split(email, "@")[1] != suffix[1:] {
+		return appErrors.New(http.StatusBadRequest, "邮箱格式不正确")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	codeToSave := SMTP.GenerateVerifyCode()
+
+	User, _ := dao.GetUserDao().GetUser(userAddress)
+
+	// 发送验证码邮件
+	err = SMTP.SendEmailCode(codeToSave, User.Name, userAddress, email)
+	if err != nil {
+		return appErrors.New(http.StatusInternalServerError, "SMTP服务繁忙", err)
+	}
 	// 创建 Pipeline
 	pipe := configs.RedisClient.Pipeline()
 
-	// 在 Pipeline 中添加 HSet 命令
-	pipe.HSet(ctx, "SMS_phone:"+phone, map[string]interface{}{
-		"code":     codeToSave,
-		"attempts": 0,
+	// 添加 HSet 命令
+	setCmd := pipe.HSet(ctx, "email_code:"+email, map[string]interface{}{
+		"code":        codeToSave,
+		"institution": institutionName,
 	})
-
-	// 在 Pipeline 中添加 Expire 命令
-	pipe.Expire(ctx, "SMS_phone:"+phone, 10*time.Minute)
+	pipe.Expire(ctx, "email_code:"+email, 3*time.Minute)
+	// 添加 Expire 命令
+	expiryCmd := pipe.Set(ctx, "email_attempts:"+email, 0, 4*time.Minute)
 
 	// 执行 Pipeline
 	_, err = pipe.Exec(ctx)
-	if err != nil {
+	if err != nil || expiryCmd.Err() != nil || setCmd.Err() != nil {
 		return appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
 	return nil
 }
 
-// VerifySMSCode 验证短信验证码
-// Redis存储格式 key:"SMS_phone:{phone}" value:{"code":{code},"attempts":{attempts}} expire:10min
-func (u *userService) VerifySMSCode(phone string, code string) (bool, error) {
-	var correctCode string
-	var attempts int64
-	sliceCmd := configs.RedisClient.HMGet(context.Background(), "SMS_phone:"+phone, "code", "attempts")
-	if err := sliceCmd.Err(); err != nil {
+// VerifyEmailCode 验证短信验证码
+// Redis存储格式
+// key:"email_code:{email}" value:{"code":{code},"institution":{institution}} expire: 3min
+// key:"email_attempts:{email}" value:0 expire: 4min
+func (u *userService) VerifyEmailCode(email string, code string, userAddress string) (bool, error) {
+	// 创建 Pipeline
+	pipe := configs.RedisClient.Pipeline()
+
+	getAllCmd := pipe.HGetAll(context.Background(), "email_code:"+email)
+	incrCmd := pipe.IncrBy(context.Background(), "email_attempts:"+email, 1)
+
+	// 执行 Pipeline
+	_, err := pipe.Exec(context.Background())
+	if err != nil || getAllCmd.Err() != nil || incrCmd.Err() != nil {
 		return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+	}
+
+	if vals, err := getAllCmd.Result(); err != nil {
+		return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+	} else if vals["code"] == "" {
+		return false, appErrors.New(http.StatusBadRequest, "验证码已过期")
 	} else {
-		correctCode = sliceCmd.Val()[0].(string)
-		attempts = sliceCmd.Val()[1].(int64)
+		attempts, _ := incrCmd.Result()
+		//若尝试次数过多
 		if attempts >= 5 {
-			return false, appErrors.New(http.StatusTooManyRequests, "验证码错误次数过多，请十分钟后再试", err)
+			return false, appErrors.New(http.StatusTooManyRequests, "验证码错误次数过多，请三分钟后再试")
 		}
-
-		if correctCode != code {
-			defer configs.RedisClient.HIncrBy(context.Background(), "SMS_phone:"+phone, "attempts", 1)
+		//若验证码错误
+		if vals["code"] != code {
 			return false, appErrors.New(http.StatusBadRequest, "验证码错误", errors.New("验证码错误"))
-
 		}
+
+		//验证码正确，更新到用户表字段
+		err = dao.GetUserDao().UpdateUserInstitution(userAddress, vals["institution"], email)
+		if err != nil {
+			return false, err
+		}
+
+		//验证码正确，调合约
+		_, receipt, err := sharingPlatformContract.GetContractIns().SetUserAuthStatus(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress))
+		if err != nil {
+			return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+		}
+		fmt.Printf("SetUserAuthStatus执行成功，交易hash为：%v\n", receipt.TransactionHash)
 		return true, nil
 	}
+
 }

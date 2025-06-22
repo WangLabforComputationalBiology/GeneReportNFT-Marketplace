@@ -1,19 +1,13 @@
 package dto
 
-type CheckCAPTCHAReq struct {
-	Angle int `json:"angle"`
+type CreateAllFromThirdPartyReq struct {
+	Profile         Profile // 第三方文件信息
+	GeneSharingName string  `json:"gene_sharing_name"`
+	Description     string  `json:"description"`
+	Tags            string  `json:"tags"` // tags用分号分隔,ex:third party:wegene;...
 }
-type SendSMSCodeReq struct {
-	Phone string `json:"phone" binding:"required"`
-}
-type VerifySMSCodeReq struct {
-	Phone string `json:"phone" binding:"required"`
-	Code  string `json:"code" binding:"required"`
-}
-type CreateCollectionReq struct {
-	ProfileID      string `json:"profile_id"` //profile_id将作为collection_id
-	CollectionName string `json:"collection_name"`
-	Symbol         string `json:"symbol"`
-	Salt           string `json:"salt"`
-	Description    string `json:"description"`
+
+type CreateAllFromThirdPartyResp struct {
+	NewGeneSharingContractAddress string `json:"new_geneSharing_contract_address"`
+	TransactionHash               string `json:"transaction_hash"`
 }

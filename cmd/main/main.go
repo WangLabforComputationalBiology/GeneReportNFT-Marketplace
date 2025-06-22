@@ -2,7 +2,6 @@ package main
 
 import (
 	"GeneReport_platform/api/router"
-	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/setup"
 	"GeneReport_platform/pkg/rocketmq"
 	"github.com/gin-gonic/gin"
@@ -19,8 +18,7 @@ func main() {
 	setup.Setup()
 	r := gin.Default()
 	r = router.SetupRouter()
-
-	go rocketmq.Myproducer("psave")                //启动生产者
-	_ = r.Run(configs.GlobalConfig.AppConfig.Addr) //在配置的端口运行
+	go rocketmq.Myproducer("psave") //启动生产者
+	_ = r.Run("0.0.0.0:7070")       //在配置的端口运行
 
 }

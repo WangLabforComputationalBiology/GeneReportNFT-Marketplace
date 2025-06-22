@@ -18,21 +18,21 @@ drop table if exists users;
 -- 创建用户列表表
 CREATE TABLE `users`
 (
-    `address`   varchar(42) NOT NULL PRIMARY KEY COMMENT '钱包账户地址',
-    `name`      varchar(32) NOT NULL COMMENT '用户名',
-    `avatar`    varchar(32) NOT NULL DEFAULT '默认头像path' COMMENT '头像地址/文件',
-    `create_at` datetime    NOT NULL COMMENT '账户注册时间',
-    `country`   varchar(32)          default 'UNKNOWN' COMMENT '所在国家'
+    `address`     varchar(42) NOT NULL PRIMARY KEY COMMENT '钱包账户地址',
+    `name`        varchar(32) NOT NULL COMMENT '用户名',
+    `create_at`   datetime    NOT NULL COMMENT '账户注册时间',
+    `institution` varchar(32)          default 'UNKNOWN' COMMENT '机构名称',
+    `email`       varchar(32)          default 'UNKNOWN' COMMENT '机构邮箱'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='用户列表';
 
 
 insert into users
-values ('0xAc6b478Ae65E7D955F64ED80E65E613ea34c820f', '陈焕凯', '/test/1.png', NOW(), 'China'),
-       ('0x9D0bf56A50090bE7F7f8Fad07DDa4949FBc6Cd17', '黄瑞升', '/test/2.png', NOW(), 'America'),
-       ('0x8e174fC25f7d4373b589DAcAaC884985C1C6D053', '唐嘉铭', '/test/3.png', NOW(), 'China'),
-       ('0x02729118740a8b9D6a6eF171b7Fe30fEBeDe34F2', '林锐轩', '/test/4.png', now(), 'German'),
-       ('0xdD27Ef37a5c09E4c940C2EDd900ABB9B5d220a13', 'lin林', '/test/5.png', now(), 'Canada');
+values ('0xAc6b478Ae65E7D955F64ED80E65E613ea34c820f', '陈焕凯', '/test/1.png', NOW(), 'UNKNOWN', 'UNKNOWN'),
+       ('0x9D0bf56A50090bE7F7f8Fad07DDa4949FBc6Cd17', '黄瑞升', '/test/2.png', NOW(), 'UNKNOWN', 'UNKNOWN'),
+       ('0x8e174fC25f7d4373b589DAcAaC884985C1C6D053', '唐嘉铭', '/test/3.png', NOW(), 'UNKNOWN', 'UNKNOWN'),
+       ('0x02729118740a8b9D6a6eF171b7Fe30fEBeDe34F2', '林锐轩', '/test/4.png', now(), 'UNKNOWN', 'UNKNOWN'),
+       ('0xdD27Ef37a5c09E4c940C2EDd900ABB9B5d220a13', 'lin林', '/test/5.png', now(), 'UNKNOWN', 'UNKNOWN');
 
 
 drop table if exists GNFT_basic;
@@ -851,91 +851,50 @@ VALUES ('2022', 101, '张', '汉族', '北京', '北京市'),
        ('2026', 510, '阎', '汉族', '嘉兴', '浙江省');
 
 
--- todo 这个主要是给redis设计的字段！  创建GNFT_web_auth_profile_id表
-CREATE TABLE `GNFT_web_auth_profile_id`
+
+drop table if exists `geneSharings`;
+-- geneSharing合集表
+CREATE TABLE geneSharings
 (
-    `profile_id` varchar(32)  NOT NULL COMMENT '基因报告id',
-    `token`      varchar(255) NOT NULL COMMENT '临时访问密码',
-    `expires_in` int(10)      NOT NULL DEFAULT 1
+    `contract_address` VARCHAR(42) COMMENT 'geneSharing集合地址',
+    `name`             VARCHAR(32) COMMENT 'geneSharing集合名称',
+    `description`      TEXT COMMENT 'geneSharing集合描述',
+    `creator_address`  VARCHAR(42) COMMENT 'geneSharing集合创建者',
+    `created_at`       DATETIME COMMENT '创建时间',
+    `explorer_link`    VARCHAR(255) COMMENT '链上合约链接',
+    `item_amount`      INT COMMENT 'MetaData数量',
+    `is_official`      TINYINT(1) COMMENT '是否第三方官方授权构建',
+    `tags`             VARCHAR(255) COMMENT '标签，以分号分隔，,ex:third party:wegene;...',
+    INDEX idx_creator (creator_address)
 );
 
--- 交易记录表
-drop table if exists `GNFT_transaction`;
-CREATE TABLE `GNFT_transaction`
+drop table if exists `metadatas`;
+-- genSharing集合下的metadatas表
+CREATE TABLE metadatas
 (
-    `tx_hash`    varchar(64) NOT NULL COMMENT '交易哈希',
-    `from`       varchar(64) NOT NULL COMMENT '客户地址',
-    `to`         varchar(64) NOT NULL COMMENT '商家地址',
-    `gas`        varchar(50) NOT NULL COMMENT '交易产生的gas',
-    `price`      varchar(50) NOT NULL COMMENT '此次交易金额',
-    `profile_id` varchar(32) NOT NULL COMMENT '交易的基因报告id'
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='GNFT_transaction';
-
-drop table if exists `listings`;
--- 上架单listings表
-CREATE TABLE listings
-(
-    id                 VARCHAR(36)  NOT NULL,
-    collection_id      VARCHAR(32)  NOT NULL,
-    identifier         VARCHAR(32)  NOT NULL,
-    sale_amount        BIGINT       NOT NULL,
-    offerer            VARCHAR(42)  NOT NULL,
-    price              BIGINT       NOT NULL,
-    creator_fee        BIGINT       NOT NULL,
-    creator            VARCHAR(42)  NOT NULL,
-    offerer_fee        BIGINT       NOT NULL,
-    salt               VARCHAR(32)  NOT NULL,
-    signature          VARCHAR(132) NOT NULL,
-    remaining_quantity INT          NOT NULL,
-    finalized          BOOLEAN DEFAULT FALSE,
-    INDEX idx_listing (collection_id, identifier, sale_amount)
+    `data_hash`        VARCHAR(32) PRIMARY KEY COMMENT '数据哈希',
+    `profile_id`       VARCHAR(36) NOT NULL COMMENT '对应的第三方基因报告id',
+    `format`           VARCHAR(32) COMMENT '基因报告格式',
+    `sex`              VARCHAR(32) COMMENT '性别',
+    `category`         VARCHAR(32) COMMENT '报告研究类型',
+    `owner`            VARCHAR(32) COMMENT '拥有者',
+    `name`             VARCHAR(32) COMMENT '元数据名称',
+    `description`      TEXT COMMENT '元数据描述',
+    `contract_address` VARCHAR(42) COMMENT '合约地址',
+    `is_sharable`      TINYINT(1) COMMENT '可共享状态',
+    `is_hidden`        TINYINT(1) COMMENT '隐藏状态',
+    `created_at`       DATETIME COMMENT '创建时间'
 );
 
-drop table if exists `collections`;
--- 藏品集合collections表
-CREATE TABLE collections
+drop table if exists `geneSharing_metadatas`;
+CREATE TABLE geneSharing_metadatas
 (
-    id               VARCHAR(32) PRIMARY KEY,
-    name             VARCHAR(32)    NOT NULL,
-    address          VARCHAR(42)    NOT NULL,
-    description      TEXT,
-    creator          VARCHAR(42)    NOT NULL,
-    creator_earning  DECIMAL(10, 2) NOT NULL,
-    available_region VARCHAR(32)    NOT NULL,
-    created_at       DATETIME       NOT NULL,
-    explorer_link    varchar(255)   not null,
-    item_amount      int default 8  not null,
-    INDEX idx_creator (creator)
+    `geneSharing_contract_address` VARCHAR(32) NOT NULL COMMENT '基因报告地址',
+    `metadata_hash`                VARCHAR(32) NOT NULL COMMENT '基因报告元数据哈希',
+    PRIMARY KEY (`geneSharing_contract_address`, `metadata_hash`)
 );
 
-drop table if exists `gnfts`;
--- 藏品集合下的藏品gnfts表
-CREATE TABLE gnfts
-(
-    collection_id  VARCHAR(32),
-    identifier     VARCHAR(32),
-    category       VARCHAR(32),
-    address        VARCHAR(42),
-    token_standard VARCHAR(32),
-    name           VARCHAR(32),
-    description    TEXT,
-    supply         INT,
-    is_minted      BOOLEAN DEFAULT FALSE,
-    created_at     DATETIME,
-    UNIQUE INDEX idx_gnft (collection_id, identifier)
-);
 
-drop table if exists `ownerships`;
--- 用户与gnft关系中间表
-CREATE TABLE ownerships
-(
-    owner      VARCHAR(42),
-    profile_id VARCHAR(32),
-    identifier VARCHAR(32),
-    quantity   INT,
-    UNIQUE INDEX idx_ownership (owner, profile_id, identifier)
-);
 
 drop table if exists `activities`;
 -- 活动activities表
@@ -943,6 +902,11 @@ CREATE TABLE activities
 (
     id            VARCHAR(36)    NOT NULL,
     user_address  VARCHAR(42)    NOT NULL,
+    `tx_hash`     varchar(64)    NOT NULL COMMENT '交易哈希',
+    `from`        varchar(64)    NOT NULL COMMENT '客户地址',
+    `to`          varchar(64)    NOT NULL COMMENT '商家地址',
+    `gas`         varchar(50)    NOT NULL COMMENT '交易产生的gas',
+    `profile_id`  varchar(32)    NOT NULL COMMENT '交易的基因报告id',
     time          DATETIME       NOT NULL,
     activity_type VARCHAR(255)   NOT NULL,
     collection_id VARCHAR(32),
@@ -954,4 +918,14 @@ CREATE TABLE activities
     link          VARCHAR(255),
     PRIMARY KEY (id),
     INDEX idx_activity (user_address, time)
+);
+
+
+drop table if exists `institutions`;
+-- 活动activities表
+CREATE TABLE institutions
+(
+    `name`        VARCHAR(32) PRIMARY KEY COMMENT '机构名称',
+    `suffix`    VARCHAR(32) NOT NULL COMMENT '机构邮箱后缀'
+
 );

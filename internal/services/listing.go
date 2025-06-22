@@ -3,11 +3,8 @@ package services
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
-	"GeneReport_platform/internal/dao"
-	"GeneReport_platform/pkg/appErrors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"reflect"
 )
@@ -29,19 +26,10 @@ func RegisterOrderService() {
 }
 
 /*fill your method here*/
+
+// GetDataImpl 获取GeneType数据
 func GetDataImpl(ctx *gin.Context) {
-	addressCtx, _ := ctx.Get("user_address")
-	//判断是否拿到地址
-	if addressCtx == nil {
-		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
-			Code:    http.StatusBadRequest,
-			Message: "地址非法或无效,请重新登录",
-		})
-		//排除异常但程序继续运行
-		log.Println("address is nil")
-		//return
-	}
-	address := addressCtx.(string)
+	address := ctx.GetString("user_address")
 	profileId := ctx.Query("profileId")
 	unique := dto.UniqueProfiles{}
 	//在数据库查出profileId一样记录
@@ -84,12 +72,4 @@ func GetDataImpl(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, result)
 
-}
-
-func (s ListingService) GetListings(collection_id, identifier string) (dto.GetListingsResp, error) {
-	targetListings, err := dao.GetListingDao().GetListings(collection_id, identifier)
-	if err != nil {
-		return dto.GetListingsResp{}, appErrors.New(503, "获取上架单失败", err)
-	}
-	return dto.GetListingsResp{Listings: targetListings}, nil
 }

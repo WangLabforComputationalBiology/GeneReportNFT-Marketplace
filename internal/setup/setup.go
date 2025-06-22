@@ -18,8 +18,10 @@ import (
 
 func registerServices() {
 	services.RegisterUserService()
-	services.RegisterGNFTService()
+	services.RegisterMetadataService()
 	services.RegisterOrderService()
+	services.RegisterStudioService()
+	services.RegisterGeneSharingService()
 }
 
 func setupMysql() {

@@ -22,13 +22,13 @@ type AppError struct {
 // New 仿errors.New
 // 创建一个新的AppError实例
 func New(code int, message string, errs ...error) AppError {
-	if len(errs) > 0 {
+	if len(errs) > 0 && errs[0] != nil {
 		return AppError{
 			Code: code, Message: message, Detail: errs[0].Error(),
 		}
 	} else {
 		return AppError{
-			Code: code, Message: message,
+			Code: code, Message: message, Detail: message,
 		}
 	}
 }
@@ -40,9 +40,8 @@ func (e AppError) Error() string {
 
 // ErrorWithDetail 用于控制台输出调试附带详情
 func (e AppError) ErrorWithDetail() string {
-	redBold := color.New(color.FgRed, color.Bold)
 	yellowBold := color.New(color.FgYellow, color.Bold)
-	return redBold.Sprintf(fmt.Sprintf("↘↘↘ code: %d; message: %s;", e.Code, e.Message)) + yellowBold.Sprintf(fmt.Sprintf(" detail: %s;", e.Detail))
+	return yellowBold.Sprintf("\n↘↘↘ code: %d;\n↘↘↘  message: %s;\n↘↘↘  detail: %s;\n", e.Code, e.Message, e.Detail)
 }
 
 // ToErrResponse 转换为ErrResponse 进行响应
