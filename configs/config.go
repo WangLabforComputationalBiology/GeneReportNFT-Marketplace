@@ -52,6 +52,10 @@ type Config struct {
 	CtxConfig       CtxConfig       `mapstructure:"context"`
 	EtherScanConfig EtherScanConfig `mapstructure:"ether_scan"`
 	WegeneConfig    WegeneConfig    `mapstructure:"wegene"`
+	RocketMqCfg     RocketMqCfg     `mapstructure:"rocketmq"`
+}
+type RocketMqCfg struct {
+	NameServer string `mapstructure:"name_server"`
 }
 
 func LoadConfig() {

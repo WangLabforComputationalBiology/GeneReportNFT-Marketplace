@@ -11,6 +11,7 @@ import (
 func main() {
 
 	setup.Setup()
+	fmt.Println("数据库迁移开始")
 	// 自动迁移
 	configs.DB.AutoMigrate(
 		&dto.Psychology{},
@@ -27,6 +28,8 @@ func main() {
 		&dto.Demographics{},
 		&dto.Genotype{},
 		&dto.UniqueProfiles{},
+		&dto.Metadatas{}, //fixme 这里的Metadatas自动迁移有问题
+		&dto.DataVisitRecord{},
 	)
 
 	rocketmq.Myproducer("ptest")

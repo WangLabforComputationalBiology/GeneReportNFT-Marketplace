@@ -20,6 +20,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -413,7 +414,7 @@ func (u *User) VerifyEmailCode(ctx *gin.Context) {
 func (u *User) Oauth2Wegene(ctx *gin.Context) {
 	fmt.Println("开始重定向到wegene授权页面")
 	ctx.Redirect(http.StatusMovedPermanently, "https://api.wegene.com/authorize/?redirect_uri="+
-		"http://"+configs.WegeneRedirectHost+":7070/user/receiveCode&response_type=code&client_id=szjsbiolab&"+
+		"http://"+configs.WegeneRedirectHost+"/user/receiveCode&response_type=code&client_id=szjsbiolab&"+
 		//fixme 时间证明，rsXX的位置必须放在前面而且在basic的后面，认证会报错！
 		"scope=basic rs670139 rs17749164"+ //前者是数据库记录有的，后者是记录没有的但是txt文件有
 		" athletigen skin psychology risk health ancestry haplogroups demographics web"+
@@ -544,7 +545,39 @@ func getReportId(token string) (usersProfile dto.GetReportId) {
 	return
 }
 
-// GetUsersProfileByCode 重定向将token的kv映射传给前端，前端那这个key请求基因报告数据供用户选择
+// SendSMSCode 通过手机号码获取验证码并存入redis
+func (u *User) SendSMSCode(ctx *gin.Context) {
+	var req dto.SendSMSCodeReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查"))
+		return
+	}
+
+	if err := services.UserServ.SendSMSCode(req.Phone); err != nil {
+		ctx.Error(err)
+		return
+	}
+}
+
+// VerifySMSCode 验证手机验证码
+func (u *User) VerifySMSCode(ctx *gin.Context) {
+	var req dto.VerifySMSCodeReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.Error(appErrors.New(http.StatusBadRequest, "请求体格式错误,请检查", err))
+		return
+	}
+	if isPass, err := services.UserServ.VerifySMSCode(req.Phone, req.Code); err != nil {
+		ctx.Error(err)
+		return
+	} else if isPass {
+		ctx.JSON(http.StatusOK, dto.Response{
+			Code:    http.StatusOK,
+			Message: "短信验证成功",
+		})
+	}
+}
+
+// GetUsersProfileByCode 重定向将token的kv映射传给前端，前端那这个key请求基因报告数据供用户选择，这个code就是那个uuid
 func (u *User) GetUsersProfileByCode(ctx *gin.Context) {
 	//在get请求路径里面获取code
 	code := ctx.Query("code")
@@ -585,15 +618,59 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 		log.Printf("用户未登录或地址无效！")
 		//return
 	}
-	address := addressCtx.(string)
-	record := &dto.UniqueProfiles{
-		Address:   address,
-		ProfileId: toSave.ProfileId,
-		Status:    0, //0代表正在处理，1代表处理完成
+
+	address, ok := addressCtx.(string)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "用户未登录或地址无效！"})
+		log.Printf("用户未登录或地址无效！")
+		address = ""
+		//return
 	}
-	configs.DB.Create(record)
+	//查看数据库是否已经保存过
+	var unique dto.UniqueProfiles
+	configs.DB.Where("profile_id = ?", toSave.ProfileId).Find(&unique)
+	if unique.ID != 0 {
+		log.Println("数据已经保存过！是否保存决定权再saveData服务")
+		ctx.JSON(http.StatusOK, gin.H{"msg": "数据已经保存过！是否保存决定权再saveData服务"})
+
+	} else {
+		record := &dto.UniqueProfiles{
+			Address:   address,
+			ProfileId: toSave.ProfileId,
+			Status:    0, //0代表正在处理，1代表处理完成
+		}
+		res := configs.DB.Create(record)
+		if res.Error == nil {
+			fmt.Println("重复新检测数据保存成功")
+		} else {
+			fmt.Println("重复新检测数保存失败", res.Error)
+		}
+	}
 
 	fmt.Println("成功！异步保存数据：", sendMsg)
+	//记录profileid到metadatas，因为保存微基因数据的服务和这个不是一个
+	var usersProfile dto.GetReportId = getReportId(token)
+	profiles := usersProfile.Profiles
+	var tmp dto.Profile
+	for _, profile := range profiles {
+		if profile.Id == toSave.ProfileId {
+			tmp = profile
+			log.Println("找到profileId这份报告，详细信息：%v", profile)
+			metadata := &dto.Metadatas{
+				ProfileID: toSave.ProfileId,
+				Name:      tmp.Name,
+				Format:    tmp.Format,
+				Sex:       strconv.Itoa(tmp.Sex),
+			}
+			res := configs.DB.Create(metadata)
+			if res.Error == nil {
+				fmt.Println("保存metadata成功")
+			} else {
+				fmt.Println("保存metadata失败", res.Error)
+			}
+		}
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{"msg": "successful!"})
 
 }

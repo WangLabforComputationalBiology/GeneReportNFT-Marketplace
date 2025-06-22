@@ -1,6 +1,7 @@
 package rocketmq
 
 import (
+	"GeneReport_platform/configs"
 	"context"
 	"fmt"
 	"github.com/apache/rocketmq-client-go/v2"
@@ -11,9 +12,10 @@ import (
 var Myp rocketmq.Producer
 
 func Myproducer(group string) {
+	host := configs.GlobalConfig.RocketMqCfg.NameServer
 	// 连接 RocketMQ
 	p, err := rocketmq.NewProducer(
-		producer.WithNameServer([]string{"120.24.168.132:9876"}),
+		producer.WithNameServer([]string{host}),
 		producer.WithGroupName(group), // 添加生产者组名称
 	)
 	if err != nil {
