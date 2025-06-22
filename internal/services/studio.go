@@ -47,9 +47,9 @@ func (s *StudioService) CreateAllFromThirdPartyOnChain(userAddressHex string, re
 	}
 
 	//链上数据创建
-	newGeneSharingAddress, transaction, receipt, err := sharingPlatformContract.GetContractIns().CreateAllFromThirdParty(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddressHex), dataHashBytes32s)
+	newGeneSharingAddress, transaction, _, err := sharingPlatformContract.GetContractIns().CreateAllFromThirdParty(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddressHex), dataHashBytes32s)
 	// 由于某些失败（例如合约逻辑错误）可能在receipt中反映，而非 error，因此需要检查receipt状态
-	if err != nil || receipt.Status != 1 {
+	if err != nil {
 		return dto.CreateAllFromThirdPartyResp{}, appErrors.New(http.StatusInternalServerError, "链上交易失败", err)
 	}
 

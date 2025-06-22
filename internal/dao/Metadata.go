@@ -82,6 +82,7 @@ func (m *Metadata) GetMetadataOverviewByOwner(owner string) (results []MetadataO
 // GetMetadataDetailByProfileId 通过profileID获取预构建的metadata信息
 func (m *Metadata) GetMetadataDetailByProfileId(profileID string) (results []models.Metadata, err error) {
 	err = m.DB().Select("metadatas.*").
+		Table("metadatas").
 		Where("metadatas.profile_id = ? && metadatas.is_hidden = 0", profileID).
 		Order("metadatas.category desc").
 		Scan(&results).Error
