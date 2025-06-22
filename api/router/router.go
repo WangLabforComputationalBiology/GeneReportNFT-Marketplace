@@ -61,7 +61,6 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//获取用户的基因数据
 	r.GET("/getData/:param", middlewares.AuthMiddleware(), controllers.MetadataController.GetData)
 }
-
 func registerGNFTRouter(r *gin.RouterGroup) {
 	//藏品图片
 	r.GET("/img")
