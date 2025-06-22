@@ -61,6 +61,7 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//获取用户的基因数据
 	r.GET("/getData/:param", middlewares.AuthMiddleware(), controllers.MetadataController.GetData)
 }
+
 func registerGNFTRouter(r *gin.RouterGroup) {
 	//藏品图片
 	r.GET("/img")
@@ -73,6 +74,8 @@ func registerGNFTRouter(r *gin.RouterGroup) {
 func registerStudioRouter(r *gin.RouterGroup) {
 	r.GET("/captcha", controllers.StudioController.GetCATCHA)
 	r.POST("/captcha/check", controllers.StudioController.CheckCaptcha)
+
+	r.GET("/getProfileIds", controllers.StudioController.GetProfileIds) //获取后台中已经保存数据的该用户的profile id供用户选择
 }
 func SetupRouter() *gin.Engine {
 	r := gin.Default()

@@ -70,3 +70,11 @@ func (s *StudioService) CreateAllFromThirdPartyOnChain(userAddressHex string, re
 func (s *StudioService) CreateAllFromThirdPartyOffChain(userAddress string, req dto.CreateAllFromThirdPartyReq) error {
 	return nil
 }
+
+func (s *StudioService) GetProfileIdsByUser(userAddress string) (dto.ProfileIdsResp, error) {
+	results, err := dao.GetUserDao().GetProfileIdsByUser(userAddress)
+	if err != nil {
+		return dto.ProfileIdsResp{}, appErrors.New(http.StatusInternalServerError, "获取profile ids失败", err)
+	}
+	return dto.ProfileIdsResp{ProfileIds: results}, nil
+}

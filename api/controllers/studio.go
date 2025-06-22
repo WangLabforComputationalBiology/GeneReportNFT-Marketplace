@@ -43,3 +43,18 @@ func (s *Studio) CreateFromThirdParty(ctx *gin.Context) {
 	//}
 
 }
+
+// GetProfileIds 获取后台中已经保存数据的该用户的profile id供用户选择
+func (s *Studio) GetProfileIds(ctx *gin.Context) {
+	userAddress := ctx.GetString("user_address")
+	ids, err := services.StudioServ.GetProfileIdsByUser(userAddress)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	ctx.JSON(http.StatusOK, dto.Response{
+		Code:    http.StatusOK,
+		Message: "获取成功",
+		Data:    ids,
+	})
+}

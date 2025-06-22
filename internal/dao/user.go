@@ -97,3 +97,11 @@ func (u *UserDao) UpdateUserInstitution(userAddress, institution, email string) 
 		}).Error
 	return err
 }
+
+func (u *UserDao) GetProfileIdsByUser(address string) (results []string, err error) {
+	err = u.DB().Select("profile_id").
+		Table("unique_profiles").
+		Where("address = ?", address).
+		Scan(&results).Error
+	return results, err
+}

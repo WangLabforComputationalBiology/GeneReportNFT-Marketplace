@@ -11,3 +11,7 @@ type CreateAllFromThirdPartyResp struct {
 	NewGeneSharingContractAddress string `json:"new_geneSharing_contract_address"`
 	TransactionHash               string `json:"transaction_hash"`
 }
+
+type ProfileIdsResp struct {
+	ProfileIds []string `json:"profile_ids"`
+}
