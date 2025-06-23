@@ -34,16 +34,10 @@ func (s *StudioService) CreateAllFromThirdPartyOnChain(userAddressHex string, re
 	}
 
 	var dataHashBytes32s [][32]byte
-	var tempDataHashBytes32 [32]byte
 	//验证预构建的Metadata的合法性
 	for _, result := range results {
-		// 十六进制字符串解码为字节切片
-		dataHashBytes := common.Hex2Bytes(result.DataHash)
-
-		//类型转换为[32]byte
-		copy(tempDataHashBytes32[:], dataHashBytes)
-
-		dataHashBytes32s = append(dataHashBytes32s, tempDataHashBytes32)
+		// 十六进制字符串转字节存入32字节切片
+		dataHashBytes32s = append(dataHashBytes32s, [32]byte(common.Hex2Bytes(result.DataHash)))
 	}
 
 	//链上数据创建

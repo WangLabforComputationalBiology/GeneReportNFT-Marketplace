@@ -14,7 +14,7 @@ var (
 )
 
 // GetGeneSharingDetailsByContractAddress 通过合约地址获取GeneSharing合集详情
-func GetGeneSharingDetailsByContractAddress(ctx *gin.Context) {
+func (g *GeneSharing) GetGeneSharingDetailsByContractAddress(ctx *gin.Context) {
 	var req dto.GetGeneSharingDetailsByContractAddressReq
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
@@ -37,7 +37,7 @@ func GetGeneSharingDetailsByContractAddress(ctx *gin.Context) {
 }
 
 // GetGeneSharingByCreator 获取用户创建的基因共享集合
-func GetGeneSharingByCreator(ctx *gin.Context) {
+func (g *GeneSharing) GetGeneSharingByCreator(ctx *gin.Context) {
 	var req dto.GetGeneSharingOverviewByCreatorReq
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
