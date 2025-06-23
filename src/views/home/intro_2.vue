@@ -71,7 +71,7 @@ const isVisible2 = ref(false);
   position: absolute;
   width: 50%;
   min-width: 600px;
-  height: 94.9vh;
+  height: 94.8vh;
   left: 0%;
   background-color: #169608;
 
@@ -108,7 +108,7 @@ const isVisible2 = ref(false);
   left: 50%;
   width: 50%;
   min-width: 600px;
-  height: 95vh;
+  height: 94.8vh;
   background-color: #fff;
   pointer-events: auto;
 

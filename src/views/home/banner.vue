@@ -3,7 +3,7 @@
         <div class="green-bar"></div>
         <div class="main-text">
             <img class="logo" src="@/assets/logo.svg" alt="">
-            <span style="color: #169608;">Bio</span>Chainer <br><span style="font-weight: 600;">Shares</span>
+            <span style="color: #169608;">Bio</span>Chainer <br><span style="font-weight: 600;color: #111;">Shares</span>
         </div>
         <div class="sec-text">A platform delivering genetic information.</div>
         <div class="scroll-arrow"><span class="arrow-fadein">↓</span></div>
