@@ -9,6 +9,7 @@ import (
 )
 
 func test() {
+	var err error
 	var dataHashBytes32s [][32]byte
 	var tempDataHashBytes32 [32]byte
 	userAddressHex := "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4"

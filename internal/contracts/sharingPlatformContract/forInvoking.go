@@ -32,9 +32,9 @@ func NewAdminTransactor() *bind.TransactOpts {
 	privateKey, _ := crypto.HexToECDSA(AdminPrivateKeyHex)
 	admin := bind.NewKeyedTransactor(privateKey)
 	// 设置其他交易参数
-	admin.Value = big.NewInt(0)         // 默认无 ETH，适用于非 payable 函数
-	admin.GasPrice = big.NewInt(0)      // 私链通常 Gas 价格为 0
-	admin.GasLimit = big.NewInt(300000) // 默认 Gas 限制，足够覆盖 setValue
+	admin.Value = big.NewInt(0)             // 默认无 ETH，适用于非 payable 函数
+	admin.GasPrice = big.NewInt(0)          // 私链通常 Gas 价格为 0
+	admin.GasLimit = big.NewInt(3000000000) // 默认 Gas 限制，足够覆盖 setValue
 	return admin
 }
 

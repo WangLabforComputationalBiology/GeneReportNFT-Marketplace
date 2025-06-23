@@ -28,7 +28,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// 解析 JWT
-		claim, err := auth.ParseToken(parts[0])
+		claim, err := auth.ParseToken(parts[1])
 		if err != nil {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "未授权或非法的token格式"})
 			ctx.Abort()
