@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
         <div class="top">
-            <h1><span style="color: #169608;">Powered</span> by <img src="@/assets/imgs/FISCO_BCOS_logo.svg"
+            <h1><span style="color: #169608;">Powered</span> by <img src="@/icons/FISCO_BCOS_logo.svg"
                     alt="Fisco bcos logo" @click="toFB"></h1>
         </div>
         <div class="center">
