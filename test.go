@@ -25,7 +25,7 @@ func test() {
 }
 
 func testBytes32() {
-	var DataHashBytes32 [32]byte
+	DataHashBytes32 := [32]byte(common.Hex2Bytes("7c6cd50ffe512475c5bfb9140f45f6d4df79c5d793d28a8f02bb3a913a707679"))
 	tx, receipt, err := testCon.GetContractIns().StoreData(testCon.NewAdminTransactor(), DataHashBytes32, big.NewInt(12332))
 	if err != nil {
 		fmt.Println(err.Error())
