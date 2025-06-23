@@ -19,10 +19,20 @@
             <br>
             <p>2. Click the little earth icon, and switch to BioChainer network.</p>
             <img class="step-tip-img" src="@/assets/imgs/step2.jpg" alt="step2">
+            <div class="setup-network" @click="isVisible = true">->How to setup BioChainer network?</div>
         </div>
-
     </div>
 
+    <el-drawer :direction="'ltr'" v-model="isVisible" title="How to setup BioChainer network?"
+        header-class="drawer-header">
+        <p class="setup-tips">1.Already installed MetaMask and setup your wallet, click the little
+            earth icon, and click "Add Network".</p>
+        <img class="step-tip-img" src="@/assets/imgs/setup1.jpg" alt="">
+        <p class="setup-tips">2."Add a custom network"</p>
+        <img class="step-tip-img" src="@/assets/imgs/setup2.jpg" alt="">
+        <p class="setup-tips">3.Add the information as shown in the figure above and "Save"</p>
+        <p class="setup-tips">4.Back, click the little earth icon, and switch to BioChainer network.</p>
+    </el-drawer>
 
 </template>
 
@@ -35,7 +45,6 @@ import { useWalletStore } from '@/stores/account'
 import Api from '../../axios/aixos'
 import { ElLoading } from 'element-plus'
 
-const fullscreenLoading = ref(false)
 const walletStore = useWalletStore();
 const router = useRouter();
 
@@ -138,7 +147,7 @@ async function connectWallet() {
     }
 }
 
-
+let isVisible = ref(false)
 
 </script>
 
@@ -177,6 +186,7 @@ async function connectWallet() {
         }
 
         p {
+            margin-top: 20px;
             text-align: left;
             font-size: 24px;
             color: #333;
@@ -196,6 +206,8 @@ async function connectWallet() {
             width: 64%;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+
         }
 
         &:nth-child(2) {
@@ -203,10 +215,28 @@ async function connectWallet() {
             left: 50%;
             transform: translateY(-50%);
         }
+
+        .setup-network {
+            cursor: pointer;
+            width: 300px;
+
+            &:hover {
+                text-decoration: underline;
+
+            }
+        }
+
+
     }
 
 
 
+}
+
+.setup-tips {
+    font-size: 20px;
+    color: #333;
+    margin: 10px 0;
 }
 
 .useMeta {

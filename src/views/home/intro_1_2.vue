@@ -42,7 +42,7 @@ function toFB() {
     align-items: center;
     border-radius: 40px;
     box-shadow: 0 0 15px #E4E7ED;
-    background-color: #ffffffcc;
+    background-color: #ffffffee;
     display: flex;
     gap: 20px;
 

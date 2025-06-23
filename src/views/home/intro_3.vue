@@ -60,7 +60,7 @@ h1 {
         color: #333;
         font-weight: 700;
         padding: 20px;
-        background-color: #fff;
+        background-color: #ffffffee;
         border-radius: 20px;
         align-items: center;
         text-align: left;
