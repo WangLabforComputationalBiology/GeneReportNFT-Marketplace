@@ -210,7 +210,8 @@ func (u *userService) VerifyEmailCode(email string, code string, userAddress str
 
 		//验证码正确，调合约
 		_, receipt, err := sharingPlatformContract.GetContractIns().SetUserAuthStatus(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress))
-		if err != nil {
+		// 注意：fisco的交易回执状态receipt.Status，0为成功，1为失败
+		if err != nil || receipt.Status != 0 {
 			return false, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 		}
 		fmt.Printf("SetUserAuthStatus执行成功，交易hash为：%v\n", receipt.TransactionHash)
