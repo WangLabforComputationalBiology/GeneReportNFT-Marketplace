@@ -21,7 +21,7 @@ func test() {
 		fmt.Println(err.Error())
 	}
 	fmt.Println(newGeneSharingAddress.Hex())
-	fmt.Println(receipt.TransactionHash)
+	fmt.Println(receipt)
 }
 
 func testBytes32() {
