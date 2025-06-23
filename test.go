@@ -2,8 +2,10 @@ package main
 
 import (
 	"GeneReport_platform/internal/contracts/sharingPlatformContract"
+	"GeneReport_platform/internal/contracts/testCon"
 	"fmt"
 	"github.com/ethereum/go-ethereum/common"
+	"math/big"
 )
 
 func test() {
@@ -20,6 +22,18 @@ func test() {
 	fmt.Println(newGeneSharingAddress.Hex())
 	fmt.Println(receipt.TransactionHash)
 }
+
+func testBytes32() {
+	var DataHashBytes32 [32]byte
+	tx, receipt, err := testCon.GetContractIns().StoreData(testCon.NewAdminTransactor(), DataHashBytes32, big.NewInt(12332))
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println(tx)
+	fmt.Println(receipt)
+}
+
 func main() {
 	test()
+	testBytes32()
 }

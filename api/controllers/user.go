@@ -257,7 +257,7 @@ func (u *User) UploadAvatar(ctx *gin.Context) {
 	pictureName := address + ".png"
 
 	//先删除原本在minio用户对应的头像图片文件,Assignment count mismatch: 2 = 1表明在赋值语句中，左侧的变量数量与右侧提供的值数量不匹配。
-	err = configs.MinioClient.RemoveObject(context.Background(), "test", pictureName, minio.RemoveObjectOptions{})
+	err = configs.MinioClient.RemoveObject(context.Background(), "testCon", pictureName, minio.RemoveObjectOptions{})
 
 	if err != nil {
 		log.Println("上传失败！！\n", err)
@@ -268,7 +268,7 @@ func (u *User) UploadAvatar(ctx *gin.Context) {
 	// 上传文件到 MinIO
 	_, err = configs.MinioClient.PutObject(
 		context.Background(),
-		"test", // 替换为你的桶名称
+		"testCon", // 替换为你的桶名称
 		pictureName,
 		file,
 		fileSize,
@@ -285,7 +285,7 @@ func (u *User) UploadAvatar(ctx *gin.Context) {
 	log.Println("用户:", address, "正在更改头像！")
 	//更改数据库的picture字段
 
-	var toUpdate = dao.UpdateUser{Avatar: "/test/" + pictureName}
+	var toUpdate = dao.UpdateUser{Avatar: "/testCon/" + pictureName}
 	// 修改数据库的内容
 	if err := services.UserServ.UpdateUser(toUpdate); err != nil {
 		ctx.JSON(http.StatusServiceUnavailable, gin.H{"error": "mysql不可用,上传头像失败"})
