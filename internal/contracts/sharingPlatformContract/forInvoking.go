@@ -20,7 +20,7 @@ var AdminPrivateKeyHex string
 func GetContractIns() *SharingPlatformContract {
 
 	// 初始化已部署的sharingPlatform_v3合约地址
-	PlatformContractAddressHex = "0xd74630037b238A72b0B33378985de62884768f5D"
+	PlatformContractAddressHex = "0xf47Fa8F801C1053162D78cc906B14A3c6779b5F3"
 
 	// 实例化合约
 	ContractIns, _ := NewSharingPlatformContract(common.HexToAddress(PlatformContractAddressHex), ChainClient)
@@ -39,7 +39,7 @@ func NewAdminTransactor() *bind.TransactOpts {
 }
 
 func init() {
-	AdminPrivateKeyHex = "9f5eb599dd2ff51f67724a793a6d702bcc273b3afe3e3bbc0e2870ed11594432"
+	AdminPrivateKeyHex = "27f91739125122c0688d698f01655745fd6f34e78635b53bba8b6fc2a3e905dc"
 
 	// 解码私钥
 	privateKeyBytes, err := hex.DecodeString(AdminPrivateKeyHex)
