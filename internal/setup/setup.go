@@ -75,10 +75,6 @@ func setupRedis() {
 }
 
 func initEtherScanConfig() {
-	configs.ApiKey = configs.GlobalConfig.EtherScanConfig.ApiKey
-	configs.EndPoint = configs.GlobalConfig.EtherScanConfig.Endpoint
-	configs.IsProxy = configs.GlobalConfig.EtherScanConfig.Proxy
-	configs.ProxyUrl = configs.GlobalConfig.EtherScanConfig.ProxyUrl
 
 	configs.WegeneId = configs.GlobalConfig.WegeneConfig.Id
 	configs.WegeneSecret = configs.GlobalConfig.WegeneConfig.Secret
