@@ -48,6 +48,11 @@ const routes = [
         path: "/about",
         component: () => import('@/views/about.vue')
     },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: () => import('@/views/components/404.vue')
+    }
 ]
 
 const router = createRouter({
