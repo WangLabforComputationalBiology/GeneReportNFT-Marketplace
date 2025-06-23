@@ -28,7 +28,7 @@ func Myproducer(group string) {
 	}
 	//实例化消息
 	msg := &primitive.Message{
-		Topic: "testCon",
+		Topic: "test",
 		Body:  []byte("this is ikun"),
 	}
 	//同步发送

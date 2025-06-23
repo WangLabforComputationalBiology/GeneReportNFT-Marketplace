@@ -26,7 +26,7 @@ func Consumer(handler MessageHandler, group, topic string) {
 	//if err := c.Subscribe(topic, consumer.MessageSelector{}, func(ctx context.Context, msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
 	//	for i := range msgs {
 	//		/*todo msg 长这样
-	//		[Message=[topic=testCon, body=牛逼, Flag=0, properties=map[CLUSTER:DefaultCluster
+	//		[Message=[topic=test, body=牛逼, Flag=0, properties=map[CLUSTER:DefaultCluster
 	//		CONSUME_START_TIME:1744811100480 MAX_OFFSET:1 MIN_OFFSET:0 MSG_REGION:DefaultRegion
 	//		TRACE_ON:true UNIQ_KEY:C0A85501060C0000000051ea27600003], TransactionId=],
 	//		MsgId=C0A85501060C0000000051ea27600003, OffsetMsgId=7818A88400002A9F000000000003C15A,QueueId=3,
