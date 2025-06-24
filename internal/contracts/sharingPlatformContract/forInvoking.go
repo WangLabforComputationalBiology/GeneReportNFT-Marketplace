@@ -11,14 +11,19 @@ import (
 	"math/big"
 )
 
-var ChainClient *client.Client
+var FiscoConfig *client.Config
 
 var PlatformContractAddressHex string
 
 var AdminPrivateKeyHex string
 
 func GetContractIns() *SharingPlatformContract {
+	// 初始化客户端
+	ChainClient, err := client.DialContext(context.Background(), FiscoConfig)
 
+	if err != nil {
+		log.Fatalf("连接 FISCO BCOS v3 节点失败: %v", err)
+	}
 	// 初始化已部署的sharingPlatform_v3合约地址
 	PlatformContractAddressHex = "0xf47Fa8F801C1053162D78cc906B14A3c6779b5F3"
 
@@ -48,7 +53,7 @@ func init() {
 	}
 
 	// 配置节点信息
-	config := &client.Config{
+	FiscoConfig = &client.Config{
 		IsSMCrypto:  false,                          // 非国密
 		GroupID:     "group0",                       // 确认群组ID是否为 group0
 		PrivateKey:  privateKeyBytes,                // 私钥
@@ -60,9 +65,4 @@ func init() {
 		DisableSsl:  false, // 生产环境建议 false
 	}
 
-	// 初始化客户端
-	ChainClient, err = client.DialContext(context.Background(), config)
-	if err != nil {
-		log.Fatalf("连接 FISCO BCOS v3 节点失败: %v", err)
-	}
 }
