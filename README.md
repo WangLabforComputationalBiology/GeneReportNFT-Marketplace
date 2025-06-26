@@ -1,3 +1,5 @@
 # Vue3 Webpage for Biochainer
-# Vue3 + Ethers + Pinia + Element Plus + Vite + Axios + Vue Router
+Technology Stack: Vue3 + Ethers + Pinia + Element Plus + Vite + Axios + Vue Router
+Author: Tang Jiaming(SZTU BDI)
+Date: 2024.12 - 2025.8
 

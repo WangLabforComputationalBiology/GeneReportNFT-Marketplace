@@ -16,9 +16,10 @@
                a
                organization by email.
             </div>
-
          </div>
+
          <div class="line"></div>
+
          <div class="inside-step">
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="step == 1">
             <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="step < 1">
@@ -27,9 +28,10 @@
                reports. We ensure
                that no additonal personal data
                will be stored by your platform.</div>
-
          </div>
+
          <div class="line"></div>
+
          <div class="inside-step">
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="step == 2">
             <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="step < 2">
@@ -38,9 +40,10 @@
                item is minted
                you will not be able to change
                any of its information.</div>
-
          </div>
+
          <div class="line"></div>
+
          <div class="inside-step">
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="step == 3">
             <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="step < 3">
@@ -49,7 +52,6 @@
                data for sale
                on the plaza. Prior listing,
                you may delete your data; However, once listed, you will not be able to delete your data.</div>
-
          </div>
       </div>
 
@@ -63,9 +65,12 @@
          <div class="platforms" @click="redirectToOAuth">
             <img src="../../icons/wegene_logo.svg" alt="wegene">
          </div>
-         <div class="platforms"><p>comming soon...</p></div>
-         <div class="platforms"><p>comming soon...</p></div>
-
+         <div class="platforms">
+            <p>comming soon...</p>
+         </div>
+         <div class="platforms">
+            <p>comming soon...</p>
+         </div>
          <div class="button-wrapper" style="height:150px">
             <el-button class="button" @click="next" style="right: 0;">Continue</el-button>
             <div class="tips">
@@ -74,7 +79,6 @@
             </div>
          </div>
       </div>
-
 
       <div class="wrapper-right" style="display: block; padding: 200px 200px;" v-if="step === 2">
          <p>Report *</p>
@@ -85,10 +89,6 @@
          </div>
          <p>Name *</p>
          <el-input class="name-input" v-model="name" placeholder="Please enter the name of the collection"></el-input>
-         <!-- <p class="introduction" style="margin-bottom: 0;">Since there are several analysis files in the genetic
-            report, your
-            GNFT will be
-            automatically given a unique name depending on the Collection name you provide.</p> -->
          <p class="introduction"><span class="click-here">Click here</span> to view an example.</p>
          <p>Description</p>
          <input type="text" class="Description-input" placeholder="Please enter a description of the collection"
@@ -96,9 +96,7 @@
          <div class="button-wrapper" style="margin-top: 50px;">
             <el-button class="button" @click="back" style="right: 120px;">back</el-button>
             <el-button class="button" @click="createData" style="right: 0px;">Create</el-button>
-
          </div>
-
       </div>
 
       <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="step === 3">
@@ -138,9 +136,7 @@ import { ElLoading } from 'element-plus';
 
 const walletStore = useWalletStore();
 const router = useRouter();
-
 const step = ref(-1); // 0:进行手机验证
-
 const showIndexPage = ref(true);
 
 
@@ -223,9 +219,6 @@ const createData = async () => {
       console.error('Error creating data:', error);
    }
 };
-
-const handleSelectionChange = (val) => {
-}
 </script>
 
 <style lang="scss" scoped>
@@ -251,12 +244,10 @@ const handleSelectionChange = (val) => {
    color: #67C23A !important;
 }
 
-
 .wrapper-center {
    height: 95vh;
    width: 100vw;
    min-width: 1200px;
-
    display: flex;
    position: absolute;
    flex-direction: column;
@@ -328,13 +319,11 @@ h1 {
       }
    }
 
-
    .title {
       font-size: 70px;
       color: #169608;
       margin-bottom: 20px;
    }
-
 
    .inside-step {
       display: flex;
@@ -413,7 +402,7 @@ h1 {
          height: 50px;
       }
 
-      p{
+      p {
          width: 100%;
          text-align: center;
          color: #cdcdcd;
@@ -428,9 +417,6 @@ h1 {
       transform: translateX(-50%);
       width: 60%;
       position: relative;
-      // height: 100px;
-
-
 
       .tips {
          position: absolute;
@@ -457,7 +443,6 @@ h1 {
       cursor: pointer;
    }
 }
-
 
 .select {
    padding: 10px;
@@ -497,14 +482,12 @@ h1 {
    margin: 10px 0;
    width: 80%;
    height: 50px;
-   // border-radius: 15px;
 }
 
 :deep(.supply-input) {
    margin: 10px 0;
    width: 200px;
    height: 50px;
-   // border-radius: 15px;
 }
 
 .Description-input {

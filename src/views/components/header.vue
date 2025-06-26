@@ -12,7 +12,7 @@
                     :class="['router-selection', { 'active': $route.path === '/index' }]">Home</router-link>
                 <router-link to="/plaza" :class="['router-selection', { 'active': $route.path === '/plaza' }]">Data
                     Plaza</router-link>
-                <router-link to="/publish" :class="['router-selection', { 'active': $route.path === '/publish'}]">Data
+                <router-link to="/publish" :class="['router-selection', { 'active': $route.path === '/publish' }]">Data
                     Publish</router-link>
                 <router-link to="/about"
                     :class="['router-selection', { 'active': $route.path === '/about' }]">About</router-link>
@@ -50,14 +50,13 @@ function toAccount() {
 
 <style lang="scss" scoped>
 .header {
+    display: flex;
     z-index: 1000;
     width: 100vw;
     height: 5vh;
     min-width: 1200px;
-    display: flex;
-    position: sticky;
+    position: sticky; //固定在顶部
     top: 0;
-    transition: background-color 0.5s;
     background-color: #fff;
 
     a {
@@ -118,13 +117,12 @@ function toAccount() {
             &:after {
                 content: '';
                 position: absolute;
+                background: #169608;
                 bottom: 0;
                 left: 0;
                 width: 0;
                 height: 3px;
                 /* 边框厚度 */
-                background: #169608;
-                /* 蓝色边框 */
                 transition: width 0.4s ease;
                 /* 动画持续0.4秒 */
             }
@@ -138,13 +136,11 @@ function toAccount() {
         .active {
             color: #169608;
 
-            &::after{
+            &::after {
                 width: 100%;
             }
         }
 
     }
-
-
 }
 </style>

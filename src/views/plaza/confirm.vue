@@ -6,7 +6,7 @@
                 <h1 style="color: #169608;margin-bottom:10px">Confirm imformation</h1>
                 <h1>ID: #{{ purchaseId.id }} </h1>
                 <span class="address-info">Your address: <span style="color: #67C23A; margin: 0 20px;">{{ address
-                        }}</span>
+                }}</span>
                 </span><br>
                 <span class="address-info"> Destination address: <span style="color: #67C23A;margin: 0 20px;">{{
                         }}0x121724567f7d4373b589dacaac567815c1c6d904</span>
@@ -21,8 +21,6 @@
                 <el-button @click="goBack">Back</el-button>
                 <el-button>Confirm</el-button>
             </div>
-
-
         </div>
     </div>
 </template>
@@ -51,10 +49,10 @@ const goBack = () => {
 }
 
 .confirm-page {
-    z-index: 999;
-    background-color: #ffffffe6;
     position: absolute;
     display: flex;
+    z-index: 999;
+    background-color: #ffffffe6;
     top: 50%;
     left: 50%;
     height: 580px;

@@ -94,6 +94,7 @@ async function connectWallet() {
                 background: 'rgba(0, 0, 0, 0.7)',
                 customClass: 'loading',
             })
+
             const nonceResponse = await Api.get(`/user/nonce/${address.value}`);
             nonce.value = nonceResponse.data.data.nonce;
 
@@ -112,6 +113,7 @@ async function connectWallet() {
                 signature: signature,
             });
 
+            // 7. 保存登录信息
             walletStore.setAddress(address.value);
             walletStore.setInstitution(loginResponse.data.data.user.institution);
             walletStore.setToken(loginResponse.data.data.access_token);
@@ -122,13 +124,10 @@ async function connectWallet() {
             }
             loading.close()
             router.push('/account');
-
         }
-
     } catch (err) {
-        loading.close()
-        alert(err)
-        // Use globalProperties for $message in script setup
+        loading.close();
+        alert(err);
         const $message = typeof window !== 'undefined' && window.__VUE_APP__ && window.__VUE_APP__.config.globalProperties.$message
             ? window.__VUE_APP__.config.globalProperties.$message
             : null;
@@ -148,7 +147,6 @@ async function connectWallet() {
 }
 
 let isVisible = ref(false)
-
 </script>
 
 <style lang="scss" scoped>
@@ -186,7 +184,6 @@ let isVisible = ref(false)
         }
 
         p {
-            margin-top: 20px;
             text-align: left;
             font-size: 24px;
             color: #333;
@@ -206,8 +203,6 @@ let isVisible = ref(false)
             width: 64%;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-
         }
 
         &:nth-child(2) {
@@ -222,10 +217,8 @@ let isVisible = ref(false)
 
             &:hover {
                 text-decoration: underline;
-
             }
         }
-
 
     }
 
@@ -242,20 +235,20 @@ let isVisible = ref(false)
 .useMeta {
 
     .meta {
-        margin-top: 20px;
         display: flex;
         border-radius: 20px;
         border: 1px solid #E4E7ED;
         background-color: #fff;
 
         .icon {
+            width: 140px;
             margin-left: 50px !important;
         }
 
         p {
             font-size: 36px;
-            line-height: 120px;
-            margin-left: 100px;
+            line-height: 140px;
+            margin-left: 80px;
         }
 
         &:hover {

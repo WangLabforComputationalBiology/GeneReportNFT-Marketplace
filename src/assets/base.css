@@ -60,29 +60,20 @@
   font-weight: normal;
 }
 
-@font-face {
-  font-family: "OPPOFont";
-  src: url("../font/OPPO_Sans.ttf") format("truetype");
-}
-
 html {
-  /* font-family: "OPPOFont"; */
   font-family: "Helvetica";
-
-  unicode-range: U+0020-007F; /* 仅加载英文和数字 */
 }
 
-html::-webkit-scrollbar {
-  display: none;
-  /* Chrome, Safari, Opera */
-}
-
+/* 隐藏默认的滚动条样式 */
 * {
-  /* 隐藏默认的滚动条样式 */
   scrollbar-width: none;
   /* Firefox */
   -ms-overflow-style: none;
   /* IE and Edge */
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {

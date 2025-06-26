@@ -12,9 +12,11 @@
             <swiper ref="horizontalSwiper" @swiper="onHorizontalSwiperInit" :modules="modules" :direction="'horizontal'"
                :slides-per-view="1" :free-mode="true" @slideChange="onHorizontalSlideChange" :mousewheel="true"
                :allowSlidePrev="allowPrev2" :speed="800" class="horizontal-swiper">
+
                <Swiper-slide>
                   <Intro1 />
                </Swiper-slide>
+               
                <Swiper-slide>
                   <Intro1_2 />
                </Swiper-slide>
@@ -52,6 +54,7 @@ import Intro3 from './intro_3.vue';
 import Intro4 from './intro_4.vue';
 import Bubbles from '../components/bubbles.vue';
 
+/* swiper默认配置项 */
 const modules = [Pagination, Navigation, Mousewheel];
 
 /* 首屏禁止上滚 */
@@ -62,17 +65,17 @@ let allowNext = ref(true);
 let verticalSwiper = ref(null);
 let horizontalSwiper = ref(null);
 
-// 初始化垂直 Swiper
+/* 初始化垂直 Swiper */
 const onVerticalSwiperInit = (swiper) => {
    verticalSwiper.value = swiper;
 };
 
-// 初始化水平 Swiper
+/* 初始化水平 Swiper */
 const onHorizontalSwiperInit = (swiper) => {
    horizontalSwiper.value = swiper;
 };
 
-// 水平滑动变化时
+/* 水平滑动变化时 */
 const onHorizontalSlideChange = (swiper) => {
    // 监听滚轮事件获取滚轮状态
    swiper.el.onwheel = (e) => {
@@ -91,10 +94,11 @@ const onHorizontalSlideChange = (swiper) => {
 
 };
 
-// 垂直滑动变化时
+/* 垂直滑动变化时 */
 const onVerticalSlideChange = (swiper) => {
    allowPrev.value = verticalSwiper.value.isBeginning;   
    allowNext.value = verticalSwiper.value.isBeginning;
+   
    if (swiper.activeIndex == 1) { // 假设垂直滚动到第2页（索引1）
       allowNext.value = false;// 禁用垂直滚动
    }else{
@@ -104,8 +108,6 @@ const onVerticalSlideChange = (swiper) => {
 
 };
 </script>
-
-
 
 <style lang="scss" scoped>
 .container {
@@ -123,7 +125,6 @@ const onVerticalSlideChange = (swiper) => {
 
    &:nth-child(3) {
       border: #fff solid 1px;
-
    }
 }
 

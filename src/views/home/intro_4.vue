@@ -1,7 +1,6 @@
 <template>
     <div class="wrapper">
         <div class="how">
-
             <h1>How <span style="color: #333;"> it works?</span></h1>
             <div class="inner-wrapper">
                 <div class="steps" @mouseover="hovered1 = true" @mouseleave="hovered1 = false">
@@ -154,8 +153,6 @@ let hovered3 = ref(false)
                     color: #666;
                     padding: 10px 10px;
                 }
-
-
             }
 
             .icon {
@@ -171,10 +168,7 @@ let hovered3 = ref(false)
                         opacity: 1;
                     }
                 }
-
-
             }
-
         }
 
     }

@@ -21,8 +21,8 @@ export const useWalletStore = defineStore("account", {
             this.access_token = token;
             console.log(this.access_token);
             /*
-            *不打印就是无法储存，是本项目最大最莫名其妙最逆天的bug
-            *而且打印其他数据都无法储存  
+            *不打印就是无法储存access_token，是本项目最大最莫名其妙最逆天的bug
+            *并且打印其他数据也无法储存  
             */
         },
         setEmail(email) {
@@ -30,7 +30,8 @@ export const useWalletStore = defineStore("account", {
         }
     },
     persist: {
-        storage: sessionStorage, // 使用 sessionStorage 而不是 localStorage
+        storage: sessionStorage,
+        /*使用 sessionStorage 而不是 localStorage。MetaMask是会话级通信，并不需要长久保存 */
     },
 
 })

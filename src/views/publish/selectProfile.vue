@@ -1,13 +1,11 @@
 <template>
-
     <div class="wrapper">
         <div class="banner">
             <span class="tip">
                 <h1><span style="color: #169608;">Wegene</span> Connected</h1>
             </span>
-
         </div>
-        <!-- <h3 class="user">User code: {{ code }} </h3> -->
+
         <div class="card-body">
             <div v-if="profiles.length > 0">
                 <p style="color: #E6A23C;">Please select a Profile:</p>
@@ -24,12 +22,11 @@
             </div>
             <p class="selected-profile">Selected Profile: {{ selectedProfile }}</p>
         </div>
-        <!-- <button @click="authorizeProfile">Verify Profile</button> -->
+
         <div class="btn-wrapper">
             <el-button @click="back">Back</el-button>
             <el-button @click="authorizeProfile" :disable="selectedProfile == null">Confirm</el-button>
         </div>
-
     </div>
 </template>
 
@@ -51,15 +48,12 @@ export default {
         };
     },
     watch: {
-        // Watch for changes in the route parameter
         '$route.params.lastSegment': function (newSegment) {
             this.code = newSegment || '默认标题';
             this.fetchData(); // 重新获取数据
         }
     },
     mounted() {
-        // console.log('Mounted title:', this.code); // 打印挂载时的 title 值
-        // console.log('Environment variable VITE_APP_BASE_URL:', import.meta.env.VITE_APP_BASE_URL); // 打印环境变量
         this.fetchData(); // 在组件挂载时发起请求
     },
     methods: {
@@ -100,7 +94,6 @@ export default {
                         profileId: this.selectedProfile
                     })
                 });
-
                 if (response.ok) { // 检查响应状态码是否为 200
                     this.showAlert = true; // 显示 alert
                     this.$message.success('Profile authorized successfully');
@@ -133,7 +126,6 @@ p {
     width: 40%;
     min-width: 410px;
     height: 50vh;
-
 }
 
 .user {

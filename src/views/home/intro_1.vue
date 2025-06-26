@@ -4,41 +4,36 @@
             <h1>Sharing <span style="color: #333;"> Gene code.</span></h1><br>
             <h2>
                 <div class="des">
-                BioChainer, a Biological alliance-chain based on <span class="click-link" @click="toFB">FISCO BCOS</span> from
-                SZTU@Wanglab.
-                <br>
-                We advocate the creation of a blockchain-based biological information sharing chain to achieve reliable
-                circulation of genetic information, promote the
-                circulation of genetic information and assist genetic research.
+                    BioChainer, a Biological alliance-chain based on <span class="click-link" @click="toFB">FISCO
+                        BCOS</span> from
+                    SZTU@Wanglab.
+                    <br>
+                    We advocate the creation of a blockchain-based biological information sharing chain to achieve
+                    reliable
+                    circulation of genetic information, promote the
+                    circulation of genetic information and assist genetic research.
                 </div>
-                
                 <br>
                 <br>
                 <span class="tags">#Non-profit</span>
                 <span class="tags">#Volunteer</span>
                 <span class="tags">#Academic</span>
             </h2>
-
             <div class="Btn-wrapper">
                 <div class="toBTN" @click="">Publication</div>
                 <div class="toBTN" @click="">Git Hub↗</div>
             </div>
-
-
         </div>
     </div>
 </template>
 
 <script setup>
-function toFB(){
+function toFB() {
     window.open('https://www.fisco.com.cn/fisco_20.html', '_blank');
 }
-
 </script>
 
 <style lang="scss" scoped>
-
-
 .wrapper {
     height: 95vh;
     min-width: 1200px;
@@ -57,7 +52,6 @@ function toFB(){
     left: 50%;
     top: 50%;
     transform: translate(-50%, -75%);
-
 
     h1 {
         font-size: 6vh;
@@ -106,7 +100,6 @@ function toFB(){
         cursor: pointer;
         font-size: 18px;
 
-
         &:hover {
             box-shadow: 0 0 20px #e0e0e0;
         }
@@ -122,9 +115,8 @@ function toFB(){
         &:nth-child(3) {
             background-color: #67C23A;
         }
-
-
     }
+
 }
 
 .click-link {

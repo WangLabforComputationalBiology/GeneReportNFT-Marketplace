@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <Bubbles />
+        <!-- <Bubbles /> -->
         <div class="banner">
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
         </div>
@@ -16,8 +16,8 @@
                 </div>
             </div>
         </div>
-
     </div>
+
     <el-drawer v-model="drawer" title="Detail" :direction="'rtl'" :before-close="handleClose" :size="'40%'">
         <div class="dt-page-top">
             <div class="icon" />
@@ -28,8 +28,8 @@
                 <p>Format:<span class="ifo-item"> &nbsp; {{ selectedData.format }}</span></p>
                 <p>Date:<span class="ifo-item"> &nbsp; {{ selectedData.created_at }}</span></p>
             </div>
-
         </div>
+
         <div class="dt-page-bottom">
             <el-table v-loading="loading" :element-loading-svg="svg" class="custom-loading-svg"
                 element-loading-svg-view-box="-10, -10, 50, 50" :data="detailData">
@@ -208,7 +208,7 @@ onMounted(() => {
     height: 150px;
     display: flex;
     position: relative;
-    border-bottom: #E6A23C 3px solid;
+    border-bottom: #ddd 3px solid;
     background-color: #ffffff;
 }
 
@@ -235,7 +235,7 @@ onMounted(() => {
 
 .plaza-page {
     width: 100%;
-    padding: 15px 0;
+    padding: 25px 0;
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
@@ -247,14 +247,13 @@ onMounted(() => {
         box-sizing: border-box;
         height: 200px;
         background-color: #fff;
-        box-shadow: 0 0 0 1px #eee;
-        border-radius: 20px;
+        box-shadow: 0 0 5px #ccc;
+        border-radius: 30px;
         align-items: center;
 
         &:hover {
-            box-shadow: 0 0 5px #ddd;
+            box-shadow: 0 0 15px #ccc;
             cursor: pointer;
-
         }
 
         .ifo {
@@ -283,7 +282,7 @@ onMounted(() => {
 
 .icon {
     position: relative;
-    left: 20px;
+    left: 25px;
     width: 140px;
     min-width: 140px;
     height: 140px;
@@ -301,7 +300,6 @@ onMounted(() => {
     .icon {
         width: 180px;
         height: 180px;
-        ;
     }
 
     .ifo {

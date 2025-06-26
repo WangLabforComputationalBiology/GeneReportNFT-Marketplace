@@ -20,7 +20,6 @@
 function toFB() {
     window.open('https://www.fisco.com.cn/fisco_20.html', '_blank');
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -50,7 +49,6 @@ function toFB() {
         width: 48%;
         height: 70%;
 
-
         .logo {
             margin-top: 50px;
             margin: auto;
@@ -60,7 +58,6 @@ function toFB() {
             img {
                 width: 150px;
             }
-
         }
 
         .FB {
@@ -79,7 +76,6 @@ function toFB() {
             height: 250px;
             font-size: 24px;
             text-align: center;
-
         }
     }
 }

@@ -5,12 +5,10 @@
             <h1 class="title"><span style="color: #169608;">Account</span> information</h1>
             {{ walletStore.address ? `Address: ${walletStore.address}` : 'No address connected' }}
             <br>
-
             {{ walletStore.insititution ? ` Institution: ${walletStore.insititution}.` : 'Your institution accreditation is not verified.' }}
             <br>
             {{ walletStore.email ? `Email: ${walletStore.email}` : 'No email verified.'}}
             <router-link to="/verify" style="color: #fff;">
-            
                 <el-button class="custom-button">
                     verify
                 </el-button>
@@ -27,7 +25,6 @@ import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'
 import Bubbles from '@/views/components/bubbles.vue'
 
-
 const walletStore = useWalletStore();
 const router = useRouter();
 const logout = () => {
@@ -39,9 +36,6 @@ const logout = () => {
     
 }
 
-const getVerification = async () => {
-    // const response = 
-}
 </script>
 
 <style lang="scss" scoped>
@@ -65,7 +59,6 @@ const getVerification = async () => {
         }
     }
 
-
     .title {
         font-size: 70px;
         color: #333;
@@ -80,13 +73,10 @@ const getVerification = async () => {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-
     font-size: 24px;
     color: #333;
     line-height: 50px;
 }
-
-
 
 :deep(.custom-button) {
     font-size: 18px;
@@ -107,7 +97,6 @@ const getVerification = async () => {
         background-color: #fff;
         color: #169608;
     }
-
 
 }
 </style>

@@ -73,7 +73,6 @@ export default {
                     if (this.successFun) this.successFun();
                     // 通知父组件
                     this.$emit('ready', this.rangeStatus);
-
                 }
             };
 

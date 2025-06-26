@@ -5,8 +5,8 @@ import walletAuthGuard from "./accountGuard";
 
 const routes = [
     {
-        path: '/', // 根路径
-        redirect: '/index', // 重定向到 /home
+        path: '/',
+        redirect: '/index', // 重定向
     },
     {
         path: "/index",
