@@ -5,22 +5,41 @@
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
         </div>
         <div class="plaza-page">
-            <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible">
+            <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible(item)">
                 <div class="icon" />
                 <div class="ifo">
-                    <p>Id: <span class="ifo-item"> &nbsp; {{ item.ID }}</span></p>
+                    <p>Name: <span class="ifo-item"> &nbsp; {{ item.name }}</span></p>
                     <p>Description:<span class="ifo-item"> &nbsp; {{ item.description }}</span></p>
-                    <p>Score:<span class="ifo-item"> &nbsp; {{ item.score }}</span></p>
-                    <p>Rank:<span class="ifo-item"> &nbsp; {{ item.rank }}</span></p>
+                    <p>Format:<span class="ifo-item"> &nbsp; {{ item.format }}</span></p>
+                    <p>Date:<span class="ifo-item"> &nbsp; {{ item.created_at }}</span></p>
                 </div>
             </div>
         </div>
 
     </div>
-    <el-drawer v-model="drawer" title="Detail" :direction="'rtl'" :before-close="handleClose" :size="'50%'">
+    <el-drawer v-model="drawer" title="Detail" :direction="'rtl'" :before-close="handleClose" :size="'40%'">
+        <div class="dt-page-top">
+            <div class="icon" />
+            <div class="ifo">
+                <p>Name: <span class="ifo-item"> &nbsp; {{ selectedData.name }}</span></p>
+                <p>Description:<span class="ifo-item"> &nbsp; {{ selectedData.description }}</span></p>
+                <p>Format:<span class="ifo-item"> &nbsp; {{ selectedData.format }}</span></p>
+                <p>Date:<span class="ifo-item"> &nbsp; {{ selectedData.created_at }}</span></p>
+            </div>
+
+        </div>
+        <div class="dt-page-bottom">
+            <el-table v-loading="loading" :element-loading-svg="svg" class="custom-loading-svg"
+                element-loading-svg-view-box="-10, -10, 50, 50" :data="detailData">
+                <el-table-column prop="desciption" label="Item" width="180" />
+                <el-table-column prop="score" label="Score" width="180" />
+                <el-table-column prop="rank" label="Rank" />
+            </el-table>
+        </div>
+
         <template #footer>
             <div style="flex: auto">
-                <el-button type="primary" @click="confirmClick" class="get-btn">Get</el-button>
+                <el-button type="primary" @click="confirmClick" class="obtain-btn">Obtain</el-button>
             </div>
         </template>
     </el-drawer>
@@ -32,7 +51,7 @@ import { ethers } from "ethers";
 import { useWalletStore } from "@/stores/account";
 import Api from "@/axios/aixos";
 import Bubbles from "../components/bubbles.vue";
-// import { isVisible } from "element-plus/es/utils";
+import { ElLoading } from "element-plus";
 
 const wallet = useWalletStore();
 const account = ref("");
@@ -42,41 +61,49 @@ const recipient = ref("");
 const amount = ref("");
 const txHash = ref("");
 
+
 /* 获取plaza卡片数据列表 */
 let List = ref([]);
 async function getList() {
-    const res = await Api.get('/user/getData/Skin',{
-        params: {
-            
-        }
+    const res = await Api.get('/plaza/getData', {
+        params: {}
     });
-    List.value = res.data;
+    List.value = res.data.data.multi_metadata;
     console.log(List.value)
 }
 
+let selectedData = ref(null);
+var loading = ref(true);
 
-
-async function connectWallet() {
-    if (window.ethereum) {
-        try {
-            // 创建 Web3Provider
-            const _provider = new ethers.BrowserProvider(window.ethereum);
-            provider.value = _provider;
-            // 请求账户权限
-            const accounts = await _provider.send("eth_requestAccounts", []);
-            account.value = accounts[0]; // 获取第一个账户
-            console.log("Account:", account.value);
-
-            signer.value = await _provider.getSigner();// 获取签名者（用于发送交易）
-            console.log("Signer:", signer.value);
-            console.log("Balance:", balance.value);
-
-        } catch (error) {
-            console.error("连接失败:", error);
+/* 获取详细数据 */
+let detailData = ref(null);
+const getDetailData = async () => {
+    try {
+        // var loading = ElLoading.service({
+        //     lock: true,
+        //     text: 'Loading...',
+        //     background: 'rgba(0, 0, 0, 0.7)',
+        // });
+        const res = await Api.get('/plaza/getDetailData', {
+            params: {
+                data_hash: selectedData.data_hash,
+            }
+        })
+        if (!error) {
+            loading.close();
+            detailData.value = res.data.data;
+            drawer.value = true;
         }
-    } else {
-        alert("请安装 MetaMask");
+    } catch (error) {
+        // drawer.value = false;
+
+        // if (error) {
+        //     loading.close();
+        //     alert('Get detail data failed. Please try again later.');
+        // }
+
     }
+
 }
 
 // 发送交易
@@ -160,8 +187,10 @@ function purchase(id, price) {
 }
 
 const drawer = ref(false);
-const isVisible = () => {
+const isVisible = (item) => {
+    selectedData = item;
     drawer.value = true;
+    getDetailData();
 };
 
 onMounted(() => {
@@ -218,7 +247,6 @@ onMounted(() => {
         position: relative;
         flex: 0 0 calc(33.33% - 10px);
         box-sizing: border-box;
-        // width: 31%;
         height: 200px;
         background-color: #fff;
         box-shadow: 0 0 0 1px #eee;
@@ -227,27 +255,19 @@ onMounted(() => {
 
         &:hover {
             box-shadow: 0 0 5px #ddd;
+            cursor: pointer;
 
-        }
-
-        .icon {
-            position: relative;
-            left: 20px;
-            width: 140px;
-            min-width: 140px;
-            height: 70%;
-            border: #ddd 1px solid;
-            border-radius: 15px;
-            background-image: url('@/icons/dna_icon.jpg');
-            background-size: cover;
-            background-position: center;
         }
 
         .ifo {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-size: 18px;
             margin-left: 50px;
-            width: 60%;
+            width: 70%;
             border-left: #ddd 2px solid;
-            padding: 10px 0 0 25px;
+            padding: 0 0 0 25px;
             height: 70%;
 
             p {
@@ -262,13 +282,58 @@ onMounted(() => {
 
 }
 
+.icon {
+    position: relative;
+    left: 20px;
+    width: 140px;
+    min-width: 140px;
+    height: 140px;
+    border: #ddd 1px solid;
+    border-radius: 15px;
+    background-image: url('@/icons/dna_icon.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.dt-page-top {
+    display: flex;
+    align-items: center;
+
+    .icon {
+        width: 180px;
+        height: 180px;
+        ;
+    }
+
+    .ifo {
+        margin-left: 50px;
+    }
+
+    p {
+        color: #333;
+        font-size: 20px;
+    }
+
+    .ifo-item {
+        color: #67C23A;
+    }
+}
+
+.dt-page-bottom {
+    padding: 20px;
+}
+
 :deep(.el-popup-parent--hidden) {
     width: 100% !important;
 }
 
-:deep(.get-btn){
+:deep(.obtain-btn) {
+    font-size: 20px;
     border: #169608 1px solid;
     background-color: #169608;
     box-shadow: none;
 }
-</style>
+
+// :deep(.el-loading-mask){
+//     z-index: 3000 !important;
+// }</style>

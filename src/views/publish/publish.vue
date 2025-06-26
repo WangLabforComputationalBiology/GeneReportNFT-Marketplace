@@ -464,7 +464,7 @@ h1 {
    display: flex;
    align-items: center;
    margin: 10px 0;
-   width: 400px;
+   width: 80%;
    height: 60px;
    background-color: #f9f8f8;
    border: #e0e0e0 1px solid;
@@ -495,7 +495,7 @@ h1 {
 
 :deep(.name-input) {
    margin: 10px 0;
-   width: 400px;
+   width: 80%;
    height: 50px;
    // border-radius: 15px;
 }
@@ -509,7 +509,7 @@ h1 {
 
 .Description-input {
    margin: 10px 0;
-   width: 400px;
+   width: 80%;
    height: 100px;
    border: #e0e0e0 1px solid;
    border-radius: 10px;
@@ -544,6 +544,7 @@ h1 {
    position: absolute;
    right: 0;
    width: 50%;
+   min-width: 600px;
    height: calc(100vh - 60px);
    justify-content: center;
    align-items: center;
