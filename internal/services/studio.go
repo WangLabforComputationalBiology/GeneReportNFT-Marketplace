@@ -60,6 +60,8 @@ func (s *StudioService) CreateAllFromThirdPartyOnChain(userAddressHex string, re
 	//fmt.Println(newGeneSharingAddress.Hex())
 	//fmt.Println(receipt)
 
+	//链下数据创建
+
 	return dto.CreateAllFromThirdPartyResp{NewGeneSharingContractAddress: newGeneSharingAddress.Hex(), TransactionHash: receipt.TransactionHash}, nil
 }
 

@@ -61,14 +61,6 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//获取用户的基因数据
 	r.GET("/getData/:param", middlewares.AuthMiddleware(), controllers.MetadataController.GetData)
 }
-func registerGNFTRouter(r *gin.RouterGroup) {
-	//藏品图片
-	r.GET("/img")
-	//藏品信息
-	r.GET("/info")
-	//生成订单
-	r.POST("/buy", middlewares.AuthMiddleware())
-}
 
 func registerStudioRouter(r *gin.RouterGroup) {
 	r.GET("/captcha", controllers.StudioController.GetCATCHA)
@@ -76,6 +68,10 @@ func registerStudioRouter(r *gin.RouterGroup) {
 
 	r.GET("/getProfileIds", controllers.StudioController.GetProfileIds)                                                                           //获取后台中已经保存数据的该用户的profile id供用户选择
 	r.POST("/createFromThirdParty", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.StudioController.CreateFromThirdParty) //从第三方平台创建（链上操作）
+}
+
+func registerMetadataRouter(r *gin.RouterGroup) {
+	r.GET("/", middlewares.ZapMiddleware(), controllers.MetadataController.GetAllMetadata)
 }
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
@@ -85,12 +81,11 @@ func SetupRouter() *gin.Engine {
 	r.GET("/")
 
 	User := r.Group("/user")
-	NFT := r.Group("/nft")
 	Studio := r.Group("/studio")
+	Plaza := r.Group("/plaza")
 	registerSwaggerRouter(r)
 	registerUserRouter(User)
-	registerGNFTRouter(NFT)
 	registerStudioRouter(Studio)
-
+	registerMetadataRouter(Plaza)
 	return r
 }

@@ -57,3 +57,17 @@ func (m *Metadata) GetGeneTypeDataByID(ctx *gin.Context) {
 func (m *Metadata) GetData(ctx *gin.Context) {
 	services.GetDataImpl(ctx)
 }
+
+func (m *Metadata) GetAllMetadata(ctx *gin.Context) {
+	multiMetadata, err := services.MetadataServ.GetAllMetadata()
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	//成功
+	ctx.JSON(http.StatusOK, dto.Response{
+		Code:    http.StatusOK,
+		Message: "success",
+		Data:    multiMetadata,
+	})
+}

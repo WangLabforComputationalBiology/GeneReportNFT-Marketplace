@@ -91,3 +91,15 @@ func (m *Metadata) GetMetadataDetailByProfileId(profileID string) (results []mod
 	}
 	return results, nil
 }
+
+func (m *Metadata) GetAllMetadata() (results []models.Metadata, err error) {
+	err = m.DB().Select("metadatas.*").
+		Table("metadatas").
+		Where("metadatas.is_hidden = 0").
+		Order("metadatas.created_at desc").
+		Scan(&results).Error
+	if err != nil {
+		return nil, err
+	}
+	return results, nil
+}

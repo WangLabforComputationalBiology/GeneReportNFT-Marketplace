@@ -26,13 +26,24 @@ func RegisterMetadataService() {
 
 /*fill your method here*/
 
-func (g *MetadataService) GetMetadataOverviewByOwner(owner string) (dto.GetMetadataByOwnerResp, error) {
-	targetGNFTs, err := dao.GetMetadataDao().GetMetadataOverviewByOwner(owner)
+func (m *MetadataService) GetMetadataOverviewByOwner(owner string) (dto.GetMetadataByOwnerResp, error) {
+	targetMetadatas, err := dao.GetMetadataDao().GetMetadataOverviewByOwner(owner)
 	if err != nil {
 		return dto.GetMetadataByOwnerResp{}, appErrors.New(503, "获取用户所有GNFT信息失败", err)
 	}
 	// 映射转换dto
 	var toResp dto.GetMetadataByOwnerResp
-	mapstructure.Decode(targetGNFTs, &toResp)
+	mapstructure.Decode(targetMetadatas, &toResp)
+	return toResp, nil
+}
+
+func (m *MetadataService) GetAllMetadata() (dto.GetAllMetadataResp, error) {
+	targetMetadatas, err := dao.GetMetadataDao().GetAllMetadata()
+	if err != nil {
+		return dto.GetAllMetadataResp{}, appErrors.New(503, "获取用户所有GNFT信息失败", err)
+	}
+	// 映射转换dto
+	var toResp dto.GetAllMetadataResp
+	mapstructure.Decode(targetMetadatas, &toResp)
 	return toResp, nil
 }

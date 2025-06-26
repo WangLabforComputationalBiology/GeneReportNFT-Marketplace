@@ -12,5 +12,9 @@ type GetMetadataByOwnerReq struct {
 }
 
 type GetMetadataByOwnerResp struct {
-	GNFTs []GetMetadataResp `json:"metadatas"`
+	Metadata []GetMetadataResp `json:"multi_metadata"`
+}
+
+type GetAllMetadataResp struct {
+	Metadata []GetMetadataResp `json:"multi_metadata"`
 }
