@@ -17,12 +17,10 @@
         </div>
 
     </div>
-    <el-drawer v-model="drawer" title="Detail" :direction="ltr" :before-close="handleClose">
-        <span>Hi, there!</span>
+    <el-drawer v-model="drawer" title="Detail" :direction="'rtl'" :before-close="handleClose" :size="'50%'">
         <template #footer>
             <div style="flex: auto">
-                <!-- <el-button @click="cancelClick">cancel</el-button> -->
-                <el-button type="primary" @click="confirmClick">Get</el-button>
+                <el-button type="primary" @click="confirmClick" class="get-btn">Get</el-button>
             </div>
         </template>
     </el-drawer>
@@ -266,5 +264,11 @@ onMounted(() => {
 
 :deep(.el-popup-parent--hidden) {
     width: 100% !important;
+}
+
+:deep(.get-btn){
+    border: #169608 1px solid;
+    background-color: #169608;
+    box-shadow: none;
 }
 </style>
