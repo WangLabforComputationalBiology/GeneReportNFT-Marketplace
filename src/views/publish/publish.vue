@@ -141,6 +141,7 @@ import { useRouter } from 'vue-router';
 import Bubbles from '../components/bubbles.vue';
 import Api from '../../axios/aixos';
 import { useWalletStore } from '@/stores/account';
+import { ElLoading } from 'element-plus';
 
 const walletStore = useWalletStore();
 const router = useRouter();
@@ -176,16 +177,26 @@ function redirectToOAuth() {
 
 let profiles = ref([]);
 let isVisible = ref(false);
+let profileName = ref('');
 const getProfileIds = async () => {
    isVisible.value = true;
    try {
       const res = await Api.get('/studio/getProfileIds');
+      var loading = ElLoading.service({
+         lock: true,
+         text: 'Loading...',
+         background: 'rgba(0, 0, 0, 0.7)',
+         customClass: 'loading',
+      })
       if (res.data.code === 200) {
+         loading.close();
          profiles.value = res.data.data.profile_ids
          profileName.value = res.data.data.profile_name
          console.log(profiles);
       }
    } catch (error) {
+      loading.close();
+      alert("Network error. Please try again later");
       console.error(error);
    }
 }

@@ -8,7 +8,7 @@
 
             {{ walletStore.insititution ? ` Institution: ${walletStore.insititution}.` : 'Your institution accreditation is not verified.' }}
             <br>
-            {{ walletStore.email ? `Email: ${walletStore.email}` : 'No email connected'}}
+            {{ walletStore.email ? `Email: ${walletStore.email}` : 'No email verified.'}}
             <router-link to="/verify" style="color: #fff;">
             
                 <el-button class="custom-button">
