@@ -16,5 +16,5 @@ type GetMetadataByOwnerResp struct {
 }
 
 type GetAllMetadataResp struct {
-	Metadata []GetMetadataResp `json:"multi_metadata"`
+	MultiMetadata []models.Metadata `json:"multi_metadata"`
 }

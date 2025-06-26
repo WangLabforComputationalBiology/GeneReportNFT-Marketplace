@@ -3,7 +3,6 @@ package dao
 import (
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/models"
-	"GeneReport_platform/pkg/appContext"
 	"context"
 	"gorm.io/gorm"
 	"sync"
@@ -51,7 +50,7 @@ func registerMetadataDao() {
 }
 
 func (m *Metadata) DB() *gorm.DB {
-	return m.db.WithContext(appContext.NewTimeoutContextByParent(m.ctx))
+	return m.db
 }
 
 // GetMetadataDetailByDataHash 通过data_hash获取metadata

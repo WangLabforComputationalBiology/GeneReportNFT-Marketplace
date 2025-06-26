@@ -42,8 +42,8 @@ func (m *MetadataService) GetAllMetadata() (dto.GetAllMetadataResp, error) {
 	if err != nil {
 		return dto.GetAllMetadataResp{}, appErrors.New(503, "获取用户所有GNFT信息失败", err)
 	}
-	// 映射转换dto
-	var toResp dto.GetAllMetadataResp
-	mapstructure.Decode(targetMetadatas, &toResp)
-	return toResp, nil
+
+	return dto.GetAllMetadataResp{
+		MultiMetadata: targetMetadatas,
+	}, nil
 }

@@ -71,7 +71,7 @@ func registerStudioRouter(r *gin.RouterGroup) {
 }
 
 func registerMetadataRouter(r *gin.RouterGroup) {
-	r.GET("/", middlewares.ZapMiddleware(), controllers.MetadataController.GetAllMetadata)
+	r.GET("/getData", middlewares.ZapMiddleware(), controllers.MetadataController.GetAllMetadata)
 }
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
