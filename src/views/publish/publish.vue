@@ -59,15 +59,14 @@
          </el-button>
       </div>
 
-      <div class="wrapper-right" style="display: block;" v-if="step === 1 && profiles.length <= 0">
+      <div class="wrapper-right" style="display: block;" v-if="step === 1">
          <div class="platforms" @click="redirectToOAuth">
             <img src="../../icons/wegene_logo.svg" alt="wegene">
          </div>
-         <div class="platforms"></div>
-         <div class="platforms"></div>
+         <div class="platforms"><p>comming soon...</p></div>
+         <div class="platforms"><p>comming soon...</p></div>
 
          <div class="button-wrapper" style="height:150px">
-            <!-- <el-button class="button" @click="back" style="right: 120px;">back</el-button> -->
             <el-button class="button" @click="next" style="right: 0;">Continue</el-button>
             <div class="tips">
                If your genetic testing platform is not listed, please to provide feedback, and we will address it
@@ -77,7 +76,7 @@
       </div>
 
 
-      <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="step === 2">
+      <div class="wrapper-right" style="display: block; padding: 200px 200px;" v-if="step === 2">
          <p>Report *</p>
          <div class="select" @click="getProfileIds">
             <div class="add" v-if="!selectedProfile">+</div>
@@ -86,20 +85,14 @@
          </div>
          <p>Name *</p>
          <el-input class="name-input" v-model="name" placeholder="Please enter the name of the collection"></el-input>
-         <p class="introduction" style="margin-bottom: 0;">Since there are several analysis files in the genetic
+         <!-- <p class="introduction" style="margin-bottom: 0;">Since there are several analysis files in the genetic
             report, your
             GNFT will be
-            automatically given a unique name depending on the Collection name you provide.</p>
+            automatically given a unique name depending on the Collection name you provide.</p> -->
          <p class="introduction"><span class="click-here">Click here</span> to view an example.</p>
          <p>Description</p>
          <input type="text" class="Description-input" placeholder="Please enter a description of the collection"
             v-model="description"></input>
-         <!-- <p class="introduction">The description will be included in every GNFT in the Collection</p> -->
-         <!-- <p>Trait</p>
-         <p class="introduction">Traits describe attributes of your item. They appear as filters inside your
-            collection page
-            and are also listed out inside your item page.</p> -->
-         <!-- <div class="add-trait">+ Add trait</div> -->
          <div class="button-wrapper" style="margin-top: 50px;">
             <el-button class="button" @click="back" style="right: 120px;">back</el-button>
             <el-button class="button" @click="createData" style="right: 0px;">Create</el-button>
@@ -401,11 +394,13 @@ h1 {
    .platforms {
       position: relative;
       margin: 50px auto;
+      display: flex;
       width: 60%;
       min-width: 240px;
       height: 100px;
       border: #e0e0e0 1px solid;
       border-radius: 20px;
+      align-items: center;
       box-shadow: 0px 0px 2px 0px #e0e0e0 !important;
 
       &:hover {
@@ -416,6 +411,13 @@ h1 {
       img {
          margin: 25px 40px;
          height: 50px;
+      }
+
+      p{
+         width: 100%;
+         text-align: center;
+         color: #cdcdcd;
+         font-size: 24px;
       }
    }
 
@@ -464,7 +466,7 @@ h1 {
    margin: 10px 0;
    width: 400px;
    height: 60px;
-   background-color: #F5F5F5;
+   background-color: #f9f8f8;
    border: #e0e0e0 1px solid;
    border-radius: 10px;
    box-shadow: 0px 0px 2px 0px #e0e0e0 !important;
@@ -563,6 +565,7 @@ h1 {
 
 :deep(.el-input__wrapper) {
    width: 100%;
+   border-radius: 10px;
 
    &:focus-within {
       box-shadow: 0px 0px 0px 1px inset #67C23A !important;
