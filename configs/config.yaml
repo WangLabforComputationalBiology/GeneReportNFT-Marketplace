@@ -25,7 +25,7 @@ mongoDB:
   db: GeneReport_platform
 
 context:
-  timeout: 3
+  timeout: 10
 logger:
 
 wegene:
