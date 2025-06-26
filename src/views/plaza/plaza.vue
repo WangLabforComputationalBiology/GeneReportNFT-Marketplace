@@ -9,6 +9,7 @@
                 <div class="icon" />
                 <div class="ifo">
                     <p>Name: <span class="ifo-item"> &nbsp; {{ item.name }}</span></p>
+                    <p>Category: <span class="ifo-item"> &nbsp; {{ item.category }}</span></p>
                     <p>Description:<span class="ifo-item"> &nbsp; {{ item.description }}</span></p>
                     <p>Format:<span class="ifo-item"> &nbsp; {{ item.format }}</span></p>
                     <p>Date:<span class="ifo-item"> &nbsp; {{ item.created_at }}</span></p>
@@ -22,6 +23,7 @@
             <div class="icon" />
             <div class="ifo">
                 <p>Name: <span class="ifo-item"> &nbsp; {{ selectedData.name }}</span></p>
+                <p>Category: <span class="ifo-item"> &nbsp; {{ selectedData.category }}</span></p>
                 <p>Description:<span class="ifo-item"> &nbsp; {{ selectedData.description }}</span></p>
                 <p>Format:<span class="ifo-item"> &nbsp; {{ selectedData.format }}</span></p>
                 <p>Date:<span class="ifo-item"> &nbsp; {{ selectedData.created_at }}</span></p>
@@ -79,11 +81,7 @@ var loading = ref(true);
 let detailData = ref(null);
 const getDetailData = async () => {
     try {
-        // var loading = ElLoading.service({
-        //     lock: true,
-        //     text: 'Loading...',
-        //     background: 'rgba(0, 0, 0, 0.7)',
-        // });
+
         const res = await Api.get('/plaza/getDetailData', {
             params: {
                 data_hash: selectedData.data_hash,
@@ -271,6 +269,7 @@ onMounted(() => {
             height: 70%;
 
             p {
+                line-height: 24px;
                 color: #333;
             }
 
@@ -312,6 +311,7 @@ onMounted(() => {
     p {
         color: #333;
         font-size: 20px;
+        line-height: 28px;
     }
 
     .ifo-item {
