@@ -13,9 +13,6 @@
                 </span><br>
             </div>
             <div class="info-wrapper">
-                <div class="img">
-                    <img src="../../assets/imgs/bioschains.svg" alt="">
-                </div>
             </div>
             <div class="btn-wrapper">
                 <el-button @click="goBack">Back</el-button>

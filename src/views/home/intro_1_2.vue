@@ -37,7 +37,9 @@ function toFB() {
     position: absolute;
     top: 15%;
     width: 50%;
+    min-width: 880px;
     height: 50%;
+    min-height: 450px;
     align-items: center;
     border-radius: 40px;
     box-shadow: 0 0 15px #E4E7ED;
@@ -74,7 +76,7 @@ function toFB() {
             padding: 20px;
             width: 350px;
             height: 250px;
-            font-size: 24px;
+            font-size: 1.5em;
             text-align: center;
         }
     }

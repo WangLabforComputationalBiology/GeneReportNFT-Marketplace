@@ -28,8 +28,9 @@ function toFB() {
     display: flex;
     position: relative;
     width: 100vw;
-    min-width: 800px;
+    min-width: 1200px;
     height: 95vh;
+    min-height: 860px;
     margin: auto;
     overflow: hidden;
     animation: fadeIn 0.4s ease-in-out 0s forwards;

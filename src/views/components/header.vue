@@ -54,7 +54,8 @@ function toAccount() {
     z-index: 1000;
     width: 100vw;
     height: 5vh;
-    min-width: 1200px;
+    min-height: 45px;
+    min-width: 700px;
     position: sticky; //固定在顶部
     top: 0;
     background-color: #fff;
@@ -65,6 +66,7 @@ function toAccount() {
 
     .side {
         height: 5vh;
+        min-height: 45px !important;
         flex: 1;
         min-width: 250px;
         display: flex;
@@ -80,12 +82,13 @@ function toAccount() {
 
         .logo {
             height: 100%;
-            font-size: 3vh;
+            font-size: 34px;
             line-height: 5vh;
             font-weight: 700;
             color: #333;
 
             img {
+                min-height: 25px;
                 height: 2.3vh;
             }
         }
@@ -97,6 +100,7 @@ function toAccount() {
         position: relative;
         width: 85vw;
         min-width: 800px;
+        min-height: 45px;
         display: flex;
 
         .routers {
