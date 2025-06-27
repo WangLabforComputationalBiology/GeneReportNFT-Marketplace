@@ -4,9 +4,11 @@ import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/internal/contracts/sharingPlatformContract"
 	"GeneReport_platform/internal/dao"
+	"GeneReport_platform/internal/models"
 	"GeneReport_platform/pkg/appErrors"
 	"github.com/ethereum/go-ethereum/common"
 	"net/http"
+	"time"
 )
 
 var (
@@ -47,25 +49,40 @@ func (s *StudioService) CreateAllFromThirdPartyOnChain(userAddressHex string, re
 		return dto.CreateAllFromThirdPartyResp{}, appErrors.New(http.StatusInternalServerError, "链上交易失败", err)
 	}
 
-	//var dataHashBytes32s [][32]byte
-	//var tempDataHashBytes32 [32]byte
-	//userAddressHex = "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4"
-	//copy(tempDataHashBytes32[:], common.Hex2Bytes("7E6cd50ffe51247535bfb9140f45f6d4df89c5A793d29a8f02bb3a913a707679"))
-	//dataHashBytes32s = append(dataHashBytes32s, tempDataHashBytes32)
-	//
-	//newGeneSharingAddress, _, receipt, err := sharingPlatformContract.GetContractIns().CreateAllFromThirdParty(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddressHex), dataHashBytes32s)
-	//if err != nil {
-	//	fmt.Println(err.Error())
-	//}
-	//fmt.Println(newGeneSharingAddress.Hex())
-	//fmt.Println(receipt)
-
 	//链下数据创建
+	//创建geneSharing
+	geneSharing2Create := &models.GeneSharing{
+		ContractAddress: newGeneSharingAddress.Hex(),
+		Name:            req.GeneSharingName,
+		Description:     req.Description,
+		CreatorAddress:  userAddressHex,
+		CreatedAt:       time.Now(),
+		ExplorerLink:    "",
+		IsOfficial:      true,
+		ItemAmount:      len(dataHashBytes32s),
+		Tags:            req.Tags,
+	}
+	if err := dao.GetGeneSharingDao().CreateGeneSharing(geneSharing2Create); err != nil {
+		return dto.CreateAllFromThirdPartyResp{}, appErrors.New(http.StatusServiceUnavailable, "创建GeneSharing合集失败", err)
+	}
+
+	//补全Metadata数据
+	toUpdate := dto.UpdateMetadata{
+		GeneSharingContractAddress: newGeneSharingAddress.Hex(),
+		//fixme 添加Metadata合约的地址
+		ContractAddress: sharingPlatformContract.MetaDataContractAddress,
+		Description:     req.Description,
+		Tags:            req.Tags,
+		IsSharable:      false,
+	}
+	if err := dao.GetMetadataDao().CompleteMetadataInfo(req.ProfileId, toUpdate); err != nil {
+		return dto.CreateAllFromThirdPartyResp{}, appErrors.New(http.StatusServiceUnavailable, "创建Metadata失败", err)
+	}
 
 	return dto.CreateAllFromThirdPartyResp{NewGeneSharingContractAddress: newGeneSharingAddress.Hex(), TransactionHash: receipt.TransactionHash}, nil
 }
 
-// CreateAllFromThirdPartyOffChain fixme CreateAllFromThirdPartyOffChain 从第三方平台创建（链下操作）
+// CreateAllFromThirdPartyOffChain fixme 从第三方平台创建（链下操作）
 func (s *StudioService) CreateAllFromThirdPartyOffChain(userAddress string, req dto.CreateAllFromThirdPartyReq) error {
 	return nil
 }

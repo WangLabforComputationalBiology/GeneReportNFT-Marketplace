@@ -26,21 +26,16 @@ func (s *Studio) CreateFromThirdParty(ctx *gin.Context) {
 	}
 
 	//fixme sse分阶段响应
-	if resp, err := services.StudioServ.CreateAllFromThirdPartyOnChain(ctx.GetString("user_address"), req); err != nil {
+	if toResp, err := services.StudioServ.CreateAllFromThirdPartyOnChain(ctx.GetString("user_address"), req); err != nil {
 		ctx.Error(err)
 		return
 	} else {
 		ctx.JSON(http.StatusOK, dto.Response{
 			Code:    http.StatusOK,
 			Message: "创建成功",
-			Data:    resp,
+			Data:    toResp,
 		})
 	}
-
-	//if err := services.StudioServ.CreateAllFromThirdPartyOffChain(ctx.GetString("user_address"), req); err != nil {
-	//	ctx.Error(err)
-	//	return
-	//}
 
 }
 

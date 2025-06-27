@@ -1,9 +1,9 @@
 package dto
 
 type CreateAllFromThirdPartyReq struct {
-	ProfileId       string // 第三方文件信息
-	GeneSharingName string `json:"gene_sharing_name"`
-	Description     string `json:"description"`
+	ProfileId       string `json:"profileId" binding:"required"`
+	GeneSharingName string `json:"gene_sharing_name" binding:"required"`
+	Description     string `json:"description" binding:"required"`
 	Tags            string `json:"tags"` // tags用分号分隔,ex:third party:wegene;...
 }
 

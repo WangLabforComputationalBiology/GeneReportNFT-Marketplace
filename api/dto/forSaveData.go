@@ -267,7 +267,7 @@ type DataVisitRecord struct {
 	CreateTime time.Time `json:"create_time" gorm:"column:create_time"`
 }
 
-// metadatas 用于记录数据的哈希
+// Metadatas 用于记录数据的哈希
 type Metadatas struct {
 	gorm.Model
 	DataHash        string `gorm:"column:data_hash;type:varchar(64)" json:"data_hash"`
@@ -297,12 +297,9 @@ var typeRegistry = map[string]reflect.Type{
 	"Ancestry":          reflect.TypeOf(Ancestry{}),
 	"Haplogroups":       reflect.TypeOf(Haplogroups{}),
 	"Demographics":      reflect.TypeOf(Demographics{}),
-	"UniqueProfiles":    reflect.TypeOf(UniqueProfiles{}),
-	"DataVisitRecord":   reflect.TypeOf(DataVisitRecord{}),
-	"Metadatas":         reflect.TypeOf(Metadatas{}),
 }
 
-func GetStructType(name string) (reflect.Type, bool) {
-	t, ok := typeRegistry[name]
+func GetStructType(category string) (reflect.Type, bool) {
+	t, ok := typeRegistry[category]
 	return t, ok
 }

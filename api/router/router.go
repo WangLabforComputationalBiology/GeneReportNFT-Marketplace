@@ -58,8 +58,7 @@ func registerUserRouter(r *gin.RouterGroup) {
 	r.POST("/send_email", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.UserController.SendEmailCode)
 	//验证验证码
 	r.POST("/verify_email", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.UserController.VerifyEmailCode)
-	//获取用户的基因数据
-	r.GET("/getData/:param", middlewares.AuthMiddleware(), controllers.MetadataController.GetData)
+
 }
 
 func registerStudioRouter(r *gin.RouterGroup) {
@@ -71,7 +70,7 @@ func registerStudioRouter(r *gin.RouterGroup) {
 }
 
 func registerMetadataRouter(r *gin.RouterGroup) {
-	r.GET("/getData", middlewares.ZapMiddleware(), controllers.MetadataController.GetAllMetadata)
+	r.GET("/getData", middlewares.ZapMiddleware(), controllers.MetadataController.GetAllMetadataOverview)
 }
 func SetupRouter() *gin.Engine {
 	r := gin.Default()

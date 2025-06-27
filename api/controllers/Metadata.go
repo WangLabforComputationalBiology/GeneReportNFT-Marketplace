@@ -13,9 +13,9 @@ var (
 	MetadataController = &Metadata{}
 )
 
-// GetMetadataInfoByOwner 获取指定owner的metadata信息
-func (m *Metadata) GetMetadataInfoByOwner(ctx *gin.Context) {
-	var req dto.GetMetadataByOwnerReq
+// GetMetadataOverviewByOwner 获取指定owner的metadata信息
+func (m *Metadata) GetMetadataOverviewByOwner(ctx *gin.Context) {
+	var req dto.GetMetadataOverviewByOwnerReq
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
@@ -23,43 +23,43 @@ func (m *Metadata) GetMetadataInfoByOwner(ctx *gin.Context) {
 		})
 		return
 	}
-	gnftInfos, err := services.MetadataServ.GetMetadataOverviewByOwner(req.Owner)
+	results, err := services.MetadataServ.GetMetadataOverviewByOwner(req.Owner)
 	if err != nil {
 		ctx.Error(err)
 		return
 	}
 	ctx.JSON(http.StatusOK, dto.Response{
 		Code:    http.StatusOK,
-		Message: "成功获取GNFT信息",
-		Data:    gnftInfos,
+		Message: "success",
+		Data:    results,
 	})
 	return
 }
 
-// GetMetadataInfoByDataHash 获取指定id的metadata信息
-func (m *Metadata) GetMetadataInfoByDataHash(ctx *gin.Context) {
-	var req dto.GetMetadataByOwnerReq
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+// GetMetadataDetailByDataHash 获取指定数据哈希的metadata详情
+func (m *Metadata) GetMetadataDetailByDataHash(ctx *gin.Context) {
+	dataHash := ctx.Param("dataHash")
+	if dataHash == "" {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
-			Message: "请求体格式错误,请重新登录",
+			Message: "请求体格式错误",
 		})
 		return
 	}
-
+	toResp, err := services.MetadataServ.GetMetadataDetailByDataHash(dataHash)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	ctx.JSON(http.StatusOK, dto.Response{
+		Code:    http.StatusOK,
+		Message: "success",
+		Data:    toResp,
+	})
 }
 
-func (m *Metadata) GetGeneTypeDataByID(ctx *gin.Context) {
-	services.GetDataImpl(ctx)
-}
-
-// GetData 获取geneType数据
-func (m *Metadata) GetData(ctx *gin.Context) {
-	services.GetDataImpl(ctx)
-}
-
-func (m *Metadata) GetAllMetadata(ctx *gin.Context) {
-	multiMetadata, err := services.MetadataServ.GetAllMetadata()
+func (m *Metadata) GetAllMetadataOverview(ctx *gin.Context) {
+	multiMetadata, err := services.MetadataServ.GetAllMetadataOverview()
 	if err != nil {
 		ctx.Error(err)
 		return

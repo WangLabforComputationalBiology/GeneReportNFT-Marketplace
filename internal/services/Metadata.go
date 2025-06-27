@@ -15,9 +15,9 @@ type MetadataService struct {
 	iMetadataBase
 }
 
-// GNFT基础接口
+// Metadata基础接口
 type iMetadataBase interface {
-	GetMetadataOverviewByOwner(owner string) (dto.GetMetadataByOwnerResp, error)
+	GetMetadataOverviewByOwner(owner string) (dto.GetMetadataOverviewByOwnerResp, error)
 }
 
 func RegisterMetadataService() {
@@ -26,24 +26,38 @@ func RegisterMetadataService() {
 
 /*fill your method here*/
 
-func (m *MetadataService) GetMetadataOverviewByOwner(owner string) (dto.GetMetadataByOwnerResp, error) {
+func (m *MetadataService) GetMetadataOverviewByOwner(owner string) (dto.GetMetadataOverviewByOwnerResp, error) {
 	targetMetadatas, err := dao.GetMetadataDao().GetMetadataOverviewByOwner(owner)
 	if err != nil {
-		return dto.GetMetadataByOwnerResp{}, appErrors.New(503, "获取用户所有GNFT信息失败", err)
+		return dto.GetMetadataOverviewByOwnerResp{}, appErrors.New(503, "获取Metadata概述信息失败", err)
 	}
 	// 映射转换dto
-	var toResp dto.GetMetadataByOwnerResp
+	var toResp dto.GetMetadataOverviewByOwnerResp
 	mapstructure.Decode(targetMetadatas, &toResp)
 	return toResp, nil
 }
 
-func (m *MetadataService) GetAllMetadata() (dto.GetAllMetadataResp, error) {
-	targetMetadatas, err := dao.GetMetadataDao().GetAllMetadata()
+func (m *MetadataService) GetAllMetadataOverview() (dto.GetAllMetadataOverviewResp, error) {
+	results, err := dao.GetMetadataDao().GetAllMetadataOverview()
 	if err != nil {
-		return dto.GetAllMetadataResp{}, appErrors.New(503, "获取用户所有GNFT信息失败", err)
+		return dto.GetAllMetadataOverviewResp{}, appErrors.New(503, "", err)
 	}
 
-	return dto.GetAllMetadataResp{
-		MultiMetadata: targetMetadatas,
+	return dto.GetAllMetadataOverviewResp{
+		MultiMetadata: results,
 	}, nil
+}
+
+func (m *MetadataService) GetMetadataDetailByDataHash(dataHash string) (map[string]interface{}, error) {
+	metadata, err := dao.GetMetadataDao().GetMetadataOverviewByDataHash(dataHash)
+	if err != nil {
+		return nil, appErrors.New(503, "获取Metadata详细信息失败", err)
+	}
+
+	results, err := GetDataImpl(metadata.ProfileID, metadata.Category)
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }

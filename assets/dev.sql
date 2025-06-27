@@ -21,8 +21,8 @@ CREATE TABLE `users`
     `address`     varchar(42) NOT NULL PRIMARY KEY COMMENT '钱包账户地址',
     `name`        varchar(32) NOT NULL COMMENT '用户名',
     `create_at`   datetime    NOT NULL COMMENT '账户注册时间',
-    `institution` varchar(32)          default 'UNKNOWN' COMMENT '机构名称',
-    `email`       varchar(32)          default 'UNKNOWN' COMMENT '机构邮箱'
+    `institution` varchar(32) default 'UNKNOWN' COMMENT '机构名称',
+    `email`       varchar(32) default 'UNKNOWN' COMMENT '机构邮箱'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='用户列表';
 
@@ -869,21 +869,23 @@ CREATE TABLE geneSharings
 );
 
 drop table if exists `metadatas`;
--- genSharing集合下的metadatas表
+-- geneSharing集合下的metadatas表
 CREATE TABLE metadatas
 (
-    `data_hash`        VARCHAR(32) PRIMARY KEY COMMENT '数据哈希',
-    `profile_id`       VARCHAR(36) NOT NULL COMMENT '对应的第三方基因报告id',
-    `format`           VARCHAR(32) COMMENT '基因报告格式',
-    `sex`              VARCHAR(32) COMMENT '性别',
-    `category`         VARCHAR(32) COMMENT '报告研究类型',
-    `owner`            VARCHAR(32) COMMENT '拥有者',
-    `name`             VARCHAR(32) COMMENT '元数据名称',
-    `description`      TEXT COMMENT '元数据描述',
-    `contract_address` VARCHAR(42) COMMENT '合约地址',
-    `is_sharable`      TINYINT(1) COMMENT '可共享状态',
-    `is_hidden`        TINYINT(1) COMMENT '隐藏状态',
-    `created_at`       DATETIME COMMENT '创建时间'
+    `data_hash`                    VARCHAR(32) PRIMARY KEY COMMENT '数据哈希',
+    `profile_id`                   VARCHAR(36) NOT NULL COMMENT '对应的第三方基因报告id',
+    `format`                       VARCHAR(32) COMMENT '基因报告格式',
+    `sex`                          VARCHAR(32) COMMENT '性别',
+    `category`                     VARCHAR(32) COMMENT '报告研究类型',
+    `owner`                        VARCHAR(32) COMMENT '拥有者',
+    `name`                         VARCHAR(32) COMMENT '元数据名称',
+    `description`                  TEXT COMMENT '元数据描述',
+    `contract_address`             VARCHAR(42) COMMENT '合约地址',
+    `is_sharable`                  TINYINT(1) COMMENT '可共享状态',
+    `is_hidden`                    TINYINT(1) COMMENT '隐藏状态',
+    `created_at`                   DATETIME COMMENT '创建时间',
+    `tags`                         VARCHAR(255) COMMENT '标签，以分号分隔，,ex:third party:wegene;...',
+    `geneSharing_contract_address` VARCHAR(32) NOT NULL COMMENT '基因报告地址'
 );
 
 drop table if exists `geneSharing_metadatas`;
@@ -925,7 +927,7 @@ drop table if exists `institutions`;
 -- 活动activities表
 CREATE TABLE institutions
 (
-    `name`        VARCHAR(32) PRIMARY KEY COMMENT '机构名称',
-    `suffix`    VARCHAR(32) NOT NULL COMMENT '机构邮箱后缀'
+    `name`   VARCHAR(32) PRIMARY KEY COMMENT '机构名称',
+    `suffix` VARCHAR(32) NOT NULL COMMENT '机构邮箱后缀'
 
 );

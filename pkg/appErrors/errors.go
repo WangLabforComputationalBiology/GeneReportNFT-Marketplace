@@ -28,7 +28,7 @@ func New(code int, message string, errs ...error) AppError {
 		}
 	} else {
 		return AppError{
-			Code: code, Message: message, Detail: message,
+			Code: code, Message: message,
 		}
 	}
 }

@@ -3,8 +3,9 @@ package services
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
+	"GeneReport_platform/pkg/appErrors"
+	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"reflect"
 )
@@ -28,31 +29,17 @@ func RegisterOrderService() {
 /*fill your method here*/
 
 // GetDataImpl 获取GeneType数据
-func GetDataImpl(ctx *gin.Context) {
-	address := ctx.GetString("user_address")
-	profileId := ctx.Query("profileId")
+func GetDataImpl(profileId, category string) (map[string]interface{}, error) {
 	unique := dto.UniqueProfiles{}
 	//在数据库查出profileId一样记录
 	if profileId != "" {
 		configs.DB.Where("profile_id = ?", profileId).Find(&unique)
 	}
 	if unique.Status == 0 {
-		ctx.JSON(http.StatusOK, gin.H{"msg": "数据还没处理完成，请稍等!"})
-		return
+		return nil, appErrors.New(http.StatusOK, "数据还没处理完成，请稍等!")
 	}
 
-	//先将访问数据存到数据库中
-	record := dto.DataVisitRecord{
-		Address:   address,
-		ProfileID: profileId,
-	}
-	configs.DB.Create(&record)
-	//todo 再将数据拼接成string存到链上
-	//
-
-	//获取参数
-	param := ctx.Param("param")
-	t, ok := dto.GetStructType(param)
+	t, ok := dto.GetStructType(category)
 	if ok {
 		fmt.Println("Struct Type:", t)
 		instance := reflect.New(t).Interface()
@@ -61,15 +48,14 @@ func GetDataImpl(ctx *gin.Context) {
 
 	// 创建该类型的切片用于存储查询结果
 	sliceType := reflect.SliceOf(t)
-	result := reflect.New(sliceType).Interface()
 
-	// 使用 GORM 查询数据并填充到 result 中
-	pageSize := 5
-	pageNum := 1
-	err := configs.DB.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(result).Error
+	err := configs.DB.Model(t).Where("profile_id = ?", profileId).Find(sliceType).Error
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return nil, appErrors.New(http.StatusInternalServerError, "查询失败", err)
 	}
-	ctx.JSON(http.StatusOK, result)
 
+	var results map[string]interface{}
+	tempResults, _ := json.Marshal(sliceType)
+	_ = json.Unmarshal(tempResults, &results)
+	return results, nil
 }

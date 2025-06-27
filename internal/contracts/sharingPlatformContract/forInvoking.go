@@ -17,6 +17,8 @@ var PlatformContractAddressHex string
 
 var AdminPrivateKeyHex string
 
+var MetaDataContractAddress string
+
 func GetContractIns() *SharingPlatformContract {
 	// 初始化客户端
 	ChainClient, err := client.DialContext(context.Background(), FiscoConfig)
@@ -24,8 +26,6 @@ func GetContractIns() *SharingPlatformContract {
 	if err != nil {
 		log.Fatalf("连接 FISCO BCOS v3 节点失败: %v", err)
 	}
-	// 初始化已部署的sharingPlatform_v3合约地址
-	PlatformContractAddressHex = "0xf47Fa8F801C1053162D78cc906B14A3c6779b5F3"
 
 	// 实例化合约
 	ContractIns, _ := NewSharingPlatformContract(common.HexToAddress(PlatformContractAddressHex), ChainClient)
@@ -45,6 +45,12 @@ func NewAdminTransactor() *bind.TransactOpts {
 
 func init() {
 	AdminPrivateKeyHex = "27f91739125122c0688d698f01655745fd6f34e78635b53bba8b6fc2a3e905dc"
+
+	//初始化已部署的Metadata合约地址
+	MetaDataContractAddress = "0xFffa2927962f86c3b0Bb6E92af31Dec59da040eb"
+
+	// 初始化已部署的sharingPlatform_v3合约地址
+	PlatformContractAddressHex = "0xf47Fa8F801C1053162D78cc906B14A3c6779b5F3"
 
 	// 解码私钥
 	privateKeyBytes, err := hex.DecodeString(AdminPrivateKeyHex)

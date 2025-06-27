@@ -23,13 +23,13 @@ func RegisterGeneSharingService() {
 	GeneSharingServ = &GeneSharingService{}
 }
 
-// GetGeneSharingDetailsByContractAddress 将[]dao.CollectionWithGNFT 整理为 dto.GetCollectionInfoResp
+// GetGeneSharingDetailsByContractAddress 根据合约地址获取geneSharing合集详情
 func (c *GeneSharingService) GetGeneSharingDetailsByContractAddress(geneSharingID string) (dto.GetGeneSharingDetailsByContractAddressResp, error) {
 	var toResp dto.GetGeneSharingDetailsByContractAddressResp
 
 	results, err := dao.GetGeneSharingDao().GetGeneSharingDetailsByAddress(geneSharingID)
 	if err != nil {
-		return dto.GetGeneSharingDetailsByContractAddressResp{}, appErrors.New(503, "获取集合信息失败", err)
+		return dto.GetGeneSharingDetailsByContractAddressResp{}, appErrors.New(503, "获取geneSharing合集信息失败", err)
 	}
 
 	_ = mapstructure.Decode(results, toResp)

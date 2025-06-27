@@ -1,12 +1,13 @@
 package dao
 
 import (
+	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/models"
 	"context"
+	"encoding/json"
 	"gorm.io/gorm"
 	"sync"
-	"time"
 )
 
 var (
@@ -14,22 +15,7 @@ var (
 	metadataOnce sync.Once
 )
 
-type MetadataOverview struct {
-	DataHash   string    `gorm:"primaryKey;type:varchar(36)" json:"data_hash"`
-	Format     string    `gorm:"type:varchar(32)" json:"format"`
-	Sex        bool      `gorm:"type:varchar(32)" json:"sex"`
-	Category   string    `gorm:"type:varchar(32)" json:"category"`
-	Name       string    `gorm:"index:idx_name;type:varchar(32)" json:"name"`
-	IsSharable bool      `gorm:"type:tinyint(1)" json:"is_sharable"`
-	CreatedAt  time.Time `gorm:"type:datetime" json:"created_at"`
-}
-
-type MetadataWithGeneSharing struct {
-	Metadata    models.Metadata
-	GeneSharing models.GeneSharing
-}
-
-// GetMetadataDao 导出GNFTDao
+// GetMetadataDao 导出MetadataDao
 func GetMetadataDao() *Metadata {
 	metadataOnce.Do(func() {
 		registerMetadataDao()
@@ -53,20 +39,20 @@ func (m *Metadata) DB() *gorm.DB {
 	return m.db
 }
 
-// GetMetadataDetailByDataHash 通过data_hash获取metadata
-func (m *Metadata) GetMetadataDetailByDataHash(dataHashBase64 string) (results models.Metadata, err error) {
+// GetMetadataOverviewByDataHash 通过data_hash获取metadata
+func (m *Metadata) GetMetadataOverviewByDataHash(dataHashBase64 string) (result models.Metadata, err error) {
 	err = m.DB().Select("metadatas.*").
 		Where("metadatas.data_hash = ?&& metadatas.is_hidden = 0", dataHashBase64).
 		Order("metadatas.category desc").
-		Scan(results).Error
+		Scan(result).Error
 	if err != nil {
 		return models.Metadata{}, err
 	}
-	return results, nil
+	return result, nil
 }
 
 // GetMetadataOverviewByOwner 通过Owner获取metadata信息
-func (m *Metadata) GetMetadataOverviewByOwner(owner string) (results []MetadataOverview, err error) {
+func (m *Metadata) GetMetadataOverviewByOwner(owner string) (results []dto.MetadataOverview, err error) {
 	err = m.DB().Select("metadatas.*").
 		Where("metadatas.owner = ? && metadatas.is_hidden = 0", owner).
 		Group("metadatas.contract_address").
@@ -91,7 +77,7 @@ func (m *Metadata) GetMetadataDetailByProfileId(profileID string) (results []mod
 	return results, nil
 }
 
-func (m *Metadata) GetAllMetadata() (results []models.Metadata, err error) {
+func (m *Metadata) GetAllMetadataOverview() (results []dto.MetadataOverview, err error) {
 	err = m.DB().Select("metadatas.*").
 		Table("metadatas").
 		Where("metadatas.is_hidden = 0").
@@ -101,4 +87,36 @@ func (m *Metadata) GetAllMetadata() (results []models.Metadata, err error) {
 		return nil, err
 	}
 	return results, nil
+}
+
+// CompleteMetadataInfo 补全预构建的数据库的Metadata信息
+func (m *Metadata) CompleteMetadataInfo(profileID string, toUpdate dto.UpdateMetadata) error {
+	// 转为 map[string]interface{}
+	updates := make(map[string]interface{})
+	data, err := json.Marshal(toUpdate)
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(data, &updates); err != nil {
+		return err
+	}
+
+	// 开启事务
+	tx := m.DB().Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	// 更新所有匹配 profileID 的记录
+	err = tx.Table("metadatas").
+		Where("profile_id = ? AND is_hidden = 0", profileID).
+		Updates(updates).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
 }

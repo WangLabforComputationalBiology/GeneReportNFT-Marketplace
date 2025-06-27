@@ -1,13 +1,13 @@
 package dao
 
 import (
+	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/models"
 	"GeneReport_platform/pkg/appContext"
 	"context"
 	"gorm.io/gorm"
 	"sync"
-	"time"
 )
 
 var (
@@ -15,24 +15,9 @@ var (
 	geneSharingOnce sync.Once
 )
 
-type GeneSharingOverview struct {
-	ID          string    `gorm:"primaryKey;type:varchar(32)" json:"ID"`             //以profile_id作为id
-	Name        string    `gorm:"type:varchar(32)" json:"name"`                      //sharing集合名称
-	Description string    `gorm:"type:text" json:"description"`                      //sharing集合描述
-	Creator     string    `gorm:"type:varchar(42);index:idx_creator" json:"creator"` //sharing集合创建者
-	CreatedAt   time.Time `gorm:"type:datetime" json:"created_at"`                   //sharing集合创建时间
-	ItemAmount  int       `gorm:"type:int;" json:"item_amount"`                      //MetaData数量
-	IsOfficial  bool      `gorm:"type:tinyint(1);" json:"is_official"`               //是否第三方官方授权构建
-	Tags        string    `gorm:"type:varchar(255)" json:"tags"`                     //标签，以分号分隔，,ex:third party:wegene;...
-}
-
-type GeneSharingOverviews struct {
-	GeneSharings []GeneSharingOverview `json:"geneSharings"`
-}
-
 type GeneSharingDetail struct {
 	GeneSharing       models.GeneSharing
-	MetadataOverviews []MetadataOverview `json:"metadata_overviews"` //该GeneSharing集合下的所有Metadata的overview
+	MetadataOverviews []dto.MetadataOverview `json:"metadata_overviews"` //该GeneSharing集合下的所有Metadata的overview
 }
 
 type GeneSharingDao struct {
@@ -40,6 +25,7 @@ type GeneSharingDao struct {
 	ctx context.Context
 }
 
+// GetGeneSharingDao 导出GeneSharingDao
 func GetGeneSharingDao() *GeneSharingDao {
 	geneSharingOnce.Do(func() {
 		geneSharingDao = &GeneSharingDao{
@@ -54,11 +40,11 @@ func (g *GeneSharingDao) DB() *gorm.DB {
 	return g.db.WithContext(appContext.NewTimeoutContextByParent(g.ctx))
 }
 
-// GetGeneSharingDetailsByAddress 获取，并以CollectionWithGNFT作为联表单元行返回
+// GetGeneSharingDetailsByAddress 根据地址获取GeneSharing详情
 func (g *GeneSharingDao) GetGeneSharingDetailsByAddress(geneSharingContractAddress string) (results GeneSharingDetail, err error) {
 	type tempResult struct {
 		GeneSharing       models.GeneSharing
-		MetadataOverviews MetadataOverview
+		MetadataOverviews dto.MetadataOverview
 	}
 	var tempResults []tempResult
 
@@ -84,8 +70,8 @@ func (g *GeneSharingDao) GetGeneSharingDetailsByAddress(geneSharingContractAddre
 	return results, nil
 }
 
-// GetGeneSharingOverviewByCreator 获取creator的collections与gnfts联表结果，并以CollectionWithGNFT作为联表单元行返回
-func (g *GeneSharingDao) GetGeneSharingOverviewByCreator(creator string) (results []GeneSharingOverview, err error) {
+// GetGeneSharingOverviewByCreator 获取creator的geneSharing的概览信息
+func (g *GeneSharingDao) GetGeneSharingOverviewByCreator(creator string) (results []dto.GeneSharingOverview, err error) {
 	err = g.DB().Select("geneSharings.*").
 		Where("geneSharings.creator = ?", creator).
 		Order("geneSharings.created_at desc").
@@ -95,4 +81,10 @@ func (g *GeneSharingDao) GetGeneSharingOverviewByCreator(creator string) (result
 		return nil, err
 	}
 	return results, nil
+}
+
+// CreateGeneSharing 创建geneSharing
+func (g *GeneSharingDao) CreateGeneSharing(geneSharing *models.GeneSharing) error {
+	err := g.DB().Table("geneSharings").Create(&geneSharing).Error
+	return err
 }

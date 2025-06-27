@@ -312,7 +312,7 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 		metadata := dto.Metadatas{
 			DataHash:  hashString,
 			ProfileID: profileId,
-			Category:  name, //属于那个类型，skin、risk……
+			Category:  name, //ex： skin、risk……
 			Format:    originMetaData.Format,
 			Name:      originMetaData.Name,
 			Sex:       originMetaData.Sex,

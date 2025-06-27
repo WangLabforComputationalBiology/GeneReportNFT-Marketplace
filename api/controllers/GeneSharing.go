@@ -46,7 +46,7 @@ func (g *GeneSharing) GetGeneSharingByCreator(ctx *gin.Context) {
 		})
 		return
 	}
-	collectionInfosResp, err := services.GeneSharingServ.GetGeneSharingOverviewByCreator(req.CreatorAddress)
+	toResp, err := services.GeneSharingServ.GetGeneSharingOverviewByCreator(req.CreatorAddress)
 	if err != nil {
 		ctx.Error(err)
 		return
@@ -54,7 +54,7 @@ func (g *GeneSharing) GetGeneSharingByCreator(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dto.Response{
 		Code:    http.StatusOK,
 		Message: "success",
-		Data:    collectionInfosResp,
+		Data:    toResp,
 	})
 	return
 }

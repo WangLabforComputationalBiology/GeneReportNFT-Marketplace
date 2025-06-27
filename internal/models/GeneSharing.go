@@ -5,9 +5,8 @@ import (
 )
 
 type GeneSharing struct {
-	ID              string    `gorm:"primaryKey;type:varchar(32)" json:"ID"`                                 //以profile_id作为id
+	ContractAddress string    `gorm:"primaryKey;type:varchar(42)" json:"contract_address"`                   //sharing集合地址
 	Name            string    `gorm:"type:varchar(32)" json:"name"`                                          //sharing集合名称
-	ContractAddress string    `gorm:"type:varchar(42)" json:"contract_address"`                              //sharing集合地址
 	Description     string    `gorm:"type:text" json:"description"`                                          //sharing集合描述
 	CreatorAddress  string    `gorm:"type:varchar(42);index:idx_creatorgeneSharings" json:"creator_address"` //sharing集合创建者
 	CreatedAt       time.Time `gorm:"type:datetime" json:"created_at"`                                       //sharing集合创建时间
