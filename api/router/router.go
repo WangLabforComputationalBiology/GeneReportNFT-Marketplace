@@ -80,9 +80,6 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(otelgin.Middleware("GRM_Server"), middlewares.CORS())
 
-	//商城首页
-	r.GET("/")
-
 	User := r.Group("/user")
 	Studio := r.Group("/studio")
 	Plaza := r.Group("/plaza")
