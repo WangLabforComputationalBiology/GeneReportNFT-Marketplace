@@ -42,9 +42,10 @@ func (m *Metadata) DB() *gorm.DB {
 // GetMetadataOverviewByDataHash 通过data_hash获取metadata
 func (m *Metadata) GetMetadataOverviewByDataHash(dataHashBase64 string) (result models.Metadata, err error) {
 	err = m.DB().Select("metadatas.*").
+		Table("metadatas").
 		Where("metadatas.data_hash = ?&& metadatas.is_hidden = 0", dataHashBase64).
 		Order("metadatas.category desc").
-		Scan(result).Error
+		Scan(&result).Error
 	if err != nil {
 		return models.Metadata{}, err
 	}

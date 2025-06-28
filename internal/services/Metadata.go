@@ -85,16 +85,16 @@ func (m *MetadataService) GetDataImpl(profileId, category string) (map[string]in
 
 	// 创建切片用于查询结果
 	sliceType := reflect.SliceOf(t)
-	results := reflect.MakeSlice(sliceType, 0, 0)
+	results := reflect.MakeSlice(sliceType, 0, 0).Addr().Interface()
 
 	// GORM 查询
-	err := configs.DB.Where("profile_id = ?", profileId).Find(&results).Error
+	err := configs.DB.Where("profile_id = ?", profileId).Find(results).Error
 	if err != nil {
 		return nil, appErrors.New(http.StatusInternalServerError, "查询失败", err)
 	}
 
 	// 转为 map[string]interface{}
-	data, err := json.Marshal(results.Interface())
+	data, err := json.Marshal(results)
 	if err != nil {
 		return nil, appErrors.New(http.StatusInternalServerError, "序列化失败", err)
 	}
