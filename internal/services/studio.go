@@ -69,7 +69,7 @@ func (s *StudioService) CreateAllFromThirdPartyOnChain(userAddressHex string, re
 	//补全Metadata数据
 	toUpdate := dto.UpdateMetadata{
 		GeneSharingContractAddress: newGeneSharingAddress.Hex(),
-		//fixme 添加Metadata合约的地址
+		//Metadata合约地址
 		ContractAddress: sharingPlatformContract.MetaDataContractAddress,
 		Description:     req.Description,
 		Tags:            req.Tags,
