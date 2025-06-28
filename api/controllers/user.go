@@ -626,7 +626,7 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 			log.Println("找到profileId这份报告，详细信息：%v", profile)
 			metadata := &dto.Metadatas{
 				ProfileID: toSave.ProfileId,
-				Name:      tmp.Name,
+				Owner:     address,
 				Format:    tmp.Format,
 				Sex:       strconv.Itoa(tmp.Sex),
 			}

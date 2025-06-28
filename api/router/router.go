@@ -69,8 +69,12 @@ func registerStudioRouter(r *gin.RouterGroup) {
 	r.POST("/createFromThirdParty", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.StudioController.CreateFromThirdParty) //从第三方平台创建（链上操作）
 }
 
+func registerPlazaRouter(r *gin.RouterGroup) {
+	r.GET("", middlewares.ZapMiddleware(), controllers.MetadataController.GetAllMetadataOverview)
+}
 func registerMetadataRouter(r *gin.RouterGroup) {
-	r.GET("/getData", middlewares.ZapMiddleware(), controllers.MetadataController.GetAllMetadataOverview)
+
+	r.GET("/:dataHash", middlewares.ZapMiddleware(), controllers.MetadataController.GetMetadataDetailByDataHash)
 }
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
@@ -82,9 +86,11 @@ func SetupRouter() *gin.Engine {
 	User := r.Group("/user")
 	Studio := r.Group("/studio")
 	Plaza := r.Group("/plaza")
+	Metadata := r.Group("/metadata")
 	registerSwaggerRouter(r)
 	registerUserRouter(User)
 	registerStudioRouter(Studio)
-	registerMetadataRouter(Plaza)
+	registerMetadataRouter(Metadata)
+	registerPlazaRouter(Plaza)
 	return r
 }

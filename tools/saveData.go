@@ -314,7 +314,7 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 			ProfileID: profileId,
 			Category:  name, //ex： skin、risk……
 			Format:    originMetaData.Format,
-			Name:      originMetaData.Name,
+			Owner:     originMetaData.Owner,
 			Sex:       originMetaData.Sex,
 		}
 		res := configs.DB.Create(&metadata)
