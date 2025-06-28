@@ -85,23 +85,31 @@ func (m *MetadataService) GetDataImpl(profileId, category string) (map[string]in
 
 	// 创建切片用于查询结果
 	sliceType := reflect.SliceOf(t)
-	results := reflect.New(sliceType)
+	results := reflect.New(sliceType).Interface()
 
 	// GORM 查询
-	err := configs.DB.Model(reflect.New(t)).Where("profile_id = ?", profileId).Find(results).Error
+	err := configs.DB.Model(reflect.New(t).Interface()).Where("profile_id = ?", profileId).Find(results).Error
 	if err != nil {
 		return nil, appErrors.New(http.StatusInternalServerError, "查询失败", err)
 	}
 
-	// 转为 map[string]interface{}
-	data, err := json.Marshal(results)
+	// 检查结果是否为空
+	resultValue := reflect.ValueOf(results).Elem()
+	if resultValue.Len() == 0 {
+		return map[string]interface{}{"data": []interface{}{}}, nil // 返回空数组
+	}
+
+	// 转为 JSON 并反序列化为 map[string]interface{}
+	data, err := json.Marshal(resultValue.Interface()) // 序列化切片值而非指针
 	if err != nil {
 		return nil, appErrors.New(http.StatusInternalServerError, "序列化失败", err)
 	}
-	var resultMap map[string]interface{}
-	if err := json.Unmarshal(data, &resultMap); err != nil {
+
+	var resultArray []map[string]interface{}
+	if err := json.Unmarshal(data, &resultArray); err != nil {
 		return nil, appErrors.New(http.StatusInternalServerError, "反序列化失败", err)
 	}
 
-	return resultMap, nil
+	// 包装为 map[string]interface{}
+	return map[string]interface{}{"details": resultArray}, nil
 }
