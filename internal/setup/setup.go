@@ -19,7 +19,6 @@ import (
 func registerServices() {
 	services.RegisterUserService()
 	services.RegisterMetadataService()
-	services.RegisterOrderService()
 	services.RegisterStudioService()
 	services.RegisterGeneSharingService()
 }
