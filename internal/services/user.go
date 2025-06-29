@@ -63,7 +63,7 @@ func (u *userService) EnsureUserExists(userAddress string) error {
 	return nil
 }
 
-func (u *userService) GetNonce(address string) (string, appErrors.IAppError) {
+func (u *userService) GetNonce(address string) (string, error) {
 	strCmd := configs.RedisClient.GetEx(appContext.NewTimeoutContext(), address, 3*time.Minute)
 	//若当前查询得到的nonce还未过期，则直接返回，并更新过期时间
 	if strCmd.Err() == nil {

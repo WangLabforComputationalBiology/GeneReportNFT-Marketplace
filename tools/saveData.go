@@ -15,9 +15,6 @@ import (
 	"strings"
 )
 
-var ID string = "szjsbiolab"
-var SECRET string = "cgioHbVHp6xp2rZzPthkkp6BRNfsDOr3"
-
 var BASEURL string = "https://api.wegene.com"
 
 var forRisk []int = []int{

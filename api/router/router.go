@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	_ "go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"log"
 )
@@ -70,24 +69,32 @@ func registerStudioRouter(r *gin.RouterGroup) {
 }
 
 func registerPlazaRouter(r *gin.RouterGroup) {
-	r.GET("", middlewares.ZapMiddleware(), controllers.MetadataController.GetAllMetadataOverview)
+	r.GET("/getData", middlewares.ZapMiddleware(), controllers.MetadataController.GetAllMetadataOverview)
 }
-func registerMetadataRouter(r *gin.RouterGroup) {
 
+func registerMetadataRouter(r *gin.RouterGroup) {
 	r.GET("/:dataHash", middlewares.ZapMiddleware(), controllers.MetadataController.GetMetadataDetailByDataHash)
 }
+
+func registerGeneTypeRouter(r *gin.RouterGroup) {
+	r.GET("/:dataHash", middlewares.ZapMiddleware(), controllers.MetadataController.GetGenoTypeZip)
+}
+
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
-	r.Use(otelgin.Middleware("GRM_Server"), middlewares.CORS())
+	r.Use(middlewares.CORS())
 
 	User := r.Group("/user")
 	Studio := r.Group("/studio")
 	Plaza := r.Group("/plaza")
 	Metadata := r.Group("/metadata")
+	GeneType := r.Group("/gene_type")
 	registerSwaggerRouter(r)
 	registerUserRouter(User)
 	registerStudioRouter(Studio)
 	registerMetadataRouter(Metadata)
 	registerPlazaRouter(Plaza)
+	registerGeneTypeRouter(GeneType)
+
 	return r
 }

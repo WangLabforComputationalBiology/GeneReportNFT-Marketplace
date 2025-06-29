@@ -5,6 +5,8 @@ import (
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/pkg/appErrors"
+	"GeneReport_platform/tools/utils"
+	"bytes"
 	"encoding/json"
 	"github.com/mitchellh/mapstructure"
 	"net/http"
@@ -37,7 +39,7 @@ func (m *MetadataService) GetMetadataOverviewByOwner(owner string) (dto.GetMetad
 	}
 	// 映射转换dto
 	var toResp dto.GetMetadataOverviewByOwnerResp
-	mapstructure.Decode(targetMetadatas, &toResp)
+	_ = mapstructure.Decode(targetMetadatas, &toResp)
 	return toResp, nil
 }
 
@@ -66,7 +68,7 @@ func (m *MetadataService) GetMetadataDetailByDataHash(dataHash string) (map[stri
 	return results, nil
 }
 
-// GetDataImpl 获取GeneType数据
+// GetDataImpl 获取Metadata的详情数据
 func (m *MetadataService) GetDataImpl(profileId, category string) (map[string]interface{}, error) {
 	unique := dto.UniqueProfiles{}
 	//在数据库查出profileId一样记录
@@ -88,7 +90,10 @@ func (m *MetadataService) GetDataImpl(profileId, category string) (map[string]in
 	results := reflect.New(sliceType).Interface()
 
 	// GORM 查询
-	err := configs.DB.Model(reflect.New(t).Interface()).Where("profile_id = ?", profileId).Find(results).Error
+	err := configs.DB.Model(reflect.New(t).Interface()).
+		Where("profile_id = ?", profileId).
+		Order("report_id desc").
+		Find(results).Error
 	if err != nil {
 		return nil, appErrors.New(http.StatusInternalServerError, "查询失败", err)
 	}
@@ -100,16 +105,94 @@ func (m *MetadataService) GetDataImpl(profileId, category string) (map[string]in
 	}
 
 	// 转为 JSON 并反序列化为 map[string]interface{}
-	data, err := json.Marshal(resultValue.Interface()) // 序列化切片值而非指针
+	tempData, err := json.Marshal(resultValue.Interface()) // 序列化切片值而非指针
 	if err != nil {
 		return nil, appErrors.New(http.StatusInternalServerError, "序列化失败", err)
 	}
 
 	var resultArray []map[string]interface{}
-	if err := json.Unmarshal(data, &resultArray); err != nil {
+	if err := json.Unmarshal(tempData, &resultArray); err != nil {
 		return nil, appErrors.New(http.StatusInternalServerError, "反序列化失败", err)
 	}
 
 	// 包装为 map[string]interface{}
 	return map[string]interface{}{"details": resultArray}, nil
+}
+
+//	func GenerateEncryptedZIP(data []models.GenoType, w io.Writer) ([]byte, *io.PipeReader, error) {
+//		// 生成 AES 密钥和 IV
+//		key := make([]byte, 32) // 256 位
+//		if _, err := rand.Read(key); err != nil {
+//			return nil, nil, err
+//		}
+//		iv := make([]byte, aes.BlockSize)
+//		if _, err := rand.Read(iv); err != nil {
+//			return nil, nil, err
+//		}
+//		block, err := aes.NewCipher(key)
+//		if err != nil {
+//			return nil, nil, err
+//		}
+//		stream := cipher.NewCTR(block, iv)
+//
+//		// 格式化 private.key 内容
+//		keyContent := fmt.Sprintf("-----BEGIN PRIVATE KEY-----\n%s\n-----END PRIVATE KEY-----", key)
+//
+//		// 创建管道
+//		pr, pw := io.Pipe()
+//
+//		// 异步生成和打包 ZIP
+//		go func() {
+//			defer pw.Close()
+//			zw := zip.NewWriter(pw)
+//
+//			// 添加加密的 XLSX
+//			w, err := zw.Create("data.xlsx")
+//			if err != nil {
+//				pw.CloseWithError(err)
+//				return
+//			}
+//			ew := cipher.StreamWriter{S: stream, W: w}
+//			if err := utils.GenerateXLSX(ew, data); err != nil {
+//				pw.CloseWithError(err)
+//				return
+//			}
+//
+//			// 添加 private.key
+//			keyW, err := zw.Create("private.key")
+//			if err != nil {
+//				pw.CloseWithError(err)
+//				return
+//			}
+//			if _, err := keyW.Write([]byte(keyContent)); err != nil {
+//				pw.CloseWithError(err)
+//				return
+//			}
+//
+//			if err := zw.Close(); err != nil {
+//				pw.CloseWithError(err)
+//			}
+//		}()
+//
+//		return iv, pr, nil
+//	}
+func (m *MetadataService) GetGenoTypeZip(dataHash, pubKey string) ([]byte, error) {
+	metadata, err := dao.GetMetadataDao().GetMetadataOverviewByDataHash(dataHash)
+	if err != nil {
+		return nil, appErrors.New(503, "获取Metadata详细信息失败", err)
+	}
+
+	data, err := dao.GetMetadataDao().GetGenoType(metadata.ProfileID, metadata.Category)
+	if err != nil {
+		return nil, appErrors.New(503, "获取详细基因型数据失败", err)
+	}
+
+	// 创建XLSX缓冲区
+	var buf bytes.Buffer
+	err = utils.GenerateXLSX(&buf, data)
+	if err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
 }

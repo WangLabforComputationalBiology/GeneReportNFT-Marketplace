@@ -13,6 +13,7 @@ import (
 
 type CustomClaims struct {
 	UserAddress string `json:"user_address"`
+	PubKey      string `json:"pub_key"`
 	jwt.RegisteredClaims
 }
 
@@ -29,11 +30,12 @@ func GenerateJTI() string {
 }
 
 // GenerateToken 生成JWT
-func GenerateToken(userAddress string) (string, error) {
+func GenerateToken(userAddress, pubKeyHex string) (string, error) {
 
 	// 实例化声明
 	c := CustomClaims{
 		userAddress, // 用户地址
+		pubKeyHex,   //用户钱包公钥
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenExpireDuration)), // 过期时间
 			Issuer:    "GeneReport_platform",                                   // 签发人

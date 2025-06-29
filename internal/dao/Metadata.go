@@ -121,3 +121,15 @@ func (m *Metadata) CompleteMetadataInfo(profileID string, toUpdate dto.UpdateMet
 
 	return tx.Commit().Error
 }
+
+func (m *Metadata) GetGenoType(profileId, category string) (results []models.GenoType, err error) {
+	err = m.DB().Select("genotypes.*").
+		Table("genotypes").
+		Where("profile_id = ? AND type = ?", profileId, category).
+		Order("report_id asc").
+		Scan(&results).Error
+	if err != nil {
+		return nil, err
+	}
+	return results, err
+}

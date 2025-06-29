@@ -56,6 +56,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		// 通过校验，将user_address、JTI 存入context
 		ctx.Set("user_address", claim.UserAddress)
+		ctx.Set("pub_key", claim.PubKey)
 		ctx.Set("JTI", claim.ID)
 
 		ctx.Next()

@@ -57,7 +57,7 @@ func (u *User) GetNonce(ctx *gin.Context) {
 	}
 	//获取nonce
 	if nonce, err := services.UserServ.GetNonce(address); err != nil {
-		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
+		_ = ctx.Error(err)
 		return
 	} else {
 		ctx.JSON(http.StatusOK, dto.Response{
@@ -111,12 +111,13 @@ func (u *User) Login(ctx *gin.Context) {
 	nonce, err := services.UserServ.GetNonce(address)
 	if err != nil {
 		log.Println("当前地址无nonce，请重新登录")
-		ctx.JSON(http.StatusServiceUnavailable, err.ToErrResponse())
+		_ = ctx.Error(err)
 		return
 	}
 
 	//3.执行验签
-	if isAccept, err := auth.VerifySignature(address, nonce, signature); !isAccept && err != nil {
+	isAccept, pubKeyHex, err := auth.VerifySignature(address, nonce, signature)
+	if !isAccept && err != nil {
 		log.Printf("验签错误，错误为：%v", err)
 		ctx.JSON(http.StatusUnauthorized, dto.ErrResponse{
 			Code:    http.StatusUnauthorized,
@@ -127,7 +128,7 @@ func (u *User) Login(ctx *gin.Context) {
 
 	//4，确保用户存在，不存在执行创建
 	if err := services.UserServ.EnsureUserExists(address); err != nil {
-		ctx.Error(appErrors.New(http.StatusInternalServerError, "用户创建失败,请重新登录", err))
+		_ = ctx.Error(err)
 		return
 	}
 
@@ -135,7 +136,7 @@ func (u *User) Login(ctx *gin.Context) {
 	userInfo, _ := services.UserServ.GetUserInfoByID(address)
 
 	//5.2生成token
-	jwt, _ := auth.GenerateToken(address)
+	jwt, _ := auth.GenerateToken(address, pubKeyHex)
 	ctx.JSON(200, dto.Response{
 		Code:    http.StatusOK,
 		Message: "成功登录",
