@@ -3,7 +3,7 @@
         <div class="banner">
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
         </div>
-        <div class="plaza-page">
+        <div class="plaza-page" v-loading="loadingForPlaza" :element-loading-svg="svg">
             <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible(item)">
                 <div class="icon" />
                 <div class="ifo">
@@ -17,7 +17,8 @@
         </div>
     </div>
 
-    <el-drawer v-model="drawerIsVisible" title="Detail" :direction="'rtl'" @closed="handleClosed" :size="'50%'" :show-close="false">
+    <el-drawer v-model="drawerIsVisible" title="Detail" :direction="'rtl'" @closed="handleClosed" :size="'50%'"
+        :show-close="false">
         <template #header>
             <div class="dt-page-top">
                 <div class="icon" />
@@ -32,8 +33,7 @@
         </template>
 
         <div class="dt-page-bottom">
-            <el-table v-loading="loading" :element-loading-svg="svg" class="custom-loading-svg"
-                element-loading-svg-view-box="-10, -10, 50, 50" max-height="65vh" :table-layout="'fixed'"
+            <el-table v-loading="loadingForTable" :element-loading-svg="svg" max-height="65vh" :table-layout="'fixed'"
                 :data="detailData">
                 <el-table-column prop="ReportId" label="ReportId" />
                 <el-table-column prop="description" label="Description" />
@@ -49,30 +49,36 @@
         </template>
     </el-drawer>
 </template>
+
 <script setup>
 import { ref, onMounted } from "vue";
 import Api from "@/axios/aixos";
 
 /* 获取plaza卡片数据列表 */
+const loadingForPlaza = ref(false);
 const List = ref([]);
 const getList = async () => {
-    const res = await Api.get('/plaza/getData');
-    List.value = res.data.data.multi_metadata;
-    List.value.forEach(item => {
-        item.created_at = item.created_at.slice(0, 10);
-    })
+    try {
+        loadingForPlaza.value = true;
+        const res = await Api.get('/plaza/getData');
+        List.value = res.data.data.multi_metadata;
+        List.value.forEach(item => {
+            item.created_at = item.created_at.slice(0, 10);
+        })
+    } finally {
+        loadingForPlaza.value = false;
+    }
 }
 
-const selectedData = ref([]); // 为null会报错无法加载
-const loading = ref(false); 
+const selectedData = ref([]); 
+const loadingForTable = ref(false);
 
 /* 获取详细数据 */
 const detailData = ref([]);
 const getDetailData = async () => {
     try {
-        loading.value = true;
-        if (!selectedData.value?.data_hash) return;
-        
+        loadingForTable.value = true;
+        if (!selectedData.value?.data_hash) return; //问号表示不一定存在
         const res = await Api.get(`/metadata/${selectedData.value.data_hash}`);
         if (res.data.data) {
             detailData.value = res.data.data.details;
@@ -80,7 +86,7 @@ const getDetailData = async () => {
     } catch (error) {
         console.error('Error fetching detail data:', error);
     } finally {
-        loading.value = false;
+        loadingForTable.value = false;
     }
 }
 
@@ -92,13 +98,14 @@ const isVisible = (item) => {
     getDetailData();
 };
 
+/* 释放表单内容 */
 const handleClosed = () => {
-    // 清空数据
     detailData.value = [];
     selectedData.value = null;
-    loading.value = false;
+    loadingForTable.value = false;
 };
 
+/* 挂载时加载list */
 onMounted(() => {
     getList();
 });
