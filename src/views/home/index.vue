@@ -16,7 +16,7 @@
                <Swiper-slide>
                   <Intro1 />
                </Swiper-slide>
-               
+
                <Swiper-slide>
                   <Intro1_2 />
                </Swiper-slide>
@@ -79,16 +79,14 @@ const onHorizontalSwiperInit = (swiper) => {
 const onHorizontalSlideChange = (swiper) => {
    // 监听滚轮事件获取滚轮状态
    swiper.el.onwheel = (e) => {
-      // e.deltaY < 0 表示向上滚动，e.deltaY > 0 表示向下滚动
-      if (e.deltaY < 0 && swiper.isBeginning) {
-         setTimeout(() => {
-            allowPrev.value = true;
-         }, 800)
-      }
       if (e.deltaY > 0 && swiper.isEnd) {
          setTimeout(() => {
+            // e.deltaY < 0 表示向上滚动，e.deltaY > 0 表示向下滚动
             allowNext.value = true;
-         }, 800)
+         }, 500)
+      }
+      if (e.deltaY < 0 && swiper.isBeginning) {
+         allowPrev.value = true;
       }
    };
 
@@ -96,16 +94,16 @@ const onHorizontalSlideChange = (swiper) => {
 
 /* 垂直滑动变化时 */
 const onVerticalSlideChange = (swiper) => {
-   allowPrev.value = verticalSwiper.value.isBeginning;   
+   allowPrev.value = verticalSwiper.value.isBeginning;
    allowNext.value = verticalSwiper.value.isBeginning;
-   
+
    if (swiper.activeIndex == 1) { // 假设垂直滚动到第2页（索引1）
+      allowPrev.value = true;// 启用垂直滚动
       allowNext.value = false;// 禁用垂直滚动
-   }else{
+   } else {
       allowPrev.value = true;// 启用垂直滚动
       allowNext.value = true;// 启用垂直滚动
    }
-
 };
 </script>
 
