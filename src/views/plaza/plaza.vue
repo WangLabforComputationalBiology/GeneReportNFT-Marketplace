@@ -33,7 +33,9 @@
         <div class="dt-page-bottom">
             <el-table v-loading="loading" :element-loading-svg="svg" class="custom-loading-svg"
                 element-loading-svg-view-box="-10, -10, 50, 50" :data="detailData">
-                <el-table-column prop="desciption" label="Item" width="180" />
+                <el-table-column prop="desciption" label="Item" width="180">
+                {{ detailData.ID }}
+                </el-table-column>
                 <el-table-column prop="score" label="Score" width="180" />
                 <el-table-column prop="rank" label="Rank" />
             </el-table>
@@ -52,7 +54,6 @@ import { ref, onMounted } from "vue";
 import { ethers } from "ethers";
 import { useWalletStore } from "@/stores/account";
 import Api from "@/axios/aixos";
-import Bubbles from "../components/bubbles.vue";
 import { ElLoading } from "element-plus";
 
 const wallet = useWalletStore();
@@ -67,11 +68,10 @@ const txHash = ref("");
 /* 获取plaza卡片数据列表 */
 let List = ref([]);
 async function getList() {
-    const res = await Api.get('/plaza/getData', {
-        params: {}
+    const res = await Api.get('/plaza', {
+
     });
     List.value = res.data.data.multi_metadata;
-    console.log(List.value)
 }
 
 let selectedData = ref(null);
@@ -81,25 +81,25 @@ var loading = ref(true);
 let detailData = ref(null);
 const getDetailData = async () => {
     try {
-
-        const res = await Api.get('/plaza/getDetailData', {
-            params: {
-                data_hash: selectedData.data_hash,
-            }
+        const res = await Api.get(`/metadata/${selectedData.data_hash}`, {
+            // params: {
+            //     data_hash: selectedData.data_hash,
+            // }
         })
-        if (!error) {
-            loading.close();
-            detailData.value = res.data.data;
-            drawer.value = true;
+        if (res.data.code == 200) {
+            loading = false;
         }
+        // if (!error) {
+        //     loading = false;
+        //     detailData.value = res.data.data;
+        //     drawer.value = true;
+        // }
     } catch (error) {
         // drawer.value = false;
-
-        // if (error) {
-        //     loading.close();
-        //     alert('Get detail data failed. Please try again later.');
-        // }
-
+        if (error) {
+            loading = false;
+            // alert('Get detail data failed. Please try again later.');
+        }
     }
 
 }
