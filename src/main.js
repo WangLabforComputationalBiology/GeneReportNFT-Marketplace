@@ -6,7 +6,6 @@ import router from './router'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'//持久化存储
 import ElementPlus from 'element-plus'
-
 /*全局组件*/
 import Header from './views/components/header.vue'
 

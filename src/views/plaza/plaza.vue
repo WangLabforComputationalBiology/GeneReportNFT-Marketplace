@@ -1,6 +1,5 @@
 <template>
     <div class="wrapper">
-        <!-- <Bubbles /> -->
         <div class="banner">
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
         </div>
@@ -18,7 +17,7 @@
         </div>
     </div>
 
-    <el-drawer v-model="drawer" title="Detail" :direction="'rtl'" :before-close="handleClose" :size="'50%'" :show-close="false">
+    <el-drawer v-model="drawerIsVisible" title="Detail" :direction="'rtl'" @closed="handleClosed" :size="'50%'" :show-close="false">
         <template #header>
             <div class="dt-page-top">
                 <div class="icon" />
@@ -31,7 +30,6 @@
                 </div>
             </div>
         </template>
-
 
         <div class="dt-page-bottom">
             <el-table v-loading="loading" :element-loading-svg="svg" class="custom-loading-svg"
@@ -51,56 +49,54 @@
         </template>
     </el-drawer>
 </template>
-
 <script setup>
 import { ref, onMounted } from "vue";
-import { ethers } from "ethers";
-import { useWalletStore } from "@/stores/account";
 import Api from "@/axios/aixos";
 
-const wallet = useWalletStore();
-const account = ref("");
-const provider = ref(null);
-const signer = ref(null);
-const recipient = ref("");
-const amount = ref("");
-const txHash = ref("");
-
-
 /* 获取plaza卡片数据列表 */
-let List = ref([]);
-async function getList() {
-    const res = await Api.get('/plaza/getData', {
-
-    });
+const List = ref([]);
+const getList = async () => {
+    const res = await Api.get('/plaza/getData');
     List.value = res.data.data.multi_metadata;
+    List.value.forEach(item => {
+        item.created_at = item.created_at.slice(0, 10);
+    })
 }
 
-let selectedData = ref(null);
-var loading = ref(true);
+const selectedData = ref([]); // 为null会报错无法加载
+const loading = ref(false); 
 
 /* 获取详细数据 */
-let detailData = ref([]);
+const detailData = ref([]);
 const getDetailData = async () => {
     try {
-        const res = await Api.get(`/metadata/${selectedData.data_hash}`)
-        // console.log(res.data);
-        if (res.data) {
-            loading.value = false;
-            detailData = res.data.data.details;
+        loading.value = true;
+        if (!selectedData.value?.data_hash) return;
+        
+        const res = await Api.get(`/metadata/${selectedData.value.data_hash}`);
+        if (res.data.data) {
+            detailData.value = res.data.data.details;
         }
     } catch (error) {
+        console.error('Error fetching detail data:', error);
+    } finally {
         loading.value = false;
     }
-
 }
 
 /* 详情抽屉 */
-const drawer = ref(false);
+const drawerIsVisible = ref(false);
 const isVisible = (item) => {
-    selectedData = item;
-    drawer.value = true;
+    selectedData.value = item;
+    drawerIsVisible.value = true;
     getDetailData();
+};
+
+const handleClosed = () => {
+    // 清空数据
+    detailData.value = [];
+    selectedData.value = null;
+    loading.value = false;
 };
 
 onMounted(() => {
@@ -114,7 +110,6 @@ onMounted(() => {
     width: 80vw;
     min-width: 1200px;
     margin: auto;
-
 }
 
 .banner {
@@ -181,7 +176,7 @@ onMounted(() => {
             height: 70%;
 
             p {
-                line-height: 24px;
+                line-height: 28px;
                 color: #333;
             }
 
