@@ -18,25 +18,28 @@
         </div>
     </div>
 
-    <el-drawer v-model="drawer" title="Detail" :direction="'rtl'" :before-close="handleClose" :size="'40%'">
-        <div class="dt-page-top">
-            <div class="icon" />
-            <div class="ifo">
-                <p>Name: <span class="ifo-item"> &nbsp; {{ selectedData.name }}</span></p>
-                <p>Category: <span class="ifo-item"> &nbsp; {{ selectedData.category }}</span></p>
-                <p>Description:<span class="ifo-item"> &nbsp; {{ selectedData.description }}</span></p>
-                <p>Format:<span class="ifo-item"> &nbsp; {{ selectedData.format }}</span></p>
-                <p>Date:<span class="ifo-item"> &nbsp; {{ selectedData.created_at }}</span></p>
+    <el-drawer v-model="drawer" title="Detail" :direction="'rtl'" :before-close="handleClose" :size="'50%'" :show-close="false">
+        <template #header>
+            <div class="dt-page-top">
+                <div class="icon" />
+                <div class="ifo">
+                    <p>Name: <span class="ifo-item"> &nbsp; {{ selectedData.name }}</span></p>
+                    <p>Category: <span class="ifo-item"> &nbsp; {{ selectedData.category }}</span></p>
+                    <p>Description:<span class="ifo-item"> &nbsp; {{ selectedData.description }}</span></p>
+                    <p>Format:<span class="ifo-item"> &nbsp; {{ selectedData.format }}</span></p>
+                    <p>Date:<span class="ifo-item"> &nbsp; {{ selectedData.created_at }}</span></p>
+                </div>
             </div>
-        </div>
+        </template>
+
 
         <div class="dt-page-bottom">
             <el-table v-loading="loading" :element-loading-svg="svg" class="custom-loading-svg"
-                element-loading-svg-view-box="-10, -10, 50, 50" :data="detailData">
-                <el-table-column prop="desciption" label="Item" width="180">
-                {{ detailData.ID }}
-                </el-table-column>
-                <el-table-column prop="score" label="Score" width="180" />
+                element-loading-svg-view-box="-10, -10, 50, 50" max-height="65vh" :table-layout="'fixed'"
+                :data="detailData">
+                <el-table-column prop="ReportId" label="ReportId" />
+                <el-table-column prop="description" label="Description" />
+                <el-table-column prop="score" label="Score" />
                 <el-table-column prop="rank" label="Rank" />
             </el-table>
         </div>
@@ -54,7 +57,6 @@ import { ref, onMounted } from "vue";
 import { ethers } from "ethers";
 import { useWalletStore } from "@/stores/account";
 import Api from "@/axios/aixos";
-import { ElLoading } from "element-plus";
 
 const wallet = useWalletStore();
 const account = ref("");
@@ -68,7 +70,7 @@ const txHash = ref("");
 /* 获取plaza卡片数据列表 */
 let List = ref([]);
 async function getList() {
-    const res = await Api.get('/plaza', {
+    const res = await Api.get('/plaza/getData', {
 
     });
     List.value = res.data.data.multi_metadata;
@@ -78,112 +80,22 @@ let selectedData = ref(null);
 var loading = ref(true);
 
 /* 获取详细数据 */
-let detailData = ref(null);
+let detailData = ref([]);
 const getDetailData = async () => {
     try {
-        const res = await Api.get(`/metadata/${selectedData.data_hash}`, {
-            // params: {
-            //     data_hash: selectedData.data_hash,
-            // }
-        })
-        if (res.data.code == 200) {
-            loading = false;
+        const res = await Api.get(`/metadata/${selectedData.data_hash}`)
+        // console.log(res.data);
+        if (res.data) {
+            loading.value = false;
+            detailData = res.data.data.details;
         }
-        // if (!error) {
-        //     loading = false;
-        //     detailData.value = res.data.data;
-        //     drawer.value = true;
-        // }
     } catch (error) {
-        // drawer.value = false;
-        if (error) {
-            loading = false;
-            // alert('Get detail data failed. Please try again later.');
-        }
+        loading.value = false;
     }
 
 }
 
-// 发送交易
-async function sendTransaction() {
-    if (!account.value || !signer.value) {
-        alert("请先连接 MetaMask");
-        return;
-    }
-    if (!ethers.isAddress(recipient.value)) {
-        alert("请输入有效的接收地址！");
-        return;
-    }
-    if (isNaN(amount.value) || parseFloat(amount.value) <= 0) {
-        alert("请输入有效的 ETH 数量！");
-        return;
-    }
-    if (!signer.value) {
-        console.error("Signer 未初始化");
-        return;
-    }
-    try {
-        // 验证账户余额是否足够
-        const requiredBalance = ethers.parseEther(amount.value);
-        if (balance.value < requiredBalance) {
-            alert("账户余额不足！");
-            return;
-        }
-        console.log("发送交易...");
-
-        // 获取账户
-        const _provider = new ethers.BrowserProvider(window.ethereum);
-        const accounts = await _provider.send("eth_requestAccounts", []);
-        account.value = accounts[0];
-
-        // 发送交易
-        const _signer = await _provider.getSigner();
-        const tx = await _signer.sendTransaction({
-            to: recipient.value,
-            value: ethers.parseEther(amount.value), // 转换 ETH 单位
-        });
-
-        console.log("交易发送中...", tx);
-        // alert("交易已提交，等待确认...");
-        if (typeof window !== "undefined" && window.$message) {
-            window.$message({
-                message: "交易已提交，等待确认...",
-                type: "success",
-            });
-        }
-
-        // 等待交易完成
-        await tx.wait();
-        txHash.value = tx.hash;
-        if (typeof window !== "undefined" && window.$message) {
-            window.$message({
-                message: "交易成功！",
-                type: "success",
-            });
-        }
-
-    }
-    catch (error) {
-        console.error("交易失败:", error);
-        if (typeof window !== "undefined" && window.$message) {
-            window.$message({
-                message: "交易失败！",
-                type: "error",
-            });
-        }
-    }
-}
-
-
-function purchase(id, price) {
-    router.push({
-        path: '/plaza/confirm',
-        query: {
-            id
-        }
-    });
-}
-
+/* 详情抽屉 */
 const drawer = ref(false);
 const isVisible = (item) => {
     selectedData = item;
@@ -202,6 +114,7 @@ onMounted(() => {
     width: 80vw;
     min-width: 1200px;
     margin: auto;
+
 }
 
 .banner {
