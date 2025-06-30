@@ -40,7 +40,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Bubbles from '@/views/components/bubbles.vue';
-import { ethers, getAddress } from 'ethers';
+import { ethers } from 'ethers';
 import { useWalletStore } from '@/stores/account'
 import Api from '../../axios/aixos'
 import { ElLoading } from 'element-plus'
@@ -122,7 +122,7 @@ async function connectWallet() {
             if (typeof window !== 'undefined' && window.__VUE_APP__ && window.__VUE_APP__.config.globalProperties.$message) {
                 window.__VUE_APP__.config.globalProperties.$message.success('Login successful!');
             }
-            loading.close()
+            // loading.close()
             router.push('/account');
         }
     } catch (err) {
@@ -143,6 +143,8 @@ async function connectWallet() {
         if (err.code === 500 || err.code === 501 || err.code === 502 || err.code === 503 || (err.message && err.message.includes('503'))) {
             alert('Server error, please try again later.');
         }
+    } finally {
+        loading.close()
     }
 }
 

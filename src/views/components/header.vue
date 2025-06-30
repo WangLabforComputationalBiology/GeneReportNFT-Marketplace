@@ -68,7 +68,7 @@ function toAccount() {
         height: 5vh;
         min-height: 45px !important;
         flex: 1;
-        min-width: 250px;
+        min-width: 220px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -113,7 +113,8 @@ function toAccount() {
             position: relative;
             color: #333;
             height: 5vh;
-            margin: 0 25px;
+            gap: 10px;
+            margin: 0 10px 0 20px;
             font-size: 20px;
             align-content: center;
             font-weight: bold;

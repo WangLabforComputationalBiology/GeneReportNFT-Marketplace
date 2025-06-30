@@ -68,6 +68,7 @@ function toFB() {
             img {
                 margin: 20px 100px 0 0;
                 width: 400px;
+                cursor: pointer;
             }
         }
 

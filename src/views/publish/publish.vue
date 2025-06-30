@@ -119,7 +119,6 @@
       <template #footer>
          <div style="flex: auto">
             <p class="selected-profile">Selected Profile: <span>{{ selectedProfile }}</span></p>
-
             <el-button @click="confirmClick" class="confirm-button">Confirm</el-button>
          </div>
       </template>
