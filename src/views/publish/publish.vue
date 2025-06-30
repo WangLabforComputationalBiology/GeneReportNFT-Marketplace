@@ -203,6 +203,18 @@ const confirmClick = () => {
 
 const createData = async () => {
    try {
+      if(name.value === '' || name.value === null || name.value === undefined){
+         alert('Please enter the name of the collection');
+         return;
+      }
+      if(selectedProfile.value === null || selectedProfile.value === ''){
+         alert('Please select the report as collection');
+         return;
+      }
+      if(description.value === '' || description.value === null || description.value === undefined){
+         alert('Please enter a description of the collection');
+         return;
+      }
       const res = await Api.post('/studio/createFromThirdParty', {
          profile_id: selectedProfile.value,
          name: name.value,

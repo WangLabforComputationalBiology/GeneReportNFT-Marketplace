@@ -2,6 +2,11 @@
     <div class="wrapper">
         <div class="banner">
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
+            <div class="page">
+                <div class="previous" v-if="page > 1">&lt;Previous</div>
+                <div style="color: #888;">Page:{{ page }}</div>
+                <div class="next">Next&gt;</div>
+            </div>
         </div>
 
         <el-scrollbar max-height="80vh">
@@ -45,16 +50,18 @@
         </div>
         <template #footer>
             <div style="flex: auto">
-                <el-button type="primary" @click="ObtainClick" class="obtain-btn">Obtain</el-button>
+                <el-button type="primary" @click="ObtainClick" class="obtain-btn" v-if="walletStore.address && walletStore.email && walletStore.insititution">Obtain</el-button>
+                <span v-else style="color: #169608;">Please login and verify first.</span>
             </div>
         </template>
     </el-drawer>
 
     <el-dialog v-model="dialogIsVisible" title="Obtaining" width="25%" :show-close="false">
         <el-form :model="form" label-width="auto">
-        <el-form-item label="Account: "><span style="color: #169608;">{{ walletStore.address }}</span></el-form-item>
-        <el-form-item label="Email: ">{{ walletStore.email }}</el-form-item>
-        <el-form-item label="Insititution: ">{{ walletStore.insititution }}</el-form-item>
+            <el-form-item label="Account: "><span style="color: #169608;">{{ walletStore.address
+            }}</span></el-form-item>
+            <el-form-item label="Email: ">{{ walletStore.email }}</el-form-item>
+            <el-form-item label="Insititution: ">{{ walletStore.insititution }}</el-form-item>
             <el-form-item label="Purpose:">
                 <el-select placeholder="please select one" v-model="purpose">
                     <el-option label="Academic research" value="Academic research" />
@@ -65,7 +72,8 @@
         </el-form>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="dialogIsVisible = false" class="obtain-btn" style="background-color: #fff; color: #169608;">Cancel</el-button>
+                <el-button @click="dialogIsVisible = false" class="obtain-btn"
+                    style="background-color: #fff; color: #169608;">Cancel</el-button>
                 <el-button class="obtain-btn" @click="dialogIsVisible = false">Confirm</el-button>
             </span>
         </template>
@@ -98,6 +106,7 @@ const selectedData = ref([]);
 const loadingForTable = ref(false);
 
 /* 获取详细数据 */
+const page = ref(1);
 const detailData = ref([]);
 const getDetailData = async () => {
     try {
@@ -133,8 +142,17 @@ const handleClosed = () => {
 /* 获取前数据采集 */
 let dialogIsVisible = ref(false);
 const purpose = ref('');
-const ObtainClick = () => {
-    dialogIsVisible.value = true;
+const ObtainClick = async () => {
+    try {
+        const res = await Api.get('/plaza/obtain', {
+            data_hash: selectedData.value.data_hash,
+        });
+        console.log(res);
+
+    } catch (error) {
+        console.error('Error fetching detail data:', error);
+    } finally {
+    }
 }
 /* 挂载时加载list */
 onMounted(() => {
@@ -151,11 +169,32 @@ onMounted(() => {
 }
 
 .banner {
+    width: 80vw;
+    min-width: 1200px;
     height: 15vh;
     display: flex;
     position: relative;
     border-bottom: #ddd 3px solid;
     background-color: #ffffff;
+
+    .page {
+        position: absolute;
+        display: flex;
+        right: 1%;
+        bottom: 2%;
+        gap: 40px;
+
+        .previous,
+        .next {
+            cursor: pointer;
+            color: #888;
+            font-size: 16px;
+
+            &:hover {
+                color: #169608;
+            }
+        }
+    }
 }
 
 .banner-title {
@@ -282,5 +321,4 @@ onMounted(() => {
 :deep(.el-scrollbar) {
     height: 80vh;
 }
-
 </style>
