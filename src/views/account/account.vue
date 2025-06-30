@@ -10,7 +10,7 @@
             {{ walletStore.email ? `Email: ${walletStore.email}` : 'No email verified.'}}
             <router-link to="/verify" style="color: #fff;">
                 <el-button class="custom-button">
-                    verify
+                    Verify
                 </el-button>
             </router-link>
             <br>

@@ -54,7 +54,7 @@
             <div style="flex: auto">
                 <el-button type="primary" @click="ObtainClick" class="obtain-btn"
                     v-if="walletStore.address && walletStore.email && walletStore.insititution">Obtain</el-button>
-                <span v-else style="color: #169608;">Please login and verify first.</span>
+                <span v-else style="color: #169608;">Login and verify to obtain</span>
             </div>
         </template>
     </el-drawer>
