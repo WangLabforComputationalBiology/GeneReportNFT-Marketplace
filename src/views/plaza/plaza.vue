@@ -11,7 +11,7 @@
         </div>
 
         <el-scrollbar max-height="80vh">
-        <el-empty description="Everything is on the way..." v-if="List.length === 0" />
+            <el-empty description="Everything is on the way..." v-if="List.length === 0" />
             <div class="plaza-page" v-loading="loadingForPlaza" :element-loading-svg="svg" v-else>
                 <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible(item)">
                     <div class="icon" />
@@ -61,8 +61,9 @@
 
     <el-dialog v-model="dialogIsVisible" title="Obtaining" width="25%" :show-close="false">
         <el-form :model="form" label-width="auto">
-            <el-form-item label="Account: "><span style="color: #169608;">{{ walletStore.address
-            }}</span></el-form-item>
+            <el-form-item label="Account: ">
+                <span style="color: #169608;">{{ walletStore.address }}</span>
+            </el-form-item>
             <el-form-item label="Email: ">{{ walletStore.email }}</el-form-item>
             <el-form-item label="Insititution: ">{{ walletStore.insititution }}</el-form-item>
             <el-form-item label="Purpose:">
@@ -189,7 +190,6 @@ const handleClosed = () => {
     hasWarned.value = false;
 };
 
-
 /* 获取前数据采集 */
 let dialogIsVisible = ref(false);
 const purpose = ref('');
@@ -227,16 +227,16 @@ onMounted(() => {
     position: relative;
     border-bottom: #ddd 1px solid;
     background-color: #ffffff;
-    background:  url('@/assets/imgs/biochain.svg') no-repeat;
+    background: url('@/assets/imgs/biochain.svg') no-repeat;
     background-position: 85% -15%;
 
-    .download{
+    .download {
         position: absolute;
         right: 0%;
         top: 50%;
         color: #169608;
 
-        &:hover{
+        &:hover {
             cursor: pointer;
             text-decoration: underline;
         }
@@ -303,7 +303,7 @@ onMounted(() => {
         align-items: center;
 
         &:hover {
-            box-shadow: 0 0 10px #ccc;
+            box-shadow: 0 0 6px #ccc;
             cursor: pointer;
         }
 

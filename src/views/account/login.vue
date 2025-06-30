@@ -122,7 +122,6 @@ async function connectWallet() {
             if (typeof window !== 'undefined' && window.__VUE_APP__ && window.__VUE_APP__.config.globalProperties.$message) {
                 window.__VUE_APP__.config.globalProperties.$message.success('Login successful!');
             }
-            // loading.close()
             router.push('/account');
         }
     } catch (err) {
@@ -177,7 +176,6 @@ let isVisible = ref(false)
         right: 55%;
         transform: translateY(-50%);
 
-
         h1 {
             text-align: center;
             font-size: 48px;
@@ -223,8 +221,6 @@ let isVisible = ref(false)
         }
 
     }
-
-
 
 }
 

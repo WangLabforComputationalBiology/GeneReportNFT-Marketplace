@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import { useWalletStore } from '@/stores/account';
+const walletStore = useWalletStore();
 export default {
     props: {
         content: {
@@ -39,7 +41,6 @@ export default {
         }
     },
     data() {
-        console.log('Route params in data:', this.$route.params);
         return {
             code: this.$route.params.lastSegment || '默认标题',
             profiles: [],
@@ -62,8 +63,12 @@ export default {
         },
         async fetchData() {
             try {
-                //const response = await fetch(`http://127.0.0.1:4523/m1/4576706-4225408-default/user/getProfileIds`);
-                const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/getProfileIds?code=${this.code}`);
+                const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/getProfileIds?code=${this.code}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': walletStore.access_token
+                    },
+                });
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -87,7 +92,8 @@ export default {
                 const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/saveProfile`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': walletStore.access_token
                     },
                     body: JSON.stringify({
                         code: this.code,
@@ -99,7 +105,6 @@ export default {
                     this.$message.success('Profile authorized successfully');
                     this.$router.push('/publish?authorized=true')
                     this.$emit('profileAuthorized', true); // 触发父组件的自定义事件
-                    // console.log('Profile authorized successfully');
                 } else {
                     console.error('Failed to authorize profile:', response.statusText);
                 }
@@ -110,8 +115,6 @@ export default {
     }
 }
 </script>
-
-
 
 <style lang="scss" scoped>
 p {

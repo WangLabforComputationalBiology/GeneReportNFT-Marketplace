@@ -1,14 +1,15 @@
 <template>
     <div class="banner">
-        <div class="green-bar"></div>
+        <div class="green-bar" />
         <div class="main-text">
-            <img class="logo" src="@/assets/logo.svg" alt="">
-            <span style="color: #169608;">Bio</span>Chainer <br><span style="font-weight: 600;color: #122;">Shares</span>
+            <img class="logo" src="@/assets/logo.svg" alt="BioChainer Logo" />
+            <span style="color: #169608;">Bio</span>Chainer
+            <br>
+            <span style="font-weight: 600;color: #122;">Shares</span>
         </div>
         <div class="sec-text">A platform delivering genetic information.</div>
         <div class="scroll-arrow"><span class="arrow-fadein">↓</span></div>
     </div>
-
 </template>
 
 <style lang="scss" scoped>
@@ -72,12 +73,11 @@
         color: #333;
         opacity: 0;
         /* 初始不可见 */
-        animation: fadeIn 0.6s ease-in forwards 0.1s; 
+        animation: fadeIn 0.6s ease-in forwards 0.1s;
         /* 延迟0.8s淡入 */
     }
 
     .sec-text {
-        // min-width: 400px;
         position: absolute;
         top: 62%;
         left: 52.2%;
