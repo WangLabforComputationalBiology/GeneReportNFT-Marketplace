@@ -3,21 +3,24 @@
         <div class="banner">
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
         </div>
-        <div class="plaza-page" v-loading="loadingForPlaza" :element-loading-svg="svg">
-            <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible(item)">
-                <div class="icon" />
-                <div class="ifo">
-                    <p>Name: <span class="ifo-item"> &nbsp; {{ item.name }}</span></p>
-                    <p>Category: <span class="ifo-item"> &nbsp; {{ item.category }}</span></p>
-                    <p>Description:<span class="ifo-item"> &nbsp; {{ item.description }}</span></p>
-                    <p>Format:<span class="ifo-item"> &nbsp; {{ item.format }}</span></p>
-                    <p>Date:<span class="ifo-item"> &nbsp; {{ item.created_at }}</span></p>
+
+        <el-scrollbar max-height="80vh">
+            <div class="plaza-page" v-loading="loadingForPlaza" :element-loading-svg="svg">
+                <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible(item)">
+                    <div class="icon" />
+                    <div class="ifo">
+                        <p>Name: <span class="ifo-item"> &nbsp; {{ item.name }}</span></p>
+                        <p>Category: <span class="ifo-item"> &nbsp; {{ item.category }}</span></p>
+                        <p>Description:<span class="ifo-item"> &nbsp; {{ item.description }}</span></p>
+                        <p>Format:<span class="ifo-item"> &nbsp; {{ item.format }}</span></p>
+                        <p>Date:<span class="ifo-item"> &nbsp; {{ item.created_at }}</span></p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </el-scrollbar>
     </div>
 
-    <el-drawer v-model="drawerIsVisible" title="Detail" :direction="'rtl'" @closed="handleClosed" :size="'50%'"
+    <el-drawer v-model="drawerIsVisible" title="Detail" :direction="'rtl'" @closed="handleClosed" :size="'55%'"
         :show-close="false">
         <template #header>
             <div class="dt-page-top">
@@ -31,7 +34,6 @@
                 </div>
             </div>
         </template>
-
         <div class="dt-page-bottom">
             <el-table v-loading="loadingForTable" :element-loading-svg="svg" max-height="65vh" :table-layout="'fixed'"
                 :data="detailData">
@@ -41,18 +43,40 @@
                 <el-table-column prop="rank" label="Rank" />
             </el-table>
         </div>
-
         <template #footer>
             <div style="flex: auto">
-                <el-button type="primary" @click="confirmClick" class="obtain-btn">Obtain</el-button>
+                <el-button type="primary" @click="ObtainClick" class="obtain-btn">Obtain</el-button>
             </div>
         </template>
     </el-drawer>
+
+    <el-dialog v-model="dialogIsVisible" title="Obtaining" width="25%" :show-close="false">
+        <el-form :model="form" label-width="auto">
+        <el-form-item label="Account: "><span style="color: #169608;">{{ walletStore.address }}</span></el-form-item>
+        <el-form-item label="Email: ">{{ walletStore.email }}</el-form-item>
+        <el-form-item label="Insititution: ">{{ walletStore.insititution }}</el-form-item>
+            <el-form-item label="Purpose:">
+                <el-select placeholder="please select one" v-model="purpose">
+                    <el-option label="Academic research" value="Academic research" />
+                    <el-option label="Bioinformatics and Big Data" value="Bioinformatics and Big Data" />
+                    <el-option label="Biopharmaceuticals" value="Biopharmaceuticals" />
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogIsVisible = false" class="obtain-btn" style="background-color: #fff; color: #169608;">Cancel</el-button>
+                <el-button class="obtain-btn" @click="dialogIsVisible = false">Confirm</el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import Api from "@/axios/aixos";
+import { useWalletStore } from "@/stores/account";
+const walletStore = useWalletStore();
 
 /* 获取plaza卡片数据列表 */
 const loadingForPlaza = ref(false);
@@ -70,7 +94,7 @@ const getList = async () => {
     }
 }
 
-const selectedData = ref([]); 
+const selectedData = ref([]);
 const loadingForTable = ref(false);
 
 /* 获取详细数据 */
@@ -105,6 +129,13 @@ const handleClosed = () => {
     loadingForTable.value = false;
 };
 
+
+/* 获取前数据采集 */
+let dialogIsVisible = ref(false);
+const purpose = ref('');
+const ObtainClick = () => {
+    dialogIsVisible.value = true;
+}
 /* 挂载时加载list */
 onMounted(() => {
     getList();
@@ -120,7 +151,7 @@ onMounted(() => {
 }
 
 .banner {
-    height: 150px;
+    height: 15vh;
     display: flex;
     position: relative;
     border-bottom: #ddd 3px solid;
@@ -150,7 +181,7 @@ onMounted(() => {
 
 .plaza-page {
     width: 100%;
-    padding: 25px 0;
+    padding: 20px 12px;
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
@@ -167,7 +198,7 @@ onMounted(() => {
         align-items: center;
 
         &:hover {
-            box-shadow: 0 0 15px #ccc;
+            box-shadow: 0 0 10px #ccc;
             cursor: pointer;
         }
 
@@ -241,12 +272,15 @@ onMounted(() => {
 }
 
 :deep(.obtain-btn) {
-    font-size: 20px;
+    font-size: 16px;
     border: #169608 1px solid;
     background-color: #169608;
+    color: #fff;
     box-shadow: none;
 }
 
-// :deep(.el-loading-mask){
-//     z-index: 3000 !important;
-// }</style>
+:deep(.el-scrollbar) {
+    height: 80vh;
+}
+
+</style>

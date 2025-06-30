@@ -49,8 +49,7 @@
             <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="step < 3">
             <img src="../../icons/status_ok.svg" alt="status icon" v-if="step > 3">
             <div :class="{ 'step-tip': true, 'active': step >= 3 ? true : false }" style="line-height: 28px;">Offer your
-               data for sale
-               on the plaza. Prior listing,
+               data on the plaza. Prior listing,
                you may delete your data; However, once listed, you will not be able to delete your data.</div>
          </div>
       </div>
@@ -94,7 +93,7 @@
          <input type="text" class="Description-input" placeholder="Please enter a description of the collection"
             v-model="description"></input>
          <div class="button-wrapper" style="margin-top: 50px;">
-            <el-button class="button" @click="back" style="right: 120px;">back</el-button>
+            <el-button class="button" @click="back" style="right: 120px;">Back</el-button>
             <el-button class="button" @click="createData" style="right: 0px;">Create</el-button>
          </div>
       </div>
@@ -102,13 +101,14 @@
       <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="step === 3">
          <h2>Select your collection</h2>
          <div class="button-wrapper" style="margin-top: 50px;">
-            <el-button class="button" @click="back">back</el-button>
+            <el-button class="button" @click="back">Back</el-button>
             <el-button class="button" @click="next">Create</el-button>
          </div>
       </div>
 
    </div>
-   <el-drawer v-model="isVisible" title="Please select a profile" :direction="ltr" :before-close="handleClose">
+
+   <el-drawer v-model="isVisible" title="Please select a profile" :direction="ltr" :before-close="handleClose" :show-close="false">
       <el-table :data="profiles" @selection-change="handleSelectionChange">
          <el-table-column>
             <template #default="{ row }">
@@ -116,10 +116,11 @@
             </template>
          </el-table-column>
       </el-table>
-      <p class="selected-profile">Selected Profile: {{ selectedProfile }}</p>
       <template #footer>
          <div style="flex: auto">
-            <el-button @click="confirmClick">Confirm</el-button>
+            <p class="selected-profile">Selected Profile: <span>{{ selectedProfile }}</span></p>
+
+            <el-button @click="confirmClick" class="confirm-button">Confirm</el-button>
          </div>
       </template>
    </el-drawer>
@@ -518,9 +519,17 @@ h1 {
 
    }
 }
+
+.selected-profile {
+   text-align: left;
+   color: #333;
+
+   span {
+      color: #169608;
+   }
+}
 </style>
 
-// 电话验证部分
 <style lang="scss" scoped>
 .wrapper-right {
    display: flex;
@@ -626,5 +635,26 @@ h1 {
       box-shadow: 0px 0px 10px 5px #e0e0e0 !important;
       cursor: pointer;
    }
+}
+
+:deep(.el-table__row) {
+   height: 40px;
+
+   .el-radio__inner {
+      background: #169608;
+      border-color: #169608;
+   }
+
+   .el-radio__label{
+      color: #169608;
+      font-size: 16px;
+   }
+}
+
+:deep(.confirm-button){
+   border: none !important;
+   background-color: #169608 !important;
+   color: #fff !important;
+   font-size: 16px;
 }
 </style>

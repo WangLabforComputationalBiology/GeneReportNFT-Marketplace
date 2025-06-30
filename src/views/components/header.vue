@@ -56,7 +56,7 @@ function toAccount() {
     height: 5vh;
     min-height: 45px;
     min-width: 700px;
-    position: sticky; //固定在顶部
+    position: sticky;
     top: 0;
     background-color: #fff;
 
