@@ -113,7 +113,7 @@ function toAccount() {
             position: relative;
             color: #333;
             height: 5vh;
-            gap: 10px;
+            gap: 15px;
             margin: 0 10px 0 20px;
             font-size: 20px;
             align-content: center;

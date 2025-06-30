@@ -2,15 +2,17 @@
     <div class="wrapper">
         <div class="banner">
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
+            <div class="download">&gt;Download decrypt tool</div>
             <div class="page">
                 <div class="previous" v-if="page > 1">&lt;Previous</div>
-                <div style="color: #888;">Page:{{ page }}</div>
+                <div style="color: #E6A23C;font-size: 18px;font-weight: 700;">Page:{{ page }}</div>
                 <div class="next">Next&gt;</div>
             </div>
         </div>
 
         <el-scrollbar max-height="80vh">
-            <div class="plaza-page" v-loading="loadingForPlaza" :element-loading-svg="svg">
+        <el-empty description="Everything is on the way..." v-if="List.length === 0" />
+            <div class="plaza-page" v-loading="loadingForPlaza" :element-loading-svg="svg" v-else>
                 <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible(item)">
                     <div class="icon" />
                     <div class="ifo">
@@ -44,13 +46,14 @@
                 :data="detailData">
                 <el-table-column prop="ReportId" label="ReportId" />
                 <el-table-column prop="description" label="Description" />
-                <el-table-column prop="score" label="Score" />
-                <el-table-column prop="rank" label="Rank" />
+                <el-table-column v-for="col in column(selectedData.category)" :key="col.prop" :prop="col.prop"
+                    :label="col.label" />
             </el-table>
         </div>
         <template #footer>
             <div style="flex: auto">
-                <el-button type="primary" @click="ObtainClick" class="obtain-btn" v-if="walletStore.address && walletStore.email && walletStore.insititution">Obtain</el-button>
+                <el-button type="primary" @click="ObtainClick" class="obtain-btn"
+                    v-if="walletStore.address && walletStore.email && walletStore.insititution">Obtain</el-button>
                 <span v-else style="color: #169608;">Please login and verify first.</span>
             </div>
         </template>
@@ -84,6 +87,7 @@
 import { ref, onMounted } from "vue";
 import Api from "@/axios/aixos";
 import { useWalletStore } from "@/stores/account";
+import { ElMessage } from 'element-plus'
 const walletStore = useWalletStore();
 
 /* 获取plaza卡片数据列表 */
@@ -102,16 +106,15 @@ const getList = async () => {
     }
 }
 
+/* 获取详细数据 */
 const selectedData = ref([]);
 const loadingForTable = ref(false);
-
-/* 获取详细数据 */
 const page = ref(1);
 const detailData = ref([]);
 const getDetailData = async () => {
     try {
         loadingForTable.value = true;
-        if (!selectedData.value?.data_hash) return; //问号表示不一定存在
+        if (!selectedData.value?.data_hash) return; //问号表示运行不存在
         const res = await Api.get(`/metadata/${selectedData.value.data_hash}`);
         if (res.data.data) {
             detailData.value = res.data.data.details;
@@ -131,11 +134,59 @@ const isVisible = (item) => {
     getDetailData();
 };
 
+/* 表格列封装 */
+const columnConfigs = ref({
+    'Psychology': [
+        { label: 'Score', prop: 'score' },
+        { label: 'Rank', prop: 'rank' },
+    ],
+    'Risk': [
+        { label: 'Percent', prop: 'percent' },
+        { label: 'Risk', prop: 'risk' },
+    ],
+    'Athletigen': [
+        { label: 'Score', prop: 'score' },
+        { label: 'Rank', prop: 'rank' },
+    ],
+    'Skin': [
+        { label: 'Score', prop: 'score' },
+        { label: 'Rank', prop: 'rank' },
+    ],
+    'HealthyMetabolism': [
+        { label: 'Description_en', prop: 'description_en' },
+        { label: 'Score', prop: 'score' },
+        { label: 'Rank', prop: 'rank' },
+    ],
+    'HealthyCarrier': [
+        { label: 'Description_en', prop: 'description_en' },
+        { label: 'Mag', prop: 'mag' },
+        { label: 'Summary', prop: 'tsummary' },
+    ],
+    'HealthyTraits': [
+        { label: 'Description_en', prop: 'description_en' },
+        { label: 'Mag', prop: 'mag' },
+        { label: 'Summary', prop: 'tsummary' },
+    ],
+
+});
+const hasWarned = ref(false);   //避免因为表格渲染重复报错
+function column(category) {
+    if (!category || category === 'undefined' || category === 'null' || category === 'Unknown' || category === '') {
+        if (!hasWarned.value) {
+            ElMessage.error('Data error. Category missed.');
+            hasWarned.value = true;
+        }
+        return [];
+    }
+    return columnConfigs.value[category] || [];   //根据指定category返回列配置
+}
+
 /* 释放表单内容 */
 const handleClosed = () => {
     detailData.value = [];
     selectedData.value = null;
     loadingForTable.value = false;
+    hasWarned.value = false;
 };
 
 
@@ -147,14 +198,13 @@ const ObtainClick = async () => {
         const res = await Api.get('/plaza/obtain', {
             data_hash: selectedData.value.data_hash,
         });
-        console.log(res);
-
     } catch (error) {
         console.error('Error fetching detail data:', error);
     } finally {
     }
 }
-/* 挂载时加载list */
+
+/* 加载list */
 onMounted(() => {
     getList();
 });
@@ -172,23 +222,39 @@ onMounted(() => {
     width: 80vw;
     min-width: 1200px;
     height: 15vh;
+    min-height: 100px;
     display: flex;
     position: relative;
-    border-bottom: #ddd 3px solid;
+    border-bottom: #ddd 1px solid;
     background-color: #ffffff;
+    background:  url('@/assets/imgs/biochain.svg') no-repeat;
+    background-position: 85% -15%;
+
+    .download{
+        position: absolute;
+        right: 0%;
+        top: 50%;
+        color: #169608;
+
+        &:hover{
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    }
 
     .page {
         position: absolute;
         display: flex;
-        right: 1%;
-        bottom: 2%;
-        gap: 40px;
+        right: 0%;
+        bottom: 0%;
+        gap: 25px;
 
         .previous,
         .next {
             cursor: pointer;
-            color: #888;
-            font-size: 16px;
+            color: #333;
+            font-size: 18px;
+            font-weight: 700;
 
             &:hover {
                 color: #169608;
@@ -232,7 +298,7 @@ onMounted(() => {
         box-sizing: border-box;
         height: 200px;
         background-color: #fff;
-        box-shadow: 0 0 5px #ccc;
+        box-shadow: 0 0 3px #ccc;
         border-radius: 30px;
         align-items: center;
 
