@@ -77,9 +77,6 @@ func (g *GeneSharingDao) GetGeneSharingOverviewByCreator(creator string) (result
 		Order("geneSharings.created_at desc").
 		Scan(&results).Error
 
-	if err != nil {
-		return nil, err
-	}
 	return results, nil
 }
 

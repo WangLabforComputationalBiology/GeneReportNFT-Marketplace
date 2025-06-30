@@ -902,29 +902,23 @@ drop table if exists `activities`;
 -- 活动activities表
 CREATE TABLE activities
 (
-    id            VARCHAR(36)    NOT NULL,
-    user_address  VARCHAR(42)    NOT NULL,
-    `tx_hash`     varchar(64)    NOT NULL COMMENT '交易哈希',
-    `from`        varchar(64)    NOT NULL COMMENT '客户地址',
-    `to`          varchar(64)    NOT NULL COMMENT '商家地址',
-    `gas`         varchar(50)    NOT NULL COMMENT '交易产生的gas',
-    `profile_id`  varchar(32)    NOT NULL COMMENT '交易的基因报告id',
-    time          DATETIME       NOT NULL,
-    activity_type VARCHAR(255)   NOT NULL,
-    collection_id VARCHAR(32),
-    identifier    VARCHAR(32),
-    price         DECIMAL(20, 8) NOT NULL,
-    quantity      INT            NOT NULL,
-    from_address  VARCHAR(42)    NOT NULL,
-    to_address    VARCHAR(42)    NOT NULL,
-    link          VARCHAR(255),
+    `id`            VARCHAR(36)  NOT NULL,
+    `user_address`  VARCHAR(42)  NOT NULL COMMENT '用户地址',
+    `tx_hash`       varchar(64)  NOT NULL COMMENT '交易哈希',
+    `from`          varchar(64)  NOT NULL COMMENT '发起者地址',
+    `to`            varchar(64)  NOT NULL COMMENT '接收者地址',
+    `time`          DATETIME     NOT NULL Comment '时间戳',
+    `expiry`        DATETIME COMMENT '过期时间',
+    `event`         VARCHAR(255) NOT NULL Comment '活动类型',
+    `geneSharing`   VARCHAR(32) Comment 'geneSharing合集地址',
+    `metadata`    VARCHAR(32) Comment '标识',
     PRIMARY KEY (id),
     INDEX idx_activity (user_address, time)
 );
 
 
 drop table if exists `institutions`;
--- 活动activities表
+-- 机构邮箱institutions表
 CREATE TABLE institutions
 (
     `name`   VARCHAR(32) PRIMARY KEY COMMENT '机构名称',

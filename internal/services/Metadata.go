@@ -11,6 +11,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"net/http"
 	"reflect"
+	"time"
 )
 
 var (
@@ -58,6 +59,10 @@ func (m *MetadataService) GetMetadataDetailByDataHash(dataHash string) (map[stri
 	metadata, err := dao.GetMetadataDao().GetMetadataOverviewByDataHash(dataHash)
 	if err != nil {
 		return nil, appErrors.New(503, "获取Metadata详细信息失败", err)
+	}
+	//检查当前metadata是否被隐藏
+	if metadata.IsHidden == true {
+		return nil, appErrors.New(http.StatusForbidden, "该表现型数据当前为隐藏状态")
 	}
 
 	results, err := m.GetDataImpl(metadata.ProfileID, metadata.Category)
@@ -176,16 +181,47 @@ func (m *MetadataService) GetDataImpl(profileId, category string) (map[string]in
 //
 //		return iv, pr, nil
 //	}
-func (m *MetadataService) GetGenoTypeZip(dataHash, pubKey string) ([]byte, error) {
+func (m *MetadataService) GetGenoTypeZip(dataHash, userAddress, pubKey string) ([]byte, error) {
+	// 检查是否通过机构认证
+	user, err := dao.GetUserDao().GetUser(userAddress)
+	if err != nil {
+		return nil, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+	}
+	if user.Email == "UNKNOWN" {
+		return nil, appErrors.New(http.StatusUnauthorized, "请先进行机构邮箱认证")
+	}
+
+	// 根据 hash 取 metadata
 	metadata, err := dao.GetMetadataDao().GetMetadataOverviewByDataHash(dataHash)
 	if err != nil {
 		return nil, appErrors.New(503, "获取Metadata详细信息失败", err)
 	}
 
+	// 检查metadata当前是否可共享
+	if metadata.IsSharable == false {
+		return nil, appErrors.New(403, "该基因型数据当前非共享", err)
+	}
+
+	// 检查用户的viewAccess状态
+	activity, err := dao.GetActivityDao().GetLatestViewAccess(userAddress, metadata.DataHash)
+	if err != nil {
+		return nil, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+	}
+	if activity == nil || activity.Expiry.Before(time.Now()) {
+		return nil, appErrors.NewWithData(http.StatusForbidden, "当前查看许可不存在或已过期，请申请", map[string]interface{}{"need_to_apply": 1})
+	}
+
+	//该用户当前有仍在有效期的查看许可，获取基因型数据
 	data, err := dao.GetMetadataDao().GetGenoType(metadata.ProfileID, metadata.Category)
 	if err != nil {
 		return nil, appErrors.New(503, "获取详细基因型数据失败", err)
 	}
+
+	////链上交互
+	//_, receipt, err := sharingPlatformContract.GetContractIns().AddViewAccess(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress), [32]byte(common.Hex2Bytes(metadata.DataHash)), "")
+	//if err != nil || receipt.Status != 0 {
+	//	return nil, appErrors.New(503, "链上交互失败", err)
+	//}
 
 	// 创建XLSX缓冲区
 	var buf bytes.Buffer
@@ -195,4 +231,8 @@ func (m *MetadataService) GetGenoTypeZip(dataHash, pubKey string) ([]byte, error
 	}
 
 	return buf.Bytes(), nil
+}
+
+func (m *MetadataService) NewViewAccess(dataHash, userAddress, remark, pubKey string) ([]byte, error) {
+	return nil, nil
 }

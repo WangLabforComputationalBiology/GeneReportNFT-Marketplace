@@ -15,6 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
+	"gorm.io/gorm"
 	"io"
 	"io/ioutil"
 	"log"
@@ -630,6 +631,13 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 				Owner:     address,
 				Format:    tmp.Format,
 				Sex:       strconv.Itoa(tmp.Sex),
+				Model: gorm.Model{
+					CreatedAt: time.Now(),
+					UpdatedAt: time.Now(),
+					DeletedAt: gorm.DeletedAt{
+						Time: time.Now(),
+					},
+				},
 			}
 			res := configs.DB.Create(metadata)
 			if res.Error == nil {

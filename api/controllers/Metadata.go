@@ -81,13 +81,38 @@ func (m *Metadata) GetGenoTypeZip(ctx *gin.Context) {
 		})
 		return
 	}
-	zipData, err := services.MetadataServ.GetGenoTypeZip(dataHash, ctx.GetString("pub_key"))
+
+	zipData, err := services.MetadataServ.GetGenoTypeZip(dataHash, ctx.GetString("user_address"), ctx.GetString("pub_key"))
 	if err != nil {
 		_ = ctx.Error(err)
 		return
 	}
 
-	// 设置响应头，触发 ZIP 下载
+	// 设置下载响应头
+	ctx.Header("Content-Type", "application/xlsx")
+	ctx.Header("Content-Disposition", `attachment; filename="data.xlsx"`)
+	// contentLength 为-1即流数据长度未知
+	//ctx.DataFromReader(http.StatusOK, -1, "application/xlsx", bytes.NewReader(zipData), nil
+	ctx.Data(http.StatusOK, "application/xlsx", zipData)
+}
+
+func (m *Metadata) NewViewAccess(ctx *gin.Context) {
+	var req dto.NewViewAccessReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "请求体格式错误,请重新登录",
+		})
+		return
+	}
+
+	zipData, err := services.MetadataServ.NewViewAccess(req.DataHash, ctx.GetString("user_address"), req.Remark, ctx.GetString("pub_key"))
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
+	// 设置下载响应头
 	ctx.Header("Content-Type", "application/xlsx")
 	ctx.Header("Content-Disposition", `attachment; filename="data.xlsx"`)
 	// contentLength 为-1即流数据长度未知

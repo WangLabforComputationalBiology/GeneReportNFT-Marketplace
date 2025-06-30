@@ -52,7 +52,7 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//根据code获取用户的profile id供用户选择
 	r.GET("/getProfileIds" /*middlewares.AuthMiddleware(),*/, controllers.UserController.GetUsersProfileByCode)
 	//用户授权哪份报告
-	r.POST("/saveProfile" /*middlewares.AuthMiddleware(), */, controllers.UserController.SaveProfileInfo)
+	r.POST("/saveProfile", middlewares.AuthMiddleware(), controllers.UserController.SaveProfileInfo)
 	//发送验证码
 	r.POST("/send_email", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.UserController.SendEmailCode)
 	//验证验证码

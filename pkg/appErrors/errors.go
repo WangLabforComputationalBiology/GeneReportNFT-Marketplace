@@ -14,9 +14,10 @@ type IAppError interface {
 	ErrorWithDetail() string
 }
 type AppError struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`          //用户端模糊错误信息
-	Detail  string `json:"detail,omitempty"` //内部错误详情
+	Code    int         `json:"code"`
+	Message string      `json:"message"`          //用户端模糊错误信息
+	Detail  string      `json:"detail,omitempty"` //内部错误详情
+	Data    interface{} `json:"data,omitempty"`   //错误可能携带的部分数据
 }
 
 // New 仿errors.New
@@ -56,4 +57,16 @@ func (e AppError) ToErrResponse() dto.ErrResponse {
 func Is(err, target error) bool {
 	//比较原生错误即可，如需比较自定义错误，请在此增加类型断言逻辑
 	return errors.Is(err, target)
+}
+
+func NewWithData(code int, message string, data interface{}, errs ...error) AppError {
+	if len(errs) > 0 && errs[0] != nil {
+		return AppError{
+			Code: code, Message: message, Data: data, Detail: errs[0].Error(),
+		}
+	} else {
+		return AppError{
+			Code: code, Message: message, Data: data,
+		}
+	}
 }

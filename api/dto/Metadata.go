@@ -42,6 +42,7 @@ type GetAllMetadataOverviewResp struct {
 	MultiMetadata []MetadataOverview `json:"multi_metadata"`
 }
 
-type GetMetadataDetailByDataHashReq struct {
+type NewViewAccessReq struct {
 	DataHash string `json:"data_hash" binding:"required"`
+	Remark   string `json:"remark" binding:"required"`
 }
