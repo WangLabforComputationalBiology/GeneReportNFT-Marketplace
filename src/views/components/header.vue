@@ -1,8 +1,8 @@
 <template>
     <div class="header">
         <div class="side" @click="toHome">
-            <div class="logo" style="cursor: pointer;"><img src="@/assets/logo.svg" alt="">
-                <span style="color: #169608;">Bio</span>Chainer
+            <div class="logo" style="cursor: pointer;">
+                <img src="@/icons/biochainer_logo_full.svg" alt="logo">
             </div>
         </div>
         <div class="header-wrapper">
@@ -81,11 +81,6 @@ function toAccount() {
         }
 
         .logo {
-            height: 100%;
-            font-size: 34px;
-            line-height: 5vh;
-            font-weight: 700;
-            color: #333;
 
             img {
                 min-height: 25px;

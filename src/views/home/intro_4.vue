@@ -6,7 +6,7 @@
                 <div class="steps" @mouseover="hovered1 = true" @mouseleave="hovered1 = false">
                     <div class="step">
                         <p v-if="!hovered1">1</p>
-                        <img src="@/icons/metamask.svg" alt="metamask_logo" v-if="hovered1" class="icon">
+                        <img src="@/icons/metamask.svg" alt="metamask_logo" v-if="hovered1" class="icon" loading="lazy">
                     </div>
                     <div class="content-wrapper">
                         <h3>Setup MetaMask</h3>
@@ -19,7 +19,7 @@
                 <div class="steps" @mouseover="hovered2 = true" @mouseleave="hovered2 = false">
                     <div class="step" style="background-color: #E6A23C;">
                         <p v-if="!hovered2">2</p>
-                        <img src="@/icons/academic2.svg" alt="" v-if="hovered2" class="icon">
+                        <img src="@/icons/academic2.svg" alt="" v-if="hovered2" class="icon" loading="lazy">
                     </div>
                     <div class="content-wrapper">
                         <h3>Verfication</h3>
@@ -32,7 +32,7 @@
                 <div class="steps" @mouseover="hovered3 = true" @mouseleave="hovered3 = false">
                     <div class="step" style="background-color: #67C23A;">
                         <p v-if="!hovered3">3</p>
-                        <img src="@/icons/plane.svg" alt="" v-if="hovered3" class="icon">
+                        <img src="@/icons/plane.svg" alt="" v-if="hovered3" class="icon" loading="lazy">
                     </div>
                     <div class="content-wrapper">
                         <h3>Start Sharing</h3>

@@ -2,15 +2,16 @@
 import { createWebHistory } from "vue-router";
 import { createRouter } from "vue-router";
 import walletAuthGuard from "./accountGuard";
+import homeIndex from "@/views/home/index.vue";
 
 const routes = [
     {
         path: '/',
         redirect: '/index', // 重定向
-    },
+    }, 
     {
         path: "/index",
-        component: () => import('@/views/home/index.vue')
+        component: homeIndex
     },
     {
         path: '/publish',
