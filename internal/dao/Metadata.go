@@ -81,7 +81,7 @@ func (m *Metadata) GetMetadataDetailByProfileId(profileID string) (results []mod
 func (m *Metadata) GetAllMetadataOverview() (results []dto.MetadataOverview, err error) {
 	err = m.DB().Select("metadatas.*").
 		Table("metadatas").
-		Where("metadatas.is_hidden = 0 AND metadatas.data_hash IS NOT NULL").
+		Where("metadatas.is_hidden = 0 AND metadatas.data_hash!='' ").
 		Order("metadatas.created_at desc").
 		Scan(&results).Error
 	if err != nil {

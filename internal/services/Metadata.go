@@ -8,7 +8,9 @@ import (
 	"GeneReport_platform/tools/utils"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"github.com/mitchellh/mapstructure"
+	"gorm.io/gorm"
 	"net/http"
 	"reflect"
 	"time"
@@ -204,10 +206,10 @@ func (m *MetadataService) GetGenoTypeZip(dataHash, userAddress, pubKey string) (
 
 	// 检查用户的viewAccess状态
 	activity, err := dao.GetActivityDao().GetLatestViewAccess(userAddress, metadata.DataHash)
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
-	if activity == nil || activity.Expiry.Before(time.Now()) {
+	if errors.Is(err, gorm.ErrRecordNotFound) || activity.Expiry.Before(time.Now()) {
 		return nil, appErrors.NewWithData(http.StatusForbidden, "当前查看许可不存在或已过期，请申请", map[string]interface{}{"need_to_apply": 1})
 	}
 
