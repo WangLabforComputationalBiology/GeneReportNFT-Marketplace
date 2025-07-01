@@ -12,10 +12,12 @@
         </div>
         <div class="wrapper">
             <h1>Login to <span style="color:#333;">begin.</span></h1>
-            <p>1. <a href="https://chromewebstore.google.com/search/metamask?utm_source=ext_sidebar"
-                    target="_blank">Download MetaMask extension</a> in your Brower and setup your wallet.</p>
+            <p>1. <span class="download" @click="downloadMetamask()">Download MetaMask extension</span> in your Brower
+                and setup your wallet.</p>
             <img class="step-tip-img" src="@/assets/imgs/step1.png" alt="step1">
-            <p style="font-size: 16px;color:#333">*We do suggest that use Google Chrome.</p>
+            <p style="font-size: 16px;color:#333">*We do suggest that use Google Chrome. You are using <span
+                    style="color: #333;font-weight: 700;">{{ browser }}</span>.
+            </p>
             <br>
             <p>2. Click the little earth icon, and switch to BioChainer network.</p>
             <img class="step-tip-img" src="@/assets/imgs/step2.jpg" alt="step2">
@@ -37,7 +39,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Bubbles from '@/views/components/bubbles.vue';
 import { ethers } from 'ethers';
@@ -53,6 +55,7 @@ const message = ref('');
 const nonce = ref('');
 const error = ref('');
 
+/*  构造message 格式较严格 勿随意改动 */
 function structureMessage(addressVal, nonceVal) {
     const template = `Welcome to GeneReport_platform!
 
@@ -69,7 +72,7 @@ ${nonceVal}`;
     return template;
 }
 
-// MetaMask连接并获取账户
+/* MetaMask连接并获取账户 */
 async function connectWallet() {
     error.value = '';
     address.value = '';
@@ -94,11 +97,10 @@ async function connectWallet() {
                 background: 'rgba(0, 0, 0, 0.7)',
                 customClass: 'loading',
             })
-
             const nonceResponse = await Api.get(`/user/nonce/${address.value}`);
             nonce.value = nonceResponse.data.data.nonce;
 
-            // 4. 构造消息
+            // 4. 构造message消息
             message.value = structureMessage(address.value, nonce.value);
 
             // 5. 请求签名
@@ -147,7 +149,47 @@ async function connectWallet() {
     }
 }
 
+/* network部署提示 */
 let isVisible = ref(false)
+
+/* 判断浏览器 */
+const browser = computed(() => {
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.includes('qqbrowser')) {
+        return 'QQBrowser';
+    } else if (ua.includes('chrome') && !ua.includes('edg')) {
+        return 'Chrome';
+    } else if (ua.includes('firefox')) {
+        return 'Firefox';
+    } else if (ua.includes('safari') && !ua.includes('chrome')) {
+        return 'Safari';
+    } else if (ua.includes('edg')) {
+        return 'Edge';
+    } else if (ua.includes('opr')) {
+        return 'Opera';
+    } else if (ua.includes('msie') || ua.includes('trident')) {
+        return 'Internet Explorer';
+    }
+    return 'Unknown browser';
+})
+function downloadMetamask() {
+    switch (browser.value) {
+        case 'Chrome':
+            window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn');
+            break;
+        case 'Firefox':
+            window.open('https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/');
+            break;
+        case 'Edge':
+            window.open('https://microsoftedge.microsoft.com/addons/detail/metamask/ejbalbakoplchlghecdalmeeeajnimhm');
+            break;
+        case 'Opera':
+            window.open('https://addons.opera.com/en/extensions/details/metamask/');
+            break;
+        default:
+            window.open('https://metamask.io/download.html');
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -222,6 +264,15 @@ let isVisible = ref(false)
 
     }
 
+}
+
+.download {
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+        color: #169608;
+    }
 }
 
 .setup-tips {
