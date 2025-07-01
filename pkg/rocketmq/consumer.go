@@ -9,7 +9,6 @@ import (
 	"github.com/apache/rocketmq-client-go/v2/consumer"
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"os"
-	"strings"
 )
 
 // MessageHandler 定义一个处理消息的函数类型
@@ -70,12 +69,8 @@ func HandleMsgSaveData(ctx context.Context, msgs ...*primitive.MessageExt) (cons
 	for i := range msgs {
 		fmt.Printf("保存消息的消费者处理消息: %v \n", string(msgs[i].Body))
 		//保存数据
-		//将msgs[i].Body的数据按照":"分割 token+id
-		parts := strings.Split(string(msgs[i].Body), ":")
-
-		fmt.Printf("token:%s\nprofileId:%s", parts[0], parts[1])
 		//todo 此处可以做重复新检测，表需要一个状态位来记录他的完成情况
-		tools.SaveAllData(parts[0], parts[1])
+		tools.SaveAllData(string(msgs[i].Body))
 		//tools.SaveDataTest(parts[0])
 	}
 	return consumer.ConsumeSuccess, nil

@@ -15,7 +15,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
-	"gorm.io/gorm"
 	"io"
 	"io/ioutil"
 	"log"
@@ -577,9 +576,6 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 	token := configs.RedisClient.Get(context.Background(), code).Val()
 	//拿到后删除redis的记录
 	configs.RedisClient.Del(context.Background(), code)
-	sendMsg := token + ":" + toSave.ProfileId
-	//异步保存数据
-	rocketmq.SendMsg("saveData", sendMsg)
 
 	// 上下文获取address
 	addressCtx, _ := ctx.Get("user_address")
@@ -616,8 +612,6 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 			fmt.Println("重复新检测数保存失败", res.Error)
 		}
 	}
-
-	fmt.Println("成功！异步保存数据：", sendMsg)
 	//记录profileid到metadatas，因为保存微基因数据的服务和这个不是一个
 	var usersProfile dto.GetReportId = getReportId(token)
 	profiles := usersProfile.Profiles
@@ -625,26 +619,10 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 	for _, profile := range profiles {
 		if profile.Id == toSave.ProfileId {
 			tmp = profile
-			log.Println("找到profileId这份报告，详细信息：%v", profile)
-			metadata := &dto.Metadatas{
-				ProfileID: toSave.ProfileId,
-				Owner:     address,
-				Format:    tmp.Format,
-				Sex:       strconv.Itoa(tmp.Sex),
-				Model: gorm.Model{
-					CreatedAt: time.Now(),
-					UpdatedAt: time.Now(),
-					DeletedAt: gorm.DeletedAt{
-						Time: time.Now(),
-					},
-				},
-			}
-			res := configs.DB.Create(metadata)
-			if res.Error == nil {
-				fmt.Println("保存metadata成功")
-			} else {
-				fmt.Println("保存metadata失败", res.Error)
-			}
+			sendMsg := token + ":" + toSave.ProfileId + ":" + address + ":" + tmp.Format + ":" + strconv.Itoa(tmp.Sex)
+			//异步保存数据
+			rocketmq.SendMsg("saveData", sendMsg)
+			fmt.Println("成功！异步保存数据：", sendMsg)
 		}
 	}
 

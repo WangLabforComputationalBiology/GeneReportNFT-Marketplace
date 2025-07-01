@@ -136,7 +136,7 @@ func SaveDataTest(token string) {
 //demographics/基因报告id、/haplogroups/result/基因报告id、/web_auth/基因报告id \ancestry/profileId这些只要token
 
 // 用到上面的report_id数组的请求头和请求体都差不多，唯一不同的就是响应绑定的对象不同,可以使用泛型来做
-func getDataFromWegene[T any](id []int, profileId, url, token string) {
+func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT, sexT string) {
 	URL := url + "/" + profileId
 	method := "POST"
 
@@ -300,8 +300,8 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 
 	}
 	if exitGenotypr {
-		var originMetaData dto.Metadatas
-		configs.DB.Where("profile_id = ? and data_hash=''", profileId).First(&originMetaData)
+		//var originMetaData dto.Metadatas
+		//configs.DB.Where("profile_id = ? and data_hash=''", profileId).First(&originMetaData)
 		//计算jsonStrToHash这个字符串的哈希
 		hash := sha256.New()
 		hash.Write(allJsonStrToHashBulider)
@@ -310,9 +310,9 @@ func getDataFromWegene[T any](id []int, profileId, url, token string) {
 			DataHash:  hashString,
 			ProfileID: profileId,
 			Category:  name, //ex： skin、risk……
-			Format:    originMetaData.Format,
-			Owner:     originMetaData.Owner,
-			Sex:       originMetaData.Sex,
+			Owner:     addressT,
+			Format:    formatT,
+			Sex:       sexT,
 		}
 		res := configs.DB.Create(&metadata)
 		if res.Error == nil {
@@ -382,7 +382,15 @@ func checkRepeat(profileId string) bool {
 	return count > 0
 }
 
-func SaveAllData(token, profileId string) {
+func SaveAllData(Msg string) {
+	//将msgs[i].Body的数据按照":"分割 token+id
+	parts := strings.Split(Msg, ":")
+	token := parts[0]
+	profileId := parts[1]
+	addressT := parts[2]
+	formatT := parts[3]
+	sexT := parts[4]
+	fmt.Printf("token:%s\nprofileId:%s", parts[0], parts[1])
 	if checkRepeat(profileId) {
 		fmt.Println("重复性检测：", profileId, "已存在")
 		//FIXME 这里的retunr控制是重复新检测不通过要不要存数，用于开发环境！
@@ -393,13 +401,13 @@ func SaveAllData(token, profileId string) {
 	//athletigen、risk、skin、health/carrier、health/metabolism、health/tratis、psychology
 	//health/drug-----Xd
 	//getDataFromWegene[dto.HealthyDrug](forHealthyDrug, profileId, BASEURL+"/health/drug", token)
-	getDataFromWegene[dto.HealthyTraits](forHealthyTraits, profileId, BASEURL+"/health/traits", token)
-	getDataFromWegene[dto.HealthyCarrier](forHealthyCarrier, profileId, BASEURL+"/health/carrier", token)
-	getDataFromWegene[dto.HealthyMetabolism](forHealthyMetabolism, profileId, BASEURL+"/health/metabolism", token)
-	getDataFromWegene[dto.Risk](forRisk, profileId, BASEURL+"/risk", token)
-	getDataFromWegene[dto.Athletigen](forAthletigen, profileId, BASEURL+"/athletigen", token)
-	getDataFromWegene[dto.Skin](forSkin, profileId, BASEURL+"/skin", token)
-	getDataFromWegene[dto.Psychology](forPsychology, profileId, BASEURL+"/psychology", token)
+	getDataFromWegene[dto.HealthyTraits](forHealthyTraits, profileId, BASEURL+"/health/traits", token, addressT, formatT, sexT)
+	getDataFromWegene[dto.HealthyCarrier](forHealthyCarrier, profileId, BASEURL+"/health/carrier", token, addressT, formatT, sexT)
+	getDataFromWegene[dto.HealthyMetabolism](forHealthyMetabolism, profileId, BASEURL+"/health/metabolism", token, addressT, formatT, sexT)
+	getDataFromWegene[dto.Risk](forRisk, profileId, BASEURL+"/risk", token, addressT, formatT, sexT)
+	getDataFromWegene[dto.Athletigen](forAthletigen, profileId, BASEURL+"/athletigen", token, addressT, formatT, sexT)
+	getDataFromWegene[dto.Skin](forSkin, profileId, BASEURL+"/skin", token, addressT, formatT, sexT)
+	getDataFromWegene[dto.Psychology](forPsychology, profileId, BASEURL+"/psychology", token, addressT, formatT, sexT)
 	//单独的接口
 	getDataFromWegeneSimple[dto.Ancestry](profileId, BASEURL+"/ancestry", token)
 	getDataFromWegeneSimple[dto.Haplogroups](profileId, BASEURL+"/haplogroups", token)
