@@ -77,7 +77,7 @@ func registerMetadataRouter(r *gin.RouterGroup) {
 }
 
 func registerGeneTypeRouter(r *gin.RouterGroup) {
-	r.GET("/:dataHash", middlewares.ZapMiddleware(), controllers.MetadataController.GetGenoTypeZip)
+	r.GET("/:dataHash", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.MetadataController.GetGenoTypeZip)
 }
 
 func SetupRouter() *gin.Engine {
