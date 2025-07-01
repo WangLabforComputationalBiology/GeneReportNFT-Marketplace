@@ -34,6 +34,7 @@
         <img class="step-tip-img" src="@/assets/imgs/setup2.jpg" alt="">
         <p class="setup-tips">3.Add the information as shown in the figure above and "Save"</p>
         <p class="setup-tips">4.Back, click the little earth icon, and switch to BioChainer network.</p>
+        <p class="setup-tips">5.If seen "MetaMask isn’t connected to this site", turn to "3.Click to connect", connect Metamask to BioChainer site.</p>
     </el-drawer>
 
 </template>

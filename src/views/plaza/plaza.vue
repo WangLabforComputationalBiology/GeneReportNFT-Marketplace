@@ -4,15 +4,18 @@
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
             <div class="download">&gt;Download decrypt tool</div>
             <div class="page">
-                <div class="previous" v-if="page > 1">&lt;Previous</div>
+                <div class="previous" v-show="page > 1" @click="page--">&lt;Previous</div>
                 <div style="color: #E6A23C;font-size: 18px;font-weight: 700;">Page:{{ page }}</div>
-                <div class="next">Next&gt;</div>
+                <div class="next" @click="page++">Next&gt;</div>
             </div>
         </div>
 
         <el-scrollbar max-height="80vh">
-            <el-empty description="Everything is on the way..." v-if="List.length === 0" />
-            <div class="plaza-page" v-loading="loadingForPlaza" :element-loading-svg="svg" v-else>
+            <el-empty description="Empty...Maybe try it again?" v-if="List == null || List == '' || List == undefined"
+                v-loading="loadingForPlaza" :element-loading-svg="svg">
+                <el-button class="obtain-btn" @click="getList">Refresh</el-button>
+            </el-empty>
+            <div class="plaza-page" v-else>
                 <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible(item)">
                     <div class="icon" />
                     <div class="ifo">
@@ -85,7 +88,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import Api from "@/axios/aixos";
 import { useWalletStore } from "@/stores/account";
 import { ElMessage } from 'element-plus'
@@ -94,28 +97,46 @@ const walletStore = useWalletStore();
 /* 获取plaza卡片数据列表 */
 const loadingForPlaza = ref(false);
 const List = ref([]);
+const page = ref(1);
 const getList = async () => {
     try {
+        List.value = [];
         loadingForPlaza.value = true;
-        const res = await Api.get('/plaza/getData');
+        const res = await Api.get(`/plaza/${page.value}`);
         List.value = res.data.data.multi_metadata;
+        if (List.value == null || List.value == '' || List.value == undefined) {
+            setTimeout(() => {
+                loadingForPlaza.value = false;
+            }, 1500)
+            return;
+        };
         List.value.forEach(item => {
             item.created_at = item.created_at.slice(0, 10);
         })
+    } catch (error) {
+        if (error) {
+            loadingForPlaza.value = false;
+        }
     } finally {
-        loadingForPlaza.value = false;
+        setTimeout(() => {
+            loadingForPlaza.value = false;
+        }, 1500)
     }
 }
+
+/* 翻页 */
+watch(page, () => {
+    getList();
+})
 
 /* 获取详细数据 */
 const selectedData = ref([]);
 const loadingForTable = ref(false);
-const page = ref(1);
 const detailData = ref([]);
 const getDetailData = async () => {
     try {
         loadingForTable.value = true;
-        if (!selectedData.value?.data_hash) return; //问号表示运行不存在
+        if (!selectedData.value?.data_hash) return; //问号表示允许不存在
         const res = await Api.get(`/metadata/${selectedData.value.data_hash}`);
         if (res.data.data) {
             detailData.value = res.data.data.details;
@@ -195,9 +216,11 @@ let dialogIsVisible = ref(false);
 const purpose = ref('');
 const ObtainClick = async () => {
     try {
-        const res = await Api.get('/plaza/obtain', {
+        const res = await Api.get(`/gene_type/${selectedData.value.data_hash}`, {
             data_hash: selectedData.value.data_hash,
         });
+        console.log(res)
+
     } catch (error) {
         console.error('Error fetching detail data:', error);
     } finally {
@@ -299,7 +322,7 @@ onMounted(() => {
         height: 200px;
         background-color: #fff;
         box-shadow: 0 0 3px #ccc;
-        border-radius: 30px;
+        border-radius: 20px;
         align-items: center;
 
         &:hover {

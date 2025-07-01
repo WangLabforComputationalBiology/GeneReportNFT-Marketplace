@@ -267,7 +267,7 @@ const createData = async () => {
    justify-content: center;
    align-items: center;
    animation: fadeIn 0.2s ease-in-out 0s forwards;
-   transform: translateY(-10%);
+   transform: translateY(-5%);
 
    @keyframes fadeIn {
       0% {
