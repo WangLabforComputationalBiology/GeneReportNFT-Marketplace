@@ -5,6 +5,7 @@ import (
 	"GeneReport_platform/internal/services"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type Metadata struct{}
@@ -59,7 +60,9 @@ func (m *Metadata) GetMetadataDetailByDataHash(ctx *gin.Context) {
 }
 
 func (m *Metadata) GetAllMetadataOverview(ctx *gin.Context) {
-	multiMetadata, err := services.MetadataServ.GetAllMetadataOverview()
+	page := ctx.Param("page")
+	pagei, _ := strconv.Atoi(page)
+	multiMetadata, err := services.MetadataServ.GetAllMetadataOverview(pagei)
 	if err != nil {
 		_ = ctx.Error(err)
 		return

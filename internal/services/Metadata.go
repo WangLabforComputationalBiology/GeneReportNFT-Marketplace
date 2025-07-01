@@ -46,8 +46,8 @@ func (m *MetadataService) GetMetadataOverviewByOwner(owner string) (dto.GetMetad
 	return toResp, nil
 }
 
-func (m *MetadataService) GetAllMetadataOverview() (dto.GetAllMetadataOverviewResp, error) {
-	results, err := dao.GetMetadataDao().GetAllMetadataOverview()
+func (m *MetadataService) GetAllMetadataOverview(page int) (dto.GetAllMetadataOverviewResp, error) {
+	results, err := dao.GetMetadataDao().GetAllMetadataOverview(page)
 	if err != nil {
 		return dto.GetAllMetadataOverviewResp{}, appErrors.New(503, "", err)
 	}

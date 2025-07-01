@@ -69,7 +69,7 @@ func registerStudioRouter(r *gin.RouterGroup) {
 }
 
 func registerPlazaRouter(r *gin.RouterGroup) {
-	r.GET("/getData", middlewares.ZapMiddleware(), controllers.MetadataController.GetAllMetadataOverview)
+	r.GET("/:page", middlewares.ZapMiddleware(), controllers.MetadataController.GetAllMetadataOverview)
 }
 
 func registerMetadataRouter(r *gin.RouterGroup) {

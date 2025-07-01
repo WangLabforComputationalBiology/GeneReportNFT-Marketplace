@@ -70,7 +70,7 @@ func (m *Metadata) GetMetadataDetailByProfileId(profileID string) (results []mod
 	err = m.DB().Select("metadatas.*").
 		Table("metadatas").
 		Where("metadatas.profile_id = ? && metadatas.is_hidden = 0", profileID).
-		Order("metadatas.category desc").
+		Order("metadatas.report_id asc").
 		Scan(&results).Error
 	if err != nil {
 		return nil, err
@@ -78,11 +78,13 @@ func (m *Metadata) GetMetadataDetailByProfileId(profileID string) (results []mod
 	return results, nil
 }
 
-func (m *Metadata) GetAllMetadataOverview() (results []dto.MetadataOverview, err error) {
+func (m *Metadata) GetAllMetadataOverview(page int) (results []dto.MetadataOverview, err error) {
 	err = m.DB().Select("metadatas.*").
 		Table("metadatas").
 		Where("metadatas.is_hidden = 0 AND metadatas.data_hash!='' ").
-		Order("metadatas.created_at desc").
+		Order("metadatas.created_at asc").
+		Offset((page - 1) * 30).
+		Limit(30).
 		Scan(&results).Error
 	if err != nil {
 		return nil, err

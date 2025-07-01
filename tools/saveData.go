@@ -391,6 +391,8 @@ func SaveAllData(Msg string) {
 	formatT := parts[3]
 	sexT := parts[4]
 	fmt.Printf("token:%s\nprofileId:%s", parts[0], parts[1])
+	//test
+	fmt.Println(Msg)
 	if checkRepeat(profileId) {
 		fmt.Println("重复性检测：", profileId, "已存在")
 		//FIXME 这里的retunr控制是重复新检测不通过要不要存数，用于开发环境！
