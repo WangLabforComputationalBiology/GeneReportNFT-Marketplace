@@ -8,7 +8,7 @@ type Metadata struct {
 	DataHash                   string    `gorm:"primaryKey;type:varchar(32)" json:"data_hash"`
 	ProfileID                  string    `gorm:"type:varchar(36)" json:"profile_id"`
 	Format                     string    `gorm:"type:varchar(32)" json:"format"`
-	Sex                        bool      `gorm:"type:varchar(32)" json:"sex"`
+	Sex                        string    `gorm:"type:varchar(32)" json:"sex"`
 	Category                   string    `gorm:"type:varchar(32)" json:"category"`
 	Owner                      string    `gorm:"type:varchar(32)" json:"owner"`
 	Name                       string    `gorm:"index:idx_name;type:varchar(32)" json:"name"`
