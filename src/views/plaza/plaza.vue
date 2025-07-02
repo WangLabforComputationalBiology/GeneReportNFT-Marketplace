@@ -220,7 +220,11 @@ const ObtainClick = async () => {
             data_hash: selectedData.value.data_hash,
         });
         console.log(res)
-
+        if(res.data.data.access_status == false && res.data.message == 'success'){
+        dialogIsVisible.value = !res.data.data.access_status; //如果返回值为false，则显示弹窗
+        }else{
+            
+        }
     } catch (error) {
         console.error('Error fetching detail data:', error);
     } finally {

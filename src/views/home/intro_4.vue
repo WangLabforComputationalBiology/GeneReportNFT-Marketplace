@@ -104,7 +104,7 @@ let hovered3 = ref(false)
             margin-top: 120px;
             width: 300px;
             height: 400px;
-            background-color: #ffffffee;
+            background-color: #ffffff;
             box-shadow: 0 0 15px #E4E7ED;
             border-radius: 20px;
             background-repeat: no-repeat;

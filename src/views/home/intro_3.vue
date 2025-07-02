@@ -34,7 +34,7 @@ h1 {
     left: 50%;
     top: 20%;
     transform: translate(-50%, -50%);
-    font-size: 6vh;
+    font-size: 60px;
     color: #169608;
     margin-bottom: 20px;
     font-weight: 500;
@@ -60,7 +60,7 @@ h1 {
         color: #333;
         font-weight: 700;
         padding: 20px;
-        background-color: #ffffffee;
+        background-color: #ffffff;
         border-radius: 20px;
         align-items: center;
         text-align: left;

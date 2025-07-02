@@ -5,8 +5,7 @@
             <h2>
                 <div class="des">
                     BioChainer, a Biological alliance-chain based on <span class="click-link" @click="toFB">FISCO
-                        BCOS</span> from
-                    SZTU@Wanglab.
+                        BCOS.</span>
                     <br>
                     We advocate the creation of a blockchain-based biological information sharing chain to achieve
                     reliable
@@ -24,6 +23,20 @@
                 <div class="toBTN" @click="">Git Hub↗</div>
             </div>
         </div>
+
+        <div class="card">
+            <img class="MM" src="@/icons/metalogo.svg" alt="Metamask_logo" @click="toMM">
+            <div class="des">MetaMask, an interactive tool which is a powerful wallet manager that manages
+                account addresses and accesses the BioChainer network.</div>
+        </div>
+        <div class="card">
+            <img class="FB" src="@/icons/FISCO_BCOS_logo.svg" alt="Fisco_bcos_logo" @click="toFB">
+            <div class="des des1">Rely on FISCO BCOS to build a currency-free blockchain, and build a shared platform by
+                interacting with the metamask wallet.</div>
+        </div>
+
+        <div class="wrapper-right">
+        </div>
     </div>
 </template>
 
@@ -37,7 +50,7 @@ function toFB() {
 .wrapper {
     height: 95vh;
     min-width: 1200px;
-    scroll-snap-align: start;
+    min-height: 800px;
     display: flex;
     position: relative;
 }
@@ -46,15 +59,16 @@ function toFB() {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
     text-align: center;
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -75%);
+    width: 40%;
+    left: 15%;
+    top: 55%;
+    transform: translate(-0%, -75%);
 
     h1 {
-        font-size: 6vh;
+        text-align: center;
+        font-size: 60px;
         font-weight: 500;
         color: #169608;
         margin-bottom: 20px;
@@ -124,10 +138,46 @@ function toFB() {
     text-decoration: underline;
 }
 
-.ball {
+.card {
+    width: 500px;
+    height: 220px;
+    background-color: #ffffff;
     position: absolute;
-    border-radius: 50%;
-    opacity: 0.7;
-    pointer-events: none;
+    left: 60%;
+    top: 18%;
+    border-radius: 25px;
+    border: #ccc;
+    box-shadow: #ccc 0 0 10px;
+
+    .FB {
+        margin:15px 80px;
+        width: 340px;
+    }
+
+
+    &:nth-child(2) {
+        top: 46%;
+        left: 60%;
+        display: flex;
+        align-items: center;
+
+
+        .MM {
+            margin: 0 10px 0 35px;
+            width: 125px;
+        }
+    }
+
+    .des1 {
+        margin: 0 50px !important;
+        text-align: center;
+    }
+
+    .des {
+        font-size: 20px;
+        color: #333;
+        margin: 0 30px;
+
+    }
 }
 </style>

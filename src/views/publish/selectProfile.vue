@@ -2,7 +2,7 @@
     <div class="wrapper">
         <div class="banner">
             <span class="tip">
-                <h1><span style="color: #169608;">Wegene</span> Connected</h1>
+                <h1 style="margin-bottom: 30px;"><span style="color: #169608;">Wegene</span> Connected</h1>
             </span>
         </div>
 
@@ -42,7 +42,7 @@ export default {
     },
     data() {
         return {
-            code: this.$route.params.lastSegment || '默认标题',
+            code: this.$route.params.lastSegment || 'default title',
             profiles: [],
             selectedProfile: null,
             showAlert: false // 添加状态变量
@@ -50,7 +50,7 @@ export default {
     },
     watch: {
         '$route.params.lastSegment': function (newSegment) {
-            this.code = newSegment || '默认标题';
+            this.code = newSegment || 'default title';
             this.fetchData(); // 重新获取数据
         }
     },
@@ -74,12 +74,11 @@ export default {
                 }
                 const data = await response.json();
                 this.profiles = data.profiles || [];
-                console.log('Fetched data:', this.profiles);
-                // 你可以在这里更新 content 或其他数据
-                this.content = data.content || '默认内容'; // 假设服务器返回的数据中有一个 content 字段
+                // 更新 content 或其他数据
+                this.content = data.content || 'default content'; // 假设服务器返回的数据中有一个 content 字段
             } catch (error) {
                 console.error('Error fetching data:', error);
-                this.content = '请求失败，请重试'; // 更新 content 以显示错误信息
+                this.content = 'Error fetching data, please try again later'; // 更新 content 以显示错误信息
             }
         },
         async authorizeProfile() {
@@ -118,7 +117,7 @@ export default {
 
 <style lang="scss" scoped>
 p {
-    font-size: 24px;
+    font-size: 20px;
 }
 
 .wrapper {
@@ -163,7 +162,7 @@ p {
 
 :deep(.el-button) {
     width: 80px;
-    height: 50px;
+    height: 40px;
     border-radius: 15px;
     font-size: 18px;
 

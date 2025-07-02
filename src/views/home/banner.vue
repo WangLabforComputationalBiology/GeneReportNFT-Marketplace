@@ -15,7 +15,7 @@
 <style lang="scss" scoped>
 .banner {
     font-size: 16px;
-    z-index: 999;
+    z-index: 9999;
     position: relative;
     height: 95vh;
     min-width: 1200px;
