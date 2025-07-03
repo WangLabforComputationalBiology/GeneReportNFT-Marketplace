@@ -217,7 +217,7 @@ let description = ref('');
 let tags = ref('');
 
 const confirmClick = () => {
-   isVisible.value = false;
+   progress();
 }
 
 const createData = async () => {
