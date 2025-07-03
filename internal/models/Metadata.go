@@ -1,12 +1,10 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"time"
 )
 
 type Metadata struct {
-	gorm.Model
 	DataHash                   string    `gorm:"primaryKey;type:varchar(32)" json:"data_hash"`
 	ProfileID                  string    `gorm:"type:varchar(36)" json:"profile_id"`
 	Format                     string    `gorm:"type:varchar(32)" json:"format"`
@@ -16,8 +14,9 @@ type Metadata struct {
 	Name                       string    `gorm:"index:idx_name;type:varchar(32)" json:"name"`
 	Description                string    `gorm:"type:text" json:"description"`
 	ContractAddress            string    `gorm:"type:varchar(42)" json:"contract_address"`
-	GeneSharingContractAddress string    `gorm:"type:varchar(42)" json:"gene_sharing_contract_address"`
+	GeneSharingContractAddress string    `gorm:"type:varchar(42)" json:"geneSharing_contract_address"`
 	IsSharable                 bool      `gorm:"type:tinyint(1)" json:"is_sharable"`
 	IsHidden                   bool      `gorm:"type:tinyint(1)" json:"is_hidden"`
 	CreatedAt                  time.Time `gorm:"type:datetime" json:"created_at"`
+	Tags                       string    `gorm:"type:varchar(255)" json:"tags"`
 }

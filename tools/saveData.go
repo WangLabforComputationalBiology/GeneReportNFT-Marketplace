@@ -310,14 +310,16 @@ func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT
 		hash.Write(allJsonStrToHashBulider)
 		hashString := hex.EncodeToString(hash.Sum(nil))
 		metadata := models.Metadata{
-			DataHash:  hashString,
-			ProfileID: profileId,
-			Category:  name, //ex： skin、risk……
-			Owner:     addressT,
-			Format:    formatT,
-			Sex:       sexT,
+			DataHash:   hashString,
+			ProfileID:  profileId,
+			Category:   name, //ex： skin、risk……
+			Owner:      addressT,
+			Format:     formatT,
+			Sex:        sexT,
+			IsHidden:   true,
+			IsSharable: false,
 		}
-		res := configs.DB.Create(&metadata)
+		res := configs.DB.Table("metadatas").Create(&metadata)
 		if res.Error == nil {
 			fmt.Println(name, "的genotype哈希保存成功")
 		} else {

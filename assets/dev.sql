@@ -872,7 +872,7 @@ drop table if exists `metadatas`;
 -- geneSharing集合下的metadatas表
 CREATE TABLE metadatas
 (
-    `data_hash`                    VARCHAR(32) PRIMARY KEY COMMENT '数据哈希',
+    `data_hash`                    VARCHAR(32) COMMENT '数据哈希',
     `profile_id`                   VARCHAR(36) NOT NULL COMMENT '对应的第三方基因报告id',
     `format`                       VARCHAR(32) COMMENT '基因报告格式',
     `sex`                          VARCHAR(32) COMMENT '性别',
