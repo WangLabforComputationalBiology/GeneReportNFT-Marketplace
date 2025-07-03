@@ -6,7 +6,7 @@
          :mousewheel="true" :speed="700" @slideChange="onVerticalSlideChange" :modules="modules"
          class="fullpage-swiper">
          <div class="guide" v-if="page > 0">
-            <div class="point" v-for="i in 5" :key="i" :class="{ active: page === i - 1 }" />
+            <div class="point" v-for="i in 5" :key="i" :class="{ active: page === i - 1 }" @click="toPage(i - 1)" />
          </div>
          <Swiper-slide>
             <IndexBanner />
@@ -54,15 +54,19 @@ const modules = [Pagination, Navigation, Mousewheel];
 // let allowNext = ref(true);
 
 /* 初始化垂直 Swiper */
-// const verticalSwiperPage = ref(null);
-// const onVerticalSwiperInit = (swiper) => {
-//    verticalSwiperPage.value = swiper;//获取swiper实例
-//    console.log('垂直swiper初始化', verticalSwiperPage.value.activeIndex);
-// };
+const verticalSwiperPage = ref(null);
+const onVerticalSwiperInit = (swiper) => {
+   verticalSwiperPage.value = swiper;//获取swiper实例
+   console.log('垂直swiper初始化', verticalSwiperPage.value.activeIndex);
+};
 const page = ref(0);
 const onVerticalSlideChange = (swiper) => {
    page.value = swiper.activeIndex;
    // console.log('垂直swiper切换', page.value);
+}
+
+const toPage = (index) => {
+   verticalSwiperPage.value.slideTo(index);
 }
 </script>
 
@@ -73,6 +77,7 @@ const onVerticalSlideChange = (swiper) => {
    position: relative;
 }
 
+/**页数指示点 */
 .guide {
    position: absolute;
    right: 10px;
@@ -96,11 +101,13 @@ const onVerticalSlideChange = (swiper) => {
    }
 
    .point {
-      width: 15px;
-      height: 15px;
+      width: 12px;
+      height: 12px;
       background-color: #eee;
       transform: rotate(45deg);
       border-radius: 20%;
+      cursor: pointer;
+      box-shadow: inset 0 0 2px #ccc;
    }
 
    .active {

@@ -81,7 +81,7 @@
             <span class="dialog-footer">
                 <el-button @click="dialogIsVisible = false" class="obtain-btn"
                     style="background-color: #fff; color: #169608;">Cancel</el-button>
-                <el-button class="obtain-btn" @click="dialogIsVisible = false">Confirm</el-button>
+                <el-button class="obtain-btn" @click="uploadForm">Confirm</el-button>
             </span>
         </template>
     </el-dialog>
@@ -220,15 +220,38 @@ const ObtainClick = async () => {
             data_hash: selectedData.value.data_hash,
         });
         console.log(res)
-        if(res.data.data.access_status == false && res.data.message == 'success'){
-        dialogIsVisible.value = !res.data.data.access_status; //如果返回值为false，则显示弹窗
-        }else{
-            
+        if (res.data.data.access_status == false && res.data.message == 'success') {
+            dialogIsVisible.value = !res.data.data.access_status; //如果返回值为false，则显示弹窗
+        } else {
+
         }
     } catch (error) {
         console.error('Error fetching detail data:', error);
     } finally {
     }
+}
+
+const uploadForm = async () => {
+    try {
+        const res = await Api.post(`/gene_type/newAccess`, {
+            data_hash: selectedData.value.data_hash,
+            label: purpose.value,
+        });
+        if (res.data.message == 'success') {
+            dialogIsVisible.value = false;
+            ElMessage.success('Submitted successfully');
+        } else {
+            ElMessage.error('Submit failed');
+        }
+    } catch (error) {
+        console.error('Error fetching detail data:', error);
+    } finally {
+    }
+}
+
+/* 下载 */
+const download = async () => {
+
 }
 
 /* 加载list */

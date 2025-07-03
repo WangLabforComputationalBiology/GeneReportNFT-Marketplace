@@ -4,7 +4,7 @@
             <h1>Sharing <span style="color: #333;"> Gene code.</span></h1><br>
             <h2>
                 <div class="des">
-                    BioChainer, a Biological alliance-chain based on <span class="click-link" @click="toFB">FISCO
+                    <span style="color: #169608;">Bio</span>Chainer, a Biological alliance-chain based on <span class="click-link" @click="toFB">FISCO
                         BCOS.</span>
                     <br>
                     We advocate the creation of a blockchain-based biological information sharing chain to achieve
@@ -58,29 +58,30 @@ function toFB() {
 .wrapper-left {
     display: flex;
     flex-direction: column;
+    width: 60%;
+    height: 480px;
+    background-color: #ffffff;
     justify-content: center;
     text-align: center;
     position: absolute;
+    box-shadow: #ccc 0 0 10px;
+    border-radius: 25px;
     width: 40%;
     left: 15%;
     top: 55%;
-    transform: translate(-0%, -75%);
+    transform: translate(-0%, -70%);
 
     h1 {
         text-align: center;
         font-size: 60px;
         font-weight: 500;
         color: #169608;
-        margin-bottom: 20px;
-        text-shadow: 0 5px 5px #ccc;
     }
 
     h2 {
         height: 15vh;
-        font-size: 2.5vh;
+        font-size: 24px;
         color: #333;
-        margin-bottom: 30px;
-        text-shadow: 0 5px 5px #ccc;
     }
 
     .tags {
@@ -97,7 +98,7 @@ function toFB() {
 
 .Btn-wrapper {
     display: flex;
-    margin-top: 100px;
+    margin-top: 80px;
     justify-content: center;
     align-items: center;
     gap: 20px;
@@ -163,8 +164,8 @@ function toFB() {
 
 
         .MM {
-            margin: 0 10px 0 35px;
-            width: 125px;
+            margin: 0 10px 0 50px;
+            width: 115px;
         }
     }
 
@@ -176,7 +177,7 @@ function toFB() {
     .des {
         font-size: 20px;
         color: #333;
-        margin: 0 30px;
+        margin: 0 50px 0 10px;
 
     }
 }

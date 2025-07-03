@@ -133,6 +133,7 @@ import Bubbles from '../components/bubbles.vue';
 import Api from '../../axios/aixos';
 import { useWalletStore } from '@/stores/account';
 import { ElLoading } from 'element-plus';
+import ElMessage from 'element-plus';
 
 const walletStore = useWalletStore();
 const router = useRouter();

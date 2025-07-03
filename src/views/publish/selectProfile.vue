@@ -42,14 +42,14 @@ export default {
     },
     data() {
         return {
-            code: this.$route.params.lastSegment || 'default title',
+            code: this.$route.params.uuid || 'default title',
             profiles: [],
             selectedProfile: null,
             showAlert: false // 添加状态变量
         };
     },
     watch: {
-        '$route.params.lastSegment': function (newSegment) {
+        '$route.params.uuid': function (newSegment) {
             this.code = newSegment || 'default title';
             this.fetchData(); // 重新获取数据
         }
