@@ -415,7 +415,7 @@ func (u *User) VerifyEmailCode(ctx *gin.Context) {
 func (u *User) Oauth2Wegene(ctx *gin.Context) {
 	fmt.Println("开始重定向到wegene授权页面")
 	ctx.Redirect(http.StatusMovedPermanently, "https://api.wegene.com/authorize/?redirect_uri="+
-		"http://"+configs.WegeneRedirectHost+"/user/receiveCode&response_type=code&client_id=szjsbiolab&"+
+		"http://"+configs.WegeneRedirectHost+":7070"+"/user/receiveCode&response_type=code&client_id=szjsbiolab&"+
 		//fixme 时间证明，rsXX的位置必须放在前面而且在basic的后面，认证会报错！
 		"scope=basic rs670139 rs17749164"+ //前者是数据库记录有的，后者是记录没有的但是txt文件有
 		" athletigen skin psychology risk health ancestry haplogroups demographics web"+

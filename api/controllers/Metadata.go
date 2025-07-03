@@ -117,7 +117,7 @@ func (m *Metadata) NewViewAccess(ctx *gin.Context) {
 		return
 	}
 
-	toResp, err := services.MetadataServ.NewViewAccess(req.DataHash, ctx.GetString("user_address"), req.Remark, ctx.GetString("pub_key"))
+	toResp, err := services.MetadataServ.NewViewAccess(req.DataHash, ctx.GetString("user_address"), req.Label, ctx.GetString("pub_key"))
 	if err != nil {
 		_ = ctx.Error(err)
 		return

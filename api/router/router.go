@@ -50,7 +50,7 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//接收code
 	r.GET("/receiveCode", controllers.UserController.ReceiveCode)
 	//根据code获取用户的profile id供用户选择
-	r.GET("/getProfileIds" /*middlewares.AuthMiddleware(),*/, controllers.UserController.GetUsersProfileByCode)
+	r.GET("/getProfileIds", middlewares.AuthMiddleware(), controllers.UserController.GetUsersProfileByCode)
 	//用户授权哪份报告
 	r.POST("/saveProfile", middlewares.AuthMiddleware(), controllers.UserController.SaveProfileInfo)
 	//发送验证码
