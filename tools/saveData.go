@@ -15,6 +15,7 @@ import (
 	"reflect"
 	"strings"
 	"sync"
+	"time"
 )
 
 var BASEURL = "https://api.wegene.com"
@@ -316,8 +317,9 @@ func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT
 			Owner:      addressT,
 			Format:     formatT,
 			Sex:        sexT,
-			IsHidden:   true,
 			IsSharable: false,
+			IsHidden:   true,
+			CreatedAt:  time.Now(),
 		}
 		res := configs.DB.Table("metadatas").Create(&metadata)
 		if res.Error == nil {

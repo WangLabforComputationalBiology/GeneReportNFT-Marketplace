@@ -872,12 +872,12 @@ drop table if exists `metadatas`;
 -- geneSharing集合下的metadatas表
 CREATE TABLE metadatas
 (
-    `data_hash`                    VARCHAR(32) COMMENT '数据哈希',
+    `data_hash`                    VARCHAR(64) COMMENT '数据哈希',
     `profile_id`                   VARCHAR(36) NOT NULL COMMENT '对应的第三方基因报告id',
     `format`                       VARCHAR(32) COMMENT '基因报告格式',
     `sex`                          VARCHAR(32) COMMENT '性别',
     `category`                     VARCHAR(32) COMMENT '报告研究类型',
-    `owner`                        VARCHAR(32) COMMENT '拥有者',
+    `owner`                        VARCHAR(42) COMMENT '拥有者地址',
     `name`                         VARCHAR(32) COMMENT '元数据名称',
     `description`                  TEXT COMMENT '元数据描述',
     `contract_address`             VARCHAR(42) COMMENT '合约地址',
@@ -885,7 +885,7 @@ CREATE TABLE metadatas
     `is_hidden`                    TINYINT(1) NOT NULL DEFAULT 1 COMMENT '隐藏状态',
     `created_at`                   DATETIME COMMENT '创建时间',
     `tags`                         VARCHAR(255) COMMENT '标签，以分号分隔，,ex:third party:wegene;...',
-    `geneSharing_contract_address` VARCHAR(32) NOT NULL COMMENT '基因报告地址'
+    `geneSharing_contract_address` VARCHAR(42) NOT NULL COMMENT '基因报告地址'
 );
 
 drop table if exists `geneSharing_metadatas`;
