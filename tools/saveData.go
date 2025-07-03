@@ -13,6 +13,7 @@ import (
 	"os"
 	"reflect"
 	"strings"
+	"sync"
 )
 
 var BASEURL = "https://api.wegene.com"
@@ -136,7 +137,8 @@ func SaveDataTest(token string) {
 //demographics/基因报告id、/haplogroups/result/基因报告id、/web_auth/基因报告id \ancestry/profileId这些只要token
 
 // 用到上面的report_id数组的请求头和请求体都差不多，唯一不同的就是响应绑定的对象不同,可以使用泛型来做
-func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT, sexT string) {
+func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT, sexT string, wg *sync.WaitGroup) {
+	defer wg.Done()
 	URL := url + "/" + profileId
 	method := "POST"
 
@@ -322,7 +324,8 @@ func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT
 		}
 	}
 }
-func getDataFromWegeneSimple[T any](profileId, url, token string) {
+func getDataFromWegeneSimple[T any](profileId, url, token string, wg *sync.WaitGroup) {
+	defer wg.Done()
 	url += "/" + profileId
 	method := "POST"
 	client := &http.Client{}
@@ -378,11 +381,13 @@ func getDataFromWegeneSimple[T any](profileId, url, token string) {
 // 重复性检测
 func checkRepeat(profileId string) bool {
 	var count int64
-	configs.DB.Model(&dto.UniqueProfiles{}).Where("profile_id = ?", profileId).Count(&count)
+	configs.DB.Model(&dto.UniqueProfiles{}).Where("profile_id = ? and status = 1", profileId).Count(&count)
 	return count > 0
 }
 
 func SaveAllData(Msg string) {
+	var wg sync.WaitGroup
+
 	//将msgs[i].Body的数据按照":"分割 token+id
 	parts := strings.Split(Msg, ":")
 	token := parts[0]
@@ -401,18 +406,29 @@ func SaveAllData(Msg string) {
 	//athletigen、risk、skin、health/carrier、health/metabolism、health/tratis、psychology
 	//health/drug-----Xd
 	//getDataFromWegene[dto.HealthyDrug](forHealthyDrug, profileId, BASEURL+"/health/drug", token)
-	getDataFromWegene[dto.HealthyTraits](forHealthyTraits, profileId, BASEURL+"/health/traits", token, addressT, formatT, sexT)
-	getDataFromWegene[dto.HealthyCarrier](forHealthyCarrier, profileId, BASEURL+"/health/carrier", token, addressT, formatT, sexT)
-	getDataFromWegene[dto.HealthyMetabolism](forHealthyMetabolism, profileId, BASEURL+"/health/metabolism", token, addressT, formatT, sexT)
-	getDataFromWegene[dto.Risk](forRisk, profileId, BASEURL+"/risk", token, addressT, formatT, sexT)
-	getDataFromWegene[dto.Athletigen](forAthletigen, profileId, BASEURL+"/athletigen", token, addressT, formatT, sexT)
-	getDataFromWegene[dto.Skin](forSkin, profileId, BASEURL+"/skin", token, addressT, formatT, sexT)
-	getDataFromWegene[dto.Psychology](forPsychology, profileId, BASEURL+"/psychology", token, addressT, formatT, sexT)
+	wg.Add(1)
+	go getDataFromWegene[dto.HealthyTraits](forHealthyTraits, profileId, BASEURL+"/health/traits", token, addressT, formatT, sexT, &wg)
+	wg.Add(1)
+	go getDataFromWegene[dto.HealthyCarrier](forHealthyCarrier, profileId, BASEURL+"/health/carrier", token, addressT, formatT, sexT, &wg)
+	wg.Add(1)
+	go getDataFromWegene[dto.HealthyMetabolism](forHealthyMetabolism, profileId, BASEURL+"/health/metabolism", token, addressT, formatT, sexT, &wg)
+	wg.Add(1)
+	go getDataFromWegene[dto.Risk](forRisk, profileId, BASEURL+"/risk", token, addressT, formatT, sexT, &wg)
+	wg.Add(1)
+	go getDataFromWegene[dto.Athletigen](forAthletigen, profileId, BASEURL+"/athletigen", token, addressT, formatT, sexT, &wg)
+	wg.Add(1)
+	go getDataFromWegene[dto.Skin](forSkin, profileId, BASEURL+"/skin", token, addressT, formatT, sexT, &wg)
+	wg.Add(1)
+	go getDataFromWegene[dto.Psychology](forPsychology, profileId, BASEURL+"/psychology", token, addressT, formatT, sexT, &wg)
+	wg.Add(1)
 	//单独的接口
-	getDataFromWegeneSimple[dto.Ancestry](profileId, BASEURL+"/ancestry", token)
-	getDataFromWegeneSimple[dto.Haplogroups](profileId, BASEURL+"/haplogroups", token)
-	getDataFromWegeneSimple[dto.Demographics](profileId, BASEURL+"/demographics", token)
+	go getDataFromWegeneSimple[dto.Ancestry](profileId, BASEURL+"/ancestry", token, &wg)
+	wg.Add(1)
+	go getDataFromWegeneSimple[dto.Haplogroups](profileId, BASEURL+"/haplogroups", token, &wg)
+	wg.Add(1)
+	go getDataFromWegeneSimple[dto.Demographics](profileId, BASEURL+"/demographics", token, &wg)
 
+	wg.Wait()
 	log.Println("数据异步保存完成")
 	//修改状态为已完成,根据profileId查找记录
 	configs.DB.Model(&dto.UniqueProfiles{}).Where("profile_id = ?", profileId).Update("status", 1)

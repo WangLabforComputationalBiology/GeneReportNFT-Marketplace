@@ -71,7 +71,7 @@ func (m *Metadata) GetMetadataDetailByProfileId(profileID string) (results []mod
 	err = m.DB().Select("metadatas.*").
 		Table("metadatas").
 		Where("metadatas.profile_id = ? && metadatas.is_hidden = 0", profileID).
-		Order("metadatas.report_id asc").
+		Order("metadatas.category asc").
 		Scan(&results).Error
 	if err != nil {
 		return nil, err

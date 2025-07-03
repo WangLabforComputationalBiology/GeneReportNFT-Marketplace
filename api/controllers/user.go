@@ -626,6 +626,6 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 		}
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"msg": "successful!"})
+	ctx.JSON(http.StatusOK, gin.H{"code": 200, "msg": "successful!"})
 
 }

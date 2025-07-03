@@ -64,7 +64,7 @@ func registerStudioRouter(r *gin.RouterGroup) {
 	r.GET("/captcha", controllers.StudioController.GetCATCHA)
 	r.POST("/captcha/check", controllers.StudioController.CheckCaptcha)
 
-	r.GET("/getProfileIds", controllers.StudioController.GetProfileIds)                                                                           //获取后台中已经保存数据的该用户的profile id供用户选择
+	r.GET("/getProfileIds", middlewares.AuthMiddleware(), controllers.StudioController.GetProfileIds)                                             //获取后台中已经保存数据的该用户的profile id供用户选择
 	r.POST("/createFromThirdParty", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.StudioController.CreateFromThirdParty) //从第三方平台创建（链上操作）
 }
 
