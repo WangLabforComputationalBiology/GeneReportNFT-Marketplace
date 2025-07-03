@@ -23,6 +23,7 @@ type UpdateMetadata struct {
 	Description                string `json:"description"`
 	Tags                       string `json:"tags"`
 	IsSharable                 bool   `json:"is_sharable"`
+	IsHidden                   bool   `json:"is_hidden"`
 }
 
 type GetMetadataResp struct {

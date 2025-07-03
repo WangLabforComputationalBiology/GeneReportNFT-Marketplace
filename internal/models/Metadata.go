@@ -1,10 +1,12 @@
 package models
 
 import (
+	"gorm.io/gorm"
 	"time"
 )
 
 type Metadata struct {
+	gorm.Model
 	DataHash                   string    `gorm:"primaryKey;type:varchar(32)" json:"data_hash"`
 	ProfileID                  string    `gorm:"type:varchar(36)" json:"profile_id"`
 	Format                     string    `gorm:"type:varchar(32)" json:"format"`

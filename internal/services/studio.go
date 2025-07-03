@@ -73,7 +73,8 @@ func (s *StudioService) CreateAllFromThirdPartyOnChain(userAddressHex string, re
 		ContractAddress: sharingPlatformContract.MetaDataContractAddress,
 		Description:     req.Description,
 		Tags:            req.Tags,
-		IsSharable:      false,
+		IsSharable:      true,
+		IsHidden:        false,
 	}
 	if err := dao.GetMetadataDao().CompleteMetadataInfo(req.ProfileId, toUpdate); err != nil {
 		return dto.CreateAllFromThirdPartyResp{}, appErrors.New(http.StatusServiceUnavailable, "创建Metadata失败", err)

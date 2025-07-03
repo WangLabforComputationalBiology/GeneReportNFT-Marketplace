@@ -3,6 +3,7 @@ package tools
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
+	"GeneReport_platform/internal/models"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -308,7 +309,7 @@ func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT
 		hash := sha256.New()
 		hash.Write(allJsonStrToHashBulider)
 		hashString := hex.EncodeToString(hash.Sum(nil))
-		metadata := dto.Metadatas{
+		metadata := models.Metadata{
 			DataHash:  hashString,
 			ProfileID: profileId,
 			Category:  name, //ex： skin、risk……

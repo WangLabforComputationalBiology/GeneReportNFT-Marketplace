@@ -28,7 +28,7 @@ func main() {
 		&dto.Demographics{},
 		&dto.Genotype{},
 		&dto.UniqueProfiles{},
-		&dto.Metadatas{}, //fixme 这里的Metadatas自动迁移有问题
+		//&dto.Metadatas{},
 		&dto.DataVisitRecord{},
 	)
 

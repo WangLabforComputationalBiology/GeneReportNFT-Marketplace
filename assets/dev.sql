@@ -881,8 +881,8 @@ CREATE TABLE metadatas
     `name`                         VARCHAR(32) COMMENT '元数据名称',
     `description`                  TEXT COMMENT '元数据描述',
     `contract_address`             VARCHAR(42) COMMENT '合约地址',
-    `is_sharable`                  TINYINT(1) COMMENT '可共享状态',
-    `is_hidden`                    TINYINT(1) COMMENT '隐藏状态',
+    `is_sharable`                  TINYINT(1) NOT NULL DEFAULT 0 COMMENT '可共享状态',
+    `is_hidden`                    TINYINT(1) NOT NULL DEFAULT 1 COMMENT '隐藏状态',
     `created_at`                   DATETIME COMMENT '创建时间',
     `tags`                         VARCHAR(255) COMMENT '标签，以分号分隔，,ex:third party:wegene;...',
     `geneSharing_contract_address` VARCHAR(32) NOT NULL COMMENT '基因报告地址'
@@ -926,16 +926,3 @@ CREATE TABLE institutions
 
 );
 
-
-drop table if exists `download_links`;
-CREATE TABLE download_links
-(
-    id           BIGINT AUTO_INCREMENT PRIMARY KEY,
-    short_code   VARCHAR(8)  NOT NULL UNIQUE,
-    user_address VARCHAR(50) NOT NULL COMMENT '下载用户地址',
-    data_hash    VARCHAR(50) NOT NULL COMMENT '文件数据哈希',
-    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at   TIMESTAMP   NOT NULL COMMENT '链接有效期',
-    access_count INT       DEFAULT 0 COMMENT '访问计数',
-    max_access   INT       DEFAULT 2 COMMENT '最大访问次数'
-);
