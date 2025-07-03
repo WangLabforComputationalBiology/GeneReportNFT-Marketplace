@@ -3,6 +3,7 @@
         <div class="banner">
             <span class="tip">
                 <h1 style="margin-bottom: 30px;"><span style="color: #169608;">Wegene</span> Connected</h1>
+                <h4>User:&nbsp;{{ userEmail }}</h4>
             </span>
         </div>
 
@@ -30,89 +31,69 @@
     </div>
 </template>
 
-<script>
-import { useWalletStore } from '@/stores/account';
-const walletStore = useWalletStore();
-export default {
-    props: {
-        content: {
-            type: String,
-            default: '内容'
-        }
-    },
-    data() {
-        return {
-            code: this.$route.params.uuid || 'default title',
-            profiles: [],
-            selectedProfile: null,
-            showAlert: false // 添加状态变量
-        };
-    },
-    watch: {
-        '$route.params.uuid': function (newSegment) {
-            this.code = newSegment || 'default title';
-            this.fetchData(); // 重新获取数据
-        }
-    },
-    mounted() {
-        this.fetchData(); // 在组件挂载时发起请求
-    },
-    methods: {
-        back() {
-            this.$router.push('/publish')
-        },
-        async fetchData() {
-            try {
-                const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/getProfileIds?code=${this.code}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': walletStore.access_token
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                this.profiles = data.profiles || [];
-                // 更新 content 或其他数据
-                this.content = data.content || 'default content'; // 假设服务器返回的数据中有一个 content 字段
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                this.content = 'Error fetching data, please try again later'; // 更新 content 以显示错误信息
-            }
-        },
-        async authorizeProfile() {
-            // 在这里处理授权逻辑
-            if (this.selectedProfile == null) {
-                this.$message.error('Please select a profile');
-                return
-            }
-            try {
-                const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/user/saveProfile`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': walletStore.access_token
-                    },
-                    body: JSON.stringify({
-                        code: this.code,
-                        profileId: this.selectedProfile
-                    })
-                });
-                if (response.ok) { // 检查响应状态码是否为 200
-                    this.showAlert = true; // 显示 alert
-                    this.$message.success('Profile authorized successfully');
-                    this.$router.push('/publish?authorized=true')
-                    this.$emit('profileAuthorized', true); // 触发父组件的自定义事件
-                } else {
-                    console.error('Failed to authorize profile:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error authorizing profile:', error);
-            }
-        }
+<script setup>
+import { ref, watch, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import Api from '@/axios/aixos';
+import { ElMessage } from 'element-plus';
+
+const route = useRoute();
+const router = useRouter();
+
+const userEmail = ref('');
+const code = ref(route.params.uuid || 'default title');
+const profiles = ref([]);
+const selectedProfile = ref(null);
+const showAlert = ref(false);
+
+function back() {
+    router.push('/publish');
+}
+
+/**请求profiles数据列表 */
+async function fetchData() {
+    try {
+        const res = await Api.get(`/user/getProfileIds?code=${code.value}`);
+        profiles.value = res.data.profiles || [];
+        userEmail.value = res.data.email || '';
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        ElMessage.error('Error fetching data, please try again later');
     }
 }
+
+/**上传选定profile */
+async function authorizeProfile() {
+    if (selectedProfile.value == null) {
+        ElMessage.error('Please select a profile');
+        return;
+    }
+    try {
+        const res = await Api.post(`${import.meta.env.VITE_APP_BASE_URL}/user/saveProfile`, {
+            code: code.value,
+            profileId: selectedProfile.value
+        });
+        if (res.data.code === 200) {
+            showAlert.value = true;
+            ElMessage.success('Profile authorized successfully');
+            router.push('/publish?authorized=true');
+        }
+    } catch (error) {
+        console.error('Error authorizing profile:', error);
+    }
+}
+
+watch(
+    () => route.params.uuid,
+    (newSegment) => {
+        code.value = newSegment || 'default title';
+        fetchData();
+    }
+);
+
+onMounted(() => {
+    fetchData();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -157,6 +138,7 @@ p {
         font-size: 30px;
         color: #333;
         text-align: center;
+        margin-bottom: 30px;
     }
 }
 

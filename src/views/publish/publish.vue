@@ -5,6 +5,7 @@
          <h1 class="title">Data <span style="color: #333;">Publish</span></h1>
          <span class="tip1">Ready to upload your data and publish it.</span>
          <div class="start-btn" @click="turnToSteps">Start</div>
+         <div class="start-btn" style="background-color: #E6A23C;" @click="progress">Upload Progress</div>
       </div>
 
       <div class="wrapper-left" v-if="step >= 0">
@@ -18,7 +19,7 @@
             </div>
          </div>
 
-         <div class="line"></div>
+         <div class="line" />
 
          <div class="inside-step">
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="step == 1">
@@ -30,7 +31,7 @@
                will be stored by your platform.</div>
          </div>
 
-         <div class="line"></div>
+         <div class="line" />
 
          <div class="inside-step">
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="step == 2">
@@ -42,7 +43,7 @@
                any of its information.</div>
          </div>
 
-         <div class="line"></div>
+         <div class="line" />
 
          <div class="inside-step">
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="step == 3">
@@ -71,7 +72,8 @@
             <p>comming soon...</p>
          </div>
          <div class="button-wrapper" style="height:150px">
-            <el-button class="button" @click="next" style="right: 0;">Continue</el-button>
+            <el-button class="button" @click="turnToIndexPage" style="right: 120px;">Back</el-button>
+            <el-button class="button" @click="step++" style="right: 0;">Continue</el-button>
             <div class="tips">
                If your genetic testing platform is not listed, please to provide feedback, and we will address it
                promptly.
@@ -93,7 +95,7 @@
          <input type="text" class="Description-input" placeholder="Please enter a description of the collection"
             v-model="description"></input>
          <div class="button-wrapper" style="margin-top: 50px;">
-            <el-button class="button" @click="back" style="right: 120px;">Back</el-button>
+            <el-button class="button" @click="step--" style="right: 120px;">Back</el-button>
             <el-button class="button" @click="createData" style="right: 0px;">Create</el-button>
          </div>
       </div>
@@ -101,14 +103,15 @@
       <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="step === 3">
          <h2>Select your collection</h2>
          <div class="button-wrapper" style="margin-top: 50px;">
-            <el-button class="button" @click="back">Back</el-button>
-            <el-button class="button" @click="next">Create</el-button>
+            <el-button class="button" @click="step--">Back</el-button>
+            <el-button class="button" @click="step++">Create</el-button>
          </div>
       </div>
 
    </div>
 
-   <el-drawer v-model="isVisible" title="Please select a profile" :direction="ltr" :before-close="handleClose" :show-close="false">
+   <el-drawer v-model="isVisible" title="Please select a profile" :direction="ltr" :before-close="handleClose"
+      :show-close="false">
       <el-table :data="profiles" @selection-change="handleSelectionChange">
          <el-table-column>
             <template #default="{ row }">
@@ -122,6 +125,10 @@
             <el-button @click="confirmClick" class="confirm-button">Confirm</el-button>
          </div>
       </template>
+   </el-drawer>
+
+   <el-drawer v-model="progressIsVisible" title="Upload Progress" :direction="ltr" :before-close="handleClose"
+      :show-close="false">
    </el-drawer>
 </template>
 
@@ -148,21 +155,17 @@ function turnToSteps() {
    }
    step.value += 1;
 }
+function turnToIndexPage() {
+   showIndexPage.value = true;
+   step.value = -1;
+}
 
 function toVerify() {
    router.push('/verify');
 }
 
-function next() {
-   step.value++;
-}
-
-function back() {
-   step.value--;
-}
-
 function redirectToOAuth() {
-   window.location.href = import.meta.env.VITE_APP_BASE_URL + '/user/oauth2Wegene';
+   window.location.href = `${import.meta.env.VITE_APP_BASE_URL}/user/oauth2Wegene?t=${Date.now()}`;
 }
 
 let profiles = ref([]);
@@ -191,6 +194,20 @@ const getProfileIds = async () => {
    }
 }
 
+/**上传进度drawer */
+const progressIsVisible = ref(false);
+const progress = () => {
+   progressIsVisible.value = true;
+}
+async function getProgress() {
+   try {
+      const res = await Api.get('/studio/getProgress');
+   } catch (error) {
+      console.error(error);
+   }
+
+}
+
 /* 表单提交 */
 let selectedProfile = ref(null);
 let name = ref('');
@@ -203,15 +220,15 @@ const confirmClick = () => {
 
 const createData = async () => {
    try {
-      if(name.value === '' || name.value === null || name.value === undefined){
+      if (name.value === '' || name.value === null || name.value === undefined) {
          alert('Please enter the name of the collection');
          return;
       }
-      if(selectedProfile.value === null || selectedProfile.value === ''){
+      if (selectedProfile.value === null || selectedProfile.value === '') {
          alert('Please select the report as collection');
          return;
       }
-      if(description.value === '' || description.value === null || description.value === undefined){
+      if (description.value === '' || description.value === null || description.value === undefined) {
          alert('Please enter a description of the collection');
          return;
       }
@@ -223,7 +240,6 @@ const createData = async () => {
       });
       if (res.data.code === 200) {
          console.log('Data created successfully:', res.data);
-         // next();
          console.log('Data created successfully:', res.data);
       } else {
          console.error('Error creating data:', res.data);
@@ -291,19 +307,17 @@ const createData = async () => {
    }
 
    .start-btn {
-      width: 280px;
-      height: 70px;
-      line-height: 70px;
+      width: 240px;
+      height: 60px;
+      line-height: 60px;
       background-color: #169608;
       color: #fff;
-      font-size: 26px;
+      font-size: 24px;
       border-radius: 50px;
       text-align: center;
+      cursor: pointer;
 
-      &:hover {
-         box-shadow: 0px 0px 20px 1px #e7e4e4 !important;
-         cursor: pointer;
-      }
+
    }
 }
 
@@ -444,16 +458,16 @@ h1 {
    position: absolute;
    width: 100px;
    height: 42px;
-   background-color: #67C23A;
+   background-color: #169608;
    color: #fff;
    font-size: 18px;
    border-radius: 10px;
    border: none !important;
 
    &:hover {
-      color: #67C23A;
+      color: #169608;
       background-color: #fff;
-      border: #67C23A 1px solid !important;
+      border: #169608 1px solid !important;
       cursor: pointer;
    }
 }
@@ -654,17 +668,21 @@ h1 {
    height: 40px;
 
    .el-radio__inner {
-      background: #169608;
+      background: #fff;
       border-color: #169608;
+
+      &::after {
+         background-color: #169608;
+      }
    }
 
-   .el-radio__label{
+   .el-radio__label {
       color: #169608;
       font-size: 16px;
    }
 }
 
-:deep(.confirm-button){
+:deep(.confirm-button) {
    border: none !important;
    background-color: #169608 !important;
    color: #fff !important;

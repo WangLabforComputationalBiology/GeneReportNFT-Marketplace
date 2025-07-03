@@ -2,6 +2,8 @@
     <div class="wrapper">
         <div class="banner">
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
+            <el-button class="obtain-btn btn-location" @click="getList">Refresh</el-button>
+
             <div class="download">&gt;Download decrypt tool</div>
             <div class="page">
                 <div class="previous" v-show="page > 1" @click="page--">&lt;Previous</div>
@@ -24,6 +26,8 @@
                         <p>Description:<span class="ifo-item"> &nbsp; {{ item.description }}</span></p>
                         <p>Format:<span class="ifo-item"> &nbsp; {{ item.format }}</span></p>
                         <p>Date:<span class="ifo-item"> &nbsp; {{ item.created_at }}</span></p>
+                        <span v-show="item.is_sharable" class="sharable">Sharable</span>
+                        <!-- <p>Sharable:<span class="ifo-item"> &nbsp; {{ item.is_sharable }}</span></p> -->
                     </div>
                 </div>
             </div>
@@ -369,12 +373,24 @@ onMounted(() => {
             height: 70%;
 
             p {
-                line-height: 28px;
+                line-height: 26px;
                 color: #333;
             }
 
             .ifo-item {
                 color: #67C23A;
+            }
+
+            .sharable {
+                font-size: 16px;
+                margin-top: 5px;
+                width: 88px;
+                line-height: 24px;
+                text-align: center;
+                color: #fff;
+                background-color: #169608;
+                border: #169608 1px solid;
+                border-radius: 15px;
             }
         }
     }
@@ -419,7 +435,7 @@ onMounted(() => {
 }
 
 .dt-page-bottom {
-    padding: 20px;
+    padding: 0 20px;
 }
 
 :deep(.el-popup-parent--hidden) {
@@ -432,6 +448,12 @@ onMounted(() => {
     background-color: #169608;
     color: #fff;
     box-shadow: none;
+}
+
+.btn-location {
+    position: absolute;
+    left: 24%;
+    bottom: 10%;
 }
 
 :deep(.el-scrollbar) {

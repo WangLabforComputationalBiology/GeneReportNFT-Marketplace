@@ -34,7 +34,8 @@
         <img class="step-tip-img" src="@/assets/imgs/setup2.jpg" alt="">
         <p class="setup-tips">3.Add the information as shown in the figure above and "Save"</p>
         <p class="setup-tips">4.Back, click the little earth icon, and switch to BioChainer network.</p>
-        <p class="setup-tips">5.If seen "MetaMask isn’t connected to this site", turn to "3.Click to connect", connect Metamask to BioChainer site.</p>
+        <p class="setup-tips">5.If seen "MetaMask isn’t connected to this site", turn to "3.Click to connect", connect
+            Metamask to BioChainer site.</p>
     </el-drawer>
 
 </template>
@@ -111,7 +112,7 @@ async function connectWallet() {
             });
 
             // 6. 发送登录请求
-            const loginResponse = await Api.post("/user/login", {
+            const loginResponse = await Api.post(`/user/login`, {
                 user_address: address.value,
                 signature: signature,
             });
@@ -125,7 +126,7 @@ async function connectWallet() {
             if (typeof window !== 'undefined' && window.__VUE_APP__ && window.__VUE_APP__.config.globalProperties.$message) {
                 window.__VUE_APP__.config.globalProperties.$message.success('Login successful!');
             }
-            router.push('/account');
+            router.push(`/account?t=${Date.now()}`);    // 添加时间戳，防止浏览器缓存
         }
     } catch (err) {
         loading.close();

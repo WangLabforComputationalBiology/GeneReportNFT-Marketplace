@@ -57,7 +57,7 @@ const modules = [Pagination, Navigation, Mousewheel];
 const verticalSwiperPage = ref(null);
 const onVerticalSwiperInit = (swiper) => {
    verticalSwiperPage.value = swiper;//获取swiper实例
-   console.log('垂直swiper初始化', verticalSwiperPage.value.activeIndex);
+   // console.log('垂直swiper初始化', verticalSwiperPage.value.activeIndex);
 };
 const page = ref(0);
 const onVerticalSlideChange = (swiper) => {
@@ -105,7 +105,7 @@ const toPage = (index) => {
       height: 12px;
       background-color: #eee;
       transform: rotate(45deg);
-      border-radius: 20%;
+      border-radius: 25%;
       cursor: pointer;
       box-shadow: inset 0 0 2px #ccc;
    }
