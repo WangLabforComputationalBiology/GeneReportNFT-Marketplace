@@ -1,6 +1,5 @@
 import { useWalletStore } from "@/stores/account";
 
-
 /* 无登录状态拦截 */
 const walletAuthGuard = (to, from, next) => {
     const walletAddress = useWalletStore();

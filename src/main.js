@@ -17,15 +17,6 @@ const app = createApp(App)
     .use(pinia)
 
 app.component('Header', Header)
-
 app.config.productionTip = false; // 关闭生产提示
 
 app.mount('#app')
-
-
-
-
-
-
-
-

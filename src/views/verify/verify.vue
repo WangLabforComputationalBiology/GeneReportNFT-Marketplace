@@ -28,8 +28,7 @@ import loadUniversities from '@/assets/universities.json';
 import Bubbles from '@/views/components/bubbles.vue';
 import Slidecheck from '@/views/verify/slidecheck.vue';
 import Api from '@/axios/aixos';
-import { useWalletStore } from '@/stores/account';
-const walletStore = useWalletStore();
+
 /* 大学列表 && 检索 */
 const institution = ref('')
 const universities = ref([])

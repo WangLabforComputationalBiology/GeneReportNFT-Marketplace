@@ -134,8 +134,8 @@
 
 
 <script lang="js" setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import Bubbles from '../components/bubbles.vue';
 import Api from '../../axios/aixos';
 import { useWalletStore } from '@/stores/account';
@@ -144,10 +144,11 @@ import ElMessage from 'element-plus';
 
 const walletStore = useWalletStore();
 const router = useRouter();
+const route = useRoute()
 const step = ref(-1); // 0:进行手机验证
 const showIndexPage = ref(true);
 
-
+/**离开首页 */
 function turnToSteps() {
    showIndexPage.value = false;
    if (showIndexPage.value === false && walletStore.insititution) {
@@ -155,6 +156,7 @@ function turnToSteps() {
    }
    step.value += 1;
 }
+/**返回首页 */
 function turnToIndexPage() {
    showIndexPage.value = true;
    step.value = -1;
@@ -163,7 +165,7 @@ function turnToIndexPage() {
 function toVerify() {
    router.push('/verify');
 }
-
+/**重定向请求 */
 function redirectToOAuth() {
    window.location.href = `${import.meta.env.VITE_APP_BASE_URL}/user/oauth2Wegene?t=${Date.now()}`;
 }
@@ -185,7 +187,6 @@ const getProfileIds = async () => {
          loading.close();
          profiles.value = res.data.data.profile_ids
          profileName.value = res.data.data.profile_name
-         console.log(profiles);
       }
    } catch (error) {
       loading.close();
@@ -198,10 +199,11 @@ const getProfileIds = async () => {
 const progressIsVisible = ref(false);
 const progress = () => {
    progressIsVisible.value = true;
+   getProgress();//获取上传进度
 }
 async function getProgress() {
    try {
-      const res = await Api.get('/studio/getProgress');
+      // const res = await Api.get('/studio/getProgress');
    } catch (error) {
       console.error(error);
    }
@@ -248,6 +250,13 @@ const createData = async () => {
       console.error('Error creating data:', error);
    }
 };
+
+onMounted(() => {
+   //授权成功返回首页立即查看进度
+   if (route.query.authorized == 'true') {
+      progressIsVisible.value = true;
+   };
+})
 </script>
 
 <style lang="scss" scoped>

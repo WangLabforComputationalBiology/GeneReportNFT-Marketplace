@@ -69,14 +69,14 @@ async function authorizeProfile() {
         return;
     }
     try {
-        const res = await Api.post(`${import.meta.env.VITE_APP_BASE_URL}/user/saveProfile`, {
+        const res = await Api.post(`/user/saveProfile`, {
             code: code.value,
             profileId: selectedProfile.value
         });
         if (res.data.code === 200) {
             showAlert.value = true;
             ElMessage.success('Profile authorized successfully');
-            router.push('/publish?authorized=true');
+            router.push(`/publish?authorized=true`);
         }
     } catch (error) {
         console.error('Error authorizing profile:', error);

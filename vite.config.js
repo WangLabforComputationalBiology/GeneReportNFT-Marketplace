@@ -18,6 +18,7 @@ export default defineConfig({
       },
     },
   },
+  /**运行在局域网所需配置 */
   server: {
     host: '0.0.0.0', // 允许所有IP访问
     port: 5173,      // 确保端口未被占用
