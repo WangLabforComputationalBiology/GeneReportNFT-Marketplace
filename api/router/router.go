@@ -73,17 +73,17 @@ func registerPlazaRouter(r *gin.RouterGroup) {
 }
 
 func registerMetadataRouter(r *gin.RouterGroup) {
-	r.GET("/:dataHash", middlewares.ZapMiddleware(), controllers.MetadataController.GetMetadataDetailByDataHash)
+	r.GET("/:data_hash", middlewares.ZapMiddleware(), controllers.MetadataController.GetMetadataDetailByDataHash)
 }
 
 func registerGeneTypeRouter(r *gin.RouterGroup) {
-	r.GET("/:dataHash", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.MetadataController.GetGenoTypeZip)
+	r.GET("/:data_hash", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.MetadataController.GetGenoTypeZip)
 
 	r.POST("/newAccess", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.MetadataController.NewViewAccess)
 
 }
 func registerDownloadRouter(r *gin.RouterGroup) {
-	r.GET("/:shortCode", middlewares.ZapMiddleware(), controllers.DownloadController.DownloadFile)
+	r.GET("/:short_code", middlewares.ZapMiddleware(), controllers.DownloadController.DownloadFile)
 }
 func SetupRouter() *gin.Engine {
 	r := gin.Default()

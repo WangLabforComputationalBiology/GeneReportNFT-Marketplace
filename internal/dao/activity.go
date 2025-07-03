@@ -42,3 +42,9 @@ func (a *ActivityDao) GetLatestViewAccess(userAddress string, dataHash string) (
 		First(&results).Error
 	return results, err
 }
+
+func (a *ActivityDao) NewViewAccess(activity *models.Activity) (err error) {
+	err = a.DB().Table("activities").
+		Create(&activity).Error
+	return err
+}

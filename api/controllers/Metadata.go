@@ -39,7 +39,7 @@ func (m *Metadata) GetMetadataOverviewByOwner(ctx *gin.Context) {
 
 // GetMetadataDetailByDataHash 获取指定数据哈希的metadata详情
 func (m *Metadata) GetMetadataDetailByDataHash(ctx *gin.Context) {
-	dataHash := ctx.Param("dataHash")
+	dataHash := ctx.Param("data_hash")
 	if dataHash == "" {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
@@ -84,7 +84,7 @@ func (m *Metadata) GetAllMetadataOverview(ctx *gin.Context) {
 }
 
 func (m *Metadata) GetGenoTypeZip(ctx *gin.Context) {
-	dataHash := ctx.Param("dataHash")
+	dataHash := ctx.Param("data_hash")
 	if dataHash == "" {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
 			Code:    http.StatusBadRequest,
@@ -105,12 +105,6 @@ func (m *Metadata) GetGenoTypeZip(ctx *gin.Context) {
 		Data:    toResp,
 	})
 
-	//// 设置下载响应头
-	//ctx.Header("Content-Type", "application/xlsx")
-	//ctx.Header("Content-Disposition", `attachment; filename="data.xlsx"`)
-	//// contentLength 为-1即流数据长度未知
-	////ctx.DataFromReader(http.StatusOK, -1, "application/xlsx", bytes.NewReader(zipData), nil
-	//ctx.Data(http.StatusOK, "application/xlsx", zipData)
 }
 
 func (m *Metadata) NewViewAccess(ctx *gin.Context) {
@@ -134,10 +128,5 @@ func (m *Metadata) NewViewAccess(ctx *gin.Context) {
 		Message: "success",
 		Data:    toResp,
 	})
-	//// 设置下载响应头
-	//ctx.Header("Content-Type", "application/xlsx")
-	//ctx.Header("Content-Disposition", `attachment; filename="data.xlsx"`)
-	//// contentLength 为-1即流数据长度未知
-	////ctx.DataFromReader(http.StatusOK, -1, "application/xlsx", bytes.NewReader(zipData), nil
-	//ctx.Data(http.StatusOK, "application/xlsx", zipData)
+
 }

@@ -5,10 +5,12 @@ import (
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/contracts/sharingPlatformContract"
 	"GeneReport_platform/internal/dao"
+	"GeneReport_platform/internal/models"
 	"GeneReport_platform/pkg/appErrors"
 	"encoding/json"
 	"errors"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
 	"gorm.io/gorm"
 	"net/http"
@@ -278,6 +280,23 @@ func (m *MetadataService) NewViewAccess(dataHash, userAddress, remark, pubKey st
 	_, receipt, err := sharingPlatformContract.GetContractIns().AddViewAccess(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress), [32]byte(common.Hex2Bytes(metadata.DataHash)), remark)
 	if err != nil || receipt.Status != 0 {
 		return dto.NewViewAccessResp{}, appErrors.New(503, "链上交互失败", err)
+	}
+
+	//链下数据库
+	activity = &models.Activity{
+		Id:              uuid.New().String(),
+		Metadata:        metadata.DataHash,
+		TransactionHash: receipt.TransactionHash,
+		Time:            time.Now(),
+		Expiry:          time.Now().Add(7 * 24 * time.Hour),
+		Event:           "ViewAccess",
+		From:            metadata.Owner,
+		To:              userAddress,
+		GeneSharing:     metadata.GeneSharingContractAddress,
+	}
+	err = dao.GetActivityDao().NewViewAccess(activity)
+	if err != nil {
+		return dto.NewViewAccessResp{}, appErrors.New(503, "服务繁忙，请稍后再试", err)
 	}
 
 	//生成短链接
