@@ -9,7 +9,7 @@
       </div>
 
       <div class="wrapper-left" v-if="step >= 0">
-         <h1><span style="color: #169608;">Start your journey</span> from here</h1>
+         <h1><span style="color: #169608;">Start journey</span> from here</h1>
          <div class="inside-step">
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="step == 0">
             <img src="../../icons/status_ok.svg" alt="status icon" v-if="step > 0">
@@ -25,10 +25,10 @@
             <img src="../../icons/status_ing.svg" alt="status icon" v-if="step == 1">
             <img src="../../icons/status_ing_grey.svg" alt="status icon" v-if="step < 1">
             <img src="../../icons/status_ok.svg" alt="status icon" v-if="step > 1">
-            <div :class="{ 'step-tip': true, 'active': step >= 1 ? true : false }">Allow us to access your genetic
+            <div :class="{ 'step-tip': true, 'active': step >= 1 ? true : false }">Authorize your genetic
                reports. We ensure
                that no additonal personal data
-               will be stored by your platform.</div>
+               will be stored by your platform.If authorized, you can continue. </div>
          </div>
 
          <div class="line" />
@@ -81,23 +81,27 @@
          </div>
       </div>
 
-      <div class="wrapper-right" style="display: block; padding: 200px 200px;" v-if="step === 2">
-         <p>Report *</p>
-         <div class="select" @click="getProfileIds">
-            <div class="add" v-if="!selectedProfile">+</div>
-            <div v-if="!selectedProfile">Select the report as collection</div>
-            <div v-if="selectedProfile">{{ selectedProfile }}</div>
+      <div class="wrapper-right" v-if="step === 2">
+         <div class="form-wrapper">
+            <p>Report *</p>
+            <div class="select" @click="getProfileIds">
+               <div class="add" v-if="!selectedProfile">+</div>
+               <div v-if="!selectedProfile">Select the report as collection</div>
+               <div v-if="selectedProfile">{{ selectedProfile }}</div>
+            </div>
+            <p>Name *</p>
+            <el-input class="name-input" v-model="name"
+               placeholder="Please enter the name of the collection"></el-input>
+            <p class="introduction"><span class="click-here">Click here</span> to view an example.</p>
+            <p>Description</p>
+            <input type="text" class="Description-input" placeholder="Please enter a description of the collection"
+               v-model="description"></input>
+            <div class="button-wrapper" style="width: 100%; margin-top: 50px;" >
+               <el-button class="button" @click="step--" style="right: 120px;">Back</el-button>
+               <el-button class="button" @click="createData" style="right: 0px;">Create</el-button>
+            </div>
          </div>
-         <p>Name *</p>
-         <el-input class="name-input" v-model="name" placeholder="Please enter the name of the collection"></el-input>
-         <p class="introduction"><span class="click-here">Click here</span> to view an example.</p>
-         <p>Description</p>
-         <input type="text" class="Description-input" placeholder="Please enter a description of the collection"
-            v-model="description"></input>
-         <div class="button-wrapper" style="margin-top: 50px;">
-            <el-button class="button" @click="step--" style="right: 120px;">Back</el-button>
-            <el-button class="button" @click="createData" style="right: 0px;">Create</el-button>
-         </div>
+
       </div>
 
       <div class="wrapper-right" style="flex-direction: column;gap:30px;transform: translateY(-10%);" v-if="step === 3">
@@ -255,11 +259,13 @@ const createData = async () => {
       } else {
          console.error('Error creating data:', res.data);
          ElMessage.error('Error creating data');
+         loading.close();
       }
    } catch (error) {
       console.error('Error creating data:', error);
-         ElMessage.error('Error creating data');
-
+      ElMessage.error('Error creating data');
+   } finally {
+      loading.close();
    }
 };
 
@@ -280,9 +286,11 @@ onMounted(() => {
 <style lang="scss" scoped>
 .wrapper {
    height: 95vh;
-   width: 100vw !important;
-   overflow: hidden;
+   width: 100vw;
+   position: relative;
    min-width: 1200px !important;
+   overflow: hidden;
+   gap: 1px;
    animation: fadeIn 0.2s ease-in-out 0s forwards;
 
    @keyframes fadeIn {
@@ -352,16 +360,17 @@ onMounted(() => {
 h1 {
    margin: 10px;
    color: #333;
+   font-size: 36px;
 }
 
 .wrapper-left {
-   overflow: visible;
    position: absolute;
-   left: 0;
-   width: 50vw;
-   min-width: 600px;
-   padding: 150px 80px 100px 160px;
-   height: 95vh;
+   left: 10%;
+   top: 15%;
+   width: 40%;
+   min-width: 500px;
+   padding: 20px;
+   height: 65vh;
    animation: fadeIn 0.2s ease-in-out 0s forwards;
 
    @keyframes fadeIn {
@@ -416,12 +425,13 @@ h1 {
 }
 
 .wrapper-right {
+   position: absolute;
    overflow: auto;
-   right: 0;
-   width: 50%;
+   left: 50%;
+   top: 15%;
+   width: 30%;
    min-width: 600px !important;
-   padding: 100px 160px;
-   height: 95vh !important;
+   height: 75vh !important;
    overflow: auto;
    animation: fadeIn 0.2s ease-in-out 0s forwards;
 
@@ -436,7 +446,6 @@ h1 {
    }
 
    .platforms {
-      position: relative;
       margin: 50px auto;
       display: flex;
       width: 60%;
@@ -453,15 +462,29 @@ h1 {
       }
 
       img {
-         margin: 25px 40px;
-         height: 50px;
+         margin: 0 auto;
+         height: 60px;
       }
 
       p {
+         line-height: 24px;
          width: 100%;
          text-align: center;
          color: #cdcdcd;
          font-size: 24px;
+      }
+   }
+
+   .form-wrapper {
+      position: relative;
+      width: 60%;
+      height: 80%;
+      display: flex;
+      flex-direction: column;
+      margin: 0px auto;
+
+      p{
+         line-height: 20px;
       }
    }
 
@@ -471,7 +494,6 @@ h1 {
       left: 50%;
       transform: translateX(-50%);
       width: 60%;
-      position: relative;
 
       .tips {
          position: absolute;
@@ -513,7 +535,7 @@ h1 {
    display: flex;
    align-items: center;
    margin: 10px 0;
-   width: 80%;
+   width: 100%;
    height: 60px;
    background-color: #f9f8f8;
    border: #e0e0e0 1px solid;
@@ -544,7 +566,7 @@ h1 {
 
 :deep(.name-input) {
    margin: 10px 0;
-   width: 80%;
+   width: 100%;
    height: 50px;
 }
 
@@ -556,7 +578,7 @@ h1 {
 
 .Description-input {
    margin: 10px 0;
-   width: 80%;
+   width: 100%;
    height: 100px;
    border: #e0e0e0 1px solid;
    border-radius: 10px;

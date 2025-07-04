@@ -244,14 +244,13 @@ const uploadForm = async () => {
             label: purpose.value,
         });
         if (res.data.message == 'success') {
-            dialogIsVisible.value = false;
+            dialogIsVisible.value = false; //如果返回值为false，则显示弹窗
             ElMessage.success('Submitted successfully');
         } else {
             ElMessage.error('Submit failed');
         }
     } catch (error) {
         console.error('Error fetching detail data:', error);
-    } finally {
     }
 }
 
@@ -385,7 +384,7 @@ onMounted(() => {
         position: relative;
         flex: 0 0 calc(33.33% - 10px);
         box-sizing: border-box;
-        height: 200px;
+        height: 250px;
         background-color: #fff;
         box-shadow: 0 0 3px #ccc;
         border-radius: 20px;
@@ -401,14 +400,14 @@ onMounted(() => {
             flex-direction: column;
             justify-content: center;
             font-size: 18px;
-            margin-left: 50px;
-            width: 70%;
+            margin-left: 40px;
+            width: 75%;
             border-left: #ddd 2px solid;
-            padding: 0 0 0 25px;
+            padding: 0 0 0 20px;
             height: 70%;
 
             p {
-                line-height: 26px;
+                line-height: 24px;
                 color: #333;
             }
 
@@ -422,9 +421,9 @@ onMounted(() => {
                 width: 88px;
                 line-height: 24px;
                 text-align: center;
-                color: #fff;
-                background-color: #169608;
-                border: #169608 1px solid;
+                color: #E6A23C;
+                background-color: #fff;
+                border: #E6A23C 1px solid;
                 border-radius: 15px;
             }
         }
@@ -434,10 +433,10 @@ onMounted(() => {
 
 .icon {
     position: relative;
-    left: 25px;
-    width: 140px;
+    left: 20px;
+    width: 160px;
     min-width: 140px;
-    height: 140px;
+    height: 160px;
     border: #ddd 1px solid;
     border-radius: 15px;
     background-image: url('@/icons/dna_icon.jpg');
@@ -487,7 +486,7 @@ onMounted(() => {
 
 .btn-location {
     position: absolute;
-    left: 24%;
+    left: 360px;
     bottom: 10%;
 }
 
