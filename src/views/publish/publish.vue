@@ -92,11 +92,11 @@
             <p>Name *</p>
             <el-input class="name-input" v-model="name"
                placeholder="Please enter the name of the collection"></el-input>
-            <p class="introduction"><span class="click-here">Click here</span> to view an example.</p>
+            <!-- <p class="introduction"><span class="click-here">Click here</span> to view an example.</p> -->
             <p>Description</p>
             <input type="text" class="Description-input" placeholder="Please enter a description of the collection"
                v-model="description"></input>
-            <div class="button-wrapper" style="width: 100%; margin-top: 50px;" >
+            <div class="button-wrapper" style="width: 100%; margin-top: 50px;">
                <el-button class="button" @click="step--" style="right: 120px;">Back</el-button>
                <el-button class="button" @click="createData" style="right: 0px;">Create</el-button>
             </div>
@@ -138,6 +138,9 @@
 
    <el-drawer v-model="progressIsVisible" title="Upload Progress" :direction="ltr" :before-close="handleClose"
       :show-close="false">
+      <el-table v-loading="loadingForProgress" :element-loading-svg="svg" max-height="65vh" :table-layout="'fixed'">
+
+      </el-table>
    </el-drawer>
 </template>
 
@@ -153,7 +156,7 @@ import { ElLoading, ElMessage } from 'element-plus';
 const walletStore = useWalletStore();
 const router = useRouter();
 const route = useRoute()
-const step = ref(-1); // 0:进行手机验证
+const step = ref(-1); // -1:首页
 const showIndexPage = ref(true);
 
 /**离开首页 */
@@ -205,12 +208,14 @@ const getProfileIds = async () => {
 
 /**上传进度drawer */
 const progressIsVisible = ref(false);
+const loadingForProgress = ref(false);
 const progress = () => {
    progressIsVisible.value = true;
    getProgress();//获取上传进度
 }
 async function getProgress() {
    try {
+      loadingForProgress.value = true;
       // const res = await Api.get('/studio/getProgress');
    } catch (error) {
       console.error(error);
@@ -483,7 +488,8 @@ h1 {
       flex-direction: column;
       margin: 0px auto;
 
-      p{
+      p {
+         margin-top: 15px;
          line-height: 20px;
       }
    }

@@ -2,7 +2,7 @@
     <div class="wrapper">
         <div class="banner">
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
-            <el-button class="obtain-btn btn-location" @click="writeContract">Refresh</el-button>
+            <el-button class="obtain-btn btn-location" @click="getList">Refresh</el-button>
 
             <div class="download">&gt;Download decrypt tool</div>
             <div class="page">
@@ -27,7 +27,6 @@
                         <p>Format:<span class="ifo-item"> &nbsp; {{ item.format }}</span></p>
                         <p>Date:<span class="ifo-item"> &nbsp; {{ item.created_at }}</span></p>
                         <span v-show="item.is_sharable" class="sharable">Sharable</span>
-                        <!-- <p>Sharable:<span class="ifo-item"> &nbsp; {{ item.is_sharable }}</span></p> -->
                     </div>
                 </div>
             </div>
@@ -85,7 +84,7 @@
             <span class="dialog-footer">
                 <el-button @click="dialogIsVisible = false" class="obtain-btn"
                     style="background-color: #fff; color: #169608;">Cancel</el-button>
-                <el-button class="obtain-btn" @click="uploadForm">Confirm</el-button>
+                <el-button class="obtain-btn" @click="writeContract">Confirm</el-button>
             </span>
         </template>
     </el-dialog>
@@ -104,11 +103,11 @@ const walletStore = useWalletStore();
 const loadingForPlaza = ref(false);
 const List = ref([]);
 const page = ref(1);
-const getList = async () => {
+const getList = async (page) => {
     try {
         List.value = [];
         loadingForPlaza.value = true;
-        const res = await Api.get(`/plaza/${page.value}`);
+        const res = await Api.get(`/plaza/${page}`);
         List.value = res.data.data.multi_metadata;
         if (List.value == null || List.value == '' || List.value == undefined) {
             setTimeout(() => {
@@ -132,7 +131,7 @@ const getList = async () => {
 
 /* 翻页 */
 watch(page, () => {
-    getList();
+    getList(page.value);
 })
 
 /* 获取详细数据 */
@@ -143,23 +142,24 @@ const getDetailData = async () => {
     try {
         loadingForTable.value = true;
         if (!selectedData.value?.data_hash) return; //问号表示允许不存在
-        const res = await Api.get(`/metadata/${selectedData.value.data_hash}`);
+        const res = await Api.get(`/metadata/${selectedData.value.data_hash}?t=${Date.now()}`);
         if (res.data.data) {
             detailData.value = res.data.data.details;
+            loadingForTable.value = false;
         }
     } catch (error) {
         console.error('Error fetching detail data:', error);
-    } finally {
         loadingForTable.value = false;
-    }
+        ElMessage.error('Error fetching detail data');
+    } 
 }
 
 /* 详情抽屉 */
 const drawerIsVisible = ref(false);
 const isVisible = (item) => {
     selectedData.value = item;
-    drawerIsVisible.value = true;
     getDetailData();
+    drawerIsVisible.value = true;
 };
 
 /* 表格列封装 */
@@ -228,8 +228,6 @@ const ObtainClick = async () => {
         console.log(res)
         if (res.data.data.access_status == false && res.data.message == 'success') {
             dialogIsVisible.value = !res.data.data.access_status; //如果返回值为false，则显示弹窗
-        } else {
-
         }
     } catch (error) {
         console.error('Error fetching detail data:', error);
@@ -263,15 +261,17 @@ const download = async () => {
 const contractABI = abi; // 合约ABI
 const contractAddress = '0x8c451bbd4b60C6811Ea3E2B98A510fBE83d333eF'; // 合约地址
 async function writeContract() {
-    // 连接MetaMask提供者
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    // 获取签名者
-    const signer = await provider.getSigner();
-    // 创建合约实例
-    const contract = new ethers.Contract(contractAddress, contractABI, signer);
     try {
+        // 连接MetaMask提供者
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        // 获取签名者
+        const signer = await provider.getSigner();
+        // 创建合约实例
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
         // 发送交易
-        const tx = await contract.addViewAccess();
+        const rawValue = "0x" + selectedData.value.data_hash;//调用合约要求0x开头的byteslike类型
+        const BytesLikeDataHash = ethers.keccak256(rawValue) //如果看到让你用ethers.utils.keccak256()，这是v5的写法，v6直接顶层调用
+        const tx = await contract.addViewAccess(selectedData.value.geneSharing_contract_address, BytesLikeDataHash, purpose.value);
         // 等待交易确认
         const receipt = await tx.wait();
         if (receipt.status === 1) {
@@ -289,7 +289,7 @@ async function writeContract() {
 }
 //上传哈希
 const uploadHash = async () => {
-    
+
 }
 
 /* 加载list */

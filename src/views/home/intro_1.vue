@@ -24,19 +24,22 @@
             </div>
         </div>
 
-        <div class="card">
-            <img class="MM" src="@/icons/metalogo.svg" alt="Metamask_logo" @click="toMM">
-            <div class="des">MetaMask, an interactive tool which is a powerful wallet manager that manages
-                account addresses and accesses the BioChainer network.</div>
-        </div>
-        <div class="card">
-            <img class="FB" src="@/icons/FISCO_BCOS_logo.svg" alt="Fisco_bcos_logo" @click="toFB">
-            <div class="des des1">Rely on FISCO BCOS to build a currency-free blockchain, and build a shared platform by
-                interacting with the metamask wallet.</div>
+        <div class="wrapper-right">
+            <div class="card">
+                <img class="FB" src="@/icons/FISCO_BCOS_logo.svg" alt="Fisco_bcos_logo" @click="toFB">
+                <div class="des des1">Rely on FISCO BCOS to build a currency-free blockchain, and build a shared
+                    platform by
+                    interacting with the metamask wallet.</div>
+            </div>
+            <div class="card">
+                <img class="MM" src="@/icons/metalogo.svg" alt="Metamask_logo" @click="toMM">
+                <div class="des">MetaMask, an interactive tool which is a powerful wallet manager that manages
+                    account addresses and accesses the BioChainer network.</div>
+            </div>
+
         </div>
 
-        <div class="wrapper-right">
-        </div>
+
     </div>
 </template>
 
@@ -49,38 +52,37 @@ function toFB() {
 <style lang="scss" scoped>
 .wrapper {
     height: 95vh;
+    width: 100%;
     min-width: 1200px;
     min-height: 800px;
-    display: flex;
     position: relative;
 }
 
 .wrapper-left {
     display: flex;
     flex-direction: column;
-    width: 60%;
-    height: 480px;
+    width: 46%;
+    height: 55%;
+    min-height: 460px;
     background-color: #ffffff;
     justify-content: center;
     text-align: center;
     position: absolute;
     box-shadow: #ccc 0 0 10px;
     border-radius: 25px;
-    width: 40%;
-    left: 15%;
-    top: 55%;
-    transform: translate(-0%, -70%);
+    left: 13.5%;
+    top: 18%;
 
     h1 {
         text-align: center;
-        font-size: 60px;
+        font-size: 56px;
         font-weight: 500;
         color: #169608;
     }
 
     h2 {
-        height: 15vh;
-        font-size: 24px;
+        // height: 180px;
+        font-size: 20px;
         color: #333;
     }
 
@@ -98,9 +100,8 @@ function toFB() {
 
 .Btn-wrapper {
     display: flex;
-    margin-top: 80px;
+    margin-top: 30px;
     justify-content: center;
-    align-items: center;
     gap: 20px;
 
     .toBTN {
@@ -139,37 +140,45 @@ function toFB() {
     text-decoration: underline;
 }
 
-.card {
+
+.wrapper-right {
+    height: 55%;
     width: 500px;
-    height: 220px;
-    background-color: #ffffff;
-    position: absolute;
-    left: 60%;
+    min-height: 460px;
+    position: relative;
+    left: 62%;
     top: 18%;
-    border-radius: 25px;
-    border: #ccc;
-    box-shadow: #ccc 0 0 10px;
 
-    .FB {
-        margin: 15px 80px;
-        width: 340px;
-    }
+    .card {
+        width: 500px;
+        height: 225px;
+        background-color: #ffffff;
+        position: absolute;
+        border-radius: 25px;
+        border: #ccc;
+        box-shadow: #ccc 0 0 10px;
 
-
-    &:nth-child(2) {
-        top: 46%;
-        left: 60%;
-        display: flex;
-        align-items: center;
-
-
-        .MM {
-            margin: 0 10px 0 50px;
-            width: 115px;
+        .FB {
+            margin: 15px 80px;
+            width: 340px;
         }
+
+
+        &:nth-child(2) {
+            bottom: 0%;
+            // top: 46%;
+            // left: 60%;
+            display: flex;
+            align-items: center;
+
+            .MM {
+                margin: 0 10px 0 50px;
+                width: 115px;
+            }
+        }
+
+
     }
-
-
 }
 
 .des1 {
@@ -184,7 +193,7 @@ function toFB() {
 
 }
 
-.des-left{
-    margin: 0 40px;
+.des-left {
+    margin: 0 30px;
 }
 </style>
