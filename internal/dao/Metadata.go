@@ -66,11 +66,11 @@ func (m *Metadata) GetMetadataOverviewByOwner(owner string) (results []dto.Metad
 	return results, nil
 }
 
-// GetMetadataDetailByProfileId 通过profileID获取预构建的metadata信息
-func (m *Metadata) GetMetadataDetailByProfileId(profileID string) (results []models.Metadata, err error) {
+// GetPreloadMetadataByProfileId 通过profileID获取预构建的metadata信息
+func (m *Metadata) GetPreloadMetadataByProfileId(profileID string) (results []models.Metadata, err error) {
 	err = m.DB().Select("metadatas.*").
 		Table("metadatas").
-		Where("metadatas.profile_id = ? && metadatas.is_hidden = 0", profileID).
+		Where("metadatas.profile_id = ? && metadatas.is_hidden = 1", profileID).
 		Order("metadatas.category asc").
 		Scan(&results).Error
 	if err != nil {
@@ -123,7 +123,7 @@ func (m *Metadata) CompleteMetadataInfo(profileID string, toUpdate dto.UpdateMet
 
 	// 更新所有匹配 profileID 的记录
 	err = tx.Table("metadatas").
-		Where("profile_id = ? AND is_hidden = 0", profileID).
+		Where("profile_id = ? AND is_hidden = 1", profileID).
 		Updates(updates).Error
 	if err != nil {
 		tx.Rollback()

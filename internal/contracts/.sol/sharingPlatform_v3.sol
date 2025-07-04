@@ -65,7 +65,7 @@ contract SharingPlatform is ERC20 {
 
     //创建GeneSharing及Metadata（来源：第三方官方）
     function createAllFromThirdParty(address user, bytes32[] calldata dataHashs) external onlyAdmin returns (address) {
-
+        require(dataHashs.length > 0, "dataHashs is empty");
         GeneSharing newSharing = new GeneSharing(address(this), true);
         address contractAddress = address(newSharing);
 

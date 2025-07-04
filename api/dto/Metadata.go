@@ -18,7 +18,7 @@ type MetadataOverview struct {
 }
 
 type UpdateMetadata struct {
-	GeneSharingContractAddress string `json:"geneSharing_contract_address"`
+	GeneSharingContractAddress string `gorm:"column:geneSharing_contract_address" json:"geneSharing_contract_address"`
 	ContractAddress            string `json:"contract_address"`
 	Description                string `json:"description"`
 	Tags                       string `json:"tags"`
