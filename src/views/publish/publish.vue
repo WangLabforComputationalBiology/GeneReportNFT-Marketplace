@@ -101,10 +101,11 @@
       </div>
 
       <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="step === 3">
-         <h2>Select your collection</h2>
+         <h2>Success!Thank you for your support!</h2>
+         <p>Upload Hash: {{ hash }}</p> <span>Paste</span>
          <div class="button-wrapper" style="margin-top: 50px;">
             <el-button class="button" @click="step--">Back</el-button>
-            <el-button class="button" @click="step++">Create</el-button>
+            <!-- <el-button class="button" @click="step++">Create</el-button> -->
          </div>
       </div>
 
@@ -122,7 +123,7 @@
       <template #footer>
          <div style="flex: auto">
             <p class="selected-profile">Selected Profile: <span>{{ selectedProfile }}</span></p>
-            <el-button @click="confirmClick" class="confirm-button">Confirm</el-button>
+            <el-button @click="isVisible = false" class="confirm-button">Confirm</el-button>
          </div>
       </template>
    </el-drawer>
@@ -139,8 +140,7 @@ import { useRouter, useRoute } from 'vue-router';
 import Bubbles from '../components/bubbles.vue';
 import Api from '../../axios/aixos';
 import { useWalletStore } from '@/stores/account';
-import { ElLoading } from 'element-plus';
-import ElMessage from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 const walletStore = useWalletStore();
 const router = useRouter();
@@ -210,11 +210,13 @@ async function getProgress() {
 
 }
 
-/* 表单提交 */
+/* create步骤 */
 let selectedProfile = ref(null);
 let name = ref('');
 let description = ref('');
 let tags = ref('');
+const hash = ref();
+
 
 const confirmClick = () => {
    progress();
@@ -242,7 +244,9 @@ const createData = async () => {
       });
       if (res.data.code === 200) {
          console.log('Data created successfully:', res.data);
-         console.log('Data created successfully:', res.data);
+         ElMessage.success('Data created successfully');
+         hash.value = res.data.data.transaction_hash;
+         step.value += 1;
       } else {
          console.error('Error creating data:', res.data);
       }
