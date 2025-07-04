@@ -162,5 +162,8 @@ contract SharingPlatform is ERC20 {
         return metadata.verifyViewAccess(dataHash, msg.sender);
     }
 
-
+    //测试GeneSharing是否存在
+    function TestIsGeneSharingExist(address _geneSharingAddress)external view returns (bool) {
+        return _geneSharingContract[_geneSharingAddress];
+    }
 }
