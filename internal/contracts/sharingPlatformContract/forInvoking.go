@@ -2,6 +2,8 @@ package sharingPlatformContract
 
 import (
 	"encoding/hex"
+	"encoding/json"
+	"github.com/FISCO-BCOS/go-sdk/v3/abi"
 	"github.com/FISCO-BCOS/go-sdk/v3/abi/bind"
 	"github.com/FISCO-BCOS/go-sdk/v3/client"
 	"github.com/ethereum/go-ethereum/common"
@@ -9,6 +11,7 @@ import (
 	"golang.org/x/net/context"
 	"log"
 	"math/big"
+	"os"
 )
 
 var FiscoConfig *client.Config
@@ -18,6 +21,8 @@ var PlatformContractAddressHex string
 var AdminPrivateKeyHex string
 
 var MetaDataContractAddress string
+
+var ContractABI abi.ABI
 
 func GetContractIns() *SharingPlatformContract {
 	// 初始化客户端
@@ -69,6 +74,17 @@ func init() {
 		TLSKeyFile:  "./assets/fisco_config/sdk.key",
 		TLSCertFile: "./assets/fisco_config/sdk.crt",
 		DisableSsl:  false, // 生产环境建议 false
+	}
+
+	//设置合约ABI
+	data, err := os.ReadFile("../../internal/contracts/.sol/build/sharingPlatform_v3.abi")
+	if err != nil {
+		log.Fatalf("读取 ABI 文件失败: %v", err)
+	}
+
+	// 解析 ABI JSON
+	if err := json.Unmarshal(data, &ContractABI); err != nil {
+		log.Fatalf("解析 ABI JSON 失败: %v", err)
 	}
 
 }
