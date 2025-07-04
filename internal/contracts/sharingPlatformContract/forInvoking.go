@@ -77,7 +77,7 @@ func init() {
 	}
 
 	//设置合约ABI
-	data, err := os.ReadFile("../../internal/contracts/.sol/build/sharingPlatform_v3.abi")
+	data, err := os.ReadFile("./internal/contracts/.sol/build/sharingPlatform_v3.abi")
 	if err != nil {
 		log.Fatalf("读取 ABI 文件失败: %v", err)
 	}
