@@ -3,7 +3,7 @@
 
 package sharingPlatformContract
 
-import
+import (
 	"math/big"
 	"strings"
 
