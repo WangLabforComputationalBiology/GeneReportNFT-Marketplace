@@ -8,6 +8,7 @@ import (
 type MetadataOverview struct {
 	DataHash        string    `gorm:"primaryKey;type:varchar(36)" json:"data_hash"`
 	Name            string    `gorm:"index:idx_name;type:varchar(32)" json:"name"`
+	Description     string    `gorm:"type:varchar(255)" json:"description"`
 	Sex             bool      `gorm:"type:varchar(32)" json:"sex"`
 	Category        string    `gorm:"type:varchar(32)" json:"category"`
 	Format          string    `gorm:"type:varchar(32)" json:"format"`
@@ -18,6 +19,7 @@ type MetadataOverview struct {
 }
 
 type UpdateMetadata struct {
+	Name                       string `json:"name"`
 	GeneSharingContractAddress string `gorm:"column:geneSharing_contract_address" json:"geneSharing_contract_address"`
 	ContractAddress            string `json:"contract_address"`
 	Description                string `json:"description"`

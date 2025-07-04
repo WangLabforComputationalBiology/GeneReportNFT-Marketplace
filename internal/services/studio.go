@@ -75,6 +75,7 @@ func (s *StudioService) CreateAllFromThirdPartyOnChain(userAddressHex string, re
 		//Metadata合约地址
 		ContractAddress: sharingPlatformContract.MetaDataContractAddress,
 		Description:     req.Description,
+		Name:            req.GeneSharingName,
 		Tags:            req.Tags,
 		IsSharable:      true,
 		IsHidden:        false,

@@ -53,3 +53,8 @@ func (s *Studio) GetProfileIds(ctx *gin.Context) {
 		Data:    ids,
 	})
 }
+
+//// GetWegeneTaskProgress 实时获取wegene请求任务进度
+//func (s *Studio) GetWegeneTaskProgress(ctx *gin.Context) {
+//	userAddress := ctx.GetString("user_address")
+//}
