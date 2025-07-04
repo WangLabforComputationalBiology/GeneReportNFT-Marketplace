@@ -1,6 +1,6 @@
 <template>
    <div class="wrapper">
-      <Bubbles v-if="showIndexPage" />
+      <Bubbles v-show="showIndexPage && step === -1" />
       <div class="wrapper-center" v-if="showIndexPage">
          <h1 class="title">Data <span style="color: #333;">Publish</span></h1>
          <span class="tip1">Ready to upload your data and publish it.</span>
@@ -100,12 +100,16 @@
          </div>
       </div>
 
-      <div class="wrapper-right" style="display: block; padding-top: 100px;" v-if="step === 3">
-         <h2>Success!Thank you for your support!</h2>
-         <p>Upload Hash: {{ hash }}</p> <span>Paste</span>
+      <div class="wrapper-right" style="flex-direction: column;gap:30px;transform: translateY(-10%);" v-if="step === 3">
+         <h1 style="color: #169608; font-size: 30px;">Success! Thank you for your support!</h1>
+         <div class="upload-hash">Hash:{{ hash }}
+            <div style="cursor: pointer;" @click="pasteHash">
+               <img src="@/icons/paste.svg" alt="paste_icon">
+            </div>
+         </div>
+         <p>Use this hash, you can view the block on the FISCO BCOS broswer.</p>
          <div class="button-wrapper" style="margin-top: 50px;">
             <el-button class="button" @click="step--">Back</el-button>
-            <!-- <el-button class="button" @click="step++">Create</el-button> -->
          </div>
       </div>
 
@@ -177,7 +181,7 @@ const getProfileIds = async () => {
    isVisible.value = true;
    try {
       const res = await Api.get('/studio/getProfileIds');
-      var loading = ElLoading.service({
+      const loading = ElLoading.service({
          lock: true,
          text: 'Loading...',
          background: 'rgba(0, 0, 0, 0.7)',
@@ -216,12 +220,6 @@ let name = ref('');
 let description = ref('');
 let tags = ref('');
 const hash = ref();
-
-
-const confirmClick = () => {
-   progress();
-}
-
 const createData = async () => {
    try {
       if (name.value === '' || name.value === null || name.value === undefined) {
@@ -236,6 +234,12 @@ const createData = async () => {
          alert('Please enter a description of the collection');
          return;
       }
+      const loading = ElLoading.service({
+         lock: true,
+         text: 'Loading...',
+         background: 'rgba(0, 0, 0, 0.7)',
+         customClass: 'loading',
+      })
       const res = await Api.post('/studio/createFromThirdParty', {
          profile_id: selectedProfile.value,
          name: name.value,
@@ -243,17 +247,27 @@ const createData = async () => {
          tags: tags.value
       });
       if (res.data.code === 200) {
-         console.log('Data created successfully:', res.data);
          ElMessage.success('Data created successfully');
+         loading.close();
          hash.value = res.data.data.transaction_hash;
          step.value += 1;
+         pasteHash();
       } else {
          console.error('Error creating data:', res.data);
+         ElMessage.error('Error creating data');
       }
    } catch (error) {
       console.error('Error creating data:', error);
+         ElMessage.error('Error creating data');
+
    }
 };
+
+/**复制hash */
+const pasteHash = () => {
+   navigator.clipboard.writeText(hash.value);
+   ElMessage.success('Hash copied successfully');
+}
 
 onMounted(() => {
    //授权成功返回首页立即查看进度
@@ -462,6 +476,15 @@ h1 {
       .tips {
          position: absolute;
          bottom: 0;
+      }
+   }
+
+   .upload-hash {
+      color: #888;
+      display: flex;
+
+      img {
+         width: 16px;
       }
    }
 

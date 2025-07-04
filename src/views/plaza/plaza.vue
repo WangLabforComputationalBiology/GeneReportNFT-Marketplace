@@ -2,7 +2,7 @@
     <div class="wrapper">
         <div class="banner">
             <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
-            <el-button class="obtain-btn btn-location" @click="getList">Refresh</el-button>
+            <el-button class="obtain-btn btn-location" @click="writeContract">Refresh</el-button>
 
             <div class="download">&gt;Download decrypt tool</div>
             <div class="page">
@@ -93,9 +93,11 @@
 
 <script setup>
 import { ref, onMounted, watch } from "vue";
+import { ethers } from "ethers";
 import Api from "@/axios/aixos";
 import { useWalletStore } from "@/stores/account";
 import { ElMessage } from 'element-plus'
+import abi from "@/assets/sharingPlatform.json";
 const walletStore = useWalletStore();
 
 /* 获取plaza卡片数据列表 */
@@ -256,6 +258,39 @@ const uploadForm = async () => {
 /* 下载 */
 const download = async () => {
 
+}
+
+/**调用合约 */
+const contractABI = abi; // 合约ABI
+const contractAddress = '0x8c451bbd4b60C6811Ea3E2B98A510fBE83d333eF'; // 合约地址
+async function writeContract() {
+    // 连接MetaMask提供者
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    // 获取签名者
+    const signer = await provider.getSigner();
+    // 创建合约实例
+    const contract = new ethers.Contract(contractAddress, contractABI, signer);
+    try {
+        // 发送交易
+        const tx = await contract.addViewAccess();
+        // 等待交易确认
+        const receipt = await tx.wait();
+        if (receipt.status === 1) {
+            console.log("交易成功");
+            ElMessage.success('Submission success!');
+            console.log('Transaction confirmed:', receipt.logs);
+        } else {
+            ElMessage.error('Submission failed!');
+            console.log("交易失败");
+        }
+    } catch (error) {
+        console.error('Error writing to contract:', error);
+        throw error;
+    }
+}
+//上传哈希
+const uploadHash = async () => {
+    
 }
 
 /* 加载list */
