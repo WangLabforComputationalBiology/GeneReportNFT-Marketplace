@@ -231,7 +231,7 @@ func (m *MetadataService) GetGenoTypeZip(dataHash, userAddress, pubKey string) (
 	//}
 
 	////链上交互
-	//_, receipt, err := sharingPlatformContract.GetContractIns().AddViewAccess(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress), [32]byte(common.Hex2Bytes(metadata.DataHash)), "")
+	//_, receipt, err := sharingPlatformContract.NewContractIns().AddViewAccess(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress), [32]byte(common.Hex2Bytes(metadata.DataHash)), "")
 	//if err != nil || receipt.Status != 0 {
 	//	return nil, appErrors.New(503, "链上交互失败", err)
 	//}
@@ -277,7 +277,7 @@ func (m *MetadataService) NewViewAccess(dataHash, userAddress, remark, pubKey st
 	}
 
 	//链上交互
-	_, receipt, err := sharingPlatformContract.GetContractIns().AddViewAccess(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress), [32]byte(common.Hex2Bytes(metadata.DataHash)), remark)
+	_, receipt, err := sharingPlatformContract.NewContractIns().AddViewAccess(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress), [32]byte(common.Hex2Bytes(metadata.DataHash)), remark)
 	if err != nil || receipt.Status != 0 {
 		return dto.NewViewAccessResp{}, appErrors.New(503, "链上交互失败", err)
 	}

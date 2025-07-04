@@ -3,9 +3,11 @@ package sharingPlatformContract
 import (
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"github.com/FISCO-BCOS/go-sdk/v3/abi"
 	"github.com/FISCO-BCOS/go-sdk/v3/abi/bind"
 	"github.com/FISCO-BCOS/go-sdk/v3/client"
+	"github.com/FISCO-BCOS/go-sdk/v3/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"golang.org/x/net/context"
@@ -24,7 +26,8 @@ var MetaDataContractAddress string
 
 var ContractABI abi.ABI
 
-func GetContractIns() *SharingPlatformContract {
+// 获取新的合约实例
+func NewContractIns() *SharingPlatformContract {
 	// 初始化客户端
 	ChainClient, err := client.DialContext(context.Background(), FiscoConfig)
 
@@ -36,6 +39,12 @@ func GetContractIns() *SharingPlatformContract {
 	ContractIns, _ := NewSharingPlatformContract(common.HexToAddress(PlatformContractAddressHex), ChainClient)
 
 	return ContractIns
+}
+
+// NewChainClient 新建fisco客户端
+func NewChainClient() *client.Client {
+	ChainClient, _ := client.DialContext(context.Background(), FiscoConfig)
+	return ChainClient
 }
 
 func NewAdminTransactor() *bind.TransactOpts {
@@ -87,4 +96,27 @@ func init() {
 		log.Fatalf("解析 ABI JSON 失败: %v", err)
 	}
 
+}
+
+func DecodeInputData(receipt *types.Receipt) (string, map[string]interface{}, error) {
+	//获取input
+	input := common.Hex2Bytes(receipt.Input)
+	if len(input) < 4 {
+		return "", nil, fmt.Errorf("input 数据太短")
+	}
+
+	//解析函数
+	methodID := input[:4]
+	method, err := ContractABI.MethodByID(methodID)
+	if err != nil {
+		return "", nil, fmt.Errorf("无法找到匹配的函数: %v", err)
+	}
+
+	//解析参数
+	params := make(map[string]interface{})
+	err = method.Inputs.UnpackIntoMap(params, input[4:])
+	if err != nil {
+		return "", nil, fmt.Errorf("参数解码失败: %v", err)
+	}
+	return method.Name, params, nil
 }

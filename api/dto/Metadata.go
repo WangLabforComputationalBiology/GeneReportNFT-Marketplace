@@ -6,16 +6,17 @@ import (
 )
 
 type MetadataOverview struct {
-	DataHash        string    `gorm:"primaryKey;type:varchar(36)" json:"data_hash"`
-	Name            string    `gorm:"index:idx_name;type:varchar(32)" json:"name"`
-	Description     string    `gorm:"type:varchar(255)" json:"description"`
-	Sex             bool      `gorm:"type:varchar(32)" json:"sex"`
-	Category        string    `gorm:"type:varchar(32)" json:"category"`
-	Format          string    `gorm:"type:varchar(32)" json:"format"`
-	ContractAddress string    `gorm:"type:varchar(32)" json:"contract_address"`
-	IsSharable      bool      `gorm:"type:tinyint(1)" json:"is_sharable"`
-	CreatedAt       time.Time `gorm:"type:datetime" json:"created_at"`
-	Tags            string    `gorm:"type:varchar(32)" json:"tags"`
+	DataHash                   string    `gorm:"primaryKey;type:varchar(36)" json:"data_hash"`
+	GeneSharingContractAddress string    `gorm:"column:geneSharing_contract_address;type:varchar(42)" json:"geneSharing_contract_address"`
+	Name                       string    `gorm:"index:idx_name;type:varchar(32)" json:"name"`
+	Description                string    `gorm:"type:varchar(255)" json:"description"`
+	Sex                        bool      `gorm:"type:varchar(32)" json:"sex"`
+	Category                   string    `gorm:"type:varchar(32)" json:"category"`
+	Format                     string    `gorm:"type:varchar(32)" json:"format"`
+	ContractAddress            string    `gorm:"type:varchar(32)" json:"contract_address"`
+	IsSharable                 bool      `gorm:"type:tinyint(1)" json:"is_sharable"`
+	CreatedAt                  time.Time `gorm:"type:datetime" json:"created_at"`
+	Tags                       string    `gorm:"type:varchar(32)" json:"tags"`
 }
 
 type UpdateMetadata struct {
