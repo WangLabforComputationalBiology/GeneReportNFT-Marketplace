@@ -105,7 +105,6 @@ contract Metadata {
         }));
     }
 
-
     //判断MetaData是否存在
     function isMetadataExist(bytes32 dataHash) public view returns (bool) {
         return _owners[dataHash] != address(0);
@@ -115,11 +114,11 @@ contract Metadata {
     function newMetadata(bytes32 dataHash, address owner_) external onlyProxy {
         require(_owners[dataHash] == address(0), "the data hash already exists");
         _owners[dataHash] = owner_;
-        _addTraceData(dataHash, owner_, address(0),0);
+        _addTraceData(dataHash, owner_, address(0), 0);
     }
 
     //指定Metadata续约查看许可
-    function renewalViewAccess(bytes32 dataHash, address viewer,string memory remark) external onlyProxy {
+    function renewalViewAccess(bytes32 dataHash, address viewer, string memory remark) external onlyProxy {
         ViewAccess storage viewAccess = _viewerPermissions[dataHash][viewer];
         require(viewAccess.viewer == viewer, "the viewer has not been granted permission");
         require(viewAccess.isValid, "the viewer is not valid");
@@ -133,13 +132,12 @@ contract Metadata {
         require(msg.sender == owner(dataHash), "only the owner can update the sharing status");
         _sharingStatus[dataHash] = newStatus;
 
-        _addTraceData(dataHash, _owners[dataHash], address(0),4);
+        _addTraceData(dataHash, _owners[dataHash], address(0), 4);
     }
 
-    function addToGeneSharing(bytes32 dataHash,address operator,address sharingAddress) external onlyProxy{
-        _addTraceData(dataHash, operator, sharingAddress ,3);
+    function addToGeneSharing(bytes32 dataHash, address operator, address sharingAddress) external onlyProxy {
+        _addTraceData(dataHash, operator, sharingAddress, 3);
     }
-
 
     //验证查看许可
     function verifyViewAccess(bytes32 dataHash, address viewer) external view onlyProxy returns (bool)  {
@@ -151,7 +149,7 @@ contract Metadata {
     }
 
     //新增查看许可
-    function addViewAccess(bytes32 dataHash, address viewer,address sharingAddress,string calldata remark) external onlyProxy {
+    function addViewAccess(bytes32 dataHash, address viewer, address sharingAddress, string calldata remark) external onlyProxy {
         require(owner(dataHash) != viewer, "ur the owner of the Metadata, no need to add permission");
         require(isMetadataExist(dataHash), "the Metadata does not exist");
         ViewAccess storage viewAccess = _viewerPermissions[dataHash][viewer];
@@ -161,10 +159,15 @@ contract Metadata {
         viewAccess.isValid = true;
         viewAccess.count = 1;
 
-        _addTraceDataWithRemark(dataHash, viewer, sharingAddress, 1,remark);
+        _addTraceDataWithRemark(dataHash, viewer, sharingAddress, 1, remark);
     }
     //返回某个Metadata的对于某个viewer的已续约次数
     function getRenewalCount(bytes32 dataHash, address viewer) public view returns (uint256) {
         return _viewerPermissions[dataHash][viewer].count;
+    }
+
+    //用户是否拥有access（过期或未过期）
+    function isUserHaveAccess(address user, bytes32 dataHash)public returns (bool) {
+        return _viewerPermissions[dataHash][user].count > 0;
     }
 }

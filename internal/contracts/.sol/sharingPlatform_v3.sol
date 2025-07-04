@@ -3,7 +3,8 @@ pragma solidity ^0.8.10;
 
 import {GeneSharing} from "./GeneSharing_v3.sol";
 import {Metadata} from "./Metadata.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {SharingPlatform} from "./sharingPlatform_v2.sol";
+
 contract SharingPlatform is ERC20 {
 
     //管理员
@@ -122,12 +123,12 @@ contract SharingPlatform is ERC20 {
     }
 
     //新增查看权限
-    function addViewAccess(address geneSharingAddress, bytes32 dataHash, string calldata remark) external {
+    function addViewAccess(address geneSharingAddress, bytes32 dataHash, string calldata remark, address originalSender) internal {
         require(_geneSharingContract[geneSharingAddress] == true, "Sharing not found");
         GeneSharing geneSharing = GeneSharing(geneSharingAddress);
         Metadata metadata = Metadata(_metadataContract);
         require(geneSharing.isMetadataIn(dataHash), "Metadata Must In this GeneSharing");
-        metadata.addViewAccess(dataHash, msg.sender, address(geneSharing), remark);
+        metadata.addViewAccess(dataHash, originalSender, address(geneSharing), remark);
 
         //奖励creator
         _transfer(address(this), geneSharing.creator(), 1 * 10 ** 18);
@@ -137,11 +138,11 @@ contract SharingPlatform is ERC20 {
     }
 
     // 续约查看权限
-    function renewalViewAccess(bytes32 dataHash, string calldata remark) external {
+    function renewalViewAccess(bytes32 dataHash, string calldata remark, address originalSender) internal {
         Metadata metadata = Metadata(_metadataContract);
         //记录已续约次数
-        uint256 renewalCount = metadata.getRenewalCount(dataHash, msg.sender);
-        metadata.renewalViewAccess(dataHash, msg.sender, remark);
+        uint256 renewalCount = metadata.getRenewalCount(dataHash, originalSender);
+        metadata.renewalViewAccess(dataHash, originalSender, remark);
 
         //奖励owner
         uint256 reward = 1 * 10 ** 18 / (renewalCount ** 2);
@@ -162,4 +163,13 @@ contract SharingPlatform is ERC20 {
         return metadata.verifyViewAccess(dataHash, msg.sender);
     }
 
+    function obtainViewAccess(address geneSharingAddress, bytes32 dataHash, string calldata remark) external {
+        Metadata metadata = Metadata(_metadataContract);
+        if (metadata.isUserHaveAccess(msg.sender, dataHash)) {
+            renewalViewAccess(dataHash, remark, msg.sender);
+        } else {
+            addViewAccess(geneSharingAddress, dataHash, remark, msg.sender);
+        }
+
+    }
 }
