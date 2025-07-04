@@ -77,7 +77,7 @@ contract SharingPlatform is ERC20 {
 
         Metadata metadata = Metadata(_metadataContract);
         for (uint i = 0; i < dataHashs.length; i++) {
-            metadata.newMetadata(dataHashs[i], msg.sender);
+            metadata.newMetadata(dataHashs[i], user);
             require(metadata.isMetadataExist(dataHashs[i]), "Metadata not exist");
             newSharing.addMetadata(dataHashs[i]);
         }

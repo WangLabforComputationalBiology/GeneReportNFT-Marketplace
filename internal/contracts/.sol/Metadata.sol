@@ -152,7 +152,7 @@ contract Metadata {
 
     //新增查看许可
     function addViewAccess(bytes32 dataHash, address viewer,address sharingAddress,string calldata remark) external onlyProxy {
-        require(owner(dataHash) != viewer, "the viewer is the owner of the Metadata");
+        require(owner(dataHash) != viewer, "ur the owner of the Metadata, no need to add permission");
         require(isMetadataExist(dataHash), "the Metadata does not exist");
         ViewAccess storage viewAccess = _viewerPermissions[dataHash][viewer];
         require(viewAccess.viewer == address(0), "the viewer has already been granted permission");
