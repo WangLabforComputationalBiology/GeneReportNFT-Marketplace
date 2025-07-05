@@ -3,15 +3,16 @@ import { createWebHistory } from "vue-router";
 import { createRouter } from "vue-router";
 import walletAuthGuard from "./accountGuard";
 import homeIndex from "@/views/home/index.vue";
+import { ElLoading } from 'element-plus';
 
 const routes = [
     {
         path: '/',
         redirect: '/index', // 重定向
-    }, 
+    },
     {
         path: "/index",
-        component: homeIndex
+        component: homeIndex,
     },
     {
         path: '/publish',
@@ -63,5 +64,20 @@ const router = createRouter({
         return { top: 0, left: 0 }; // 每次切换路由时回到顶部
     }
 })
+
+// 首次路由切换等待提示
+let ELloading = null;
+router.beforeEach((to, from, next) => {
+    ELloading = ElLoading.service({
+        lock: true,
+        text: 'Loading...',
+        background: 'rgba(255, 255, 255, 0.5)',
+        fullscreen: true
+    });
+    next();
+});
+router.afterEach(() => {
+    ELloading.close();
+});
 
 export default router

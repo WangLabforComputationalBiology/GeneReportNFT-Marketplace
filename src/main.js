@@ -12,9 +12,9 @@ import Header from './views/components/header.vue'
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 const app = createApp(App)
+    .use(pinia)
     .use(router)
     .use(ElementPlus)
-    .use(pinia)
 
 app.component('Header', Header)
 app.config.productionTip = false; // 关闭生产提示

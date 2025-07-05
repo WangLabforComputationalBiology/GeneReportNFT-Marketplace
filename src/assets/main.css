@@ -19,6 +19,7 @@
     --vt-c-text-dark-1: var(--vt-c-white);
     --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
 
+
 }
 
 /* semantic color variables for this project */
@@ -81,4 +82,10 @@ html::-webkit-scrollbar {
 body {
     /* 防止el-drawer挤占页面 */
     width: 100% !important;
+}
+
+:root {
+    /* element plus主题色 */
+    --el-color-primary: #169608 !important;     
+
 }

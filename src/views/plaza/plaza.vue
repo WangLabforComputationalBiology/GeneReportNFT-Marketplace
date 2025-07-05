@@ -20,13 +20,12 @@
             <div class="plaza-page" v-else>
                 <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible(item)">
                     <div class="icon" />
-                    <div class="ifo">
-                        <p>Name: <span class="ifo-item"> &nbsp; {{ item.name }}</span></p>
-                        <p>Category: <span class="ifo-item"> &nbsp; {{ item.category }}</span></p>
-                        <p>Description:<span class="ifo-item"> &nbsp; {{ item.description }}</span></p>
-                        <p>Format:<span class="ifo-item"> &nbsp; {{ item.format }}</span></p>
-                        <p>Date:<span class="ifo-item"> &nbsp; {{ item.created_at }}</span></p>
-                        <span v-show="item.is_sharable" class="sharable">Sharable</span>
+                    <div class="info">
+                        <p>Name: <span class="info-item"> &nbsp; {{ item.name }}</span></p>
+                        <p>Description:<span class="info-item"> &nbsp; {{ item.description }}</span>
+                        </p>
+                        <p>Format:<span class="info-item"> &nbsp; {{ item.format }}</span></p>
+                        <div v-show="item.is_sharable" class="sharable">Sharable</div>
                     </div>
                 </div>
             </div>
@@ -38,12 +37,27 @@
         <template #header>
             <div class="dt-page-top">
                 <div class="icon" />
-                <div class="ifo">
-                    <p>Name: <span class="ifo-item"> &nbsp; {{ selectedData.name }}</span></p>
-                    <p>Category: <span class="ifo-item"> &nbsp; {{ selectedData.category }}</span></p>
-                    <p>Description:<span class="ifo-item"> &nbsp; {{ selectedData.description }}</span></p>
-                    <p>Format:<span class="ifo-item"> &nbsp; {{ selectedData.format }}</span></p>
-                    <p>Date:<span class="ifo-item"> &nbsp; {{ selectedData.created_at }}</span></p>
+                <div class="info">
+                    <p>Name: <span class="info-item"> &nbsp; {{ selectedData.name }}</span></p>
+                    <p>Sex: <span class="info-item"> &nbsp; {{ selectedData.sex == true ? 'Male' : 'Female' }}</span>
+                    </p>
+                    <p>Format:<span class="info-item"> &nbsp; {{ selectedData.format }}</span></p>
+                    <p>Date:<span class="info-item"> &nbsp; {{ selectedData.created_at }}</span></p>
+                    <div class="category">
+                        <p>Category:</p>
+                        <el-select v-model="selectedData.category" placeholder="Category">
+                            <el-option label="Psychology" value="Psychology" />
+                            <el-option label="HealthyMetabolism" value="HealthyMetabolism" />
+                            <el-option label="HealthyTraits" value="HealthyTraits" />
+                            <el-option label="Skin" value="Skin" />
+                            <el-option label="Athletigen" value="Athletigen" />
+                            <el-option label="HealthyCarrier" value="HealthyCarrier" />
+                            <el-option label="Risk" value="Risk" />
+                        </el-select>
+                    </div>
+                </div>
+                <div class="info-description">
+                    <p>Description:<span class="info-item"> &nbsp; {{ selectedData.description }}</span></p>
                 </div>
             </div>
         </template>
@@ -85,7 +99,8 @@
                 <el-button @click="dialogIsVisible = false" class="obtain-btn"
                     style="background-color: #fff; color: #169608;">Cancel</el-button>
                 <el-button class="obtain-btn" @click="writeContract">Confirm</el-button>
-                <p style="margin-top: 30px;text-align: left; font-size: 14px;color:#888">If Metamask does not have a pop-up, please open it to see if "Activity" is suspended, and confirm.</p>
+                <p style="margin-top: 30px;text-align: left; font-size: 14px;color:#888">If Metamask does not have a
+                    pop-up, please open it to see if "Activity" is suspended, and confirm.</p>
             </span>
         </template>
     </el-dialog>
@@ -109,7 +124,7 @@ const getList = async () => {
         List.value = [];
         loadingForPlaza.value = true;
         const res = await Api.get(`/plaza/${page.value}`);
-        List.value = res.data.data.multi_metadata;
+        List.value = res.data.data.multi_metadata || [];
         if (List.value == null || List.value == '' || List.value == undefined) {
             setTimeout(() => {
                 loadingForPlaza.value = false;
@@ -120,9 +135,12 @@ const getList = async () => {
             item.created_at = item.created_at.slice(0, 10);
         })
     } catch (error) {
-        if (error) {
-            loadingForPlaza.value = false;
+        if (error.response.status == 404) {
+            ElMessage.error('Network error. Please try again later.');
+            return;
         }
+        loadingForPlaza.value = false;
+
     } finally {
         setTimeout(() => {
             loadingForPlaza.value = false;
@@ -130,13 +148,8 @@ const getList = async () => {
     }
 }
 
-/* 翻页 */
-watch(page, () => {
-    getList();  //页数改变时，获取新的列表
-})
-
 /* 获取详细数据 */
-const selectedData = ref([]);   //选中查看的卡片
+const selectedData = ref({});   //选中查看的卡片
 const loadingForTable = ref(false);
 const detailData = ref([]);     //根据选中卡片hash获取的报告详情 [{}]
 const getDetailData = async () => {
@@ -157,8 +170,8 @@ const getDetailData = async () => {
 
 /* 详情抽屉 */
 const drawerIsVisible = ref(false);
-const isVisible = (item) => {
-    selectedData.value = item;
+function isVisible(item) {
+    selectedData.value = item || [];
     getDetailData();
     drawerIsVisible.value = true;
 };
@@ -198,13 +211,10 @@ const columnConfigs = ref({
     ],
 
 });
-const hasWarned = ref(false);   //避免因为表格渲染重复报错
+
 function column(category) {
-    if (!category || category === 'undefined' || category === 'null' || category === 'Unknown' || category === '') {
-        if (!hasWarned.value) {
-            ElMessage.error('Data error. Category missed.');
-            hasWarned.value = true;
-        }
+    if (category === 'undefined' || category === 'Unknown' || category === '' || category === null) {
+        ElMessage.error('Data error. Category missed.');
         return [];
     }
     return columnConfigs.value[category] || [];   //根据指定category返回列配置
@@ -213,9 +223,8 @@ function column(category) {
 /* 释放表单内容 */
 const handleClosed = () => {
     detailData.value = [];
-    selectedData.value = null;
+    selectedData.value = {};
     loadingForTable.value = false;
-    hasWarned.value = false;
 };
 
 /* 获取前数据采集 */
@@ -236,23 +245,6 @@ const ObtainClick = async () => {
     }
 }
 
-const uploadForm = async () => {
-    try {
-        const res = await Api.post(`/gene_type/newAccess`, {
-            data_hash: selectedData.value.data_hash,
-            label: purpose.value,
-        });
-        if (res.data.message == 'success') {
-            dialogIsVisible.value = false; //如果返回值为false，则显示弹窗
-            ElMessage.success('Submitted successfully');
-        } else {
-            ElMessage.error('Submit failed');
-        }
-    } catch (error) {
-        console.error('Error fetching detail data:', error);
-    }
-}
-
 /* 下载 */
 const download = async () => {
 
@@ -266,8 +258,8 @@ const download = async () => {
 // const test_hash = '89c792eed9551d2b477e5b300b6dfc26c11ab4ccd72a3d44899c5b1b69a52123';
 
 /**调用合约 */
-const contractABI = abi; // 合约ABI
-const contractAddress = '0x82c535d1cFcc5690ac42D3A24b685cF46f09A172'; // 合约地址
+const contractABI = abi; // 合约ABI(固定，每个合约对应一个abi)
+const contractAddress = '0x82c535d1cFcc5690ac42D3A24b685cF46f09A172'; // 合约地址(固定，每次部署合约生成一个)
 async function writeContract() {
     if (purpose.value == '') {
         ElMessage.error('Please select a purpose');
@@ -283,10 +275,11 @@ async function writeContract() {
         const provider = new ethers.BrowserProvider(window.ethereum);
         // 获取签名者
         const signer = await provider.getSigner();
-        // 创建合约实例
+        // 创建合约实例（合约地址，合约ABI，签名者）
         const contract = new ethers.Contract(contractAddress, contractABI, signer);
-        const rawValue = "0x" + selectedData.value.data_hash;//调用合约要求0x开头的byteslike类型
-        // 发送请求
+        const rawValue = "0x" + selectedData.value.data_hash;//调用合约要求0x开头的byteslike类型，实际上这里字符串直接拼接也可以
+        // 发送transaction
+        ElMessage.warning('Please confirm the transaction in MetaMask.');
         const tx = await contract.obtainViewAccess(selectedData.value.geneSharing_contract_address, rawValue, purpose.value);
 
         /**合约测试 */
@@ -301,34 +294,44 @@ async function writeContract() {
         // const tx = await contract.setString(purpose.value);
         /** */
 
-        // 等待交易确认
+        // 等待交易确认后接受回执receipt
         const receipt = await tx.wait();
         if (receipt.status === 1) {
             ElMessage.success('Submission success!');
-            console.log('Transaction confirmed:', receipt.logs);
             dialogIsVisible.value = false;
+            const receivedHash = receipt.logs[0].topics[0] || '';   //通过日志获取返回的交易哈希
+            uploadReceivedHash(receivedHash);   //返回交易哈希校验
         } else {
             ElMessage.error('Submission failed!');
         }
     } catch (error) {
-        console.error('Error writing to contract:', error, 'Type of error', typeof error);
+        console.error('Error writing to contract:', error);
         //取消操作反馈
         if (error.code == 'ACTION_REJECTED' || error.info.error.code == 4001 || error.reason == 'rejected') {
             ElMessage.error('User action denied.');
-            console.log(error.info.error.code);
+            // console.log(error.info.error.code);
         }
     } finally {
         loading.close();
     }
 }
 //上传哈希
-const uploadHash = async () => {
+async function uploadReceivedHash(receivedHash) {
+    try {
+        const res = Api.post('/gene_type/access', {
+            hash: receivedHash
+        })
+    } catch (error) {
 
+    }
 }
 
-/* 加载list */
+watch(page, () => {
+    getList();  //页数改变时，获取新的列表
+})
+
 onMounted(() => {
-    getList();
+    getList();  //页面刷新即加载list
 });
 </script>
 
@@ -418,7 +421,7 @@ onMounted(() => {
         position: relative;
         flex: 0 0 calc(33.33% - 10px);
         box-sizing: border-box;
-        height: 250px;
+        height: 230px;
         background-color: #fff;
         box-shadow: 0 0 3px #ccc;
         border-radius: 20px;
@@ -429,29 +432,30 @@ onMounted(() => {
             cursor: pointer;
         }
 
-        .ifo {
+        .info {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            position: relative;
             font-size: 18px;
             margin-left: 40px;
-            width: 75%;
+            width: 60%;
             border-left: #ddd 2px solid;
             padding: 0 0 0 20px;
             height: 70%;
 
             p {
-                line-height: 24px;
+                line-height: 26px;
                 color: #333;
             }
 
-            .ifo-item {
+            .info-item {
                 color: #67C23A;
             }
 
             .sharable {
+                position: absolute;
+                bottom: 2%;
                 font-size: 16px;
-                margin-top: 5px;
                 width: 88px;
                 line-height: 24px;
                 text-align: center;
@@ -468,9 +472,9 @@ onMounted(() => {
 .icon {
     position: relative;
     left: 20px;
-    width: 160px;
+    width: 150px;
     min-width: 140px;
-    height: 160px;
+    height: 150px;
     border: #ddd 1px solid;
     border-radius: 15px;
     background-image: url('@/icons/dna_icon.jpg');
@@ -480,25 +484,35 @@ onMounted(() => {
 
 .dt-page-top {
     display: flex;
-    align-items: center;
 
     .icon {
+        padding: 0 10px;
         width: 180px;
         height: 180px;
     }
 
-    .ifo {
-        margin-left: 50px;
+    .info {
+        min-width: 200px;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        margin-left: 60px;
     }
 
     p {
         color: #333;
         font-size: 20px;
-        line-height: 28px;
+        line-height: 30px;
     }
 
-    .ifo-item {
+    .info-item {
         color: #67C23A;
+    }
+
+    .info-description {
+        overflow: auto;
+        width: 50%;
+        margin-left: 60px;
     }
 }
 

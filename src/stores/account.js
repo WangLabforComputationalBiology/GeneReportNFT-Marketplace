@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export const useWalletStore = defineStore("account", {
+const useWalletStore = defineStore("account", {
     state: () => ({
         address: null,
         insititution: null,
@@ -35,3 +35,6 @@ export const useWalletStore = defineStore("account", {
     },
 
 })
+
+
+export { useWalletStore };

@@ -47,7 +47,7 @@ import Bubbles from '@/views/components/bubbles.vue';
 import { ethers } from 'ethers';
 import { useWalletStore } from '@/stores/account'
 import Api from '../../axios/aixos'
-import { ElLoading } from 'element-plus'
+import { ElLoading, ElMessage } from 'element-plus'
 
 const walletStore = useWalletStore();
 const router = useRouter();
@@ -80,10 +80,16 @@ async function connectWallet() {
     address.value = '';
     nonce.value = '';
     message.value = '';
+    const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading...',
+        background: 'rgba(0, 0, 0, 0.7)',
+        customClass: 'loading',
+    })
     try {
         // 1. 检查MetaMask是否安装
         if (!window.ethereum) {
-            throw new Error('Please install MetaMask');
+            ElMessage.error('Please install MetaMask');
         }
 
         // 2. 创建provider并请求账户
@@ -93,12 +99,6 @@ async function connectWallet() {
 
         if (!error.value) {
             // 3. 获取nonce
-            var loading = ElLoading.service({
-                lock: true,
-                text: 'Loading...',
-                background: 'rgba(0, 0, 0, 0.7)',
-                customClass: 'loading',
-            })
             const nonceResponse = await Api.get(`/user/nonce/${address.value}`);
             nonce.value = nonceResponse.data.data.nonce;
 
@@ -123,27 +123,22 @@ async function connectWallet() {
             walletStore.setToken(loginResponse.data.data.access_token);
             walletStore.setEmail(loginResponse.data.data.user.email);
 
-            if (typeof window !== 'undefined' && window.__VUE_APP__ && window.__VUE_APP__.config.globalProperties.$message) {
-                window.__VUE_APP__.config.globalProperties.$message.success('Login successful!');
-            }
+            ElMessage.success('Login successful!');
             router.push(`/account?t=${Date.now()}`);    // 添加时间戳，防止浏览器缓存
         }
-    } catch (err) {
+    } catch (error) {
         loading.close();
-        alert(err);
-        const $message = typeof window !== 'undefined' && window.__VUE_APP__ && window.__VUE_APP__.config.globalProperties.$message
-            ? window.__VUE_APP__.config.globalProperties.$message
-            : null;
-        if (err.message && err.message.includes('404')) {
-            $message && $message.error('Network error.');
+        console.log(error.error);
+        if (error.error.code == 404) {
+            ElMessage.error('Network error.');
         }
-        if (err.message && err.message.includes('-32002')) {
-            $message && $message.error('MetaMask is not accessible.Please unlock your wallet and try again.');
+        if (error.error.code == -32002) {
+            ElMessage.error('MetaMask is not accessible.Please unlock your wallet and try again.');
         }
-        if (err.code === 4001) {
-            $message && $message.warning('You denied the wallet connection');
+        if (error.code === 4001) {
+            ElMessage.warning('You denied the wallet connection');
         }
-        if (err.code === 500 || err.code === 501 || err.code === 502 || err.code === 503 || (err.message && err.message.includes('503'))) {
+        if (error.code === 500 || error.code === 501 || error.code === 502 || error.code === 503 || error.error.code == 503) {
             alert('Server error, please try again later.');
         }
     } finally {
