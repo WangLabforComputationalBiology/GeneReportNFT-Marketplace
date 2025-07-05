@@ -33,7 +33,7 @@
         </el-scrollbar>
     </div>
 
-    <el-drawer v-model="drawerIsVisible" title="Detail" :direction="'rtl'" @closed="handleClosed" :size="'55%'"
+    <el-drawer v-model="drawerIsVisible" title="Detail" :direction="'rtl'" @closed="handleClosed" :size="'60%'"
         :show-close="false">
         <template #header>
             <div class="dt-page-top">
@@ -57,7 +57,7 @@
             </el-table>
         </div>
         <template #footer>
-            <div style="flex: auto">
+            <div>
                 <el-button type="primary" @click="ObtainClick" class="obtain-btn"
                     v-if="walletStore.address && walletStore.email && walletStore.insititution">Obtain</el-button>
                 <span v-else style="color: #169608;">Login and verify to obtain</span>
@@ -85,6 +85,7 @@
                 <el-button @click="dialogIsVisible = false" class="obtain-btn"
                     style="background-color: #fff; color: #169608;">Cancel</el-button>
                 <el-button class="obtain-btn" @click="writeContract">Confirm</el-button>
+                <p style="margin-top: 30px;text-align: left; font-size: 14px;color:#888">If Metamask does not have a pop-up, please open it to see if "Activity" is suspended, and confirm.</p>
             </span>
         </template>
     </el-dialog>
@@ -95,19 +96,19 @@ import { ref, onMounted, watch } from "vue";
 import { ethers } from "ethers";
 import Api from "@/axios/aixos";
 import { useWalletStore } from "@/stores/account";
-import { ElMessage } from 'element-plus'
+import { ElLoading, ElMessage } from 'element-plus'
 import abi from "@/assets/sharingPlatform.json";
 const walletStore = useWalletStore();
 
 /* 获取plaza卡片数据列表 */
 const loadingForPlaza = ref(false);
-const List = ref([]);
-const page = ref(1);
-const getList = async (page) => {
+const List = ref([]);   //获取的plaza卡片列表  [{}]
+const page = ref(1);    //页数
+const getList = async () => {
     try {
         List.value = [];
         loadingForPlaza.value = true;
-        const res = await Api.get(`/plaza/${page}`);
+        const res = await Api.get(`/plaza/${page.value}`);
         List.value = res.data.data.multi_metadata;
         if (List.value == null || List.value == '' || List.value == undefined) {
             setTimeout(() => {
@@ -131,13 +132,13 @@ const getList = async (page) => {
 
 /* 翻页 */
 watch(page, () => {
-    getList(page.value);
+    getList();  //页数改变时，获取新的列表
 })
 
 /* 获取详细数据 */
-const selectedData = ref([]);
+const selectedData = ref([]);   //选中查看的卡片
 const loadingForTable = ref(false);
-const detailData = ref([]);
+const detailData = ref([]);     //根据选中卡片hash获取的报告详情 [{}]
 const getDetailData = async () => {
     try {
         loadingForTable.value = true;
@@ -151,7 +152,7 @@ const getDetailData = async () => {
         console.error('Error fetching detail data:', error);
         loadingForTable.value = false;
         ElMessage.error('Error fetching detail data');
-    } 
+    }
 }
 
 /* 详情抽屉 */
@@ -257,10 +258,26 @@ const download = async () => {
 
 }
 
+
+/**调用合约_test */
+// import abi_test from '@/assets/test.json'
+// const test_contract = abi_test;
+// const test_address = '0x0958817F161D6c9Ee7974Bff07f354E410632Eb1';//测试合约地址
+// const test_hash = '89c792eed9551d2b477e5b300b6dfc26c11ab4ccd72a3d44899c5b1b69a52123';
+
 /**调用合约 */
 const contractABI = abi; // 合约ABI
-const contractAddress = '0x8c451bbd4b60C6811Ea3E2B98A510fBE83d333eF'; // 合约地址
+const contractAddress = '0x82c535d1cFcc5690ac42D3A24b685cF46f09A172'; // 合约地址
 async function writeContract() {
+    if (purpose.value == '') {
+        ElMessage.error('Please select a purpose');
+        return
+    }
+    const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading...',
+        background: 'rgba(0, 0, 0, 0.7)'
+    })
     try {
         // 连接MetaMask提供者
         const provider = new ethers.BrowserProvider(window.ethereum);
@@ -268,23 +285,40 @@ async function writeContract() {
         const signer = await provider.getSigner();
         // 创建合约实例
         const contract = new ethers.Contract(contractAddress, contractABI, signer);
-        // 发送交易
         const rawValue = "0x" + selectedData.value.data_hash;//调用合约要求0x开头的byteslike类型
-        const BytesLikeDataHash = ethers.keccak256(rawValue) //如果看到让你用ethers.utils.keccak256()，这是v5的写法，v6直接顶层调用
-        const tx = await contract.addViewAccess(selectedData.value.geneSharing_contract_address, BytesLikeDataHash, purpose.value);
+        // 发送请求
+        const tx = await contract.obtainViewAccess(selectedData.value.geneSharing_contract_address, rawValue, purpose.value);
+
+        /**合约测试 */
+        // if (!ethers.isAddress(selectedData.value.geneSharing_contract_address)) {
+        //     throw new Error("无效的地址");
+        // }
+        // console.log('合约地址：',selectedData.value.geneSharing_contract_address);
+        // const rawValue = "0x" + test_hash;//调用合约要求0x开头的byteslike类型
+        // const BytesLikeDataHash = ethers.keccak256(rawValue) //如果看到让你用ethers.utils.keccak256()，这是v5的写法，v6直接顶层调用
+        // console.log("哈希值：",BytesLikeDataHash,"原始值：",rawValue);
+        // console.log(purpose.value)
+        // const tx = await contract.setString(purpose.value);
+        /** */
+
         // 等待交易确认
         const receipt = await tx.wait();
         if (receipt.status === 1) {
-            console.log("交易成功");
             ElMessage.success('Submission success!');
             console.log('Transaction confirmed:', receipt.logs);
+            dialogIsVisible.value = false;
         } else {
             ElMessage.error('Submission failed!');
-            console.log("交易失败");
         }
     } catch (error) {
-        console.error('Error writing to contract:', error);
-        throw error;
+        console.error('Error writing to contract:', error, 'Type of error', typeof error);
+        //取消操作反馈
+        if (error.code == 'ACTION_REJECTED' || error.info.error.code == 4001 || error.reason == 'rejected') {
+            ElMessage.error('User action denied.');
+            console.log(error.info.error.code);
+        }
+    } finally {
+        loading.close();
     }
 }
 //上传哈希
@@ -478,6 +512,7 @@ onMounted(() => {
 
 :deep(.obtain-btn) {
     font-size: 16px;
+    margin-right: 20px;
     border: #169608 1px solid;
     background-color: #169608;
     color: #fff;
