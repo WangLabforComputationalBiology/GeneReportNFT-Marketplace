@@ -107,7 +107,7 @@ func (m *Metadata) GetGenoTypeZip(ctx *gin.Context) {
 
 }
 
-func (m *Metadata) NewViewAccess(ctx *gin.Context) {
+func (m *Metadata) ObtainViewAccess(ctx *gin.Context) {
 	var req dto.NewViewAccessReq
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
@@ -117,7 +117,7 @@ func (m *Metadata) NewViewAccess(ctx *gin.Context) {
 		return
 	}
 
-	toResp, err := services.MetadataServ.NewViewAccess(req.DataHash, ctx.GetString("user_address"), req.Label, ctx.GetString("pub_key"))
+	toResp, err := services.MetadataServ.ObtainViewAccess(req.TxHash, ctx.GetString("user_address"), ctx.GetString("pub_key"))
 	if err != nil {
 		_ = ctx.Error(err)
 		return

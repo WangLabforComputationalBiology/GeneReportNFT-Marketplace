@@ -908,7 +908,7 @@ CREATE TABLE activities
     `from`         varchar(64)  NOT NULL COMMENT '发起者地址',
     `to`           varchar(64)  NOT NULL COMMENT '接收者地址',
     `time`         DATETIME     NOT NULL Comment '时间戳',
-    `expiry`       DATETIME COMMENT '过期时间',
+    `expiry`       BIGINT COMMENT '过期时间',
     `event`        VARCHAR(255) NOT NULL Comment '活动类型',
     `geneSharing`  VARCHAR(32) Comment 'geneSharing合集地址',
     `metadata`     VARCHAR(32) Comment 'metadata数据哈希',

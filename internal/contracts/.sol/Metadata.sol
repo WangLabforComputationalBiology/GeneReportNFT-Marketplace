@@ -76,9 +76,10 @@ contract Metadata {
     }
 
     //续约查看许可
-    function _renewalViewAccess(ViewAccess storage vs) internal {
+    function _renewalViewAccess(ViewAccess storage vs) internal returns(uint256){
         vs.expiry = block.timestamp + DURATION;
         vs.count++;
+        return vs.expiry;
     }
 
     //添加溯源信息（不带备注）
@@ -118,13 +119,14 @@ contract Metadata {
     }
 
     //指定Metadata续约查看许可
-    function renewalViewAccess(bytes32 dataHash, address viewer, string memory remark) external onlyProxy {
+    function renewalViewAccess(bytes32 dataHash, address viewer, string memory remark) external onlyProxy returns(uint256){
         ViewAccess storage viewAccess = _viewerPermissions[dataHash][viewer];
         require(viewAccess.viewer == viewer, "the viewer has not been granted permission");
         require(viewAccess.isValid, "the viewer is not valid");
 
-        _renewalViewAccess(viewAccess);
+        uint256 expiry=_renewalViewAccess(viewAccess);
         _addTraceDataWithRemark(dataHash, viewer, address(0), 2, remark);
+        return expiry;
     }
 
     //修改共享状态
@@ -140,16 +142,31 @@ contract Metadata {
     }
 
     //验证查看许可
-    function verifyViewAccess(bytes32 dataHash, address viewer) external view onlyProxy returns (bool)  {
-        require(isMetadataExist(dataHash), "the Metadata does not exist");
+    function verifyViewAccess(bytes32 dataHash, address viewer) external view onlyProxy returns (int)  {
+        if (isMetadataExist(dataHash) == false) {
+            //the Metadata does not exist
+            return 1;
+        }
+
         ViewAccess storage viewAccess = _viewerPermissions[dataHash][viewer];
-        require(viewAccess.viewer == viewer, "the viewer has not been granted permission");
-        require(viewAccess.expiry >= block.timestamp, "the viewer's permission has expired");
-        return viewAccess.isValid;
+
+        if (viewAccess.viewer != viewer) {
+            //"the viewer has not been granted permission"
+            return 2;
+        }
+
+        if (viewAccess.expiry >= block.timestamp) {
+            //"the viewer's permission has expired"
+            return 3;
+        }
+        if (viewAccess.isValid == false) {
+            return 4;
+        }
+        return 0;
     }
 
     //新增查看许可
-    function addViewAccess(bytes32 dataHash, address viewer, address sharingAddress, string calldata remark) external onlyProxy {
+    function addViewAccess(bytes32 dataHash, address viewer, address sharingAddress, string calldata remark) external onlyProxy returns(uint256){
         require(owner(dataHash) != viewer, "ur the owner of the Metadata, no need to add permission");
         require(isMetadataExist(dataHash), "the Metadata does not exist");
         ViewAccess storage viewAccess = _viewerPermissions[dataHash][viewer];
@@ -160,6 +177,7 @@ contract Metadata {
         viewAccess.count = 1;
 
         _addTraceDataWithRemark(dataHash, viewer, sharingAddress, 1, remark);
+        return viewAccess.expiry;
     }
     //返回某个Metadata的对于某个viewer的已续约次数
     function getRenewalCount(bytes32 dataHash, address viewer) public view returns (uint256) {
@@ -167,7 +185,7 @@ contract Metadata {
     }
 
     //用户是否拥有access（过期或未过期）
-    function isUserHaveAccess(address user, bytes32 dataHash)public returns (bool) {
+    function isUserHaveAccess(address user, bytes32 dataHash) public view returns (bool) {
         return _viewerPermissions[dataHash][user].count > 0;
     }
 }

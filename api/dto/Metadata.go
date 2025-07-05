@@ -53,8 +53,7 @@ type GetGenoTypeZipResp struct {
 }
 
 type NewViewAccessReq struct {
-	DataHash string `json:"data_hash" binding:"required"`
-	Label    string `json:"label" binding:"required"`
+	TxHash string `json:"tx_hash" binding:"required"`
 }
 
 type NewViewAccessResp struct {

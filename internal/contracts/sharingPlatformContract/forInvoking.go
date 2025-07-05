@@ -22,11 +22,13 @@ var PlatformContractAddressHex string
 
 var AdminPrivateKeyHex string
 
+var AdminAddress string
+
 var MetaDataContractAddress string
 
 var ContractABI abi.ABI
 
-// 获取新的合约实例
+// NewContractIns 获取新的合约实例
 func NewContractIns() *SharingPlatformContract {
 	// 初始化客户端
 	ChainClient, err := client.DialContext(context.Background(), FiscoConfig)
@@ -47,6 +49,7 @@ func NewChainClient() *client.Client {
 	return ChainClient
 }
 
+// NewAdminTransactor 获取新的管理员交易者
 func NewAdminTransactor() *bind.TransactOpts {
 	privateKey, _ := crypto.HexToECDSA(AdminPrivateKeyHex)
 	admin := bind.NewKeyedTransactor(privateKey)
@@ -58,6 +61,7 @@ func NewAdminTransactor() *bind.TransactOpts {
 }
 
 func init() {
+	AdminAddress = "0x86b4851Bd2F1578Cab7D7f6ff4ffC5589FA41Bd7"
 	AdminPrivateKeyHex = "9f5eb599dd2ff51f67724a793a6d702bcc273b3afe3e3bbc0e2870ed11594432"
 
 	//初始化已部署的Metadata合约地址

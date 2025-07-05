@@ -56,5 +56,10 @@ func (s *Studio) GetProfileIds(ctx *gin.Context) {
 
 //// GetWegeneTaskProgress 实时获取wegene请求任务进度
 //func (s *Studio) GetWegeneTaskProgress(ctx *gin.Context) {
+//	// 设置 SSE 响应头
+//	ctx.Writer.Header().Set("Content-Type", "text/event-stream")
+//	ctx.Writer.Header().Set("Cache-Control", "no-cache")
+//	ctx.Writer.Header().Set("Connection", "keep-alive")
 //	userAddress := ctx.GetString("user_address")
+//
 //}

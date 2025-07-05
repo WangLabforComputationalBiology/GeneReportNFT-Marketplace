@@ -23,7 +23,7 @@ var (
 )
 
 // SharingPlatformContractABI is the input ABI used to generate the binding from.
-const SharingPlatformContractABI = "[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"initialSupply\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"allowance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"needed\",\"type\":\"uint256\"}],\"name\":\"ERC20InsufficientAllowance\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"needed\",\"type\":\"uint256\"}],\"name\":\"ERC20InsufficientBalance\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"approver\",\"type\":\"address\"}],\"name\":\"ERC20InvalidApprover\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"ERC20InvalidReceiver\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"ERC20InvalidSender\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"ERC20InvalidSpender\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"targetGeneSharing\",\"type\":\"address\"}],\"name\":\"CreateAllFromThirdParty\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"contractAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"isOfficial\",\"type\":\"bool\"}],\"name\":\"GeneSharingCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"target\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"ProxyCallExecuted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"MetadataContract\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_geneSharingAddress\",\"type\":\"address\"}],\"name\":\"TestIsGeneSharingExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"geneSharingAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32[]\",\"name\":\"dataHash\",\"type\":\"bytes32[]\"}],\"name\":\"addMetadataBatchesFromCreativeWorkSpace\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"geneSharingAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"remark\",\"type\":\"string\"}],\"name\":\"addViewAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"bytes32[]\",\"name\":\"dataHashs\",\"type\":\"bytes32[]\"}],\"name\":\"createAllFromThirdParty\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"createEmptyGeneSharingFromCreativeWorkSpace\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"remark\",\"type\":\"string\"}],\"name\":\"renewalViewAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"metadataContract\",\"type\":\"address\"}],\"name\":\"setMetadataContract\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"setUserAuthStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"bool\",\"name\":\"status\",\"type\":\"bool\"}],\"name\":\"updateMetadataSharingStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"}],\"name\":\"verifyViewAccess\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"
+const SharingPlatformContractABI = "[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"initialSupply\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"allowance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"needed\",\"type\":\"uint256\"}],\"name\":\"ERC20InsufficientAllowance\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"needed\",\"type\":\"uint256\"}],\"name\":\"ERC20InsufficientBalance\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"approver\",\"type\":\"address\"}],\"name\":\"ERC20InvalidApprover\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"ERC20InvalidReceiver\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"ERC20InvalidSender\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"ERC20InvalidSpender\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"targetGeneSharing\",\"type\":\"address\"}],\"name\":\"CreateAllFromThirdParty\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"contractAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"isOfficial\",\"type\":\"bool\"}],\"name\":\"GeneSharingCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"target\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"ProxyCallExecuted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"MetadataContract\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"geneSharingAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32[]\",\"name\":\"dataHash\",\"type\":\"bytes32[]\"}],\"name\":\"addMetadataBatchesFromCreativeWorkSpace\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"bytes32[]\",\"name\":\"dataHashs\",\"type\":\"bytes32[]\"}],\"name\":\"createAllFromThirdParty\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"createEmptyGeneSharingFromCreativeWorkSpace\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"geneSharingAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"remark\",\"type\":\"string\"}],\"name\":\"obtainViewAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"metadataContract\",\"type\":\"address\"}],\"name\":\"setMetadataContract\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"setUserAuthStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"bool\",\"name\":\"status\",\"type\":\"bool\"}],\"name\":\"updateMetadataSharingStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"viewer\",\"type\":\"address\"}],\"name\":\"verifyViewAccess\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"
 
 // SharingPlatformContract is an auto generated Go binding around a Solidity contract.
 type SharingPlatformContract struct {
@@ -193,32 +193,6 @@ func (_SharingPlatformContract *SharingPlatformContractCallerSession) MetadataCo
 	return _SharingPlatformContract.Contract.MetadataContract(&_SharingPlatformContract.CallOpts)
 }
 
-// TestIsGeneSharingExist is a free data retrieval call binding the contract method 0xac11a1fa.
-//
-// Solidity: function TestIsGeneSharingExist(address _geneSharingAddress) constant returns(bool)
-func (_SharingPlatformContract *SharingPlatformContractCaller) TestIsGeneSharingExist(opts *bind.CallOpts, _geneSharingAddress common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _SharingPlatformContract.contract.Call(opts, out, "TestIsGeneSharingExist", _geneSharingAddress)
-	return *ret0, err
-}
-
-// TestIsGeneSharingExist is a free data retrieval call binding the contract method 0xac11a1fa.
-//
-// Solidity: function TestIsGeneSharingExist(address _geneSharingAddress) constant returns(bool)
-func (_SharingPlatformContract *SharingPlatformContractSession) TestIsGeneSharingExist(_geneSharingAddress common.Address) (bool, error) {
-	return _SharingPlatformContract.Contract.TestIsGeneSharingExist(&_SharingPlatformContract.CallOpts, _geneSharingAddress)
-}
-
-// TestIsGeneSharingExist is a free data retrieval call binding the contract method 0xac11a1fa.
-//
-// Solidity: function TestIsGeneSharingExist(address _geneSharingAddress) constant returns(bool)
-func (_SharingPlatformContract *SharingPlatformContractCallerSession) TestIsGeneSharingExist(_geneSharingAddress common.Address) (bool, error) {
-	return _SharingPlatformContract.Contract.TestIsGeneSharingExist(&_SharingPlatformContract.CallOpts, _geneSharingAddress)
-}
-
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
 // Solidity: function allowance(address owner, address spender) constant returns(uint256)
@@ -375,30 +349,30 @@ func (_SharingPlatformContract *SharingPlatformContractCallerSession) TotalSuppl
 	return _SharingPlatformContract.Contract.TotalSupply(&_SharingPlatformContract.CallOpts)
 }
 
-// VerifyViewAccess is a free data retrieval call binding the contract method 0x1a10cf7d.
+// VerifyViewAccess is a free data retrieval call binding the contract method 0x0d576f17.
 //
-// Solidity: function verifyViewAccess(bytes32 dataHash) constant returns(bool)
-func (_SharingPlatformContract *SharingPlatformContractCaller) VerifyViewAccess(opts *bind.CallOpts, dataHash [32]byte) (bool, error) {
+// Solidity: function verifyViewAccess(bytes32 dataHash, address viewer) constant returns(int256)
+func (_SharingPlatformContract *SharingPlatformContractCaller) VerifyViewAccess(opts *bind.CallOpts, dataHash [32]byte, viewer common.Address) (*big.Int, error) {
 	var (
-		ret0 = new(bool)
+		ret0 = new(*big.Int)
 	)
 	out := ret0
-	err := _SharingPlatformContract.contract.Call(opts, out, "verifyViewAccess", dataHash)
+	err := _SharingPlatformContract.contract.Call(opts, out, "verifyViewAccess", dataHash, viewer)
 	return *ret0, err
 }
 
-// VerifyViewAccess is a free data retrieval call binding the contract method 0x1a10cf7d.
+// VerifyViewAccess is a free data retrieval call binding the contract method 0x0d576f17.
 //
-// Solidity: function verifyViewAccess(bytes32 dataHash) constant returns(bool)
-func (_SharingPlatformContract *SharingPlatformContractSession) VerifyViewAccess(dataHash [32]byte) (bool, error) {
-	return _SharingPlatformContract.Contract.VerifyViewAccess(&_SharingPlatformContract.CallOpts, dataHash)
+// Solidity: function verifyViewAccess(bytes32 dataHash, address viewer) constant returns(int256)
+func (_SharingPlatformContract *SharingPlatformContractSession) VerifyViewAccess(dataHash [32]byte, viewer common.Address) (*big.Int, error) {
+	return _SharingPlatformContract.Contract.VerifyViewAccess(&_SharingPlatformContract.CallOpts, dataHash, viewer)
 }
 
-// VerifyViewAccess is a free data retrieval call binding the contract method 0x1a10cf7d.
+// VerifyViewAccess is a free data retrieval call binding the contract method 0x0d576f17.
 //
-// Solidity: function verifyViewAccess(bytes32 dataHash) constant returns(bool)
-func (_SharingPlatformContract *SharingPlatformContractCallerSession) VerifyViewAccess(dataHash [32]byte) (bool, error) {
-	return _SharingPlatformContract.Contract.VerifyViewAccess(&_SharingPlatformContract.CallOpts, dataHash)
+// Solidity: function verifyViewAccess(bytes32 dataHash, address viewer) constant returns(int256)
+func (_SharingPlatformContract *SharingPlatformContractCallerSession) VerifyViewAccess(dataHash [32]byte, viewer common.Address) (*big.Int, error) {
+	return _SharingPlatformContract.Contract.VerifyViewAccess(&_SharingPlatformContract.CallOpts, dataHash, viewer)
 }
 
 // AddMetadataBatchesFromCreativeWorkSpace is a paid mutator transaction binding the contract method 0xf3d84f0d.
@@ -435,42 +409,6 @@ func (_SharingPlatformContract *SharingPlatformContractTransactorSession) AddMet
 
 func (_SharingPlatformContract *SharingPlatformContractTransactorSession) AsyncAddMetadataBatchesFromCreativeWorkSpace(handler func(*types.Receipt, error), geneSharingAddress common.Address, dataHash [][32]byte) (*types.Transaction, error) {
 	return _SharingPlatformContract.Contract.AsyncAddMetadataBatchesFromCreativeWorkSpace(handler, &_SharingPlatformContract.TransactOpts, geneSharingAddress, dataHash)
-}
-
-// AddViewAccess is a paid mutator transaction binding the contract method 0xd5558ee0.
-//
-// Solidity: function addViewAccess(address geneSharingAddress, bytes32 dataHash, string remark) returns()
-func (_SharingPlatformContract *SharingPlatformContractTransactor) AddViewAccess(opts *bind.TransactOpts, geneSharingAddress common.Address, dataHash [32]byte, remark string) (*types.Transaction, *types.Receipt, error) {
-	var ()
-	out := &[]interface{}{}
-	transaction, receipt, err := _SharingPlatformContract.contract.TransactWithResult(opts, out, "addViewAccess", geneSharingAddress, dataHash, remark)
-	return transaction, receipt, err
-}
-
-func (_SharingPlatformContract *SharingPlatformContractTransactor) AsyncAddViewAccess(handler func(*types.Receipt, error), opts *bind.TransactOpts, geneSharingAddress common.Address, dataHash [32]byte, remark string) (*types.Transaction, error) {
-	return _SharingPlatformContract.contract.AsyncTransact(opts, handler, "addViewAccess", geneSharingAddress, dataHash, remark)
-}
-
-// AddViewAccess is a paid mutator transaction binding the contract method 0xd5558ee0.
-//
-// Solidity: function addViewAccess(address geneSharingAddress, bytes32 dataHash, string remark) returns()
-func (_SharingPlatformContract *SharingPlatformContractSession) AddViewAccess(geneSharingAddress common.Address, dataHash [32]byte, remark string) (*types.Transaction, *types.Receipt, error) {
-	return _SharingPlatformContract.Contract.AddViewAccess(&_SharingPlatformContract.TransactOpts, geneSharingAddress, dataHash, remark)
-}
-
-func (_SharingPlatformContract *SharingPlatformContractSession) AsyncAddViewAccess(handler func(*types.Receipt, error), geneSharingAddress common.Address, dataHash [32]byte, remark string) (*types.Transaction, error) {
-	return _SharingPlatformContract.Contract.AsyncAddViewAccess(handler, &_SharingPlatformContract.TransactOpts, geneSharingAddress, dataHash, remark)
-}
-
-// AddViewAccess is a paid mutator transaction binding the contract method 0xd5558ee0.
-//
-// Solidity: function addViewAccess(address geneSharingAddress, bytes32 dataHash, string remark) returns()
-func (_SharingPlatformContract *SharingPlatformContractTransactorSession) AddViewAccess(geneSharingAddress common.Address, dataHash [32]byte, remark string) (*types.Transaction, *types.Receipt, error) {
-	return _SharingPlatformContract.Contract.AddViewAccess(&_SharingPlatformContract.TransactOpts, geneSharingAddress, dataHash, remark)
-}
-
-func (_SharingPlatformContract *SharingPlatformContractTransactorSession) AsyncAddViewAccess(handler func(*types.Receipt, error), geneSharingAddress common.Address, dataHash [32]byte, remark string) (*types.Transaction, error) {
-	return _SharingPlatformContract.Contract.AsyncAddViewAccess(handler, &_SharingPlatformContract.TransactOpts, geneSharingAddress, dataHash, remark)
 }
 
 // Approve is a paid mutator transaction binding the contract method 0x095ea7b3.
@@ -587,40 +525,40 @@ func (_SharingPlatformContract *SharingPlatformContractTransactorSession) AsyncC
 	return _SharingPlatformContract.Contract.AsyncCreateEmptyGeneSharingFromCreativeWorkSpace(handler, &_SharingPlatformContract.TransactOpts)
 }
 
-// RenewalViewAccess is a paid mutator transaction binding the contract method 0xd29fc92d.
+// ObtainViewAccess is a paid mutator transaction binding the contract method 0xf95d44ee.
 //
-// Solidity: function renewalViewAccess(bytes32 dataHash, string remark) returns()
-func (_SharingPlatformContract *SharingPlatformContractTransactor) RenewalViewAccess(opts *bind.TransactOpts, dataHash [32]byte, remark string) (*types.Transaction, *types.Receipt, error) {
+// Solidity: function obtainViewAccess(address geneSharingAddress, bytes32 dataHash, string remark) returns()
+func (_SharingPlatformContract *SharingPlatformContractTransactor) ObtainViewAccess(opts *bind.TransactOpts, geneSharingAddress common.Address, dataHash [32]byte, remark string) (*types.Transaction, *types.Receipt, error) {
 	var ()
 	out := &[]interface{}{}
-	transaction, receipt, err := _SharingPlatformContract.contract.TransactWithResult(opts, out, "renewalViewAccess", dataHash, remark)
+	transaction, receipt, err := _SharingPlatformContract.contract.TransactWithResult(opts, out, "obtainViewAccess", geneSharingAddress, dataHash, remark)
 	return transaction, receipt, err
 }
 
-func (_SharingPlatformContract *SharingPlatformContractTransactor) AsyncRenewalViewAccess(handler func(*types.Receipt, error), opts *bind.TransactOpts, dataHash [32]byte, remark string) (*types.Transaction, error) {
-	return _SharingPlatformContract.contract.AsyncTransact(opts, handler, "renewalViewAccess", dataHash, remark)
+func (_SharingPlatformContract *SharingPlatformContractTransactor) AsyncObtainViewAccess(handler func(*types.Receipt, error), opts *bind.TransactOpts, geneSharingAddress common.Address, dataHash [32]byte, remark string) (*types.Transaction, error) {
+	return _SharingPlatformContract.contract.AsyncTransact(opts, handler, "obtainViewAccess", geneSharingAddress, dataHash, remark)
 }
 
-// RenewalViewAccess is a paid mutator transaction binding the contract method 0xd29fc92d.
+// ObtainViewAccess is a paid mutator transaction binding the contract method 0xf95d44ee.
 //
-// Solidity: function renewalViewAccess(bytes32 dataHash, string remark) returns()
-func (_SharingPlatformContract *SharingPlatformContractSession) RenewalViewAccess(dataHash [32]byte, remark string) (*types.Transaction, *types.Receipt, error) {
-	return _SharingPlatformContract.Contract.RenewalViewAccess(&_SharingPlatformContract.TransactOpts, dataHash, remark)
+// Solidity: function obtainViewAccess(address geneSharingAddress, bytes32 dataHash, string remark) returns()
+func (_SharingPlatformContract *SharingPlatformContractSession) ObtainViewAccess(geneSharingAddress common.Address, dataHash [32]byte, remark string) (*types.Transaction, *types.Receipt, error) {
+	return _SharingPlatformContract.Contract.ObtainViewAccess(&_SharingPlatformContract.TransactOpts, geneSharingAddress, dataHash, remark)
 }
 
-func (_SharingPlatformContract *SharingPlatformContractSession) AsyncRenewalViewAccess(handler func(*types.Receipt, error), dataHash [32]byte, remark string) (*types.Transaction, error) {
-	return _SharingPlatformContract.Contract.AsyncRenewalViewAccess(handler, &_SharingPlatformContract.TransactOpts, dataHash, remark)
+func (_SharingPlatformContract *SharingPlatformContractSession) AsyncObtainViewAccess(handler func(*types.Receipt, error), geneSharingAddress common.Address, dataHash [32]byte, remark string) (*types.Transaction, error) {
+	return _SharingPlatformContract.Contract.AsyncObtainViewAccess(handler, &_SharingPlatformContract.TransactOpts, geneSharingAddress, dataHash, remark)
 }
 
-// RenewalViewAccess is a paid mutator transaction binding the contract method 0xd29fc92d.
+// ObtainViewAccess is a paid mutator transaction binding the contract method 0xf95d44ee.
 //
-// Solidity: function renewalViewAccess(bytes32 dataHash, string remark) returns()
-func (_SharingPlatformContract *SharingPlatformContractTransactorSession) RenewalViewAccess(dataHash [32]byte, remark string) (*types.Transaction, *types.Receipt, error) {
-	return _SharingPlatformContract.Contract.RenewalViewAccess(&_SharingPlatformContract.TransactOpts, dataHash, remark)
+// Solidity: function obtainViewAccess(address geneSharingAddress, bytes32 dataHash, string remark) returns()
+func (_SharingPlatformContract *SharingPlatformContractTransactorSession) ObtainViewAccess(geneSharingAddress common.Address, dataHash [32]byte, remark string) (*types.Transaction, *types.Receipt, error) {
+	return _SharingPlatformContract.Contract.ObtainViewAccess(&_SharingPlatformContract.TransactOpts, geneSharingAddress, dataHash, remark)
 }
 
-func (_SharingPlatformContract *SharingPlatformContractTransactorSession) AsyncRenewalViewAccess(handler func(*types.Receipt, error), dataHash [32]byte, remark string) (*types.Transaction, error) {
-	return _SharingPlatformContract.Contract.AsyncRenewalViewAccess(handler, &_SharingPlatformContract.TransactOpts, dataHash, remark)
+func (_SharingPlatformContract *SharingPlatformContractTransactorSession) AsyncObtainViewAccess(handler func(*types.Receipt, error), geneSharingAddress common.Address, dataHash [32]byte, remark string) (*types.Transaction, error) {
+	return _SharingPlatformContract.Contract.AsyncObtainViewAccess(handler, &_SharingPlatformContract.TransactOpts, geneSharingAddress, dataHash, remark)
 }
 
 // SetMetadataContract is a paid mutator transaction binding the contract method 0xe5187f43.

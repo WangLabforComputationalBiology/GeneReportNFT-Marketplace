@@ -3,7 +3,8 @@ pragma solidity ^0.8.10;
 
 import {GeneSharing} from "./GeneSharing_v3.sol";
 import {Metadata} from "./Metadata.sol";
-import {SharingPlatform} from "./sharingPlatform_v2.sol";
+
+//import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract SharingPlatform is ERC20 {
 
@@ -33,6 +34,12 @@ contract SharingPlatform is ERC20 {
 
     // 从第三方构建事件
     event CreateAllFromThirdParty(address indexed user, address indexed targetGeneSharing);
+
+    // 新建访问许可事件
+    event NewViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry);
+
+    // 续约许可事件
+    event RenewalViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry);
 
     // 管理员约束
     modifier onlyAdmin() {
@@ -123,26 +130,26 @@ contract SharingPlatform is ERC20 {
     }
 
     //新增查看权限
-    function addViewAccess(address geneSharingAddress, bytes32 dataHash, string calldata remark, address originalSender) internal {
+    function addViewAccess(address geneSharingAddress, bytes32 dataHash, string calldata remark, address originalSender) internal returns(uint256){
         require(_geneSharingContract[geneSharingAddress] == true, "Sharing not found");
         GeneSharing geneSharing = GeneSharing(geneSharingAddress);
         Metadata metadata = Metadata(_metadataContract);
         require(geneSharing.isMetadataIn(dataHash), "Metadata Must In this GeneSharing");
-        metadata.addViewAccess(dataHash, originalSender, address(geneSharing), remark);
+        uint256 expiry=metadata.addViewAccess(dataHash, originalSender, address(geneSharing), remark);
 
         //奖励creator
         _transfer(address(this), geneSharing.creator(), 1 * 10 ** 18);
         //奖励owner
         _transfer(address(this), metadata.owner(dataHash), 1 * 10 ** 18);
-
+        return expiry;
     }
 
     // 续约查看权限
-    function renewalViewAccess(bytes32 dataHash, string calldata remark, address originalSender) internal {
+    function renewalViewAccess(bytes32 dataHash, string calldata remark, address originalSender) internal returns (uint256){
         Metadata metadata = Metadata(_metadataContract);
         //记录已续约次数
         uint256 renewalCount = metadata.getRenewalCount(dataHash, originalSender);
-        metadata.renewalViewAccess(dataHash, originalSender, remark);
+        uint256 expiry = metadata.renewalViewAccess(dataHash, originalSender, remark);
 
         //奖励owner
         uint256 reward = 1 * 10 ** 18 / (renewalCount ** 2);
@@ -151,24 +158,30 @@ contract SharingPlatform is ERC20 {
         } else {
             _transfer(address(this), metadata.owner(dataHash), reward);
         }
+        return expiry;
     }
 
     // 验证查看权限
-    function verifyViewAccess(bytes32 dataHash) external view onlyAdmin returns (bool) {
+    function verifyViewAccess(bytes32 dataHash, address viewer) public view returns (int) {
         Metadata metadata = Metadata(_metadataContract);
-        if (msg.sender == metadata.owner(dataHash)) {
-            return true;
+        if (viewer == metadata.owner(dataHash)) {
+            return - 1;
         }
 
-        return metadata.verifyViewAccess(dataHash, msg.sender);
+        return metadata.verifyViewAccess(dataHash, viewer);
     }
 
     function obtainViewAccess(address geneSharingAddress, bytes32 dataHash, string calldata remark) external {
+        require(verifyViewAccess(dataHash, msg.sender) != 0, "You currently have a valid access permit, please do not obtain it again.");
         Metadata metadata = Metadata(_metadataContract);
+
+        //新建/续约
         if (metadata.isUserHaveAccess(msg.sender, dataHash)) {
-            renewalViewAccess(dataHash, remark, msg.sender);
+            uint256 expiry=renewalViewAccess(dataHash, remark, msg.sender);
+            emit RenewalViewAccess(msg.sender, dataHash, expiry);
         } else {
-            addViewAccess(geneSharingAddress, dataHash, remark, msg.sender);
+            uint256 expiry=addViewAccess(geneSharingAddress, dataHash, remark, msg.sender);
+            emit NewViewAccess(msg.sender, dataHash,expiry);
         }
 
     }

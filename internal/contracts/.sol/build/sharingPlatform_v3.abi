@@ -171,6 +171,31 @@
 			{
 				"indexed": true,
 				"internalType": "address",
+				"name": "viewer",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "bytes32",
+				"name": "dataHash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "expiry",
+				"type": "uint256"
+			}
+		],
+		"name": "NewViewAccess",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
 				"name": "user",
 				"type": "address"
 			},
@@ -188,6 +213,31 @@
 			}
 		],
 		"name": "ProxyCallExecuted",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "viewer",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "bytes32",
+				"name": "dataHash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "expiry",
+				"type": "uint256"
+			}
+		],
+		"name": "RenewalViewAccess",
 		"type": "event"
 	},
 	{
@@ -232,25 +282,6 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "_geneSharingAddress",
-				"type": "address"
-			}
-		],
-		"name": "TestIsGeneSharingExist",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "geneSharingAddress",
 				"type": "address"
 			},
@@ -261,29 +292,6 @@
 			}
 		],
 		"name": "addMetadataBatchesFromCreativeWorkSpace",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "geneSharingAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "dataHash",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "string",
-				"name": "remark",
-				"type": "string"
-			}
-		],
-		"name": "addViewAccess",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -421,6 +429,11 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "geneSharingAddress",
+				"type": "address"
+			},
+			{
 				"internalType": "bytes32",
 				"name": "dataHash",
 				"type": "bytes32"
@@ -431,7 +444,7 @@
 				"type": "string"
 			}
 		],
-		"name": "renewalViewAccess",
+		"name": "obtainViewAccess",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -565,14 +578,19 @@
 				"internalType": "bytes32",
 				"name": "dataHash",
 				"type": "bytes32"
+			},
+			{
+				"internalType": "address",
+				"name": "viewer",
+				"type": "address"
 			}
 		],
 		"name": "verifyViewAccess",
 		"outputs": [
 			{
-				"internalType": "bool",
+				"internalType": "int256",
 				"name": "",
-				"type": "bool"
+				"type": "int256"
 			}
 		],
 		"stateMutability": "view",

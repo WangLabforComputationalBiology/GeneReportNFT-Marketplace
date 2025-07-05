@@ -7,12 +7,16 @@ import (
 	"GeneReport_platform/internal/dao"
 	"GeneReport_platform/internal/models"
 	"GeneReport_platform/pkg/appErrors"
+	"context"
 	"encoding/json"
 	"errors"
+	"github.com/FISCO-BCOS/go-sdk/v3/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
 	"gorm.io/gorm"
+	"math/big"
 	"net/http"
 	"reflect"
 	"time"
@@ -186,9 +190,9 @@ func (m *MetadataService) GetDataImpl(profileId, category string) (map[string]in
 //
 //		return iv, pr, nil
 //	}
-func (m *MetadataService) GetGenoTypeZip(dataHash, userAddress, pubKey string) (dto.GetGenoTypeZipResp, error) {
+func (m *MetadataService) GetGenoTypeZip(dataHash, viewer, pubKey string) (dto.GetGenoTypeZipResp, error) {
 	// 检查是否通过机构认证
-	user, err := dao.GetUserDao().GetUser(userAddress)
+	user, err := dao.GetUserDao().GetUser(viewer)
 	if err != nil {
 		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
@@ -207,46 +211,53 @@ func (m *MetadataService) GetGenoTypeZip(dataHash, userAddress, pubKey string) (
 		return dto.GetGenoTypeZipResp{}, appErrors.New(403, "该基因型数据当前非共享", err)
 	}
 
-	// 检查用户的viewAccess状态
-	activity, err := dao.GetActivityDao().GetLatestViewAccess(userAddress, metadata.DataHash)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
-	}
-	// viewAccess状态为过期或不存在
-	if errors.Is(err, gorm.ErrRecordNotFound) || activity.Expiry.Before(time.Now()) {
-		return dto.GetGenoTypeZipResp{DownloadURL: "", AccessStatus: false}, nil
-	}
-
-	//验证通过，发放短链接
-	shortURL, err := DownloadServ.GenerateDownloadLink(dataHash, userAddress, pubKey)
+	//用户是否有viewAccess
+	isHave, err := dao.GetActivityDao().IsViewAccessExist(dataHash, viewer)
 	if err != nil {
 		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
-	return dto.GetGenoTypeZipResp{DownloadURL: shortURL, AccessStatus: true}, nil
+	if !isHave {
+		return dto.GetGenoTypeZipResp{DownloadURL: "", AccessStatus: false}, appErrors.NewWithData(http.StatusForbidden, "您的访问权限不存在", dto.GetGenoTypeZipResp{DownloadURL: "", AccessStatus: false})
+	}
 
-	//该用户当前有仍在有效期的查看许可，获取基因型数据
-	//data, err := dao.GetMetadataDao().GetGenoType(metadata.ProfileID, metadata.Category)
-	//if err != nil {
-	//	return nil, appErrors.New(503, "获取详细基因型数据失败", err)
-	//}
+	//若有 检查用户的viewAccess状态
+	activity, err := dao.GetActivityDao().GetLatestViewAccess(viewer, metadata.DataHash)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+	}
+	// viewAccess状态为过期状态
+	if errors.Is(err, gorm.ErrRecordNotFound) || activity.Expiry < time.Now().Unix() {
+		return dto.GetGenoTypeZipResp{}, appErrors.NewWithData(http.StatusForbidden, "您的访问权限已过期", dto.GetGenoTypeZipResp{DownloadURL: "", AccessStatus: false})
+	}
 
-	////链上交互
-	//_, receipt, err := sharingPlatformContract.NewContractIns().AddViewAccess(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress), [32]byte(common.Hex2Bytes(metadata.DataHash)), "")
-	//if err != nil || receipt.Status != 0 {
-	//	return nil, appErrors.New(503, "链上交互失败", err)
-	//}
+	//链上验证
+	status, err := sharingPlatformContract.NewContractIns().VerifyViewAccess(&bind.CallOpts{Pending: false}, common.HexToHash(dataHash), common.HexToAddress(viewer))
+	if err != nil {
+		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "链上服务繁忙，请稍后再试", err)
+	}
+	switch status.Int64() {
+	case 0:
+		//验证通过，发放短链接
+		shortURL, err := DownloadServ.GenerateDownloadLink(dataHash, viewer, pubKey)
+		if err != nil {
+			return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "短链接服务繁忙，请稍后再试", err)
+		}
+		return dto.GetGenoTypeZipResp{DownloadURL: shortURL, AccessStatus: true}, nil
+	case 1:
+		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusBadRequest, "该Metadata不存在", err)
+	case 2:
+		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusBadRequest, "链上查看许可不存在", err)
+	case 3:
+		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusBadRequest, "您的链上查看许可已过期", err)
+	case 4:
+		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusBadRequest, "您的查看许可已被封禁", err)
+	default:
+		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+	}
 
-	//// 创建XLSX缓冲区
-	//var buf bytes.Buffer
-	//err = utils.GenerateXLSX(&buf, data)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//return buf.Bytes(), nil
 }
 
-func (m *MetadataService) NewViewAccess(dataHash, userAddress, remark, pubKey string) (dto.NewViewAccessResp, error) {
+func (m *MetadataService) ObtainViewAccess(txHash, userAddress, pubKey string) (dto.NewViewAccessResp, error) {
 	// 检查是否通过机构认证
 	user, err := dao.GetUserDao().GetUser(userAddress)
 	if err != nil {
@@ -256,45 +267,105 @@ func (m *MetadataService) NewViewAccess(dataHash, userAddress, remark, pubKey st
 		return dto.NewViewAccessResp{}, appErrors.New(http.StatusUnauthorized, "请先进行机构邮箱认证")
 	}
 
+	//获取交易回执
+	receipt, err := sharingPlatformContract.NewChainClient().GetTransactionReceipt(context.Background(), common.HexToHash(txHash), true)
+	if err != nil {
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+	}
+	//检查交易状态
+	if receipt == nil || receipt.Status != 0 {
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusBadRequest, "您的链上交易失败或不存在，请检查")
+	}
+	//检查回执的合约地址是否正确以及发起者是否为用户
+	if receipt.To != sharingPlatformContract.PlatformContractAddressHex || receipt.From != userAddress {
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusBadRequest, "恶意行为，多次进行该操作将会被封禁", err)
+	}
+
+	//解析交易回执的input
+	methodName, params, err := sharingPlatformContract.DecodeInputData(receipt)
+	if methodName != "obtainViewAccess" {
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusBadRequest, "交易所调用的方法错误", err)
+	}
+
+	//根据解码参数进行类型断言
+	dataHash, ok := params["dataHash"].(string)
+	if dataHash == "" || !ok {
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusBadRequest, "交易参数错误", err)
+	}
+
 	// 根据 hash 取 metadata
 	metadata, err := dao.GetMetadataDao().GetMetadataOverviewByDataHash(dataHash)
 	if err != nil {
-		return dto.NewViewAccessResp{}, appErrors.New(503, "获取Metadata详细信息失败", err)
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusServiceUnavailable, "获取Metadata详细信息失败", err)
 	}
-
 	// 检查metadata当前是否可共享
-	if metadata.IsSharable == false {
-		return dto.NewViewAccessResp{}, appErrors.New(403, "该基因型数据当前非共享", err)
+	if metadata.IsSharable == false || metadata.IsHidden == true {
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusForbidden, "抱歉，该基因型数据当前非共享", err)
 	}
 
-	// 检查用户的viewAccess状态
-	activity, err := dao.GetActivityDao().GetLatestViewAccess(userAddress, metadata.DataHash)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return dto.NewViewAccessResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
-	}
-	if activity.Expiry.After(time.Now()) {
-		return dto.NewViewAccessResp{}, appErrors.New(http.StatusForbidden, "当前已存在有效的查看许可，请勿重复申请")
+	// 定义事件签名和哈希
+	eventSignatures := map[string]string{
+		"NewViewAccess":     common.Bytes2Hex(crypto.Keccak256([]byte("NewViewAccess(address,bytes32,uint256)"))),
+		"RenewalViewAccess": common.Bytes2Hex(crypto.Keccak256([]byte("RenewalViewAccess(address,bytes32,uint256)"))),
 	}
 
-	//链上交互
-	_, receipt, err := sharingPlatformContract.NewContractIns().AddViewAccess(sharingPlatformContract.NewAdminTransactor(), common.HexToAddress(userAddress), [32]byte(common.Hex2Bytes(metadata.DataHash)), remark)
-	if err != nil || receipt.Status != 0 {
-		return dto.NewViewAccessResp{}, appErrors.New(503, "链上交互失败", err)
+	var expiry *big.Int
+	var eventName string
+	// 解析回执中的事件日志
+	for _, logEntry := range receipt.Logs {
+		if len(logEntry.Topics) < 3 {
+			continue
+		}
+
+		// 根据事件签名哈希解析事件类型
+		eventHash := logEntry.Topics[0]
+
+		switch eventHash {
+		case eventSignatures["NewViewAccess"]:
+			//新建查看许可事件
+			eventName = "NewViewAccess"
+		case eventSignatures["RenewalViewAccess"]:
+			//续约查看许可事件
+			eventName = "RenewalViewAccess"
+		default:
+			continue
+		}
+
+		// 解析事件数据
+		var viewAccessEvent struct {
+			Expiry *big.Int
+		}
+		err := sharingPlatformContract.ContractABI.Unpack(&viewAccessEvent, eventName, common.Hex2Bytes(logEntry.Data))
+		if err != nil {
+			return dto.NewViewAccessResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+		}
+
+		// 从 Topics 中提取参数
+		viewer := logEntry.Topics[1]
+		if userAddress != viewer {
+			return dto.NewViewAccessResp{}, appErrors.New(http.StatusForbidden, "用户不匹配,多次进行该操作将会被封禁", err)
+		}
+		expiry = viewAccessEvent.Expiry
+
+		break
 	}
 
 	//链下数据库
-	activity = &models.Activity{
+	activity := &models.Activity{
 		Id:              uuid.New().String(),
 		Metadata:        metadata.DataHash,
 		TransactionHash: receipt.TransactionHash,
 		Time:            time.Now(),
-		Expiry:          time.Now().Add(7 * 24 * time.Hour),
-		Event:           "ViewAccess",
-		From:            metadata.Owner,
+		Expiry:          expiry.Int64(),
+		From:            params["geneSharingAddress"].(string),
 		To:              userAddress,
 		GeneSharing:     metadata.GeneSharingContractAddress,
 	}
-	err = dao.GetActivityDao().NewViewAccess(activity)
+	if eventName == "NewViewAccess" {
+		err = dao.GetActivityDao().NewViewAccess(activity)
+	} else {
+		err = dao.GetActivityDao().RenewalViewAccess(activity)
+	}
 	if err != nil {
 		return dto.NewViewAccessResp{}, appErrors.New(503, "服务繁忙，请稍后再试", err)
 	}
