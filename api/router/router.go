@@ -79,7 +79,7 @@ func registerMetadataRouter(r *gin.RouterGroup) {
 func registerGeneTypeRouter(r *gin.RouterGroup) {
 	r.GET("/:data_hash", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.MetadataController.GetGenoTypeZip)
 
-	r.POST("/newAccess", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.MetadataController.ObtainViewAccess)
+	r.POST("/obtainAccess", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.MetadataController.ObtainViewAccess)
 
 }
 func registerDownloadRouter(r *gin.RouterGroup) {
