@@ -4,11 +4,12 @@ import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/models"
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -92,9 +93,8 @@ func SaveDataTest(token string) {
 			fmt.Println(err)
 			return
 		}
-		defer res.Body.Close()
 
-		body, err := ioutil.ReadAll(res.Body)
+		body, err := io.ReadAll(res.Body)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -130,7 +130,7 @@ func SaveDataTest(token string) {
 		_, err = file.Write(append(jsonData, '\n'))
 
 		//fixme 这里响应体里面的中文是base64编码，需要转化成中文
-
+		_ = res.Body.Close()
 	}
 }
 
@@ -139,7 +139,7 @@ func SaveDataTest(token string) {
 //demographics/基因报告id、/haplogroups/result/基因报告id、/web_auth/基因报告id \ancestry/profileId这些只要token
 
 // 用到上面的report_id数组的请求头和请求体都差不多，唯一不同的就是响应绑定的对象不同,可以使用泛型来做
-func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT, sexT string, wg *sync.WaitGroup) {
+func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT, sexT string, wg *sync.WaitGroup, ch chan<- int) {
 	defer wg.Done()
 	URL := url + "/" + profileId
 	method := "POST"
@@ -169,8 +169,8 @@ func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT
 			fmt.Println("请求失败-", name, "-", profileId, "-reportId:", v)
 			continue
 		}
-		defer res.Body.Close()
-		body, err := ioutil.ReadAll(res.Body)
+
+		body, err := io.ReadAll(res.Body)
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -301,7 +301,8 @@ func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT
 		} else {
 			fmt.Println("responseData不是一个结构体")
 		}
-
+		//单次循环结束，手动关闭
+		_ = res.Body.Close()
 	}
 	if exitGenotypr {
 		//var originMetaData dto.Metadatas
@@ -328,8 +329,9 @@ func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT
 			fmt.Println(name, "的genotype哈希保存失败", res.Error)
 		}
 	}
+	ch <- 1
 }
-func getDataFromWegeneSimple[T any](profileId, url, token string, wg *sync.WaitGroup) {
+func getDataFromWegeneSimple[T any](profileId, url, token string, wg *sync.WaitGroup, ch chan<- int) {
 	defer wg.Done()
 	url += "/" + profileId
 	method := "POST"
@@ -347,7 +349,7 @@ func getDataFromWegeneSimple[T any](profileId, url, token string, wg *sync.WaitG
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -380,7 +382,7 @@ func getDataFromWegeneSimple[T any](profileId, url, token string, wg *sync.WaitG
 		name := tType.Name()
 		fmt.Println(name, "---->创建主表记录错误:", result.Error)
 	}
-
+	ch <- 1
 }
 
 // 重复性检测
@@ -408,33 +410,58 @@ func SaveAllData(Msg string) {
 	} else {
 		fmt.Println("重复性检测通过，开始保存数据：", profileId)
 	}
+
 	//athletigen、risk、skin、health/carrier、health/metabolism、health/tratis、psychology
 	//health/drug-----Xd
 	//getDataFromWegene[dto.HealthyDrug](forHealthyDrug, profileId, BASEURL+"/health/drug", token)
-	wg.Add(1)
-	go getDataFromWegene[dto.HealthyTraits](forHealthyTraits, profileId, BASEURL+"/health/traits", token, addressT, formatT, sexT, &wg)
-	wg.Add(1)
-	go getDataFromWegene[dto.HealthyCarrier](forHealthyCarrier, profileId, BASEURL+"/health/carrier", token, addressT, formatT, sexT, &wg)
-	wg.Add(1)
-	go getDataFromWegene[dto.HealthyMetabolism](forHealthyMetabolism, profileId, BASEURL+"/health/metabolism", token, addressT, formatT, sexT, &wg)
-	wg.Add(1)
-	go getDataFromWegene[dto.Risk](forRisk, profileId, BASEURL+"/risk", token, addressT, formatT, sexT, &wg)
-	wg.Add(1)
-	go getDataFromWegene[dto.Athletigen](forAthletigen, profileId, BASEURL+"/athletigen", token, addressT, formatT, sexT, &wg)
-	wg.Add(1)
-	go getDataFromWegene[dto.Skin](forSkin, profileId, BASEURL+"/skin", token, addressT, formatT, sexT, &wg)
-	wg.Add(1)
-	go getDataFromWegene[dto.Psychology](forPsychology, profileId, BASEURL+"/psychology", token, addressT, formatT, sexT, &wg)
-	wg.Add(1)
+	wg.Add(10)
+	completedChan := make(chan int, 10)
+	go getDataFromWegene[dto.HealthyTraits](forHealthyTraits, profileId, BASEURL+"/health/traits", token, addressT, formatT, sexT, &wg, completedChan)
+	go getDataFromWegene[dto.HealthyCarrier](forHealthyCarrier, profileId, BASEURL+"/health/carrier", token, addressT, formatT, sexT, &wg, completedChan)
+	go getDataFromWegene[dto.HealthyMetabolism](forHealthyMetabolism, profileId, BASEURL+"/health/metabolism", token, addressT, formatT, sexT, &wg, completedChan)
+	go getDataFromWegene[dto.Risk](forRisk, profileId, BASEURL+"/risk", token, addressT, formatT, sexT, &wg, completedChan)
+	go getDataFromWegene[dto.Athletigen](forAthletigen, profileId, BASEURL+"/athletigen", token, addressT, formatT, sexT, &wg, completedChan)
+	go getDataFromWegene[dto.Skin](forSkin, profileId, BASEURL+"/skin", token, addressT, formatT, sexT, &wg, completedChan)
+	go getDataFromWegene[dto.Psychology](forPsychology, profileId, BASEURL+"/psychology", token, addressT, formatT, sexT, &wg, completedChan)
+
 	//单独的接口
-	go getDataFromWegeneSimple[dto.Ancestry](profileId, BASEURL+"/ancestry", token, &wg)
-	wg.Add(1)
-	go getDataFromWegeneSimple[dto.Haplogroups](profileId, BASEURL+"/haplogroups", token, &wg)
-	wg.Add(1)
-	go getDataFromWegeneSimple[dto.Demographics](profileId, BASEURL+"/demographics", token, &wg)
+	go getDataFromWegeneSimple[dto.Ancestry](profileId, BASEURL+"/ancestry", token, &wg, completedChan)
+	go getDataFromWegeneSimple[dto.Haplogroups](profileId, BASEURL+"/haplogroups", token, &wg, completedChan)
+	go getDataFromWegeneSimple[dto.Demographics](profileId, BASEURL+"/demographics", token, &wg, completedChan)
+
+	// 处理子任务完成信号协程
+	go func() {
+		completed := 0
+		ctx := context.Background()
+		for range 10 {
+			// 接收子任务完成信号
+			<-completedChan
+			completed++
+			// 计算进度（每个子任务 10%）
+			progress := float64(completed) * 10
+			// 更新 Redis
+			err := configs.RedisClient.Set(ctx, "task:"+profileId, progress, 20*time.Minute).Err()
+			if err != nil {
+				log.Println("Redis 存储进度失败:", err)
+			}
+			// 发布进度到 Redis 频道
+			configs.RedisClient.Publish(ctx, "progress:"+profileId, progress)
+		}
+		// 所有子任务完成后，设置最终状态
+		configs.RedisClient.Set(ctx, "task:"+profileId, "completed", 10*time.Minute)
+		configs.RedisClient.Publish(ctx, "progress:"+profileId, "completed")
+	}()
 
 	wg.Wait()
+	//关闭通道
+	close(completedChan)
+	//更新redis
+	ctxRedis := context.Background()
+	configs.RedisClient.Set(ctxRedis, "task:"+profileId, "completed", 24*time.Hour)
+	configs.RedisClient.Publish(ctxRedis, "progress:"+profileId, "completed")
+	//更新数据库
+	configs.DB.Model(&dto.UniqueProfiles{}).Where("profile_id = ?", profileId).Update("status", 1)
 	log.Println("数据异步保存完成")
 	//修改状态为已完成,根据profileId查找记录
-	configs.DB.Model(&dto.UniqueProfiles{}).Where("profile_id = ?", profileId).Update("status", 1)
+
 }

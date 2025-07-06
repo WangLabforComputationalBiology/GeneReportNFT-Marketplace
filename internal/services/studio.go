@@ -99,3 +99,11 @@ func (s *StudioService) GetProfileIdsByUser(userAddress string) (dto.ProfileIdsR
 	}
 	return dto.ProfileIdsResp{ProfileIds: results}, nil
 }
+
+func (s *StudioService) GetUncompletedProfileIdsByUser(userAddress string) (dto.ProfileIdsResp, error) {
+	results, err := dao.GetUserDao().GetUncompletedProfileIdsByUser(userAddress)
+	if err != nil {
+		return dto.ProfileIdsResp{}, appErrors.New(http.StatusInternalServerError, "获取profile ids失败", err)
+	}
+	return dto.ProfileIdsResp{ProfileIds: results}, nil
+}

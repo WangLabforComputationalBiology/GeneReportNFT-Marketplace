@@ -16,7 +16,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -433,15 +432,15 @@ func (u *User) ReceiveCode(ctx *gin.Context) {
 	token := u.GetWegeneToken(code)
 
 	//生成一个uuid
-	uuid := uuid.New().String()
+	tokenID := uuid.New().String()
 	//将uuid和token的映射存到redis，5分钟后过期
-	configs.RedisClient.Set(ctx, uuid, token, 5*time.Minute)
-	fmt.Println("存到redis的uuid：token = ", uuid, "------", token)
+	configs.RedisClient.Set(ctx, tokenID, token, 5*time.Minute)
+	fmt.Println("存到redis的uuid：token = ", tokenID, "------", token)
 	if code == "" {
 		fmt.Println("授权码为空，第二次进入这个接口，无需重定向！")
 		return
 	}
-	ctx.Redirect(http.StatusMovedPermanently, "http://localhost:5173/publish/selectProfile/"+uuid)
+	ctx.Redirect(http.StatusMovedPermanently, "http://localhost:5173/publish/selectProfile/"+tokenID)
 
 }
 
@@ -488,7 +487,7 @@ func (u *User) GetWegeneToken(code string) (tkn string) {
 	defer resp.Body.Close()
 
 	// 读取响应
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading response:", err)
 		return
@@ -512,11 +511,11 @@ func (u *User) GetWegeneToken(code string) (tkn string) {
 // 拿着token取请求profile,基因报告
 func getReportId(token string) (usersProfile dto.GetReportId) {
 
-	url := "https://api.wegene.com/user/"
+	wegeneUrl := "https://api.wegene.com/user/"
 	method := "GET"
 
 	client := &http.Client{}
-	req, err := http.NewRequest(method, url, nil)
+	req, err := http.NewRequest(method, wegeneUrl, nil)
 
 	if err != nil {
 		fmt.Println(err)
@@ -531,7 +530,7 @@ func getReportId(token string) (usersProfile dto.GetReportId) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -577,49 +576,42 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 	//拿到后删除redis的记录
 	configs.RedisClient.Del(context.Background(), code)
 
-	// 上下文获取address
-	addressCtx, _ := ctx.Get("user_address")
-	if addressCtx == nil {
-		//ctx.JSON(http.StatusBadRequest, gin.H{"error": "用户未登录或地址无效！"})
-		log.Printf("用户未登录或地址无效！")
-		//return
-	}
+	userAddress := ctx.GetString("user_address")
 
-	address, ok := addressCtx.(string)
-	if !ok {
-		//ctx.JSON(http.StatusBadRequest, gin.H{"error": "用户未登录或地址无效！"})
-		log.Printf("用户未登录或地址无效！")
-		address = ""
-		//return
+	//查看数据库是否已有记录
+	var isExist int
+	err := configs.DB.Select("count(*)").
+		Table("unique_profiles").
+		Where("profile_id = ?", toSave.ProfileId).
+		Scan(&isExist).Error
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"code": http.StatusInternalServerError, "message": "服务繁忙，请稍后再试"})
 	}
-	//查看数据库是否已经保存过
-	var unique dto.UniqueProfiles
-	configs.DB.Where("profile_id = ?", toSave.ProfileId).Find(&unique)
-	if unique.ID != 0 {
-		log.Println("数据已经保存过！是否保存决定权再saveData服务")
-		//ctx.JSON(http.StatusOK, gin.H{"msg": "数据已经保存过！是否保存决定权再saveData服务"})
-
+	if isExist != 0 {
+		ctx.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "message": "您的基因数据正在处理中，无需重复提交"})
+	}
+	//新建数据请求任务 (redis & mysql）
+	configs.RedisClient.Set(context.Background(), "task:"+toSave.ProfileId, 0, 24*time.Hour)
+	record := &dto.UniqueProfiles{
+		Address:   userAddress,
+		ProfileId: toSave.ProfileId,
+		Status:    0, // 0代表正在处理，1代表处理完成
+	}
+	res := configs.DB.Create(record)
+	if res.Error == nil {
+		fmt.Println("重复性检测数据保存成功")
 	} else {
-		record := &dto.UniqueProfiles{
-			Address:   address,
-			ProfileId: toSave.ProfileId,
-			Status:    0, //0代表正在处理，1代表处理完成
-		}
-		res := configs.DB.Create(record)
-		if res.Error == nil {
-			fmt.Println("重复性检测数据保存成功")
-		} else {
-			fmt.Println("重复性检测数保存失败", res.Error)
-		}
+		fmt.Println("重复性检测数保存失败", res.Error)
 	}
-	//记录profileid到metadatas，因为保存微基因数据的服务和这个不是一个
-	var usersProfile dto.GetReportId = getReportId(token)
+
+	//记录profileId到metadatas，因为保存微基因数据的服务和这个不是一个
+	var usersProfile = getReportId(token)
 	profiles := usersProfile.Profiles
 	var tmp dto.Profile
 	for _, profile := range profiles {
 		if profile.Id == toSave.ProfileId {
 			tmp = profile
-			sendMsg := token + ":" + toSave.ProfileId + ":" + address + ":" + tmp.Format + ":" + strconv.Itoa(tmp.Sex)
+			sendMsg := token + ":" + toSave.ProfileId + ":" + userAddress + ":" + tmp.Format + ":" + strconv.Itoa(tmp.Sex)
 			//异步保存数据
 			rocketmq.SendMsg("saveData", sendMsg)
 			fmt.Println("成功！异步保存数据：", sendMsg)

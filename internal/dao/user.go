@@ -101,7 +101,15 @@ func (u *UserDao) UpdateUserInstitution(userAddress, institution, email string) 
 func (u *UserDao) GetProfileIdsByUser(address string) (results []string, err error) {
 	err = u.DB().Select("profile_id").
 		Table("unique_profiles").
-		Where("address = ?", address).
+		Where("address = ? AND status = 1", address).
+		Scan(&results).Error
+	return results, err
+}
+
+func (u *UserDao) GetUncompletedProfileIdsByUser(address string) (results []string, err error) {
+	err = u.DB().Select("profile_id").
+		Table("unique_profiles").
+		Where("address = ? AND status = 0", address).
 		Scan(&results).Error
 	return results, err
 }

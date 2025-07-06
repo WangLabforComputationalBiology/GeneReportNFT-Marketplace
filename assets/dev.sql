@@ -911,7 +911,7 @@ CREATE TABLE activities
     `expiry`       BIGINT COMMENT '过期时间',
     `event`        VARCHAR(255) NOT NULL Comment '活动类型',
     `geneSharing`  VARCHAR(42) Comment 'geneSharing合集地址',
-    `metadata`     VARCHAR(64) Comment 'metadata数据哈希',
+    `metadata`     VARCHAR(66) Comment 'metadata数据哈希',
     PRIMARY KEY (id),
     INDEX idx_activity (user_address, time)
 );

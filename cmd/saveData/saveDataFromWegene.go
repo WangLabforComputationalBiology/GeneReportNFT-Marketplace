@@ -13,7 +13,7 @@ func main() {
 	setup.Setup()
 	fmt.Println("数据库迁移开始")
 	// 自动迁移
-	configs.DB.AutoMigrate(
+	_ = configs.DB.AutoMigrate(
 		&dto.Psychology{},
 		&dto.Skin{},
 		&dto.Athletigen{},
@@ -28,7 +28,6 @@ func main() {
 		&dto.Demographics{},
 		&dto.Genotype{},
 		&dto.UniqueProfiles{},
-		//&dto.Metadatas{},
 		&dto.DataVisitRecord{},
 	)
 
@@ -42,7 +41,7 @@ func main() {
 	//从标准输入读取数据
 	for {
 		var msg string
-		fmt.Scanln(&msg)
+		_, _ = fmt.Scanln(&msg)
 		rocketmq.SendMsg("test", msg)
 	}
 

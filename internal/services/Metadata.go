@@ -191,6 +191,22 @@ func (m *MetadataService) GetDataImpl(profileId, category string) (map[string]in
 //		return iv, pr, nil
 //	}
 func (m *MetadataService) GetGenoTypeZip(dataHash, viewer, pubKey string) (dto.GetGenoTypeZipResp, error) {
+	// 根据 hash 取 metadata
+	metadata, err := dao.GetMetadataDao().GetMetadataOverviewByDataHash(dataHash)
+	if err != nil {
+		return dto.GetGenoTypeZipResp{}, appErrors.New(503, "获取Metadata详细信息失败", err)
+	}
+
+	// 查看者为Metadata的拥有者，直接通过校验
+	if metadata.Owner == viewer {
+		shortURL, err := DownloadServ.GenerateDownloadLink(dataHash, viewer, pubKey)
+		if err != nil {
+			return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "短链接服务繁忙，请稍后再试", err)
+		}
+		return dto.GetGenoTypeZipResp{DownloadURL: shortURL, AccessStatus: true}, nil
+	}
+
+	// 查看者非Metadata拥有者
 	// 检查是否通过机构认证
 	user, err := dao.GetUserDao().GetUser(viewer)
 	if err != nil {
@@ -198,12 +214,6 @@ func (m *MetadataService) GetGenoTypeZip(dataHash, viewer, pubKey string) (dto.G
 	}
 	if user.Email == "UNKNOWN" {
 		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusForbidden, "请先进行机构邮箱认证")
-	}
-
-	// 根据 hash 取 metadata
-	metadata, err := dao.GetMetadataDao().GetMetadataOverviewByDataHash(dataHash)
-	if err != nil {
-		return dto.GetGenoTypeZipResp{}, appErrors.New(503, "获取Metadata详细信息失败", err)
 	}
 
 	// 检查metadata当前是否可共享

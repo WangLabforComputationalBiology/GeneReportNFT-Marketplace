@@ -250,7 +250,7 @@ type Demographics struct {
 	Population     string `json:"population" gorm:"column:population"`
 }
 
-// 重复性检测的表
+// UniqueProfiles 重复性检测的表
 type UniqueProfiles struct {
 	gorm.Model
 	Address   string `json:"address" gorm:"column:address"`
@@ -259,7 +259,7 @@ type UniqueProfiles struct {
 	Status    int    `json:"status" gorm:"column:status"`
 }
 
-// 数据访问记录
+// DataVisitRecord 数据访问记录
 type DataVisitRecord struct {
 	gorm.Model
 	Address    string    `json:"address" gorm:"column:address"`

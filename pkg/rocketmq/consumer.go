@@ -69,9 +69,8 @@ func HandleMsgSaveData(ctx context.Context, msgs ...*primitive.MessageExt) (cons
 	for i := range msgs {
 		fmt.Printf("保存消息的消费者处理消息: %v \n", string(msgs[i].Body))
 		//保存数据
-		//todo 此处可以做重复新检测，表需要一个状态位来记录他的完成情况
 		tools.SaveAllData(string(msgs[i].Body))
-		//tools.SaveDataTest(parts[0])
+
 	}
 	return consumer.ConsumeSuccess, nil
 }

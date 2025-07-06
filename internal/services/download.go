@@ -94,7 +94,7 @@ func (d *DownloadService) DownloadFile(shortCode, userAddress string) (io.Reader
 	go func() {
 		defer pw.Close()
 		if err := utils.GenerateCsvZip(pw, metadata.Category, genoData); err != nil {
-			pw.CloseWithError(err)
+			_ = pw.CloseWithError(err)
 		}
 	}()
 
