@@ -2,14 +2,11 @@ import { defineStore } from "pinia";
 
 const useWalletStore = defineStore("account", {
     state: () => ({
+        token: null,
         address: null,
         insititution: null,
-        access_token: null,
         email: null,
     }),
-    mutations: {
-
-    },
     actions: {
         setAddress(address) {
             this.address = address;
@@ -18,16 +15,22 @@ const useWalletStore = defineStore("account", {
             this.insititution = insititution;
         },
         setToken(token) {
-            this.access_token = token;
-            console.log(this.access_token);
+            this.token = token;
+            // console.log(this.token);
             /*
-            *不打印就是无法储存access_token，是本项目最大最莫名其妙最逆天的bug
+            *不打印就是无法储存token，是本项目最大最莫名其妙最逆天的bug
             *并且打印其他数据也无法储存  
             */
         },
         setEmail(email) {
             this.email = email;
-        }
+        },
+        reset() {
+            this.address = null;
+            this.insititution = null;
+            this.token = null;
+            this.email = null;
+        },
     },
     persist: {
         storage: sessionStorage,

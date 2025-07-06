@@ -28,7 +28,8 @@ import Bubbles from '@/views/components/bubbles.vue'
 const walletStore = useWalletStore();
 const router = useRouter();
 const logout = () => {
-    walletStore.$reset();//登出重置
+    // walletStore.$reset();//登出重置
+    walletStore.reset();
     ElMessage.success('Log out successful!');
     setTimeout(() => {
         router.push('/login');

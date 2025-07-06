@@ -1,13 +1,11 @@
 import axios from 'axios';
 import { useWalletStore } from '@/stores/account';
-
 const baseURL = import.meta.env.VITE_APP_BASE_URL;
-const walletStore = useWalletStore();
 
 const Api = axios.create({
     baseURL: baseURL,
     headers: {
-        'Authorization': walletStore.access_token,
+        'Authorization': useWalletStore().token,//这里直接使用useWalletStore()才能保证数据的动态性
         'Content-Type': 'application/json'
     }
 });

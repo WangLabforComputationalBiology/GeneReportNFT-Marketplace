@@ -147,6 +147,7 @@ const getList = async () => {
         }, 1500)
     }
 }
+getList();  //获取列表
 
 /* 获取详细数据 */
 const selectedData = ref({});   //选中查看的卡片
@@ -235,13 +236,15 @@ const ObtainClick = async () => {
         const res = await Api.get(`/gene_type/${selectedData.value.data_hash}`, {
             data_hash: selectedData.value.data_hash,
         });
-        console.log(res)
-        if (res.data.data.access_status == false && res.data.message == 'success') {
-            dialogIsVisible.value = !res.data.data.access_status; //如果返回值为false，则显示弹窗
-        }
+        console.log(res.data.data)
+        // if (res.data.data.access_status == false) {
+        //     dialogIsVisible.value = true; //如果返回值为false，则显示弹窗
+        // }
     } catch (error) {
-        console.error('Error fetching detail data:', error);
-    } finally {
+        console.error('No rights(没有权限，将进行获权操作). Error: ', error);
+        if (error.status == 403 && error.response.data.code == 403) {
+            dialogIsVisible.value = true; //如果返回值为false，则显示弹窗
+        }
     }
 }
 
@@ -259,7 +262,7 @@ const download = async () => {
 
 /**调用合约 */
 const contractABI = abi; // 合约ABI(固定，每个合约对应一个abi)
-const contractAddress = '0x82c535d1cFcc5690ac42D3A24b685cF46f09A172'; // 合约地址(固定，每次部署合约生成一个)
+const contractAddress = '0xcde2e7e1483716b491B9f38F7908161414A6260d'; // 合约地址(固定，每次部署合约生成一个)
 async function writeContract() {
     if (purpose.value == '') {
         ElMessage.error('Please select a purpose');
@@ -299,17 +302,15 @@ async function writeContract() {
         if (receipt.status === 1) {
             ElMessage.success('Submission success!');
             dialogIsVisible.value = false;
-            const receivedHash = receipt.logs[0].topics[0] || '';   //通过日志获取返回的交易哈希
+            const receivedHash = receipt.hash || '';   //通过日志获取返回的交易哈希
+            console.log('Transaction hash(交易哈希):', receipt.hash);
             uploadReceivedHash(receivedHash);   //返回交易哈希校验
-        } else {
-            ElMessage.error('Submission failed!');
         }
     } catch (error) {
         console.error('Error writing to contract:', error);
         //取消操作反馈
-        if (error.code == 'ACTION_REJECTED' || error.info.error.code == 4001 || error.reason == 'rejected') {
+        if (error.code == 'ACTION_REJECTED' || error.reason == 'rejected') {
             ElMessage.error('User action denied.');
-            // console.log(error.info.error.code);
         }
     } finally {
         loading.close();
@@ -318,11 +319,20 @@ async function writeContract() {
 //上传哈希
 async function uploadReceivedHash(receivedHash) {
     try {
-        const res = Api.post('/gene_type/access', {
-            hash: receivedHash
+        const res = await Api.post('/gene_type/obtainAccess', {
+            tx_hash: receivedHash
         })
+        if (res.data.data.code == 200) {
+            ElMessage.success('Submission success!');
+            console.log('uploadReceivedHash success!');
+        }
     } catch (error) {
-
+        console.error('uploadReceivedHash error:', error);
+        // ElMessage.error('Submission failed!');
+        if(error.status == 400)
+        {
+            ElMessage.error('BAD REQUEST.Please try again later!');
+        }
     }
 }
 
@@ -331,7 +341,7 @@ watch(page, () => {
 })
 
 onMounted(() => {
-    getList();  //页面刷新即加载list
+    // getList();  //页面刷新即加载list,似乎更慢,改为在js中加载
 });
 </script>
 
@@ -394,19 +404,6 @@ onMounted(() => {
     display: flex;
     font-size: 70px;
     color: #169608;
-    animation: slideIn 0.4s ease-in-out forwards;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(-5%);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
 }
 
 .plaza-page {

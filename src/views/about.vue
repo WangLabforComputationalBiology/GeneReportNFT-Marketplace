@@ -1,10 +1,13 @@
 <template>
     <div class="wrapper">
         <div class="top">
-            <h1><span style="color: #169608;">Powered</span> by <img src="@/icons/FISCO_BCOS_logo.svg"
-                    alt="Fisco bcos logo" @click="toFB"></h1>
+            <div class="title">
+                <span><span style="color: #169608;">Powered</span> by</span>
+                <div class="FB-logo"></div>
+                <!-- <img src="@/icons/FISCO_BCOS_logo.svg" alt="Fisco bcos logo" @click="toFB"> -->
+            </div>
         </div>
-        
+
         <div class="center">
             <p>WangLab@Shenzhen Technology University</p>
             <p>Email: wangxin@sztu.edu.cn</p>
@@ -34,16 +37,6 @@ function toFB() {
     min-height: 860px;
     margin: auto;
     overflow: hidden;
-    animation: fadeIn 0.4s ease-in-out 0s forwards;
-
-    @keyframes fadeIn {
-        0% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
 }
 
 .top {
@@ -54,7 +47,7 @@ function toFB() {
     width: 600px;
     height: 100px;
     color: #333;
-    line-height: 80px;
+    line-height: 40px;
     text-align: center;
 
     h1 {
@@ -63,6 +56,19 @@ function toFB() {
 
     img {
         cursor: pointer;
+    }
+
+    .title {
+        display: flex;
+        flex-direction: column;
+        font-size: 36px;
+
+        .FB-logo{
+            width: 600px;
+            height: 160px;
+            background: url('@/icons/FISCO_BCOS_logo.svg') no-repeat;
+            background-size: 100% 100%;
+        }
     }
 }
 
@@ -80,6 +86,7 @@ function toFB() {
         margin: 20px 0;
         text-align: center;
     }
+
     .pub {
         font-size: 20px;
         color: #333;
@@ -88,7 +95,7 @@ function toFB() {
 
         &:hover {
             color: #169608;
-            
+
         }
     }
 }

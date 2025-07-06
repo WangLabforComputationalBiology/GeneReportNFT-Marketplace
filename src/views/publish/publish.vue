@@ -230,6 +230,12 @@ let description = ref('');
 let tags = ref('');
 const hash = ref();
 const createData = async () => {
+   let loading = ElLoading.service({
+         lock: true,
+         text: 'Loading...',
+         background: 'rgba(0, 0, 0, 0.7)',
+         customClass: 'loading',
+      })
    try {
       if (name.value === '' || name.value === null || name.value === undefined) {
          alert('Please enter the name of the collection');
@@ -243,12 +249,7 @@ const createData = async () => {
          alert('Please enter a description of the collection');
          return;
       }
-      const loading = ElLoading.service({
-         lock: true,
-         text: 'Loading...',
-         background: 'rgba(0, 0, 0, 0.7)',
-         customClass: 'loading',
-      })
+      
       const res = await Api.post('/studio/createFromThirdParty', {
          profile_id: selectedProfile.value,
          name: name.value,
@@ -261,10 +262,6 @@ const createData = async () => {
          hash.value = res.data.data.transaction_hash;
          step.value += 1;
          pasteHash();
-      } else {
-         console.error('Error creating data:', res.data);
-         ElMessage.error('Error creating data');
-         loading.close();
       }
    } catch (error) {
       console.error('Error creating data:', error);
@@ -296,17 +293,6 @@ onMounted(() => {
    min-width: 1200px !important;
    overflow: hidden;
    gap: 1px;
-   animation: fadeIn 0.2s ease-in-out 0s forwards;
-
-   @keyframes fadeIn {
-      0% {
-         opacity: 0;
-      }
-
-      100% {
-         opacity: 1;
-      }
-   }
 }
 
 .active {

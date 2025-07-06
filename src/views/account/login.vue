@@ -3,23 +3,24 @@
         <Bubbles />
         <div class="wrapper">
             <div class="useMeta">
-                <p>3. Click to connect</p>
+                <h2>3. Click to connect</h2>
                 <span class="meta" @click="connectWallet">
                     <img class="icon" src="@/icons/metalogo.png" />
                     <p style="color:#333;">MetaMask</p>
                 </span>
             </div>
+            <p style="color:#333;font-size: 16px;margin-top: 20px;">*Today's version only supports one account at a time, so please do not switch account in MetaMask after logging in.</p>
         </div>
         <div class="wrapper">
             <h1>Login to <span style="color:#333;">begin.</span></h1>
-            <p>1. <span class="download" @click="downloadMetamask()">Download MetaMask extension</span> in your Brower
-                and setup your wallet.</p>
+            <h2>1. <span class="download" @click="downloadMetamask()">Download MetaMask extension</span> in your Brower
+                and setup your wallet.</h2>
             <img class="step-tip-img" src="@/assets/imgs/step1.png" alt="step1">
             <p style="font-size: 16px;color:#333">*We do suggest that use Google Chrome. You are using <span
                     style="color: #333;font-weight: 700;">{{ browser }}</span>.
             </p>
             <br>
-            <p>2. Click the little earth icon, and switch to BioChainer network.</p>
+            <h2>2. Click the little earth icon, and switch to BioChainer network.</h2>
             <img class="step-tip-img" src="@/assets/imgs/step2.jpg" alt="step2">
             <div class="setup-network" @click="isVisible = true">->How to setup BioChainer network?</div>
         </div>
@@ -97,48 +98,48 @@ async function connectWallet() {
         const accounts = await provider.send("eth_requestAccounts", []);
         address.value = accounts[0];
 
-        if (!error.value) {
-            // 3. 获取nonce
-            const nonceResponse = await Api.get(`/user/nonce/${address.value}`);
-            nonce.value = nonceResponse.data.data.nonce;
 
-            // 4. 构造message消息
-            message.value = structureMessage(address.value, nonce.value);
+        // 3. 获取nonce
+        const nonceResponse = await Api.get(`/user/nonce/${address.value}`);
+        nonce.value = nonceResponse.data.data.nonce;
 
-            // 5. 请求签名
-            const signature = await window.ethereum.request({
-                method: "personal_sign",
-                params: [message.value, address.value],
-            });
+        // 4. 构造message消息
+        message.value = structureMessage(address.value, nonce.value);
 
-            // 6. 发送登录请求
-            const loginResponse = await Api.post(`/user/login`, {
-                user_address: address.value,
-                signature: signature,
-            });
+        // 5. 请求签名
+        const signature = await window.ethereum.request({
+            method: "personal_sign",
+            params: [message.value, address.value],
+        });
 
-            // 7. 保存登录信息
-            walletStore.setAddress(address.value);
-            walletStore.setInstitution(loginResponse.data.data.user.institution);
-            walletStore.setToken(loginResponse.data.data.access_token);
-            walletStore.setEmail(loginResponse.data.data.user.email);
+        // 6. 发送登录请求
+        const loginResponse = await Api.post(`/user/login`, {
+            user_address: address.value,
+            signature: signature,
+        });
 
-            ElMessage.success('Login successful!');
-            router.push(`/account?t=${Date.now()}`);    // 添加时间戳，防止浏览器缓存
-        }
+        // 7. 保存登录信息
+        walletStore.setAddress(address.value);
+        walletStore.setToken(loginResponse.data.data.access_token);
+        walletStore.setInstitution(loginResponse.data.data.user.institution);
+        walletStore.setEmail(loginResponse.data.data.user.email);
+
+        ElMessage.success('Login successful!');
+        router.push(`/account?t=${Date.now()}`);    // 添加时间戳，防止浏览器缓存
+
     } catch (error) {
         loading.close();
-        console.log(error.error);
-        if (error.error.code == 404) {
+        console.log(error);
+        if (error.code == 404) {
             ElMessage.error('Network error.');
         }
-        if (error.error.code == -32002) {
+        if (error.code == -32002) {
             ElMessage.error('MetaMask is not accessible.Please unlock your wallet and try again.');
         }
         if (error.code === 4001) {
             ElMessage.warning('You denied the wallet connection');
         }
-        if (error.code === 500 || error.code === 501 || error.code === 502 || error.code === 503 || error.error.code == 503) {
+        if (error.code === 500 || error.code === 501 || error.code === 502 || error.code === 503) {
             alert('Server error, please try again later.');
         }
     } finally {
