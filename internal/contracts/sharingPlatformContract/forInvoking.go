@@ -66,10 +66,10 @@ func init() {
 	AdminPrivateKeyHex = "9f5eb599dd2ff51f67724a793a6d702bcc273b3afe3e3bbc0e2870ed11594432"
 
 	// 初始化已部署的sharingPlatform_v3合约地址,转大小写不敏感
-	PlatformContractAddressHex = strings.ToLower("0xcde2e7e1483716b491B9f38F7908161414A6260d")
+	PlatformContractAddressHex = strings.ToLower("0xB63F003d7464F840F7992fAD36e57900DB1A40c0")
 
 	//初始化已部署的Metadata合约地址
-	MetaDataContractAddress = strings.ToLower("0x1341e4C3526cdE98C2363BdfD3f657B1C47526F1")
+	MetaDataContractAddress = strings.ToLower("0xBFC75376CD8a2a67eC50Fb56cab36a8Df2566f1D")
 
 	// 解码私钥
 	privateKeyBytes, err := hex.DecodeString(AdminPrivateKeyHex)

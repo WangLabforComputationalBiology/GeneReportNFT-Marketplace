@@ -83,7 +83,7 @@ func registerGeneTypeRouter(r *gin.RouterGroup) {
 
 }
 func registerDownloadRouter(r *gin.RouterGroup) {
-	r.GET("/:short_code", middlewares.ZapMiddleware(), controllers.DownloadController.DownloadFile)
+	r.GET("/:short_code", middlewares.ZapMiddleware(), middlewares.AuthMiddleware(), controllers.DownloadController.DownloadFile)
 }
 func SetupRouter() *gin.Engine {
 	r := gin.Default()

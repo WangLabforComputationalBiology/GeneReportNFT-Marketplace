@@ -3,6 +3,7 @@ package controllers
 import (
 	"GeneReport_platform/api/dto"
 	"GeneReport_platform/internal/services"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
 	"net/http"
@@ -23,14 +24,15 @@ func (d *Download) DownloadFile(ctx *gin.Context) {
 		})
 		return
 	}
-	pr, err := services.DownloadServ.DownloadFile(shortCode, ctx.GetString("user_address"))
+	pr, dataHash, err := services.DownloadServ.DownloadFile(shortCode, ctx.GetString("user_address"))
 	if err != nil {
 		_ = ctx.Error(err)
 		return
 	}
 
 	ctx.Header("Content-Type", "application/zip")
-	ctx.Header("Content-Disposition", "attachment; filename=example.zip")
+	ctx.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s.zip", dataHash))
+
 	ctx.Stream(func(w io.Writer) bool {
 		_, err := io.Copy(w, pr)
 		if err != nil {

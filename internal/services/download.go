@@ -60,32 +60,31 @@ func (d *DownloadService) GenerateDownloadLink(dataHash, userAddress, pubKey str
 		return "", appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
 
-	return "dl/" + shortCode, nil
+	return "http://10.108.10.51:7070/dl/" + shortCode, nil
 }
 
-func (d *DownloadService) DownloadFile(shortCode, userAddress string) (io.Reader, error) {
-	var vals map[string]string
-
+func (d *DownloadService) DownloadFile(shortCode, userAddress string) (io.Reader, string, error) {
 	getAllCmd := configs.RedisClient.HGetAll(context.Background(), shortCode)
-	if vals, err := getAllCmd.Result(); err != nil {
-		return nil, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+	vals, err := getAllCmd.Result()
+	if err != nil {
+		return nil, "", appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	} else if vals["data_hash"] == "" {
 		//为空说明已过期
-		return nil, appErrors.New(http.StatusBadRequest, "该链接已过期,请重新获取")
+		return nil, "", appErrors.New(http.StatusBadRequest, "该链接已过期,请重新获取")
 	} else if vals["user_address"] != userAddress {
 		//链接的所属用户地址和请求者地址不匹配
-		return nil, appErrors.New(http.StatusBadRequest, "该链接不属于您，请重新获取")
+		return nil, "", appErrors.New(http.StatusBadRequest, "该链接不属于您，请重新获取")
 	}
 
 	metadata, err := dao.GetMetadataDao().GetMetadataOverviewByDataHash(vals["data_hash"])
 	if err != nil {
-		return nil, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+		return nil, "", appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
 
 	//获取基因型数据
 	genoData, err := dao.GetMetadataDao().GetGenoType(metadata.ProfileID, metadata.Category)
 	if err != nil {
-		return nil, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+		return nil, "", appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
 
 	//创建文件流通道
@@ -94,10 +93,10 @@ func (d *DownloadService) DownloadFile(shortCode, userAddress string) (io.Reader
 	// 异步调用服务层生成 ZIP 数据
 	go func() {
 		defer pw.Close()
-		if err := utils.GenerateCsvZip(pw, genoData); err != nil {
+		if err := utils.GenerateCsvZip(pw, metadata.Category, genoData); err != nil {
 			pw.CloseWithError(err)
 		}
 	}()
 
-	return pr, nil
+	return pr, metadata.DataHash, nil
 }

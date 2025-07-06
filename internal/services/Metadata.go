@@ -246,9 +246,9 @@ func (m *MetadataService) GetGenoTypeZip(dataHash, viewer, pubKey string) (dto.G
 	case 1:
 		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusBadRequest, "该Metadata不存在", err)
 	case 2:
-		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusBadRequest, "链上查看许可不存在", err)
+		return dto.GetGenoTypeZipResp{}, appErrors.NewWithData(http.StatusBadRequest, "链上查看许可不存在", dto.GetGenoTypeZipResp{DownloadURL: "", AccessStatus: false}, err)
 	case 3:
-		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusBadRequest, "您的链上查看许可已过期", err)
+		return dto.GetGenoTypeZipResp{}, appErrors.NewWithData(http.StatusBadRequest, "您的链上查看许可已过期", dto.GetGenoTypeZipResp{DownloadURL: "", AccessStatus: false}, err)
 	case 4:
 		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusBadRequest, "您的查看许可已被封禁", err)
 	default:
@@ -289,8 +289,8 @@ func (m *MetadataService) ObtainViewAccess(txHash, userAddress, pubKey string) (
 
 	//根据解码参数进行类型断言
 	dataHashBytes, ok := params["dataHash"].([32]byte)
-	dataHash := common.Bytes2Hex(dataHashBytes[:])
-	if dataHash == "" || !ok {
+	dataHash := "0x" + common.Bytes2Hex(dataHashBytes[:])
+	if dataHash == "0x" || !ok {
 		return dto.NewViewAccessResp{}, appErrors.New(http.StatusBadRequest, "交易参数错误", err)
 	}
 
@@ -356,8 +356,9 @@ func (m *MetadataService) ObtainViewAccess(txHash, userAddress, pubKey string) (
 	//链下数据库
 	activity := &models.Activity{
 		Id:              uuid.New().String(),
-		Metadata:        "0x" + metadata.DataHash,
+		Metadata:        dataHash,
 		TransactionHash: receipt.TransactionHash,
+		UserAddress:     userAddress,
 		Time:            time.Now(),
 		Expiry:          expiry.Int64(),
 		From:            geneSharingAddress.Hex(),

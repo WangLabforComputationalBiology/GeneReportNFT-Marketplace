@@ -1,11 +1,14 @@
 package utils
 
 import (
+	"GeneReport_platform/pkg/appErrors"
 	"archive/zip"
 	"crypto/rand"
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"io"
+	"net/http"
 	"reflect"
 )
 
@@ -63,7 +66,7 @@ func GenerateShortCode() string {
 }
 
 // GenerateCsvZip 向zipWriter写入Csv文件
-func GenerateCsvZip(writer io.Writer, data any) error {
+func GenerateCsvZip(writer io.Writer, category string, data any) error {
 	// 使用反射检查是否为切片
 	v := reflect.ValueOf(data)
 	if v.Kind() != reflect.Slice {
@@ -84,9 +87,15 @@ func GenerateCsvZip(writer io.Writer, data any) error {
 	defer zw.Close()
 
 	// 创建 ZIP 条目
-	zipEntry, err := zw.Create("example.csv")
+	zipEntry, err := zw.Create(category + ".csv")
 	if err != nil {
 		return err
+	}
+
+	// 添加 UTF-8 BOM（兼容 Excel）
+	_, err = zipEntry.Write([]byte{0xEF, 0xBB, 0xBF})
+	if err != nil {
+		return appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", errors.New("设置UTF-8 BOM失败"))
 	}
 
 	// 创建 CSV 写入器

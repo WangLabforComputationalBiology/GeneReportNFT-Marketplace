@@ -42,7 +42,7 @@ func (s *StudioService) CreateAllFromThirdPartyOnChain(userAddressHex string, re
 	//验证预构建的Metadata的合法性
 	for _, result := range results {
 		// 十六进制字符串转字节存入32字节切片
-		dataHashBytes32s = append(dataHashBytes32s, [32]byte(common.Hex2Bytes(result.DataHash)))
+		dataHashBytes32s = append(dataHashBytes32s, [32]byte(common.Hex2Bytes(result.DataHash[2:])))
 	}
 
 	//链上数据创建

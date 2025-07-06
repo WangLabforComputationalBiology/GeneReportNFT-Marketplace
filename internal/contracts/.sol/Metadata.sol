@@ -155,7 +155,7 @@ contract Metadata {
             return 2;
         }
 
-        if (viewAccess.expiry >= block.timestamp) {
+        if (viewAccess.expiry <= block.timestamp) {
             //"the viewer's permission has expired"
             return 3;
         }
