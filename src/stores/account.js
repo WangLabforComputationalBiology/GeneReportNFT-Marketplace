@@ -8,20 +8,21 @@ const useWalletStore = defineStore("account", {
         email: null,
     }),
     actions: {
+        setToken(token) {
+            this.token = token;
+        },
+        setWalletInfo(address, insititution, email) {
+            this.address = address;
+            this.insititution = insititution;
+            this.email = email;
+        },
         setAddress(address) {
             this.address = address;
         },
         setInstitution(insititution) {
             this.insititution = insititution;
         },
-        setToken(token) {
-            this.token = token;
-            // console.log(this.token);
-            /*
-            *不打印就是无法储存token，是本项目最大最莫名其妙最逆天的bug
-            *并且打印其他数据也无法储存  
-            */
-        },
+        
         setEmail(email) {
             this.email = email;
         },

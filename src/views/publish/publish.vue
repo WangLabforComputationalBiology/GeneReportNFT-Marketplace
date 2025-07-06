@@ -195,9 +195,9 @@ const getProfileIds = async () => {
          customClass: 'loading',
       })
       if (res.data.code === 200) {
-         loading.close();
          profiles.value = res.data.data.profile_ids
          profileName.value = res.data.data.profile_name
+         loading.close();
       }
    } catch (error) {
       loading.close();

@@ -3,11 +3,11 @@
         <Bubbles />
         <div class="info">
             <h1 class="title"><span style="color: #169608;">Account</span> information</h1>
-            {{ walletStore.address ? `Address: ${walletStore.address}` : 'No address connected' }}
+            {{ useWalletStore().address ? `Address: ${useWalletStore().address}` : 'No address connected' }}
             <br>
-            {{ walletStore.insititution ? ` Institution: ${walletStore.insititution}.` : 'Your institution accreditation is not verified.' }}
+            {{ useWalletStore().insititution ? ` Institution: ${useWalletStore().insititution}.` : 'Your institution accreditation is not verified.' }}
             <br>
-            {{ walletStore.email ? `Email: ${walletStore.email}` : 'No email verified.'}}
+            {{ useWalletStore().email ? `Email: ${useWalletStore().email}` : 'No email verified.'}}
             <router-link to="/verify" style="color: #fff;">
                 <el-button class="custom-button">
                     Verify
@@ -24,19 +24,17 @@ import { useWalletStore } from '@/stores/account';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'
 import Bubbles from '@/views/components/bubbles.vue'
-
-const walletStore = useWalletStore();
 const router = useRouter();
 const logout = () => {
     // walletStore.$reset();//登出重置
-    walletStore.reset();
+    useWalletStore().reset();
     ElMessage.success('Log out successful!');
     setTimeout(() => {
         router.push('/login');
     }, 1500);
     
 }
-
+console.log(useWalletStore().token);
 </script>
 
 <style lang="scss" scoped>

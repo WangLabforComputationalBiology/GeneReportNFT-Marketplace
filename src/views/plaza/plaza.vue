@@ -73,7 +73,7 @@
         <template #footer>
             <div>
                 <el-button type="primary" @click="ObtainClick" class="obtain-btn"
-                    v-if="walletStore.address && walletStore.email && walletStore.insititution">Obtain</el-button>
+                    v-if="useWalletStore().address && useWalletStore().email && useWalletStore().insititution">Obtain</el-button>
                 <span v-else style="color: #169608;">Login and verify to obtain</span>
             </div>
         </template>
@@ -82,10 +82,10 @@
     <el-dialog v-model="dialogIsVisible" title="Obtaining" width="25%" :show-close="false">
         <el-form :model="form" label-width="auto">
             <el-form-item label="Account: ">
-                <span style="color: #169608;">{{ walletStore.address }}</span>
+                <span style="color: #169608;">{{ useWalletStore().address }}</span>
             </el-form-item>
-            <el-form-item label="Email: ">{{ walletStore.email }}</el-form-item>
-            <el-form-item label="Insititution: ">{{ walletStore.insititution }}</el-form-item>
+            <el-form-item label="Email: ">{{ useWalletStore().email }}</el-form-item>
+            <el-form-item label="Insititution: ">{{ useWalletStore().insititution }}</el-form-item>
             <el-form-item label="Purpose:">
                 <el-select placeholder="please select one" v-model="purpose">
                     <el-option label="Academic research" value="Academic research" />
@@ -109,16 +109,20 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { ethers } from "ethers";
-import Api from "@/axios/aixos";
 import { useWalletStore } from "@/stores/account";
+import Api from "@/axios/aixos";
 import { ElLoading, ElMessage } from 'element-plus'
-import abi from "@/assets/sharingPlatform.json";
-const walletStore = useWalletStore();
-
-/* 获取plaza卡片数据列表 */
+import { contractAddress, contractABI } from "@/views/plaza/contractConfig";
+// import abi from "@/assets/sharingPlatform.json";
+console.log(useWalletStore().token);
+/**获取plaza卡片数据列表
+ * @param {bool} loadingForPlaza 列表加载
+ * @param {number} page 页数
+ * @param {array} List 获取的plaza卡片列表  [{}]
+ */
 const loadingForPlaza = ref(false);
-const List = ref([]);   //获取的plaza卡片列表  [{}]
-const page = ref(1);    //页数
+const List = ref([]);
+const page = ref(1);
 const getList = async () => {
     try {
         List.value = [];
@@ -149,10 +153,14 @@ const getList = async () => {
 }
 getList();  //获取列表
 
-/* 获取详细数据 */
-const selectedData = ref({});   //选中查看的卡片
+/**获取详细数据
+ * @param {string} selectedData 选中查看的卡片
+ * @param {bool} loadingForTable 表格加载
+ * @param {array} detailData 根据选中卡片hash获取的报告详情 [{}]
+ */
+const selectedData = ref({});
 const loadingForTable = ref(false);
-const detailData = ref([]);     //根据选中卡片hash获取的报告详情 [{}]
+const detailData = ref([]);
 const getDetailData = async () => {
     try {
         loadingForTable.value = true;
@@ -169,7 +177,10 @@ const getDetailData = async () => {
     }
 }
 
-/* 详情抽屉 */
+/**详情抽屉
+ * @param {object} drawerIsVisible 详情抽屉是否显示
+ * @param {object} selectedData 选中查看的卡片
+ */
 const drawerIsVisible = ref(false);
 function isVisible(item) {
     selectedData.value = item || [];
@@ -228,7 +239,10 @@ const handleClosed = () => {
     loadingForTable.value = false;
 };
 
-/* 获取前数据采集 */
+/**获取前数据采集上链 || 已获取直接进行下载
+ * @param {bool}  dialogIsVisible  数据采集对话框（metadata未授权时弹出）
+ * @param {string}  purpose  数据采集目的
+ */
 let dialogIsVisible = ref(false);
 const purpose = ref('');
 const ObtainClick = async () => {
@@ -237,19 +251,24 @@ const ObtainClick = async () => {
             data_hash: selectedData.value.data_hash,
         });
         console.log(res.data.data)
-        // if (res.data.data.access_status == false) {
-        //     dialogIsVisible.value = true; //如果返回值为false，则显示弹窗
-        // }
+        if (res.data.code == 200) {
+            const shortURL = res.data.data.download_url;
+            downloadMetadata(shortURL);
+            ElMessage.success('Metadata obtained successfully');
+        }
     } catch (error) {
         console.error('No rights(没有权限，将进行获权操作). Error: ', error);
         if (error.status == 403 && error.response.data.code == 403) {
             dialogIsVisible.value = true; //如果返回值为false，则显示弹窗
         }
+        else if (error.code == -32603) {
+            ElMessage.warning('Internal contract error.');
+        }
     }
 }
 
 /* 下载 */
-const download = async () => {
+const downloadDecryptTool = async () => {
 
 }
 
@@ -260,9 +279,12 @@ const download = async () => {
 // const test_address = '0x0958817F161D6c9Ee7974Bff07f354E410632Eb1';//测试合约地址
 // const test_hash = '89c792eed9551d2b477e5b300b6dfc26c11ab4ccd72a3d44899c5b1b69a52123';
 
-/**调用合约 */
-const contractABI = abi; // 合约ABI(固定，每个合约对应一个abi)
-const contractAddress = '0xcde2e7e1483716b491B9f38F7908161414A6260d'; // 合约地址(固定，每次部署合约生成一个)
+/**调用合约
+ * @param {json} contractABI 合约ABI(固定，每个合约对应一个abi，源于config)
+ * @param {string} contractAddress 合约地址(固定，每次部署合约生成一个，源于config)
+ */
+// const contractABI = abi;
+// const contractAddress = '0xcde2e7e1483716b491B9f38F7908161414A6260d';
 async function writeContract() {
     if (purpose.value == '') {
         ElMessage.error('Please select a purpose');
@@ -280,10 +302,10 @@ async function writeContract() {
         const signer = await provider.getSigner();
         // 创建合约实例（合约地址，合约ABI，签名者）
         const contract = new ethers.Contract(contractAddress, contractABI, signer);
-        const rawValue = "0x" + selectedData.value.data_hash;//调用合约要求0x开头的byteslike类型，实际上这里字符串直接拼接也可以
+        // const rawValue = "0x" + selectedData.value.data_hash;//调用合约要求0x开头的byteslike类型，实际上这里字符串直接拼接即可
         // 发送transaction
         ElMessage.warning('Please confirm the transaction in MetaMask.');
-        const tx = await contract.obtainViewAccess(selectedData.value.geneSharing_contract_address, rawValue, purpose.value);
+        const tx = await contract.obtainViewAccess(selectedData.value.geneSharing_contract_address, selectedData.value.data_hash, purpose.value);
 
         /**合约测试 */
         // if (!ethers.isAddress(selectedData.value.geneSharing_contract_address)) {
@@ -316,23 +338,67 @@ async function writeContract() {
         loading.close();
     }
 }
-//上传哈希
+/**根据交易哈希上传并获取短链接，通过短链接下载metadata
+ * @param {string} receivedHash metamask交易哈希
+ */
 async function uploadReceivedHash(receivedHash) {
     try {
         const res = await Api.post('/gene_type/obtainAccess', {
             tx_hash: receivedHash
         })
-        if (res.data.data.code == 200) {
+        console.log(res.data);
+        if (res.data.code == 200) {
             ElMessage.success('Submission success!');
             console.log('uploadReceivedHash success!');
+            const shortURL = res.data.data.download_url;
+            downloadMetadata(shortURL);
+            ElMessage.success('Metadata obtained successfully');
         }
     } catch (error) {
         console.error('uploadReceivedHash error:', error);
         // ElMessage.error('Submission failed!');
-        if(error.status == 400)
-        {
+        if (error.status == 400) {
             ElMessage.error('BAD REQUEST.Please try again later!');
         }
+    }
+}
+/**根据返回的短链接下载
+ * @param {string} shortURL 短链接
+ */
+async function downloadMetadata(shortURL) {
+    try {
+        const fileResponse = await fetch(shortURL, {
+            method: 'GET',
+            headers: {
+                'Authorization': useWalletStore().token
+            }
+        }
+        );
+        if (fileResponse.status == 200) {
+            const contentDisposition = fileResponse.headers.get('Content-Disposition') || fileResponse.headers.get('Content-Disposition');  //要注意跨域问题不默认暴露这个头，需要后端设置
+            // console.log('All headers:', [...fileResponse.headers.entries()]);
+            let filename = 'metadata'; // 默认文件名
+            if(contentDisposition){
+                // 从 Content-Disposition 中提取文件名
+                filename = contentDisposition.split('filename=')[1];
+            }
+            const blob = await fileResponse.blob();
+            const url = window.URL.createObjectURL(blob);
+            //通过生产一个a标签然后自点击再删除该a标签
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            if (blob.size == 0) {
+                ElMessage.error('Metadata is empty');
+            }
+        }
+    } catch (error) {
+        console.error('下载错误:', error);
     }
 }
 

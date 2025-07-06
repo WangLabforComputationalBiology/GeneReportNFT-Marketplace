@@ -48,15 +48,14 @@ import Bubbles from '@/views/components/bubbles.vue';
 import { ethers } from 'ethers';
 import { useWalletStore } from '@/stores/account'
 import Api from '../../axios/aixos'
+import { login } from '../../axios/aixos'
 import { ElLoading, ElMessage } from 'element-plus'
 
-const walletStore = useWalletStore();
 const router = useRouter();
 
 const address = ref('');
 const message = ref('');
 const nonce = ref('');
-const error = ref('');
 
 /*  构造message 格式较严格 勿随意改动 */
 function structureMessage(addressVal, nonceVal) {
@@ -77,7 +76,6 @@ ${nonceVal}`;
 
 /* MetaMask连接并获取账户 */
 async function connectWallet() {
-    error.value = '';
     address.value = '';
     nonce.value = '';
     message.value = '';
@@ -113,19 +111,17 @@ async function connectWallet() {
         });
 
         // 6. 发送登录请求
-        const loginResponse = await Api.post(`/user/login`, {
+        const loginResponse = await login.post(`/user/login`, {
             user_address: address.value,
             signature: signature,
         });
 
         // 7. 保存登录信息
-        walletStore.setAddress(address.value);
-        walletStore.setToken(loginResponse.data.data.access_token);
-        walletStore.setInstitution(loginResponse.data.data.user.institution);
-        walletStore.setEmail(loginResponse.data.data.user.email);
+        useWalletStore().setToken(loginResponse.data.data.access_token);
+        useWalletStore().setWalletInfo(address.value, loginResponse.data.data.user.institution, loginResponse.data.data.user.email);
 
         ElMessage.success('Login successful!');
-        router.push(`/account?t=${Date.now()}`);    // 添加时间戳，防止浏览器缓存
+        router.replace(`/account?t=${Date.now()}`);    // 添加时间戳，防止浏览器缓存
 
     } catch (error) {
         loading.close();
