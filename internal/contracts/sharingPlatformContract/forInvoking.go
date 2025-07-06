@@ -14,6 +14,7 @@ import (
 	"log"
 	"math/big"
 	"os"
+	"strings"
 )
 
 var FiscoConfig *client.Config
@@ -64,11 +65,11 @@ func init() {
 	AdminAddress = "0x86b4851Bd2F1578Cab7D7f6ff4ffC5589FA41Bd7"
 	AdminPrivateKeyHex = "9f5eb599dd2ff51f67724a793a6d702bcc273b3afe3e3bbc0e2870ed11594432"
 
-	//初始化已部署的Metadata合约地址
-	MetaDataContractAddress = "0x1098e17600aaFB2673Fa3A37f8b01f4F833F4c4f"
+	// 初始化已部署的sharingPlatform_v3合约地址,转大小写不敏感
+	PlatformContractAddressHex = strings.ToLower("0xcde2e7e1483716b491B9f38F7908161414A6260d")
 
-	// 初始化已部署的sharingPlatform_v3合约地址
-	PlatformContractAddressHex = "0x0c3E35Eb3451FC45B41EdEd707d1C777a3B98E5b"
+	//初始化已部署的Metadata合约地址
+	MetaDataContractAddress = strings.ToLower("0x1341e4C3526cdE98C2363BdfD3f657B1C47526F1")
 
 	// 解码私钥
 	privateKeyBytes, err := hex.DecodeString(AdminPrivateKeyHex)
@@ -104,7 +105,8 @@ func init() {
 
 func DecodeInputData(receipt *types.Receipt) (string, map[string]interface{}, error) {
 	//获取input
-	input := common.Hex2Bytes(receipt.Input)
+	input := common.Hex2Bytes(receipt.Input[2:])
+	fmt.Println(len(input))
 	if len(input) < 4 {
 		return "", nil, fmt.Errorf("input 数据太短")
 	}

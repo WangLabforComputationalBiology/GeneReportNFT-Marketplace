@@ -217,7 +217,7 @@ func (m *MetadataService) GetGenoTypeZip(dataHash, viewer, pubKey string) (dto.G
 		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
 	if !isHave {
-		return dto.GetGenoTypeZipResp{DownloadURL: "", AccessStatus: false}, appErrors.NewWithData(http.StatusForbidden, "您的访问权限不存在", dto.GetGenoTypeZipResp{DownloadURL: "", AccessStatus: false})
+		return dto.GetGenoTypeZipResp{}, appErrors.NewWithData(http.StatusForbidden, "您的访问权限不存在", dto.GetGenoTypeZipResp{DownloadURL: "", AccessStatus: false})
 	}
 
 	//若有 检查用户的viewAccess状态
@@ -278,17 +278,18 @@ func (m *MetadataService) ObtainViewAccess(txHash, userAddress, pubKey string) (
 	}
 	//检查回执的合约地址是否正确以及发起者是否为用户
 	if receipt.To != sharingPlatformContract.PlatformContractAddressHex || receipt.From != userAddress {
-		return dto.NewViewAccessResp{}, appErrors.New(http.StatusBadRequest, "恶意行为，多次进行该操作将会被封禁", err)
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusBadRequest, "恶意行为，多次进行该操作将会被封禁")
 	}
 
 	//解析交易回执的input
 	methodName, params, err := sharingPlatformContract.DecodeInputData(receipt)
 	if methodName != "obtainViewAccess" {
-		return dto.NewViewAccessResp{}, appErrors.New(http.StatusBadRequest, "交易所调用的方法错误", err)
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusBadRequest, "交易所调用的方法错误")
 	}
 
 	//根据解码参数进行类型断言
-	dataHash, ok := params["dataHash"].(string)
+	dataHashBytes, ok := params["dataHash"].([32]byte)
+	dataHash := common.Bytes2Hex(dataHashBytes[:])
 	if dataHash == "" || !ok {
 		return dto.NewViewAccessResp{}, appErrors.New(http.StatusBadRequest, "交易参数错误", err)
 	}
@@ -305,8 +306,8 @@ func (m *MetadataService) ObtainViewAccess(txHash, userAddress, pubKey string) (
 
 	// 定义事件签名和哈希
 	eventSignatures := map[string]string{
-		"NewViewAccess":     common.Bytes2Hex(crypto.Keccak256([]byte("NewViewAccess(address,bytes32,uint256)"))),
-		"RenewalViewAccess": common.Bytes2Hex(crypto.Keccak256([]byte("RenewalViewAccess(address,bytes32,uint256)"))),
+		"NewViewAccess":     "0x" + common.Bytes2Hex(crypto.Keccak256([]byte("NewViewAccess(address,bytes32,uint256)"))),
+		"RenewalViewAccess": "0x" + common.Bytes2Hex(crypto.Keccak256([]byte("RenewalViewAccess(address,bytes32,uint256)"))),
 	}
 
 	var expiry *big.Int
@@ -332,32 +333,34 @@ func (m *MetadataService) ObtainViewAccess(txHash, userAddress, pubKey string) (
 		}
 
 		// 解析事件数据
-		var viewAccessEvent struct {
-			Expiry *big.Int
+		if len(logEntry.Data[2:]) != 64 {
+			return dto.NewViewAccessResp{}, appErrors.New(http.StatusInternalServerError, "解析事件数据失败，请检查")
 		}
-		err := sharingPlatformContract.ContractABI.Unpack(&viewAccessEvent, eventName, common.Hex2Bytes(logEntry.Data))
-		if err != nil {
-			return dto.NewViewAccessResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
+		expiry = new(big.Int)
+		_, success := expiry.SetString(logEntry.Data[2:], 16)
+		if !success {
+			return dto.NewViewAccessResp{}, appErrors.New(http.StatusInternalServerError, "解析事件数据失败，请检查")
 		}
 
 		// 从 Topics 中提取参数
-		viewer := logEntry.Topics[1]
+		viewer := "0x" + logEntry.Topics[1][26:]
 		if userAddress != viewer {
 			return dto.NewViewAccessResp{}, appErrors.New(http.StatusForbidden, "用户不匹配,多次进行该操作将会被封禁", err)
 		}
-		expiry = viewAccessEvent.Expiry
-
 		break
 	}
-
+	geneSharingAddress, ok := params["geneSharingAddress"].(common.Address)
+	if !ok {
+		return dto.NewViewAccessResp{}, appErrors.New(http.StatusInternalServerError, "解析事件数据失败，请检查")
+	}
 	//链下数据库
 	activity := &models.Activity{
 		Id:              uuid.New().String(),
-		Metadata:        metadata.DataHash,
+		Metadata:        "0x" + metadata.DataHash,
 		TransactionHash: receipt.TransactionHash,
 		Time:            time.Now(),
 		Expiry:          expiry.Int64(),
-		From:            params["geneSharingAddress"].(string),
+		From:            geneSharingAddress.Hex(),
 		To:              userAddress,
 		GeneSharing:     metadata.GeneSharingContractAddress,
 	}

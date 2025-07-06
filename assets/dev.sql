@@ -872,7 +872,7 @@ drop table if exists `metadatas`;
 -- geneSharing集合下的metadatas表
 CREATE TABLE metadatas
 (
-    `data_hash`                    VARCHAR(64) COMMENT '数据哈希',
+    `data_hash`                    VARCHAR(66) COMMENT '数据哈希',
     `profile_id`                   VARCHAR(36) NOT NULL COMMENT '对应的第三方基因报告id',
     `format`                       VARCHAR(32) COMMENT '基因报告格式',
     `sex`                          VARCHAR(32) COMMENT '性别',
@@ -904,14 +904,14 @@ CREATE TABLE activities
 (
     `id`           VARCHAR(36)  NOT NULL,
     `user_address` VARCHAR(42)  NOT NULL COMMENT '用户地址',
-    `tx_hash`      varchar(64)  NOT NULL COMMENT '交易哈希',
-    `from`         varchar(64)  NOT NULL COMMENT '发起者地址',
-    `to`           varchar(64)  NOT NULL COMMENT '接收者地址',
+    `tx_hash`      varchar(66)  NOT NULL COMMENT '交易哈希',
+    `from`         varchar(66)  NOT NULL COMMENT '发起者地址',
+    `to`           varchar(42)  NOT NULL COMMENT '接收者地址',
     `time`         DATETIME     NOT NULL Comment '时间戳',
     `expiry`       BIGINT COMMENT '过期时间',
     `event`        VARCHAR(255) NOT NULL Comment '活动类型',
-    `geneSharing`  VARCHAR(32) Comment 'geneSharing合集地址',
-    `metadata`     VARCHAR(32) Comment 'metadata数据哈希',
+    `geneSharing`  VARCHAR(42) Comment 'geneSharing合集地址',
+    `metadata`     VARCHAR(64) Comment 'metadata数据哈希',
     PRIMARY KEY (id),
     INDEX idx_activity (user_address, time)
 );

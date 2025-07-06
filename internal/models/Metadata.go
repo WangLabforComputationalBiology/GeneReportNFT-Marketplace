@@ -5,12 +5,12 @@ import (
 )
 
 type Metadata struct {
-	DataHash                   string    `gorm:"type:varchar(32)" json:"data_hash"`
+	DataHash                   string    `gorm:"type:varchar(66)" json:"data_hash"`
 	ProfileID                  string    `gorm:"type:varchar(36)" json:"profile_id"`
 	Format                     string    `gorm:"type:varchar(32)" json:"format"`
 	Sex                        string    `gorm:"type:varchar(32)" json:"sex"`
 	Category                   string    `gorm:"type:varchar(32)" json:"category"`
-	Owner                      string    `gorm:"type:varchar(32)" json:"owner"`
+	Owner                      string    `gorm:"type:varchar(42)" json:"owner"`
 	Name                       string    `gorm:"type:varchar(32)" json:"name"`
 	Description                string    `gorm:"type:text" json:"description"`
 	ContractAddress            string    `gorm:"type:varchar(42)" json:"contract_address"`

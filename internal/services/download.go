@@ -38,7 +38,7 @@ func (d *DownloadService) GenerateDownloadLink(dataHash, userAddress, pubKey str
 
 		if getAllCmd.Err() != nil { //内部错误
 			return "", appErrors.New(http.StatusInternalServerError, "redis error", getAllCmd.Err())
-		} else if getAllCmd.Val() == nil { //短码不存在或已过期，该短码可用
+		} else if getAllCmd.Val()["dataHash"] == "" { //短码不存在或已过期，该短码可用
 			break
 		} else if i == 2 { //尝试3次后仍然失败
 			return "", appErrors.New(http.StatusInternalServerError, "generate short code failed")

@@ -73,9 +73,9 @@ func ZapMiddleware() gin.HandlerFunc {
 			appErr, _ = err.(appErrors.AppError)
 			if appErr.Data != nil {
 				ctx.JSON(appErr.Code, gin.H{
-					"Code":    appErr.Code,
-					"Message": appErr.Message,
-					"Data":    appErr.Data,
+					"code":    appErr.Code,
+					"message": appErr.Message,
+					"data":    appErr.Data,
 				})
 				return
 			}

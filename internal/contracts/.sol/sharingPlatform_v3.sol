@@ -3,9 +3,7 @@ pragma solidity ^0.8.10;
 
 import {GeneSharing} from "./GeneSharing_v3.sol";
 import {Metadata} from "./Metadata.sol";
-
-//import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract SharingPlatform is ERC20 {
 
     //管理员
