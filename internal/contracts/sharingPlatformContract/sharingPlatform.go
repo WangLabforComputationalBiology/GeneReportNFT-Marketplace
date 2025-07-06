@@ -23,7 +23,7 @@ var (
 )
 
 // SharingPlatformContractABI is the input ABI used to generate the binding from.
-const SharingPlatformContractABI = "[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"initialSupply\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"allowance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"needed\",\"type\":\"uint256\"}],\"name\":\"ERC20InsufficientAllowance\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"needed\",\"type\":\"uint256\"}],\"name\":\"ERC20InsufficientBalance\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"approver\",\"type\":\"address\"}],\"name\":\"ERC20InvalidApprover\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"ERC20InvalidReceiver\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"ERC20InvalidSender\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"ERC20InvalidSpender\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"targetGeneSharing\",\"type\":\"address\"}],\"name\":\"CreateAllFromThirdParty\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"contractAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"isOfficial\",\"type\":\"bool\"}],\"name\":\"GeneSharingCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"target\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"ProxyCallExecuted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"MetadataContract\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"geneSharingAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32[]\",\"name\":\"dataHash\",\"type\":\"bytes32[]\"}],\"name\":\"addMetadataBatchesFromCreativeWorkSpace\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"bytes32[]\",\"name\":\"dataHashs\",\"type\":\"bytes32[]\"}],\"name\":\"createAllFromThirdParty\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"createEmptyGeneSharingFromCreativeWorkSpace\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"geneSharingAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"remark\",\"type\":\"string\"}],\"name\":\"obtainViewAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"metadataContract\",\"type\":\"address\"}],\"name\":\"setMetadataContract\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"setUserAuthStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"bool\",\"name\":\"status\",\"type\":\"bool\"}],\"name\":\"updateMetadataSharingStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"viewer\",\"type\":\"address\"}],\"name\":\"verifyViewAccess\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"
+const SharingPlatformContractABI = "[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"initialSupply\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"allowance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"needed\",\"type\":\"uint256\"}],\"name\":\"ERC20InsufficientAllowance\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"needed\",\"type\":\"uint256\"}],\"name\":\"ERC20InsufficientBalance\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"approver\",\"type\":\"address\"}],\"name\":\"ERC20InvalidApprover\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"ERC20InvalidReceiver\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"ERC20InvalidSender\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"ERC20InvalidSpender\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"targetGeneSharing\",\"type\":\"address\"}],\"name\":\"CreateAllFromThirdParty\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"contractAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"isOfficial\",\"type\":\"bool\"}],\"name\":\"GeneSharingCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"viewer\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"expiry\",\"type\":\"uint256\"}],\"name\":\"NewViewAccess\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"target\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"ProxyCallExecuted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"viewer\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"expiry\",\"type\":\"uint256\"}],\"name\":\"RenewalViewAccess\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"MetadataContract\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"geneSharingAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32[]\",\"name\":\"dataHash\",\"type\":\"bytes32[]\"}],\"name\":\"addMetadataBatchesFromCreativeWorkSpace\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"internalType\":\"bytes32[]\",\"name\":\"dataHashs\",\"type\":\"bytes32[]\"}],\"name\":\"createAllFromThirdParty\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"createEmptyGeneSharingFromCreativeWorkSpace\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"geneSharingAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"remark\",\"type\":\"string\"}],\"name\":\"obtainViewAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"metadataContract\",\"type\":\"address\"}],\"name\":\"setMetadataContract\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"setUserAuthStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"bool\",\"name\":\"status\",\"type\":\"bool\"}],\"name\":\"updateMetadataSharingStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"viewer\",\"type\":\"address\"}],\"name\":\"verifyViewAccess\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"
 
 // SharingPlatformContract is an auto generated Go binding around a Solidity contract.
 type SharingPlatformContract struct {
@@ -888,6 +888,54 @@ func (_SharingPlatformContract *SharingPlatformContractSession) ParseGeneSharing
 	return _SharingPlatformContract.Contract.ParseGeneSharingCreated(log)
 }
 
+// SharingPlatformContractNewViewAccess represents a NewViewAccess event raised by the SharingPlatformContract contract.
+type SharingPlatformContractNewViewAccess struct {
+	Viewer   common.Address
+	DataHash [32]byte
+	Expiry   *big.Int
+	Raw      types.Log // Blockchain specific contextual infos
+}
+
+// WatchNewViewAccess is a free log subscription operation binding the contract event 0xaf25eab44f142c3ee562f60872c4a67b31daf645a62ad8561244dbd06e1758ad.
+//
+// Solidity: event NewViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry)
+func (_SharingPlatformContract *SharingPlatformContractFilterer) WatchNewViewAccess(fromBlock *int64, handler func(int, []types.Log), viewer common.Address, dataHash [32]byte) (string, error) {
+	return _SharingPlatformContract.contract.WatchLogs(fromBlock, handler, "NewViewAccess", viewer, dataHash)
+}
+
+func (_SharingPlatformContract *SharingPlatformContractFilterer) WatchAllNewViewAccess(fromBlock *int64, handler func(int, []types.Log)) (string, error) {
+	return _SharingPlatformContract.contract.WatchLogs(fromBlock, handler, "NewViewAccess")
+}
+
+// ParseNewViewAccess is a log parse operation binding the contract event 0xaf25eab44f142c3ee562f60872c4a67b31daf645a62ad8561244dbd06e1758ad.
+//
+// Solidity: event NewViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry)
+func (_SharingPlatformContract *SharingPlatformContractFilterer) ParseNewViewAccess(log types.Log) (*SharingPlatformContractNewViewAccess, error) {
+	event := new(SharingPlatformContractNewViewAccess)
+	if err := _SharingPlatformContract.contract.UnpackLog(event, "NewViewAccess", log); err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+// WatchNewViewAccess is a free log subscription operation binding the contract event 0xaf25eab44f142c3ee562f60872c4a67b31daf645a62ad8561244dbd06e1758ad.
+//
+// Solidity: event NewViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry)
+func (_SharingPlatformContract *SharingPlatformContractSession) WatchNewViewAccess(fromBlock *int64, handler func(int, []types.Log), viewer common.Address, dataHash [32]byte) (string, error) {
+	return _SharingPlatformContract.Contract.WatchNewViewAccess(fromBlock, handler, viewer, dataHash)
+}
+
+func (_SharingPlatformContract *SharingPlatformContractSession) WatchAllNewViewAccess(fromBlock *int64, handler func(int, []types.Log)) (string, error) {
+	return _SharingPlatformContract.Contract.WatchAllNewViewAccess(fromBlock, handler)
+}
+
+// ParseNewViewAccess is a log parse operation binding the contract event 0xaf25eab44f142c3ee562f60872c4a67b31daf645a62ad8561244dbd06e1758ad.
+//
+// Solidity: event NewViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry)
+func (_SharingPlatformContract *SharingPlatformContractSession) ParseNewViewAccess(log types.Log) (*SharingPlatformContractNewViewAccess, error) {
+	return _SharingPlatformContract.Contract.ParseNewViewAccess(log)
+}
+
 // SharingPlatformContractProxyCallExecuted represents a ProxyCallExecuted event raised by the SharingPlatformContract contract.
 type SharingPlatformContractProxyCallExecuted struct {
 	User   common.Address
@@ -934,6 +982,54 @@ func (_SharingPlatformContract *SharingPlatformContractSession) WatchAllProxyCal
 // Solidity: event ProxyCallExecuted(address indexed user, address indexed target, bytes data)
 func (_SharingPlatformContract *SharingPlatformContractSession) ParseProxyCallExecuted(log types.Log) (*SharingPlatformContractProxyCallExecuted, error) {
 	return _SharingPlatformContract.Contract.ParseProxyCallExecuted(log)
+}
+
+// SharingPlatformContractRenewalViewAccess represents a RenewalViewAccess event raised by the SharingPlatformContract contract.
+type SharingPlatformContractRenewalViewAccess struct {
+	Viewer   common.Address
+	DataHash [32]byte
+	Expiry   *big.Int
+	Raw      types.Log // Blockchain specific contextual infos
+}
+
+// WatchRenewalViewAccess is a free log subscription operation binding the contract event 0xd0bd2b28da68e6fb95c2ec311b1b4745d7fdaf620684c23ff09be884188dbc2f.
+//
+// Solidity: event RenewalViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry)
+func (_SharingPlatformContract *SharingPlatformContractFilterer) WatchRenewalViewAccess(fromBlock *int64, handler func(int, []types.Log), viewer common.Address, dataHash [32]byte) (string, error) {
+	return _SharingPlatformContract.contract.WatchLogs(fromBlock, handler, "RenewalViewAccess", viewer, dataHash)
+}
+
+func (_SharingPlatformContract *SharingPlatformContractFilterer) WatchAllRenewalViewAccess(fromBlock *int64, handler func(int, []types.Log)) (string, error) {
+	return _SharingPlatformContract.contract.WatchLogs(fromBlock, handler, "RenewalViewAccess")
+}
+
+// ParseRenewalViewAccess is a log parse operation binding the contract event 0xd0bd2b28da68e6fb95c2ec311b1b4745d7fdaf620684c23ff09be884188dbc2f.
+//
+// Solidity: event RenewalViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry)
+func (_SharingPlatformContract *SharingPlatformContractFilterer) ParseRenewalViewAccess(log types.Log) (*SharingPlatformContractRenewalViewAccess, error) {
+	event := new(SharingPlatformContractRenewalViewAccess)
+	if err := _SharingPlatformContract.contract.UnpackLog(event, "RenewalViewAccess", log); err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+// WatchRenewalViewAccess is a free log subscription operation binding the contract event 0xd0bd2b28da68e6fb95c2ec311b1b4745d7fdaf620684c23ff09be884188dbc2f.
+//
+// Solidity: event RenewalViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry)
+func (_SharingPlatformContract *SharingPlatformContractSession) WatchRenewalViewAccess(fromBlock *int64, handler func(int, []types.Log), viewer common.Address, dataHash [32]byte) (string, error) {
+	return _SharingPlatformContract.Contract.WatchRenewalViewAccess(fromBlock, handler, viewer, dataHash)
+}
+
+func (_SharingPlatformContract *SharingPlatformContractSession) WatchAllRenewalViewAccess(fromBlock *int64, handler func(int, []types.Log)) (string, error) {
+	return _SharingPlatformContract.Contract.WatchAllRenewalViewAccess(fromBlock, handler)
+}
+
+// ParseRenewalViewAccess is a log parse operation binding the contract event 0xd0bd2b28da68e6fb95c2ec311b1b4745d7fdaf620684c23ff09be884188dbc2f.
+//
+// Solidity: event RenewalViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry)
+func (_SharingPlatformContract *SharingPlatformContractSession) ParseRenewalViewAccess(log types.Log) (*SharingPlatformContractRenewalViewAccess, error) {
+	return _SharingPlatformContract.Contract.ParseRenewalViewAccess(log)
 }
 
 // SharingPlatformContractTransfer represents a Transfer event raised by the SharingPlatformContract contract.
