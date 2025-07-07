@@ -399,6 +399,9 @@ func SaveAllData(Msg string) {
 		fmt.Println("重复性检测通过，开始保存数据：", profileId)
 	}
 
+	//新建数据请求任务并用于更新任务进度 (redis & mysql）
+	configs.RedisClient.Set(context.Background(), "task:"+profileId, 0, 24*time.Hour)
+
 	//athletigen、risk、skin、health/carrier、health/metabolism、health/tratis、psychology
 	//health/drug-----Xd
 	//getDataFromWegene[dto.HealthyDrug](forHealthyDrug, profileId, BASEURL+"/health/drug", token)

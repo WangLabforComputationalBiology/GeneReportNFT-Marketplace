@@ -590,8 +590,7 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 	if isExist != 0 {
 		ctx.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "message": "您的基因数据正在处理中，无需重复提交"})
 	}
-	//新建数据请求任务 (redis & mysql）
-	configs.RedisClient.Set(context.Background(), "task:"+toSave.ProfileId, 0, 24*time.Hour)
+
 	record := &dto.UniqueProfiles{
 		Address:   userAddress,
 		ProfileId: toSave.ProfileId,

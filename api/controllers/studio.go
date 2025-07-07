@@ -91,7 +91,7 @@ func (s *Studio) GetUncompletedProfileIDProgress(ctx *gin.Context) {
 	channels := make([]string, 0, TaskCount)
 	//循环加入前缀
 	for _, id := range ids.ProfileIds {
-		channels = append(channels, "process:"+id)
+		channels = append(channels, "progress:"+id)
 	}
 
 	//订阅redis消息
@@ -105,10 +105,21 @@ func (s *Studio) GetUncompletedProfileIDProgress(ctx *gin.Context) {
 
 	// 心跳机制
 	go func() {
+		ticker := time.NewTicker(15 * time.Second)
+		defer ticker.Stop()
 		for {
-			time.Sleep(15 * time.Second)
-			_, _ = fmt.Fprintf(ctx.Writer, "event:keepalive\ndata: {\"keepalive\": true}\n\n")
-			ctx.Writer.Flush()
+			select {
+			case <-ctx.Request.Context().Done():
+				//客户端断开或上下文取消,心跳协程终止
+				return
+			case <-ticker.C:
+				_, err := fmt.Fprintf(ctx.Writer, "event:keepalive\ndata: {\"keepalive\": true}\n\n")
+				if err != nil {
+					log.Println("心跳写入失败:", err)
+					return
+				}
+				ctx.Writer.Flush()
+			}
 		}
 	}()
 
