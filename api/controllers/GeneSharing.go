@@ -5,6 +5,7 @@ import (
 	"GeneReport_platform/internal/services"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type GeneSharing struct{}
@@ -51,6 +52,31 @@ func (g *GeneSharing) GetGeneSharingByCreator(ctx *gin.Context) {
 		_ = ctx.Error(err)
 		return
 	}
+	ctx.JSON(http.StatusOK, dto.Response{
+		Code:    http.StatusOK,
+		Message: "success",
+		Data:    toResp,
+	})
+	return
+}
+
+// GetAllGeneSharingOverview 获取plaza主页（GeneSharing概览）
+func (g *GeneSharing) GetAllGeneSharingOverview(ctx *gin.Context) {
+	page, err := strconv.Atoi(ctx.Param("page"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, dto.ErrResponse{
+			Code:    http.StatusBadRequest,
+			Message: "请求参数格式错误",
+		})
+		return
+	}
+
+	toResp, err := services.GeneSharingServ.GetAllGeneSharingOverview(page)
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+	//成功
 	ctx.JSON(http.StatusOK, dto.Response{
 		Code:    http.StatusOK,
 		Message: "success",

@@ -32,3 +32,8 @@ type GetGeneSharingOverviewByCreatorReq struct {
 type GetGeneSharingOverviewByCreatorResp struct {
 	GeneSharings []GeneSharingOverview `json:"geneSharings"`
 }
+
+type GetAllGeneSharingOverviewResp struct {
+	MultiGeneSharing []GeneSharingOverview `json:"multi_geneSharing"`
+	PageNum          int                   `json:"page_num"`
+}

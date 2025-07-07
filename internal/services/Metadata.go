@@ -55,7 +55,7 @@ func (m *MetadataService) GetMetadataOverviewByOwner(owner string) (dto.GetMetad
 func (m *MetadataService) GetAllMetadataOverview(page int) (dto.GetAllMetadataOverviewResp, error) {
 	results, pageNum, err := dao.GetMetadataDao().GetAllMetadataOverview(page)
 	if err != nil {
-		return dto.GetAllMetadataOverviewResp{}, appErrors.New(503, "", err)
+		return dto.GetAllMetadataOverviewResp{}, appErrors.New(503, "获取Metadata概览失败", err)
 	}
 
 	return dto.GetAllMetadataOverviewResp{

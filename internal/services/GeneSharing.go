@@ -24,7 +24,7 @@ func RegisterGeneSharingService() {
 }
 
 // GetGeneSharingDetailsByContractAddress 根据合约地址获取geneSharing合集详情
-func (c *GeneSharingService) GetGeneSharingDetailsByContractAddress(geneSharingID string) (dto.GetGeneSharingDetailsByContractAddressResp, error) {
+func (g *GeneSharingService) GetGeneSharingDetailsByContractAddress(geneSharingID string) (dto.GetGeneSharingDetailsByContractAddressResp, error) {
 	var toResp dto.GetGeneSharingDetailsByContractAddressResp
 
 	results, err := dao.GetGeneSharingDao().GetGeneSharingDetailsByAddress(geneSharingID)
@@ -36,7 +36,7 @@ func (c *GeneSharingService) GetGeneSharingDetailsByContractAddress(geneSharingI
 	return toResp, nil
 }
 
-func (c *GeneSharingService) GetGeneSharingOverviewByCreator(creatorAddress string) (dto.GetGeneSharingOverviewByCreatorResp, error) {
+func (g *GeneSharingService) GetGeneSharingOverviewByCreator(creatorAddress string) (dto.GetGeneSharingOverviewByCreatorResp, error) {
 
 	results, err := dao.GetGeneSharingDao().GetGeneSharingOverviewByCreator(creatorAddress)
 	if err != nil {
@@ -44,4 +44,15 @@ func (c *GeneSharingService) GetGeneSharingOverviewByCreator(creatorAddress stri
 	}
 
 	return dto.GetGeneSharingOverviewByCreatorResp{GeneSharings: results}, nil
+}
+
+func (g *GeneSharingService) GetAllGeneSharingOverview(page int) (dto.GetAllGeneSharingOverviewResp, error) {
+	results, pageNum, err := dao.GetGeneSharingDao().GetAllGeneSharingOverview(page)
+	if err != nil {
+		return dto.GetAllGeneSharingOverviewResp{}, appErrors.New(503, "获取GeneSharing合集概览失败", err)
+	}
+	return dto.GetAllGeneSharingOverviewResp{
+		MultiGeneSharing: results,
+		PageNum:          pageNum,
+	}, nil
 }

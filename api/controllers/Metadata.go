@@ -59,6 +59,7 @@ func (m *Metadata) GetMetadataDetailByDataHash(ctx *gin.Context) {
 	})
 }
 
+// GetAllMetadataOverview 获取plaza主页（Metadata概览）
 func (m *Metadata) GetAllMetadataOverview(ctx *gin.Context) {
 
 	page, err := strconv.Atoi(ctx.Param("page"))

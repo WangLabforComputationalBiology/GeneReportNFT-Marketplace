@@ -83,7 +83,7 @@ func (m *Metadata) GetAllMetadataOverview(page int) (results []dto.MetadataOverv
 	//获取metadata数据
 	err1 := m.DB().Select("metadatas.*").
 		Table("metadatas").
-		Where("metadatas.is_hidden = 0 AND metadatas.data_hash!='' ").
+		Where("metadatas.is_hidden = 0").
 		Order("metadatas.created_at asc").
 		Offset((page - 1) * 30).
 		Limit(30).

@@ -5,6 +5,7 @@ import (
 	"GeneReport_platform/configs"
 	"GeneReport_platform/internal/models"
 	"GeneReport_platform/pkg/appContext"
+	"cmp"
 	"context"
 	"gorm.io/gorm"
 	"sync"
@@ -84,4 +85,25 @@ func (g *GeneSharingDao) GetGeneSharingOverviewByCreator(creator string) (result
 func (g *GeneSharingDao) CreateGeneSharing(geneSharing *models.GeneSharing) error {
 	err := g.DB().Table("geneSharings").Create(&geneSharing).Error
 	return err
+}
+
+func (g *GeneSharingDao) GetAllGeneSharingOverview(page int) (results []dto.GeneSharingOverview, pageNum int, err error) {
+	//获取geneSharing数据
+	err1 := g.DB().Select("geneSharings.*").
+		Table("geneSharings").
+		Order("geneSharings.created_at asc").
+		Offset((page - 1) * 30).
+		Limit(30).
+		Scan(&results).Error
+
+	//返回总页数
+	err2 := g.DB().Select("count(*)").
+		Table("geneSharings").
+		Scan(&pageNum).Error
+
+	if err = cmp.Or(err1, err2); err != nil {
+		return nil, 0, err
+	}
+
+	return results, pageNum, nil
 }

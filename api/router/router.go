@@ -17,7 +17,6 @@ func registerSwaggerRouter(r *gin.Engine) {
 
 func registerUserRouter(r *gin.RouterGroup) {
 
-	//todo get请求，  - url：/user/nonce/:账号 ,使用https，path和参数会被加密，account可以直接放在url
 	//创建https服务器
 	https := gin.Default()
 	ssl := https.Group("/user")
@@ -64,19 +63,23 @@ func registerStudioRouter(r *gin.RouterGroup) {
 	r.GET("/captcha", controllers.StudioController.GetCATCHA)
 	r.POST("/captcha/check", controllers.StudioController.CheckCaptcha)
 
-	r.GET("/getProfileIds", middlewares.AuthMiddleware(), controllers.StudioController.GetCompletedProfileIds)                                    //获取后台中已经保存数据的该用户的profile id供用户选择
+	r.GET("/getProfileIds", middlewares.AuthMiddleware(), controllers.StudioController.GetCompletedProfileIds)
+	r.GET("/getProfile/uncompleted", middlewares.AuthMiddleware(), controllers.StudioController.GetUncompletedProfileIDProgress)
+
 	r.POST("/createFromThirdParty", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.StudioController.CreateFromThirdParty) //从第三方平台创建（链上操作）
 }
 
 func registerPlazaRouter(r *gin.RouterGroup) {
 	r.GET("/:page", middlewares.ZapMiddleware(), controllers.MetadataController.GetAllMetadataOverview)
+
+	//r.GET("/:page", middlewares.ZapMiddleware(), controllers.GeneSharingController.GetAllGeneSharingOverview)
 }
 
 func registerMetadataRouter(r *gin.RouterGroup) {
 	r.GET("/:data_hash", middlewares.ZapMiddleware(), controllers.MetadataController.GetMetadataDetailByDataHash)
 }
 
-func registerGeneTypeRouter(r *gin.RouterGroup) {
+func registerGenoTypeRouter(r *gin.RouterGroup) {
 	r.GET("/:data_hash", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.MetadataController.GetGenoTypeZip)
 
 	r.POST("/obtainAccess", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.MetadataController.ObtainViewAccess)
@@ -100,7 +103,7 @@ func SetupRouter() *gin.Engine {
 	registerStudioRouter(Studio)
 	registerMetadataRouter(Metadata)
 	registerPlazaRouter(Plaza)
-	registerGeneTypeRouter(GeneType)
+	registerGenoTypeRouter(GeneType)
 	registerDownloadRouter(Download)
 	return r
 }
