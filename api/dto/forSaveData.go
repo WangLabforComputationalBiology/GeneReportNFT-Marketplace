@@ -7,16 +7,15 @@ import (
 )
 
 type Head struct {
-	ProfileId string `gorm:"column:profile_id"`
-	ReportId  string `gorm:"column:report_id"`
+	ProfileId string `json:"profile_id" gorm:"type:varchar(255);column:profile_id"`
+	ReportId  int    `json:"report_id" gorm:"type:int;column:report_id"`
 }
 
 // Genotype 表示单个基因型信息
 type Genotype struct {
 	gorm.Model
-	ProfileId   string `json:"profile_id" gorm:"column:profile_id"`
-	ReportId    int    `json:"report_id" gorm:"column:report_id"`
-	Type        string `json:"type" gorm:"column:type"`
+	Head
+	Type        string `json:"type" gorm:"type:varchar(30);column:type"`
 	ForKey      uint   `gorm:"column:for_key"`
 	Genotype    string `json:"genotype" gorm:"column:genotype"`
 	Summary     string `json:"summary" gorm:"column:summary"`
@@ -31,7 +30,7 @@ type Genotype struct {
 type Psychology struct {
 	gorm.Model
 	Head
-	Description string     `json:"description"  gorm:"column:description"`
+	Description string     `json:"description"  gorm:"varchar(255);column:description"`
 	Score       float64    `json:"score"  gorm:"column:score"`
 	Rank        string     `json:"rank"  gorm:"column:rank"`
 	Caseid      string     `json:"caseid"  gorm:"column:caseid"`

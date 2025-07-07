@@ -3,11 +3,13 @@ package router
 import (
 	"GeneReport_platform/api/controllers"
 	"GeneReport_platform/api/middlewares"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	_ "go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"log"
+	"time"
 )
 
 func registerSwaggerRouter(r *gin.Engine) {
@@ -63,7 +65,7 @@ func registerStudioRouter(r *gin.RouterGroup) {
 	r.GET("/captcha", controllers.StudioController.GetCATCHA)
 	r.POST("/captcha/check", controllers.StudioController.CheckCaptcha)
 
-	r.GET("/getProfileIds", middlewares.AuthMiddleware(), controllers.StudioController.GetCompletedProfileIds)
+	r.GET("/getProfile/completed", middlewares.AuthMiddleware(), controllers.StudioController.GetCompletedProfileIds)
 	r.GET("/getProfile/uncompleted", middlewares.AuthMiddleware(), controllers.StudioController.GetUncompletedProfileIDProgress)
 
 	r.POST("/createFromThirdParty", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.StudioController.CreateFromThirdParty) //从第三方平台创建（链上操作）
@@ -105,5 +107,41 @@ func SetupRouter() *gin.Engine {
 	registerPlazaRouter(Plaza)
 	registerGenoTypeRouter(GeneType)
 	registerDownloadRouter(Download)
+
+	r.GET("/events", func(c *gin.Context) {
+		// 设置必要的SSE头信息
+		c.Writer.Header().Set("Content-Type", "text/event-stream")
+		c.Writer.Header().Set("Cache-Control", "no-cache")
+		c.Writer.Header().Set("Connection", "keep-alive")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+
+		// 计数器
+		count := 0
+
+		// 持续发送消息
+		for {
+			select {
+			case <-c.Request.Context().Done():
+				// 客户端断开连接
+				fmt.Println("Client disconnected")
+				return
+			default:
+				count++
+				// 格式化SSE消息
+				message := fmt.Sprintf("data: Message %d at %v\n\n", count, time.Now())
+				// 发送消息
+				_, err := fmt.Fprint(c.Writer, message)
+				if err != nil {
+					fmt.Println("Write error:", err)
+					return
+				}
+				// 刷新响应
+				c.Writer.Flush()
+				// 每秒发送一次
+				time.Sleep(time.Second)
+			}
+		}
+	})
 	return r
+
 }

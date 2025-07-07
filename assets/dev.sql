@@ -926,3 +926,4 @@ CREATE TABLE institutions
 
 );
 
+create index idx_genotypes on genotypes (profile_id, type);
