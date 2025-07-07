@@ -257,7 +257,7 @@ const ObtainClick = async () => {
             ElMessage.success('Metadata obtained successfully');
         }
     } catch (error) {
-        console.error('No rights(没有权限，将进行获权操作). Error: ', error);
+        console.error('No rights(期盼型错误，用于权限判断。当前没有权限，将进行获权操作)', error);
         if (error.status == 403 && error.response.data.code == 403) {
             dialogIsVisible.value = true; //如果返回值为false，则显示弹窗
         }
@@ -280,11 +280,10 @@ const downloadDecryptTool = async () => {
 // const test_hash = '89c792eed9551d2b477e5b300b6dfc26c11ab4ccd72a3d44899c5b1b69a52123';
 
 /**调用合约
- * @param {json} contractABI 合约ABI(固定，每个合约对应一个abi，源于config)
- * @param {string} contractAddress 合约地址(固定，每次部署合约生成一个，源于config)
+ * @param {json} contractABI 合约ABI(固定，每个合约对应一个abi，源于contractConfig)
+ * @param {string} contractAddress 合约地址(固定，每次部署合约生成一个，源于contractConfig)
  */
-// const contractABI = abi;
-// const contractAddress = '0xcde2e7e1483716b491B9f38F7908161414A6260d';
+
 async function writeContract() {
     if (purpose.value == '') {
         ElMessage.error('Please select a purpose');
