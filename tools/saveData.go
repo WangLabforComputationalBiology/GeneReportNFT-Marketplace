@@ -219,7 +219,7 @@ func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT
 				reportIdField.SetString(fmt.Sprintf("%d", v))
 			}
 
-			//fixme ==============================在这里写入库逻辑================================
+			//==============================在这里写入库逻辑================================
 			result := configs.DB.Create(&responseData) //已经用泛型声明了
 			if result.Error != nil {
 				fmt.Println(name, "---->创建主表记录错误:", result.Error)

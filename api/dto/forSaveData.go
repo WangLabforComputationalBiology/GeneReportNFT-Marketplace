@@ -30,7 +30,7 @@ type Genotype struct {
 type Psychology struct {
 	gorm.Model
 	Head
-	Description string     `json:"description"  gorm:"varchar(255);column:description"`
+	Description string     `json:"description"  gorm:"type:varchar(255);column:description"`
 	Score       float64    `json:"score"  gorm:"column:score"`
 	Rank        string     `json:"rank"  gorm:"column:rank"`
 	Caseid      string     `json:"caseid"  gorm:"column:caseid"`
