@@ -3,6 +3,7 @@
         <Bubbles />
         <div class="info">
             <h1 class="title"><span style="color: #169608;">Account</span> information</h1>
+            <div ref="avatarContainer" />
             {{ useWalletStore().address ? `Address: ${useWalletStore().address}` : 'No address connected' }}
             <br>
             {{ useWalletStore().insititution ? ` Institution: ${useWalletStore().insititution}.` : 'Your institution accreditation is not verified.' }}
@@ -20,10 +21,20 @@
 </template>
 
 <script setup>
+import { ref,onMounted } from 'vue';
 import { useWalletStore } from '@/stores/account';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'
 import Bubbles from '@/views/components/bubbles.vue'
+import jazzicon from 'jazzicon'
+
+/**jazzicon 
+ * 根据hash生成头像，有趣的库
+ * 确保在组件挂载后操作 DOM
+ */
+const avatarContainer = ref(null); 
+const diameter = 100; // 头像直径
+
 const router = useRouter();
 const logout = () => {
     // walletStore.$reset();//登出重置
@@ -32,9 +43,18 @@ const logout = () => {
     setTimeout(() => {
         router.push('/login');
     }, 1500);
-    
 }
-console.log(useWalletStore().token);
+
+onMounted(() => {
+    if (useWalletStore().address && avatarContainer.value) {
+        // 生成头像
+        const identicon = jazzicon(
+            diameter, 
+            parseInt(useWalletStore().address.slice(2, 10), 16) // 使用地址部分作为种子
+        );
+        avatarContainer.value.appendChild(identicon);
+    }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -42,7 +62,7 @@ console.log(useWalletStore().token);
     display: flex;
     position: relative;
     width: 100vw;
-    min-width: 800px;
+    min-width: 1200px;
     height: 95vh;
     margin: auto;
     overflow: hidden;
@@ -67,7 +87,12 @@ console.log(useWalletStore().token);
 }
 
 .info {
+    background-color: #ffffffaa;
+    border-radius: 30px;
+    box-shadow: 0 0 5px #ccc;
     position: absolute;
+    width: 800px;
+    padding: 40px;
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -93,6 +118,7 @@ console.log(useWalletStore().token);
 
     &:nth-child(1) {
         width: 60px;
+        height: 34px;
         background-color: #fff;
         color: #169608;
     }
