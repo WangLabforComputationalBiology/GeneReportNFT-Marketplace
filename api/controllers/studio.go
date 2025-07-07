@@ -137,7 +137,7 @@ func (s *Studio) GetUncompletedProfileIDProgress(ctx *gin.Context) {
 		_, _ = fmt.Fprintf(ctx.Writer, "event:progress\ndata: {\"taskID\": \"%s\", \"progress\": %s}\n\n", profileID, msg.Payload)
 		ctx.Writer.Flush()
 		// 如果任务完成，从活跃任务列表检查是否继续
-		if msg.Payload == "completed" {
+		if msg.Payload == "100" {
 			err := pubSub.Unsubscribe(ctxRedis, "progress:"+profileID)
 			if err != nil {
 				log.Println("取消订阅失败:", err)

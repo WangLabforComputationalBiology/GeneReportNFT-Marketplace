@@ -13,6 +13,7 @@ import (
 	"io"
 	"net/http"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -106,7 +107,7 @@ func GenerateCsvZip(writer io.Writer, category string, data any) error {
 	return zw.Close()
 }
 
-// 生成对称密钥（32 字节，适用于 AES-256）
+// 生成对称密钥（32 字节）
 func generateSymmetricKey() ([]byte, error) {
 	key := make([]byte, 32) // AES-256 需要 32 字节密钥
 	_, err := rand.Read(key)
@@ -117,9 +118,9 @@ func generateSymmetricKey() ([]byte, error) {
 }
 
 // 使用 ECIES 加密对称密钥
-func encryptWithECIES(publicKeyHex string, data []byte) ([]byte, error) {
+func encryptWithECIES(pubKeyHex string, data []byte) ([]byte, error) {
 	// 解析公钥
-	pubKeyBytes, err := hex.DecodeString(strings.TrimPrefix(publicKeyHex, "0x"))
+	pubKeyBytes, err := hex.DecodeString(strings.TrimPrefix(pubKeyHex, "0x"))
 	if err != nil {
 		return nil, fmt.Errorf("解码公钥失败: %v", err)
 	}
@@ -137,7 +138,7 @@ func encryptWithECIES(publicKeyHex string, data []byte) ([]byte, error) {
 	return encrypted, nil
 }
 
-// 零宽度字符编码
+// encodeToZeroWidth 零宽度字符编码
 func encodeToZeroWidth(text string, secret string) string {
 	const ZWSP = "\u200B"   // 表示 0
 	const ZWNBSP = "\u200C" // 表示 1
@@ -154,4 +155,29 @@ func encodeToZeroWidth(text string, secret string) string {
 		}
 	}
 	return text + encoded
+}
+
+// 解析零宽度字符
+func decodeZeroWidth(text string) (string, string) {
+	const ZWSP = "\u200B"
+	const ZWNBSP = "\u200C"
+	var binary strings.Builder
+	for _, r := range text {
+		if r == []rune(ZWSP)[0] {
+			binary.WriteString("0")
+		} else if r == []rune(ZWNBSP)[0] {
+			binary.WriteString("1")
+		}
+	}
+	binaryStr := binary.String()
+	secret := ""
+	for i := 0; i < len(binaryStr); i += 8 {
+		if i+8 <= len(binaryStr) {
+			bits := binaryStr[i : i+8]
+			n, _ := strconv.ParseInt(bits, 2, 64)
+			secret += string(rune(n))
+		}
+	}
+	originalText := strings.ReplaceAll(strings.ReplaceAll(text, ZWSP, ""), ZWNBSP, "")
+	return originalText, secret
 }

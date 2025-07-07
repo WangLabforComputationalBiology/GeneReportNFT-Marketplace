@@ -402,7 +402,7 @@ func SaveAllData(Msg string) {
 	//athletigen、risk、skin、health/carrier、health/metabolism、health/tratis、psychology
 	//health/drug-----Xd
 	//getDataFromWegene[dto.HealthyDrug](forHealthyDrug, profileId, BASEURL+"/health/drug", token)
-	wg.Add(10)
+	wg.Add(11)
 	completedChan := make(chan int, 10)
 	go getDataFromWegene[dto.HealthyTraits](forHealthyTraits, profileId, BASEURL+"/health/traits", token, addressT, formatT, sexT, &wg, completedChan)
 	go getDataFromWegene[dto.HealthyCarrier](forHealthyCarrier, profileId, BASEURL+"/health/carrier", token, addressT, formatT, sexT, &wg, completedChan)
@@ -419,6 +419,7 @@ func SaveAllData(Msg string) {
 
 	// 处理子任务完成信号协程
 	go func() {
+		defer wg.Done()
 		completed := 0
 		ctx := context.Background()
 		for range 10 {
@@ -436,17 +437,14 @@ func SaveAllData(Msg string) {
 			configs.RedisClient.Publish(ctx, "progress:"+profileId, progress)
 		}
 		// 所有子任务完成后，设置最终状态
-		configs.RedisClient.Set(ctx, "task:"+profileId, "completed", 10*time.Minute)
-		configs.RedisClient.Publish(ctx, "progress:"+profileId, "completed")
+		configs.RedisClient.Set(ctx, "task:"+profileId, float64(100), 10*time.Minute)
+		configs.RedisClient.Publish(ctx, "progress:"+profileId, float64(100))
 	}()
 
 	wg.Wait()
 	//关闭通道
 	close(completedChan)
-	//更新redis
-	ctxRedis := context.Background()
-	configs.RedisClient.Set(ctxRedis, "task:"+profileId, "completed", 24*time.Hour)
-	configs.RedisClient.Publish(ctxRedis, "progress:"+profileId, "completed")
+
 	//更新数据库
 	configs.DB.Model(&dto.UniqueProfiles{}).Where("profile_id = ?", profileId).Update("status", 1)
 	log.Println("数据异步保存完成")
