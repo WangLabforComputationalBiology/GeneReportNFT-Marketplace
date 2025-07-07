@@ -18,9 +18,9 @@ const balls = ref([]);
 
 /* 初始化小球 */
 function createBall() {
-    const size = Math.random() * 200 + 20; // 随机大小
+    const size = Math.random() * 180 + 30; // 随机大小
     const originX = Math.random() * (window.innerWidth - size - 20);
-    const originY = Math.random() * (window.innerHeight - size - 20);//随机位置
+    const originY = Math.random() * (window.innerHeight - size - 200);//随机位置
     return {
         size,
         color: `hsl(${Math.random() * 260}, 70%, 50%)`, // 随机颜色
