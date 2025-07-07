@@ -107,7 +107,7 @@ func (s *Studio) GetUncompletedProfileIDProgress(ctx *gin.Context) {
 	go func() {
 		for {
 			time.Sleep(15 * time.Second)
-			_, _ = fmt.Fprintf(ctx.Writer, "data: {\"keepalive\": true}\n\n")
+			_, _ = fmt.Fprintf(ctx.Writer, "type:keepalive\ndata: {\"keepalive\": true}\n\n")
 			ctx.Writer.Flush()
 		}
 	}()
@@ -116,17 +116,17 @@ func (s *Studio) GetUncompletedProfileIDProgress(ctx *gin.Context) {
 	for _, id := range ids.ProfileIds {
 		progress, err := configs.RedisClient.Get(ctxRedis, "task:"+id).Result()
 		if errors.Is(err, redis.Nil) {
-			_, _ = fmt.Fprintf(ctx.Writer, "data: {\"taskID\": \"%s\", \"error\": \"任务不存在\"}\n\n", id)
+			_, _ = fmt.Fprintf(ctx.Writer, "type:error\ndata: {\"taskID\": \"%s\", \"error\": \"任务不存在\"}\n\n", id)
 			ctx.Writer.Flush()
 			continue
 		}
 		if err != nil {
-			_, _ = fmt.Fprintf(ctx.Writer, "data: {\"taskID\": \"%s\", \"error\": \"Redis 查询失败\"}\n\n", id)
+			_, _ = fmt.Fprintf(ctx.Writer, "type:error\ndata: {\"taskID\": \"%s\", \"error\": \"Redis 查询失败\"}\n\n", id)
 			ctx.Writer.Flush()
 			continue
 		}
 		//推送初始进度
-		_, _ = fmt.Fprintf(ctx.Writer, "data: {\"taskID\": \"%s\", \"progress\": \"%s\"}\n\n", id, progress)
+		_, _ = fmt.Fprintf(ctx.Writer, "type:process\ndata: {\"taskID\": \"%s\", \"progress\": \"%s\"}\n\n", id, progress)
 		ctx.Writer.Flush()
 	}
 
@@ -134,7 +134,7 @@ func (s *Studio) GetUncompletedProfileIDProgress(ctx *gin.Context) {
 	ch := pubSub.Channel()
 	for msg := range ch {
 		profileID := msg.Channel[len("progress:"):]
-		_, _ = fmt.Fprintf(ctx.Writer, "data: {\"taskID\": \"%s\", \"progress\": \"%s\"}\n\n", profileID, msg.Payload)
+		_, _ = fmt.Fprintf(ctx.Writer, "type:process\ndata: {\"taskID\": \"%s\", \"progress\": \"%s\"}\n\n", profileID, msg.Payload)
 		ctx.Writer.Flush()
 		// 如果任务完成，从活跃任务列表检查是否继续
 		if msg.Payload == "completed" {

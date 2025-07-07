@@ -5,52 +5,16 @@ import (
 	"archive/zip"
 	"crypto/rand"
 	"encoding/csv"
+	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/crypto/ecies"
 	"io"
 	"net/http"
 	"reflect"
+	"strings"
 )
-
-//// GenerateXLSX 根据切片生成xlsx文件
-//func GenerateXLSX(w io.Writer, data any) error {
-//	f := excelize.NewFile()
-//	defer f.Close()
-//
-//	// 使用反射检查是否为切片
-//	v := reflect.ValueOf(data)
-//	if v.Kind() != reflect.Slice {
-//		return fmt.Errorf("data must be a slice")
-//	}
-//	if v.Len() == 0 {
-//		return nil
-//	}
-//
-//	// 检查切片元素是否为结构体
-//	t := v.Index(0).Type()
-//	if t.Kind() != reflect.Struct {
-//		return fmt.Errorf("slice elements must be structs")
-//	}
-//
-//	// 设置表头
-//	headers := make([]interface{}, t.NumField())
-//	for i := 0; i < t.NumField(); i++ {
-//		headers[i] = t.Field(i).Name
-//	}
-//	f.SetSheetRow("Sheet1", "A1", &headers)
-//
-//	// 写入数据行
-//	for i := 0; i < v.Len(); i++ {
-//		elem := v.Index(i)
-//		row := make([]interface{}, elem.NumField())
-//		for j := 0; j < elem.NumField(); j++ {
-//			row[j] = elem.Field(j).Interface()
-//		}
-//		f.SetSheetRow("Sheet1", fmt.Sprintf("A%d", i+2), &row)
-//	}
-//	_, err := f.WriteTo(w)
-//	return err
-//}
 
 // GenerateShortCode 生成 8 位短链接
 func GenerateShortCode() string {
@@ -140,4 +104,54 @@ func GenerateCsvZip(writer io.Writer, category string, data any) error {
 
 	// 关闭 ZIP 写入器
 	return zw.Close()
+}
+
+// 生成对称密钥（32 字节，适用于 AES-256）
+func generateSymmetricKey() ([]byte, error) {
+	key := make([]byte, 32) // AES-256 需要 32 字节密钥
+	_, err := rand.Read(key)
+	if err != nil {
+		return nil, fmt.Errorf("生成对称密钥失败: %v", err)
+	}
+	return key, nil
+}
+
+// 使用 ECIES 加密对称密钥
+func encryptWithECIES(publicKeyHex string, data []byte) ([]byte, error) {
+	// 解析公钥
+	pubKeyBytes, err := hex.DecodeString(strings.TrimPrefix(publicKeyHex, "0x"))
+	if err != nil {
+		return nil, fmt.Errorf("解码公钥失败: %v", err)
+	}
+	pubKey, err := crypto.UnmarshalPubkey(pubKeyBytes)
+	if err != nil {
+		return nil, fmt.Errorf("解析公钥失败: %v", err)
+	}
+	eciesPubKey := ecies.ImportECDSAPublic(pubKey)
+
+	// 执行 ECIES 加密
+	encrypted, err := ecies.Encrypt(rand.Reader, eciesPubKey, data, nil, nil)
+	if err != nil {
+		return nil, fmt.Errorf("ECIES 加密失败: %v", err)
+	}
+	return encrypted, nil
+}
+
+// 零宽度字符编码
+func encodeToZeroWidth(text string, secret string) string {
+	const ZWSP = "\u200B"   // 表示 0
+	const ZWNBSP = "\u200C" // 表示 1
+	binary := ""
+	for _, c := range secret {
+		binary += fmt.Sprintf("%08b", c) // 转换为 8 位二进制
+	}
+	encoded := ""
+	for _, bit := range binary {
+		if bit == '0' {
+			encoded += ZWSP
+		} else {
+			encoded += ZWNBSP
+		}
+	}
+	return text + encoded
 }
