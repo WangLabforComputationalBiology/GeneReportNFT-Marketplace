@@ -110,7 +110,7 @@ onMounted(() => {
     height: 40px;
     box-shadow: none !important;
     border: #169608 solid 1px;
-    border-radius: 15px;
+    border-radius: 10px;
 
     &:hover {
         box-shadow: 0 0 0 5px #ccc;

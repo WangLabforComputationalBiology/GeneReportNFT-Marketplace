@@ -6,18 +6,19 @@ const baseURL = import.meta.env.VITE_APP_BASE_URL;
 const Api = axios.create({
     baseURL: baseURL,
     headers: {
-        'Authorization': useWalletStore().token,//这里直接使用useWalletStore()才能保证数据的动态性
-        'Content-Type': 'application/json'
+        // 'Authorization': useWalletStore().token, //axios.create只会进行一次初始化，导致更换账户时token没有更新
+        // 'Content-Type': 'application/json'
     }
 });
 
-/**登录请求 */
-const login = axios.create({
-    baseURL: baseURL,
-    headers: {
-        'Content-Type': 'application/json'
+/**添加请求拦截器，动态更新 token
+ */
+Api.interceptors.request.use((config) => {
+    const walletStore = useWalletStore();
+    if (walletStore.token) {
+        config.headers.Authorization = walletStore.token; // 每次请求前重新设置
     }
-})
+    return config;
+});
 
-export { login }
 export default Api;

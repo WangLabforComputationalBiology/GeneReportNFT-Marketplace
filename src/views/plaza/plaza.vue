@@ -113,10 +113,9 @@ import { useWalletStore } from "@/stores/account";
 import Api from "@/axios/aixos";
 import { ElLoading, ElMessage } from 'element-plus'
 import { contractAddress, contractABI } from "@/views/plaza/contractConfig";
-// import abi from "@/assets/sharingPlatform.json";
-console.log(useWalletStore().token);
+
 /**获取plaza卡片数据列表
- * @param {bool} loadingForPlaza 列表加载
+ * @param {bool} loadingForPlaza
  * @param {number} page 页数
  * @param {array} List 获取的plaza卡片列表  [{}]
  */
@@ -188,7 +187,7 @@ function isVisible(item) {
     drawerIsVisible.value = true;
 };
 
-/* 表格列封装 */
+/**表格列封装 */
 const columnConfigs = ref({
     'Psychology': [
         { label: 'Score', prop: 'score' },
@@ -232,14 +231,15 @@ function column(category) {
     return columnConfigs.value[category] || [];   //根据指定category返回列配置
 }
 
-/* 释放表单内容 */
+/**释放表单内容 */
 const handleClosed = () => {
     detailData.value = [];
     selectedData.value = {};
     loadingForTable.value = false;
 };
 
-/**获取前数据采集上链 || 已获取直接进行下载
+/**
+ * 获取前数据采集上链 || 已获取直接进行下载
  * @param {bool}  dialogIsVisible  数据采集对话框（metadata未授权时弹出）
  * @param {string}  purpose  数据采集目的
  */
@@ -316,9 +316,9 @@ async function writeContract() {
         // console.log("哈希值：",BytesLikeDataHash,"原始值：",rawValue);
         // console.log(purpose.value)
         // const tx = await contract.setString(purpose.value);
-        /** */
 
         // 等待交易确认后接受回执receipt
+        
         const receipt = await tx.wait();
         if (receipt.status === 1) {
             ElMessage.success('Submission success!');

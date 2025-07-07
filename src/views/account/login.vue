@@ -48,7 +48,6 @@ import Bubbles from '@/views/components/bubbles.vue';
 import { ethers } from 'ethers';
 import { useWalletStore } from '@/stores/account'
 import Api from '../../axios/aixos'
-import { login } from '../../axios/aixos'
 import { ElLoading, ElMessage } from 'element-plus'
 
 const router = useRouter();
@@ -111,7 +110,7 @@ async function connectWallet() {
         });
 
         // 6. 发送登录请求
-        const loginResponse = await login.post(`/user/login`, {
+        const loginResponse = await Api.post(`/user/login`, {
             user_address: address.value,
             signature: signature,
         });

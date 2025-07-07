@@ -12,6 +12,8 @@
     "axios": "^1.8.4",
     "element-plus": "^2.9.8",
     "ethers": "^6.13.5",
+    "event-source-polyfill": "^1.0.31",
+    "jazzicon": "^2.0.0",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.2.0",
     "scss": "^0.2.4",

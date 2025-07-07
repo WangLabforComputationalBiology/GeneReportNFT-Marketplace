@@ -5,7 +5,7 @@
          <h1 class="title">Data <span style="color: #333;">Publish</span></h1>
          <span class="tip1">Ready to upload your data and publish it.</span>
          <div class="start-btn" @click="turnToSteps">Start</div>
-         <div class="start-btn" style="background-color: #E6A23C;" @click="progress">Upload Progress</div>
+         <div class="start-btn" style="background-color: #E6A23C;" @click="getProfileStatus">Profile status</div>
       </div>
 
       <div class="wrapper-left" v-if="step >= 0">
@@ -84,7 +84,7 @@
       <div class="wrapper-right" v-if="step === 2">
          <div class="form-wrapper">
             <p>Report *</p>
-            <div class="select" @click="getProfileIds">
+            <div class="select" @click="getCompleted">
                <div class="add" v-if="!selectedProfile">+</div>
                <div v-if="!selectedProfile">Select the report as collection</div>
                <div v-if="selectedProfile">{{ selectedProfile }}</div>
@@ -119,28 +119,32 @@
 
    </div>
 
-   <el-drawer v-model="isVisible" title="Please select a profile" :direction="ltr" :before-close="handleClose"
+   <el-drawer v-model="drawerIsVisible" :element-loading-svg="svg" title="Profile status" :before-close="handleClose"
       :show-close="false">
-      <el-table :data="profiles" @selection-change="handleSelectionChange">
+      <el-table v-loading="loadingForComplete" :data="profiles" @selection-change="handleSelectionChange" v-if="true">
          <el-table-column>
             <template #default="{ row }">
-               <el-radio v-model="selectedProfile" :label="row" />
+               <el-radio v-model="selectedProfile" :label="row"> {{ row }} <span
+                     style="color: #333;">Completed</span></el-radio>
+            </template>
+
+         </el-table-column>
+      </el-table>
+      <p v-else>Loading proress:</p>
+      <el-table v-loading="loadingForProgress" :element-loading-svg="svg" max-height="65vh" :table-layout="'fixed'"
+         v-else>
+         <el-table-column>
+            <template #default="scope">
+               <el-radio v-model="selectedProfile" :label="scope.profile_id" />
             </template>
          </el-table-column>
       </el-table>
-      <template #footer>
+      <template #footer v-if="step === 2">
          <div style="flex: auto">
             <p class="selected-profile">Selected Profile: <span>{{ selectedProfile }}</span></p>
-            <el-button @click="isVisible = false" class="confirm-button">Confirm</el-button>
+            <el-button @click="drawerIsVisible = false" class="confirm-button">Confirm</el-button>
          </div>
       </template>
-   </el-drawer>
-
-   <el-drawer v-model="progressIsVisible" title="Upload Progress" :direction="ltr" :before-close="handleClose"
-      :show-close="false">
-      <el-table v-loading="loadingForProgress" :element-loading-svg="svg" max-height="65vh" :table-layout="'fixed'">
-
-      </el-table>
    </el-drawer>
 </template>
 
@@ -151,13 +155,14 @@ import { useRouter, useRoute } from 'vue-router';
 import Bubbles from '../components/bubbles.vue';
 import Api from '../../axios/aixos';
 import { useWalletStore } from '@/stores/account';
+import { EventSourcePolyfill } from 'event-source-polyfill';   //SSE服务完善包，方便携带token
 import { ElLoading, ElMessage } from 'element-plus';
-
 const walletStore = useWalletStore();
 const router = useRouter();
 const route = useRoute()
+
 const step = ref(-1); // -1:首页
-const showIndexPage = ref(true);
+const showIndexPage = ref(true);    //是否展示首页，因为通过step维护的状态流转wrapper并不是全覆盖
 
 /**离开首页 */
 function turnToSteps() {
@@ -181,49 +186,101 @@ function redirectToOAuth() {
    window.location.href = `${import.meta.env.VITE_APP_BASE_URL}/user/oauth2Wegene?t=${Date.now()}`;
 }
 
-let profiles = ref([]);
-let isVisible = ref(false);
-let profileName = ref('');
-const getProfileIds = async () => {
-   isVisible.value = true;
+/**
+ * 获取已完成的报告 && 上传进度
+ * @param {string} profiles   获取的已完成报告
+ * @param {bool}  drawerIsVisible   进度抽屉是否展示，主页和create页复用同一个drawer
+ * @param {bool}  loadingForProgress
+ */
+const profiles = ref([]);
+const drawerIsVisible = ref(false);
+const loadingForComplete = ref(false);
+const getCompleted = async () => {
+   drawerIsVisible.value = true;
+   loadingForComplete.value = true;
    try {
-      const res = await Api.get('/studio/getProfileIds');
-      const loading = ElLoading.service({
-         lock: true,
-         text: 'Loading...',
-         background: 'rgba(0, 0, 0, 0.7)',
-         customClass: 'loading',
-      })
+      const res = await Api.get('/studio/getProfile/completed');
       if (res.data.code === 200) {
          profiles.value = res.data.data.profile_ids
-         profileName.value = res.data.data.profile_name
-         loading.close();
+         loadingForComplete.value = false;
       }
    } catch (error) {
-      loading.close();
+      loadingForComplete.value = false;
       alert("Network error. Please try again later");
       console.error(error);
    }
 }
 
-/**上传进度drawer */
-const progressIsVisible = ref(false);
+/**
+ * 获取上传进度 && 已上传好数据列表
+ * @param {bool} drawerIsVisible 上传进度抽屉是否展示
+ * @param {function} getCompleted 获取已上传好数据列表，无参无返
+ * @param {function} getUncompleted 获取正在上传进度，SSE通道，无参返回sseRequest对象
+ * @param {array} uploadProgress 上传进度
+ * @param {object} sseConnection  SSE连接,使用模块级变量存储连接，便于卸载管理
+ */
 const loadingForProgress = ref(false);
-const progress = () => {
-   progressIsVisible.value = true;
-   getProgress();//获取上传进度
+const getProfileStatus = () => {
+   drawerIsVisible.value = true;
+   getCompleted();
+   getUncompleted();
 }
-async function getProgress() {
-   try {
-      loadingForProgress.value = true;
-      // const res = await Api.get('/studio/getProgress');
-   } catch (error) {
-      console.error(error);
+const uploadProgress = ref([]);
+let sseConnection = null; 
+function getUncompleted() {
+   sseConnection = null;
+   loadingForProgress.value = true;
+   sseConnection = new EventSourcePolyfill(`${import.meta.env.VITE_APP_BASE_URL}/events`, {
+      headers: {
+         'Authorization': walletStore.token
+      }
+   });
+   sseConnection.onopen = () => {
+      console.log('SSE连接已建立:SSE connection established');
+   };
+   // 处理 SSE 事件
+   // sseRequest.onmessage = (event) => {
+   //    console.log('event.data:', event);
+   //    if (event.data.includes('无正在处理中的任务')) {
+   //       sseRequest.close();
+   //    }
+   // };
+
+   sseConnection.addEventListener('message', (event) => {
+      if (event.data.includes('无正在处理中的任务')) {
+         sseRequest.close();
+      }
+      console.log('收到消息:', event.data);
+   });
+   sseConnection.onerror = (event) => {
+      sseRequest.close();
+      console.log('Error:', event);
+      ElMessage.error('Error SSE connection');
+   };
+
+   return sseConnection;
+}
+/**
+ * drawer关闭时关闭SSE连接
+ */
+function handleClose() {
+   if (sseConnection) {
+      try {
+         sseConnection.close();
+         sseConnection = null;
+      } catch (error) {
+         console.error('Error closing SSE connection:', error);
+      }
    }
-
 }
 
-/* create步骤 */
+/**
+ * create创建sharing数据步骤
+ * @param {string} selectedProfile 选择的报告
+ * @param {string} name 报告名称
+ * @param {string} description 报告描述
+ * @param {string} tags 报告标签
+ */
 let selectedProfile = ref(null);
 let name = ref('');
 let description = ref('');
@@ -231,17 +288,17 @@ let tags = ref('');
 const hash = ref();
 const createData = async () => {
    let loading = ElLoading.service({
-         lock: true,
-         text: 'Loading...',
-         background: 'rgba(0, 0, 0, 0.7)',
-         customClass: 'loading',
-      })
+      lock: true,
+      text: 'Loading...',
+      background: 'rgba(0, 0, 0, 0.7)',
+      customClass: 'loading',
+   })
    try {
       if (name.value === '' || name.value === null || name.value === undefined) {
          alert('Please enter the name of the collection');
          return;
       }
-      if (selectedProfile.value === null || selectedProfile.value === '') {
+      if (selectedProfile.value === null || selectedProfile.value === '' || selectedProfile.value === undefined) {
          alert('Please select the report as collection');
          return;
       }
@@ -249,7 +306,7 @@ const createData = async () => {
          alert('Please enter a description of the collection');
          return;
       }
-      
+
       const res = await Api.post('/studio/createFromThirdParty', {
          profile_id: selectedProfile.value,
          name: name.value,
@@ -271,7 +328,10 @@ const createData = async () => {
    }
 };
 
-/**复制hash */
+/**
+ * 复制交易hash
+ * @param {string} hash MetaMask交易成功后获取的交易hash，用于校验
+ */
 const pasteHash = () => {
    navigator.clipboard.writeText(hash.value);
    ElMessage.success('Hash copied successfully');
@@ -280,7 +340,7 @@ const pasteHash = () => {
 onMounted(() => {
    //授权成功返回首页立即查看进度
    if (route.query.authorized == 'true') {
-      progressIsVisible.value = true;
+      drawerIsVisible.value = true;
    };
 })
 </script>
