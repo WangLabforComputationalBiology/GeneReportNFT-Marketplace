@@ -206,18 +206,6 @@ func getDataFromWegene[T any](id []int, profileId, url, token, addressT, formatT
 		}
 		//判断内存上的类型是否是结构体
 		if val.Kind() == reflect.Struct {
-			// 获取Head嵌套结构体的反射值
-			headVal := val.FieldByName("Head")
-			// 修改ProfileId字段
-			profileIdField := headVal.FieldByName("ProfileId")
-			if profileIdField.CanSet() {
-				profileIdField.SetString(profileId)
-			}
-			// 修改ReportId字段
-			reportIdField := headVal.FieldByName("ReportId")
-			if reportIdField.CanSet() {
-				reportIdField.SetString(fmt.Sprintf("%d", v))
-			}
 
 			//==============================在这里写入库逻辑================================
 			result := configs.DB.Create(&responseData) //已经用泛型声明了
@@ -426,7 +414,7 @@ func SaveAllData(Msg string) {
 
 	//单独的接口
 	go getDataFromWegeneSimple[dto.Ancestry](profileId, BASEURL+"/ancestry", token, &wg, completedChan)
-	go getDataFromWegeneSimple[dto.Haplogroups](profileId, BASEURL+"/haplogroups", token, &wg, completedChan)
+	go getDataFromWegeneSimple[dto.Haplogroups](profileId, BASEURL+"/haplogroups/result", token, &wg, completedChan)
 	go getDataFromWegeneSimple[dto.Demographics](profileId, BASEURL+"/demographics", token, &wg, completedChan)
 
 	// 处理子任务完成信号协程
