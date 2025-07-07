@@ -3,8 +3,7 @@
         <div class="top">
             <div class="title">
                 <span><span style="color: #169608;">Powered</span> by</span>
-                <div class="FB-logo"></div>
-                <!-- <img src="@/icons/FISCO_BCOS_logo.svg" alt="Fisco bcos logo" @click="toFB"> -->
+                <div class="FB-logo" @click="toFB"></div>
             </div>
         </div>
 
@@ -95,7 +94,6 @@ function toFB() {
 
         &:hover {
             color: #169608;
-
         }
     }
 }

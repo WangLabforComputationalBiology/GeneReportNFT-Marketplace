@@ -28,7 +28,8 @@ import { ElMessage } from 'element-plus'
 import Bubbles from '@/views/components/bubbles.vue'
 import jazzicon from 'jazzicon'
 
-/**jazzicon 
+/**
+ * jazzicon 
  * 根据hash生成头像，有趣的库
  * 确保在组件挂载后操作 DOM
  */

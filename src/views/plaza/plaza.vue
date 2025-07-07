@@ -114,7 +114,8 @@ import Api from "@/axios/aixos";
 import { ElLoading, ElMessage } from 'element-plus'
 import { contractAddress, contractABI } from "@/views/plaza/contractConfig";
 
-/**获取plaza卡片数据列表
+/**
+ * 获取plaza卡片数据列表
  * @param {bool} loadingForPlaza
  * @param {number} page 页数
  * @param {array} List 获取的plaza卡片列表  [{}]
@@ -143,7 +144,6 @@ const getList = async () => {
             return;
         }
         loadingForPlaza.value = false;
-
     } finally {
         setTimeout(() => {
             loadingForPlaza.value = false;
@@ -152,7 +152,8 @@ const getList = async () => {
 }
 getList();  //获取列表
 
-/**获取详细数据
+/**
+ * 获取详细数据
  * @param {string} selectedData 选中查看的卡片
  * @param {bool} loadingForTable 表格加载
  * @param {array} detailData 根据选中卡片hash获取的报告详情 [{}]
@@ -176,7 +177,8 @@ const getDetailData = async () => {
     }
 }
 
-/**详情抽屉
+/**
+ * 详情抽屉
  * @param {object} drawerIsVisible 详情抽屉是否显示
  * @param {object} selectedData 选中查看的卡片
  */
@@ -273,11 +275,6 @@ const downloadDecryptTool = async () => {
 }
 
 
-/**调用合约_test */
-// import abi_test from '@/assets/test.json'
-// const test_contract = abi_test;
-// const test_address = '0x0958817F161D6c9Ee7974Bff07f354E410632Eb1';//测试合约地址
-// const test_hash = '89c792eed9551d2b477e5b300b6dfc26c11ab4ccd72a3d44899c5b1b69a52123';
 
 /**调用合约
  * @param {json} contractABI 合约ABI(固定，每个合约对应一个abi，源于contractConfig)
@@ -301,25 +298,11 @@ async function writeContract() {
         const signer = await provider.getSigner();
         // 创建合约实例（合约地址，合约ABI，签名者）
         const contract = new ethers.Contract(contractAddress, contractABI, signer);
-        // const rawValue = "0x" + selectedData.value.data_hash;//调用合约要求0x开头的byteslike类型，实际上这里字符串直接拼接即可
+        // const rawValue = "0x" + selectedData.value.data_hash;//调用合约要求0x开头的byteslike类型，实际上这里字符串直接拼接即可,目前已弃用
         // 发送transaction
         ElMessage.warning('Please confirm the transaction in MetaMask.');
         const tx = await contract.obtainViewAccess(selectedData.value.geneSharing_contract_address, selectedData.value.data_hash, purpose.value);
-
-        /**合约测试 */
-        // if (!ethers.isAddress(selectedData.value.geneSharing_contract_address)) {
-        //     throw new Error("无效的地址");
-        // }
-        // console.log('合约地址：',selectedData.value.geneSharing_contract_address);
-        // const rawValue = "0x" + test_hash;//调用合约要求0x开头的byteslike类型
-        // const BytesLikeDataHash = ethers.keccak256(rawValue) //如果看到让你用ethers.utils.keccak256()，这是v5的写法，v6直接顶层调用
-        // console.log("哈希值：",BytesLikeDataHash,"原始值：",rawValue);
-        // console.log(purpose.value)
-        // const tx = await contract.setString(purpose.value);
-
-        // 等待交易确认后接受回执receipt
-        
-        const receipt = await tx.wait();
+        const receipt = await tx.wait();    //交易回执
         if (receipt.status === 1) {
             ElMessage.success('Submission success!');
             dialogIsVisible.value = false;
@@ -337,7 +320,8 @@ async function writeContract() {
         loading.close();
     }
 }
-/**根据交易哈希上传并获取短链接，通过短链接下载metadata
+/**
+ * 根据交易哈希上传并获取短链接，通过短链接下载metadata
  * @param {string} receivedHash metamask交易哈希
  */
 async function uploadReceivedHash(receivedHash) {

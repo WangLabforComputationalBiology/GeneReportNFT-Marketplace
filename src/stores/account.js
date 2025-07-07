@@ -3,18 +3,18 @@ import { defineStore } from "pinia";
 const useWalletStore = defineStore("account", {
     state: () => ({
         token: null,
-        address: null,
-        insititution: null,
+        address: null,  //钱包地址
+        insititution: null,      //机构
         email: null,
     }),
     actions: {
-        setToken(token) {
-            this.token = token;
-        },
         setWalletInfo(address, insititution, email) {
             this.address = address;
             this.insititution = insititution;
             this.email = email;
+        },
+        setToken(token) {
+            this.token = token;
         },
         setAddress(address) {
             this.address = address;
@@ -22,7 +22,6 @@ const useWalletStore = defineStore("account", {
         setInstitution(insititution) {
             this.insititution = insititution;
         },
-        
         setEmail(email) {
             this.email = email;
         },
@@ -34,11 +33,10 @@ const useWalletStore = defineStore("account", {
         },
     },
     persist: {
+        //使用 sessionStorage 而不是 localStorage。MetaMask设计是会话级通信，不需要长久保存
         storage: sessionStorage,
-        /*使用 sessionStorage 而不是 localStorage。MetaMask是会话级通信，并不需要长久保存 */
     },
 
 })
-
 
 export { useWalletStore };
