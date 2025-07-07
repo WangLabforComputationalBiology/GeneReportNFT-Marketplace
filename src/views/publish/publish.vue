@@ -119,25 +119,19 @@
 
    </div>
 
-   <el-drawer v-model="drawerIsVisible" :element-loading-svg="svg" title="Profile status" :before-close="handleClose"
+   <el-drawer v-model="drawerIsVisible" :element-loading-svg="svg" title="Profile status" @close="handleClose"
       :show-close="false">
-      <el-table v-loading="loadingForComplete" :data="profiles" @selection-change="handleSelectionChange" v-if="true">
-         <el-table-column>
+      <el-table v-loading="loadingForComplete" :data="profiles" @selection-change="handleSelectionChange">
+         <el-table-column label="Completed reports">
             <template #default="{ row }">
-               <el-radio v-model="selectedProfile" :label="row"> {{ row }} <span
-                     style="color: #333;">Completed</span></el-radio>
+               <el-radio v-model="selectedProfile" :label="row" /> 
             </template>
 
          </el-table-column>
       </el-table>
-      <p v-else>Loading proress:</p>
-      <el-table v-loading="loadingForProgress" :element-loading-svg="svg" max-height="65vh" :table-layout="'fixed'"
-         v-else>
-         <el-table-column>
-            <template #default="scope">
-               <el-radio v-model="selectedProfile" :label="scope.profile_id" />
-            </template>
-         </el-table-column>
+      <el-table :data="uploadProgress" :element-loading-svg="svg" max-height="65vh">
+         <el-table-column prop="taskID" label="Task ID" width="380" />
+         <el-table-column prop="progress" label="Progress(%)" width="130" style="color: #169608;"/>
       </el-table>
       <template #footer v-if="step === 2">
          <div style="flex: auto">
@@ -155,8 +149,8 @@ import { useRouter, useRoute } from 'vue-router';
 import Bubbles from '../components/bubbles.vue';
 import Api from '../../axios/aixos';
 import { useWalletStore } from '@/stores/account';
-import { EventSourcePolyfill } from 'event-source-polyfill';   //SSE服务完善包，方便携带token
 import { ElLoading, ElMessage } from 'element-plus';
+import { SSEManager } from './SSE.js';
 const walletStore = useWalletStore();
 const router = useRouter();
 const route = useRoute()
@@ -226,52 +220,14 @@ const getProfileStatus = () => {
    getUncompleted();
 }
 const uploadProgress = ref([]);
-let sseConnection = null; 
+let sseConnection = new SSEManager(uploadProgress);   //传入一个ref
 function getUncompleted() {
-   sseConnection = null;
    loadingForProgress.value = true;
-   sseConnection = new EventSourcePolyfill(`${import.meta.env.VITE_APP_BASE_URL}/events`, {
-      headers: {
-         'Authorization': walletStore.token
-      }
-   });
-   sseConnection.onopen = () => {
-      console.log('SSE连接已建立:SSE connection established');
-   };
-   // 处理 SSE 事件
-   // sseRequest.onmessage = (event) => {
-   //    console.log('event.data:', event);
-   //    if (event.data.includes('无正在处理中的任务')) {
-   //       sseRequest.close();
-   //    }
-   // };
-
-   sseConnection.addEventListener('message', (event) => {
-      if (event.data.includes('无正在处理中的任务')) {
-         sseRequest.close();
-      }
-      console.log('收到消息:', event.data);
-   });
-   sseConnection.onerror = (event) => {
-      sseRequest.close();
-      console.log('Error:', event);
-      ElMessage.error('Error SSE connection');
-   };
-
-   return sseConnection;
+   sseConnection.connect();
 }
-/**
- * drawer关闭时关闭SSE连接
- */
+//drawer关闭时关闭SSE连接，handleClose为drawer绑定的清理事件
 function handleClose() {
-   if (sseConnection) {
-      try {
-         sseConnection.close();
-         sseConnection = null;
-      } catch (error) {
-         console.error('Error closing SSE connection:', error);
-      }
-   }
+   sseConnection.close();
 }
 
 /**
@@ -338,10 +294,6 @@ const pasteHash = () => {
 }
 
 onMounted(() => {
-   //授权成功返回首页立即查看进度
-   if (route.query.authorized == 'true') {
-      drawerIsVisible.value = true;
-   };
 })
 </script>
 
