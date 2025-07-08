@@ -19,8 +19,11 @@
             <el-button class="custom-button" @click="logout">Log out</el-button>
             <br>
             <el-button class="custom-button logs-btn" @click="viewActivity">Activity</el-button>
+            <el-button class="custom-button logs-btn" @click="addERC20TokenToMetaMask">Add Token</el-button>
+            <el-button class="custom-button logs-btn" @click="addNetworkToMetaMask">Add Network</el-button>
         </div>
     </div>
+
     <el-drawer :direction="'btt'" title="Activity" v-model="ActivityIsVisible" :size="'60%'" @closed="drawerClosed">
         <el-table :data="activityData" style="width: 100%" :table-layout="'fixed'">
             <el-table-column prop="time" label="Time" width="160" />
@@ -42,6 +45,8 @@ import { ElMessage } from 'element-plus';
 import Bubbles from '@/views/components/bubbles.vue';
 import jazzicon from 'jazzicon';
 import Api from "@/axios/aixos";
+import { ethers } from 'ethers';
+import { contractAddress } from '@/views/plaza/contractConfig.js';
 
 /**
  * jazzicon 
@@ -52,6 +57,79 @@ const avatarContainer = ref(null);
 const diameter = 100; // 头像直径
 
 const router = useRouter();
+
+/**自动添加ERC20代币（Token） */
+async function addERC20TokenToMetaMask() {
+    if (!window.ethereum) {
+        ElMessage.warning('MetaMask missing.');
+        return
+    }
+    const tokenAddress = contractAddress; // 同合约地址
+    const tokenSymbol = 'GNC'; // 币符号，必填
+    const tokenDecimals = 18; // 小数点位数必填（通常 18，但 USDT 是 6）
+
+    try {
+        // 调用 MetaMask 的 wallet_watchAsset 方法
+        const wasAdded = await window.ethereum.request({
+            method: 'wallet_watchAsset',
+            params: {
+                type: 'ERC20', // 代币类型
+                options: {
+                    address: tokenAddress,
+                    symbol: tokenSymbol,
+                    decimals: tokenDecimals,
+                },
+            },
+        });
+
+        if (wasAdded) {
+            console.log('代币已成功添加到 MetaMask!');
+            ElMessage.success('Token added successfully!');
+        } else {
+            // console.log('用户拒绝了代币添加请求。');
+            ElMessage.warning('Token added failed!');
+        }
+    } catch (error) {
+        if (error.code === 4001 || error.message === "User rejected the request.") {
+            ElMessage.warning('Token added failed! User denied.');
+        }
+    }
+}
+
+/**自动添加网络 */
+async function addNetworkToMetaMask() {
+    if (!window.ethereum) {
+        ElMessage.warning('MetaMask missing.');
+        return
+    }
+
+    // 要添加的网络配置（以 BSC 主网为例）
+    const networkConfig = {
+        chainId: "0x4EE8", // 20200 的 16 进制
+        chainName: "BioChainer",
+        nativeCurrency: {
+            name: "FBC",
+            symbol: "FBC",
+            decimals: 18,
+        },
+        rpcUrls: ["http://10.108.10.51:8545"],  // RPC 节点，必须要https协议
+        blockExplorerUrls: [],  // 区块链浏览器,目前没有  
+    };
+
+    try {
+        // 调用 MetaMask 的 wallet_addEthereumChain 方法
+        await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [networkConfig],
+        });
+        console.log("网络已成功添加到 MetaMask！");
+    } catch (error) {
+        console.error("添加网络失败:", error);
+        if (error.code === 4001) {
+            console.log("用户拒绝了网络添加请求。");
+        }
+    }
+}
 
 /**登出 */
 const logout = () => {
