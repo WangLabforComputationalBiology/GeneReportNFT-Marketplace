@@ -69,7 +69,7 @@ func init() {
 	PlatformContractAddressHex = strings.ToLower("0xB63F003d7464F840F7992fAD36e57900DB1A40c0")
 
 	//初始化已部署的Metadata合约地址
-	MetaDataContractAddress = strings.ToLower("0xBFC75376CD8a2a67eC50Fb56cab36a8Df2566f1D")
+	MetaDataContractAddress = strings.ToLower("0xb3c9A5073370a5195763517F8637C17E948B8dA5")
 
 	// 解码私钥
 	privateKeyBytes, err := hex.DecodeString(AdminPrivateKeyHex)
