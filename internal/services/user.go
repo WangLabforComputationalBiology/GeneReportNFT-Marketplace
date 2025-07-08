@@ -219,3 +219,11 @@ func (u *userService) VerifyEmailCode(email string, code string, userAddress str
 	}
 
 }
+
+func (u *userService) GetActivityByUser(userAddress string) (toResp dto.GetActivityResp, err error) {
+	results, pageNum, err := dao.GetUserDao().GetActivityByUserAddress(userAddress)
+	if err != nil {
+		return dto.GetActivityResp{}, err
+	}
+	return dto.GetActivityResp{MultiActivities: results, PageNum: pageNum}, nil
+}

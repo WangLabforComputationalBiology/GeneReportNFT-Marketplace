@@ -181,3 +181,11 @@ func decodeZeroWidth(text string) (string, string) {
 	originalText := strings.ReplaceAll(strings.ReplaceAll(text, ZWSP, ""), ZWNBSP, "")
 	return originalText, secret
 }
+
+func EncryptDistributionV1(pubKeyHex string, expiry int64) {
+
+}
+
+func EncryptDistributionV2() {
+
+}

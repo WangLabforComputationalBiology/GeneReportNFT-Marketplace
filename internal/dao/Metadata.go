@@ -144,3 +144,56 @@ func (m *Metadata) GetGenoType(profileId, category string) (results []models.Gen
 	}
 	return results, err
 }
+
+func (m *Metadata) GetLatestViewAccess(userAddress string, dataHash string) (results *models.Activity, err error) {
+	err = m.DB().Select("activities.*").
+		Table("activities").
+		Where("event IN ? AND user_address = ? AND metadata = ?", []string{"NewViewAccess", "RenewalViewAccess"}, userAddress, dataHash).
+		Order("time desc").
+		First(&results).Error
+	return results, err
+}
+
+func (m *Metadata) NewViewAccess(activity *models.Activity) (err error) {
+	activity.Event = "NewViewAccess"
+	err = m.DB().Table("activities").
+		Create(&activity).Error
+	return err
+}
+
+func (m *Metadata) RenewalViewAccess(activity *models.Activity) (err error) {
+	activity.Event = "RenewalViewAccess"
+	err = m.DB().Table("activities").
+		Create(&activity).Error
+	return err
+}
+
+func (m *Metadata) IsViewAccessExist(dataHash, viewer string) (bool, error) {
+	var count int
+	err := m.DB().Select("count(*)").
+		Table("activities").
+		Where("event IN ? AND user_address = ? AND metadata = ?", []string{"NewViewAccess", "RenewalViewAccess"}, viewer, dataHash).
+		Scan(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+func (m *Metadata) GetActivityByDataHash(dataHash string) (results []models.Activity, pageNum int, err error) {
+	PAGESIZE := 30
+
+	//获取activity数据
+	err = m.DB().Select("*").
+		Table("activities").
+		Where("metadata = ?", dataHash).
+		Scan(&results).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	//获取总页数
+	pageNum = len(results)/PAGESIZE + 1
+
+	return results, pageNum, nil
+}

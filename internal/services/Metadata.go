@@ -133,63 +133,6 @@ func (m *MetadataService) GetDataImpl(profileId, category string) (map[string]in
 	return map[string]interface{}{"details": resultArray}, nil
 }
 
-//	func GenerateEncryptedZIP(data []models.GenoType, w io.Writer) ([]byte, *io.PipeReader, error) {
-//		// 生成 AES 密钥和 IV
-//		key := make([]byte, 32) // 256 位
-//		if _, err := rand.Read(key); err != nil {
-//			return nil, nil, err
-//		}
-//		iv := make([]byte, aes.BlockSize)
-//		if _, err := rand.Read(iv); err != nil {
-//			return nil, nil, err
-//		}
-//		block, err := aes.NewCipher(key)
-//		if err != nil {
-//			return nil, nil, err
-//		}
-//		stream := cipher.NewCTR(block, iv)
-//
-//		// 格式化 private.key 内容
-//		keyContent := fmt.Sprintf("-----BEGIN PRIVATE KEY-----\n%s\n-----END PRIVATE KEY-----", key)
-//
-//		// 创建管道
-//		pr, pw := io.Pipe()
-//
-//		// 异步生成和打包 ZIP
-//		go func() {
-//			defer pw.Close()
-//			zw := zip.NewWriter(pw)
-//
-//			// 添加加密的 XLSX
-//			w, err := zw.Create("data.xlsx")
-//			if err != nil {
-//				pw.CloseWithError(err)
-//				return
-//			}
-//			ew := cipher.StreamWriter{S: stream, W: w}
-//			if err := utils.GenerateXLSX(ew, data); err != nil {
-//				pw.CloseWithError(err)
-//				return
-//			}
-//
-//			// 添加 private.key
-//			keyW, err := zw.Create("private.key")
-//			if err != nil {
-//				pw.CloseWithError(err)
-//				return
-//			}
-//			if _, err := keyW.Write([]byte(keyContent)); err != nil {
-//				pw.CloseWithError(err)
-//				return
-//			}
-//
-//			if err := zw.Close(); err != nil {
-//				pw.CloseWithError(err)
-//			}
-//		}()
-//
-//		return iv, pr, nil
-//	}
 func (m *MetadataService) GetGenoTypeZip(dataHash, viewer, pubKey string) (dto.GetGenoTypeZipResp, error) {
 	// 根据 hash 取 metadata
 	metadata, err := dao.GetMetadataDao().GetMetadataOverviewByDataHash(dataHash)
@@ -222,7 +165,7 @@ func (m *MetadataService) GetGenoTypeZip(dataHash, viewer, pubKey string) (dto.G
 	}
 
 	//用户是否有viewAccess
-	isHave, err := dao.GetActivityDao().IsViewAccessExist(dataHash, viewer)
+	isHave, err := dao.GetMetadataDao().IsViewAccessExist(dataHash, viewer)
 	if err != nil {
 		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
@@ -231,7 +174,7 @@ func (m *MetadataService) GetGenoTypeZip(dataHash, viewer, pubKey string) (dto.G
 	}
 
 	//若有 检查用户的viewAccess状态
-	activity, err := dao.GetActivityDao().GetLatestViewAccess(viewer, metadata.DataHash)
+	activity, err := dao.GetMetadataDao().GetLatestViewAccess(viewer, metadata.DataHash)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return dto.GetGenoTypeZipResp{}, appErrors.New(http.StatusInternalServerError, "服务繁忙，请稍后再试", err)
 	}
@@ -376,9 +319,9 @@ func (m *MetadataService) ObtainViewAccess(txHash, userAddress, pubKey string) (
 		GeneSharing:     metadata.GeneSharingContractAddress,
 	}
 	if eventName == "NewViewAccess" {
-		err = dao.GetActivityDao().NewViewAccess(activity)
+		err = dao.GetMetadataDao().NewViewAccess(activity)
 	} else {
-		err = dao.GetActivityDao().RenewalViewAccess(activity)
+		err = dao.GetMetadataDao().RenewalViewAccess(activity)
 	}
 	if err != nil {
 		return dto.NewViewAccessResp{}, appErrors.New(503, "服务繁忙，请稍后再试", err)
@@ -390,4 +333,12 @@ func (m *MetadataService) ObtainViewAccess(txHash, userAddress, pubKey string) (
 		return dto.NewViewAccessResp{}, appErrors.New(503, "生成短链接失败", err)
 	}
 	return dto.NewViewAccessResp{DownloadURL: shortURL}, nil
+}
+
+func (m *MetadataService) GetTraceData(dataHash string) (dto.GetActivityResp, error) {
+	results, pageNum, err := dao.GetMetadataDao().GetActivityByDataHash(dataHash)
+	if err != nil {
+		return dto.GetActivityResp{}, appErrors.New(503, "服务繁忙，请稍后再试", err)
+	}
+	return dto.GetActivityResp{MultiActivities: results, PageNum: pageNum}, nil
 }

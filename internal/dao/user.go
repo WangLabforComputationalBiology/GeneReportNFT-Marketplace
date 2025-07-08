@@ -113,3 +113,20 @@ func (u *UserDao) GetUncompletedProfileIdsByUser(address string) (results []stri
 		Scan(&results).Error
 	return results, err
 }
+
+func (u *UserDao) GetActivityByUserAddress(userAddress string) (results []models.Activity, pageNum int, err error) {
+	PAGESIZE := 30
+	//获取activity数据
+	err = u.DB().Select("*").
+		Table("activities").
+		Where("user_address = ?", userAddress).
+		Scan(&results).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	//获取总页数
+	pageNum = len(results)/PAGESIZE + 1
+
+	return results, pageNum, nil
+}

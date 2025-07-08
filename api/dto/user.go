@@ -1,6 +1,9 @@
 package dto
 
-import "time"
+import (
+	"GeneReport_platform/internal/models"
+	"time"
+)
 
 // LoginReq 登录请求
 type LoginReq struct {
@@ -57,4 +60,9 @@ type SendEmailCodeReq struct {
 type VerifyEmailCodeReq struct {
 	Email string `json:"email" binding:"required"`
 	Code  string `json:"code" binding:"required"`
+}
+
+type GetActivityResp struct {
+	MultiActivities []models.Activity `json:"multi_activities" binging:"required"`
+	PageNum         int               `json:"page_num" binging:"required"`
 }
