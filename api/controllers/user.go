@@ -618,5 +618,33 @@ func (u *User) SaveProfileInfo(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"code": 200, "msg": "successful!"})
+}
 
+func (u *User) GetTraceDataByDataHash(ctx *gin.Context) {
+	toResp, err := services.MetadataServ.GetTraceData(ctx.Query("data_hash"))
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
+	//成功
+	ctx.JSON(200, dto.Response{
+		Code:    200,
+		Message: "success",
+		Data:    toResp,
+	})
+}
+
+func (u *User) GetActivityByUser(ctx *gin.Context) {
+	toResp, err := services.UserServ.GetActivityByUser(ctx.GetString("user_address"))
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+	//成功
+	ctx.JSON(200, dto.Response{
+		Code:    200,
+		Message: "success",
+		Data:    toResp,
+	})
 }

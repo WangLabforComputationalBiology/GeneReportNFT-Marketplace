@@ -59,6 +59,8 @@ func registerUserRouter(r *gin.RouterGroup) {
 	//验证验证码
 	r.POST("/verify_email", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.UserController.VerifyEmailCode)
 
+	//获取活动列表
+	r.GET("/activity", middlewares.AuthMiddleware(), middlewares.ZapMiddleware(), controllers.UserController.GetActivityByUser)
 }
 
 func registerStudioRouter(r *gin.RouterGroup) {
