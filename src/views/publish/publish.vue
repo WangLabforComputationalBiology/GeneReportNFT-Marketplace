@@ -84,7 +84,7 @@
       <div class="wrapper-right" v-if="step === 2">
          <div class="form-wrapper">
             <p>Report *</p>
-            <div class="select" @click="getCompleted">
+            <div class="select" @click="getProfileStatus">
                <div class="add" v-if="!selectedProfile">+</div>
                <div v-if="!selectedProfile">Select the report as collection</div>
                <div v-if="selectedProfile">{{ selectedProfile }}</div>
@@ -92,7 +92,6 @@
             <p>Name *</p>
             <el-input class="name-input" v-model="name"
                placeholder="Please enter the name of the collection"></el-input>
-            <!-- <p class="introduction"><span class="click-here">Click here</span> to view an example.</p> -->
             <p>Description</p>
             <input type="text" class="Description-input" placeholder="Please enter a description of the collection"
                v-model="description"></input>
@@ -119,19 +118,25 @@
 
    </div>
 
-   <el-drawer v-model="drawerIsVisible" :element-loading-svg="svg" title="Profile status" @close="handleClose"
+   <el-drawer v-model="drawerIsVisible" :element-loading-svg="svg" title="Profile status" @closed="handleClose"
       :show-close="false">
-      <el-table v-loading="loadingForComplete" :data="profiles" @selection-change="handleSelectionChange">
+      <el-table v-loading="loadingForComplete" :data="profiles" v-if="step === -1">
          <el-table-column label="Completed reports">
             <template #default="{ row }">
-               <el-radio v-model="selectedProfile" :label="row" /> 
+               {{ row }}
             </template>
-
          </el-table-column>
       </el-table>
-      <el-table :data="uploadProgress" :element-loading-svg="svg" max-height="65vh">
+      <el-table v-loading="loadingForComplete" :data="profiles" v-if="step === 2">
+         <el-table-column label="Completed reports">
+            <template #default="{ row }">
+               <el-radio v-model="selectedProfile" :label="row" />
+            </template>
+         </el-table-column>
+      </el-table>
+      <el-table :data="uploadProgress" :element-loading-svg="svg" max-height="65vh" v-if="step === -1">
          <el-table-column prop="taskID" label="Task ID" width="380" />
-         <el-table-column prop="progress" label="Progress(%)" width="130" style="color: #169608;"/>
+         <el-table-column prop="progress" label="Progress(%)" width="130" style="color: #169608;" />
       </el-table>
       <template #footer v-if="step === 2">
          <div style="flex: auto">
@@ -190,7 +195,6 @@ const profiles = ref([]);
 const drawerIsVisible = ref(false);
 const loadingForComplete = ref(false);
 const getCompleted = async () => {
-   drawerIsVisible.value = true;
    loadingForComplete.value = true;
    try {
       const res = await Api.get('/studio/getProfile/completed');
@@ -220,14 +224,16 @@ const getProfileStatus = () => {
    getUncompleted();
 }
 const uploadProgress = ref([]);
-let sseConnection = new SSEManager(uploadProgress);   //传入一个ref
+let sseConnection = new SSEManager(uploadProgress);   //传入一个ref对象实现数据同步
 function getUncompleted() {
    loadingForProgress.value = true;
    sseConnection.connect();
+
 }
-//drawer关闭时关闭SSE连接，handleClose为drawer绑定的清理事件
+//drawer关闭时关闭SSE连接，handleClose()为drawer绑定的清理事件
 function handleClose() {
    sseConnection.close();
+   uploadProgress.value = [];
 }
 
 /**

@@ -20,23 +20,20 @@ export class SSEManager {
         };
 
         this.connection.addEventListener('message', (event) => {
-            console.log(event.data);
+            // console.log(event.data);
         });
 
         //progress为返回进度的信息类型
         this.connection.addEventListener('progress', (event) => {
             try {
                 const jsonData = JSON.parse(event.data);    //SSE返回的是文本格式，这里转为json
-                console.log(jsonData);
                 const exists = this.dataArray.value.some(item => item.taskID === jsonData.taskID);  //是否已经存在该元素
-                console.log('是否已经存在该元素', exists);
                 if (!exists) {
                     this.dataArray.value.push(jsonData);
                 } else {
                     //更新已有的数据
                     const index = this.dataArray.value.findIndex(item => item.taskID === jsonData.taskID);
                     this.dataArray.value[index] = jsonData;
-                    console.log('更新已有的数据', this.dataArray.value);
                 }
             } catch (error) {
                 console.log("Error(已断开连接):" + error);
