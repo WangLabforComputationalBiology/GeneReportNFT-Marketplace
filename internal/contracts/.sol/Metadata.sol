@@ -66,7 +66,9 @@ contract Metadata {
 
 
     constructor(address proxy_){
-        DURATION = 7 days;
+        // 以太坊的时间戳是秒级，因此它的时间单位如days也是以秒为单位
+        // 但fisco的时间戳是毫秒级，因此需要乘1000
+        DURATION = 7 days * 1000;
         _proxy = proxy_;
     }
 
@@ -76,7 +78,7 @@ contract Metadata {
     }
 
     //续约查看许可
-    function _renewalViewAccess(ViewAccess storage vs) internal returns(uint256){
+    function _renewalViewAccess(ViewAccess storage vs) internal returns (uint256){
         vs.expiry = block.timestamp + DURATION;
         vs.count++;
         return vs.expiry;
@@ -119,12 +121,12 @@ contract Metadata {
     }
 
     //指定Metadata续约查看许可
-    function renewalViewAccess(bytes32 dataHash, address viewer, string memory remark) external onlyProxy returns(uint256){
+    function renewalViewAccess(bytes32 dataHash, address viewer, string memory remark) external onlyProxy returns (uint256){
         ViewAccess storage viewAccess = _viewerPermissions[dataHash][viewer];
         require(viewAccess.viewer == viewer, "the viewer has not been granted permission");
         require(viewAccess.isValid, "the viewer is not valid");
 
-        uint256 expiry=_renewalViewAccess(viewAccess);
+        uint256 expiry = _renewalViewAccess(viewAccess);
         _addTraceDataWithRemark(dataHash, viewer, address(0), 2, remark);
         return expiry;
     }
@@ -166,7 +168,7 @@ contract Metadata {
     }
 
     //新增查看许可
-    function addViewAccess(bytes32 dataHash, address viewer, address sharingAddress, string calldata remark) external onlyProxy returns(uint256){
+    function addViewAccess(bytes32 dataHash, address viewer, address sharingAddress, string calldata remark) external onlyProxy returns (uint256){
         require(owner(dataHash) != viewer, "ur the owner of the Metadata, no need to add permission");
         require(isMetadataExist(dataHash), "the Metadata does not exist");
         ViewAccess storage viewAccess = _viewerPermissions[dataHash][viewer];
