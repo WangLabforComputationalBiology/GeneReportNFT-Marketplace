@@ -181,11 +181,4 @@ contract SharingPlatform is ERC20 {
 
     }
 
-    function testEventNewViewAccess(address originalSender, bytes32 dataHash,address geneSharing,uint256 expiry, uint256 reward) external {
-        emit NewViewAccess(originalSender, dataHash,geneSharing,expiry, reward);
-    }
-
-    function testEventRenewalViewAccess(address originalSender, bytes32 dataHash, uint256 expiry, uint256 reward) external {
-        emit RenewalViewAccess(originalSender, dataHash, expiry,reward);
-    }
 }
