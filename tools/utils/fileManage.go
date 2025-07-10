@@ -8,10 +8,12 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/crypto/ecies"
 	"io"
 	"net/http"
+	"os"
 	"reflect"
 	"strconv"
 	"strings"
@@ -138,13 +140,15 @@ func encryptWithECIES(pubKeyHex string, data []byte) ([]byte, error) {
 	return encrypted, nil
 }
 
-// encodeToZeroWidth 零宽度字符编码
+// 零宽度字符编码（每个字符 4 位二进制）
 func encodeToZeroWidth(text string, secret string) string {
 	const ZWSP = "\u200B"   // 表示 0
 	const ZWNBSP = "\u200C" // 表示 1
 	binary := ""
 	for _, c := range secret {
-		binary += fmt.Sprintf("%08b", c) // 转换为 8 位二进制
+		// 将字符（0-9）转换为 4 位二进制
+		n, _ := strconv.Atoi(string(c))  // 假设 secret 只包含数字
+		binary += fmt.Sprintf("%04b", n) // 例如 '1' -> "0001"
 	}
 	encoded := ""
 	for _, bit := range binary {
@@ -157,7 +161,16 @@ func encodeToZeroWidth(text string, secret string) string {
 	return text + encoded
 }
 
-// 解析零宽度字符
+// 保存为 .key 文件
+func saveToKeyFile(filename string, data string) error {
+	err := os.WriteFile(filename, []byte(data), 0644)
+	if err != nil {
+		return fmt.Errorf("保存 .key 文件失败: %v", err)
+	}
+	return nil
+}
+
+// 解析零宽度字符（按 4 位解码）
 func decodeZeroWidth(text string) (string, string) {
 	const ZWSP = "\u200B"
 	const ZWNBSP = "\u200C"
@@ -171,21 +184,39 @@ func decodeZeroWidth(text string) (string, string) {
 	}
 	binaryStr := binary.String()
 	secret := ""
-	for i := 0; i < len(binaryStr); i += 8 {
-		if i+8 <= len(binaryStr) {
-			bits := binaryStr[i : i+8]
+	for i := 0; i < len(binaryStr); i += 4 {
+		if i+4 <= len(binaryStr) {
+			bits := binaryStr[i : i+4]
 			n, _ := strconv.ParseInt(bits, 2, 64)
-			secret += string(rune(n))
+			secret += fmt.Sprintf("%d", n) // 转换为数字字符
 		}
 	}
 	originalText := strings.ReplaceAll(strings.ReplaceAll(text, ZWSP, ""), ZWNBSP, "")
 	return originalText, secret
 }
 
-func EncryptDistributionV1(pubKeyHex string, expiry int64) {
-
+// EncryptDistributionV1 加密分发实现V1
+// 原始加密密钥为originKeyHex
+// 展示给用户的是KeyStep2
+func EncryptDistributionV1(originKeyHex, pubKeyHex string, expiry int64) (string, error) {
+	KeyStep1, err := encryptWithECIES(pubKeyHex, common.Hex2Bytes(originKeyHex))
+	if err != nil {
+		return "", err
+	}
+	KeyStep2 := encodeToZeroWidth(common.Bytes2Hex(KeyStep1), strconv.FormatInt(expiry, 10))
+	return KeyStep2, nil
 }
 
-func EncryptDistributionV2() {
-
-}
+//// EncryptDistributionV2 加密分发实现V2
+//// 原始加密密钥为KeyStep2、
+//// 展示给用户是KeyStep1
+//func EncryptDistributionV2(originKeyHex, pubKeyHex string, expiry int64) (string, error) {
+//	encryptedExpiry, err := encryptWithECIES(pubKeyHex, common.Hex2Bytes(strconv.FormatInt(expiry, 10)))
+//	if err != nil {
+//		return "", err
+//	}
+//	//把encryptedExpiry隐写到originKeyHex中
+//	KeyStep1, err := LBSWrite(originKeyHex, encryptedExpiry)
+//	//KeyStep1和时间戳派生出KeyStep2，作为对文件加密的原始加密密钥
+//	KeyStep2 := KeyStep1 + strconv.FormatInt(expiry, 10)
+//}

@@ -50,6 +50,10 @@ func NewChainClient() *client.Client {
 	return ChainClient
 }
 
+func GetContractABI() abi.ABI {
+	return ContractABI
+}
+
 // NewAdminTransactor 获取新的管理员交易者
 func NewAdminTransactor() *bind.TransactOpts {
 	privateKey, _ := crypto.HexToECDSA(AdminPrivateKeyHex)

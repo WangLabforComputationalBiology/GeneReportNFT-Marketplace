@@ -881,8 +881,8 @@ CREATE TABLE metadatas
     `name`                         VARCHAR(32) COMMENT '元数据名称',
     `description`                  TEXT COMMENT '元数据描述',
     `contract_address`             VARCHAR(42) COMMENT '合约地址',
-    `is_sharable`                  TINYINT(1) NOT NULL DEFAULT 0 COMMENT '可共享状态',
-    `is_hidden`                    TINYINT(1) NOT NULL DEFAULT 1 COMMENT '隐藏状态',
+    `is_sharable`                  TINYINT(1)  NOT NULL DEFAULT 0 COMMENT '可共享状态',
+    `is_hidden`                    TINYINT(1)  NOT NULL DEFAULT 1 COMMENT '隐藏状态',
     `created_at`                   DATETIME COMMENT '创建时间',
     `tags`                         VARCHAR(255) COMMENT '标签，以分号分隔，,ex:third party:wegene;...',
     `geneSharing_contract_address` VARCHAR(42) NOT NULL COMMENT '基因报告地址'
@@ -907,6 +907,7 @@ CREATE TABLE activities
     `tx_hash`      varchar(66)  NOT NULL COMMENT '交易哈希',
     `from`         varchar(66)  NOT NULL COMMENT '发起者地址',
     `to`           varchar(42)  NOT NULL COMMENT '接收者地址',
+    `price`        bigint       NOT NULL COMMENT '价格',
     `time`         DATETIME     NOT NULL Comment '时间戳',
     `expiry`       BIGINT COMMENT '过期时间',
     `event`        VARCHAR(255) NOT NULL Comment '活动类型',

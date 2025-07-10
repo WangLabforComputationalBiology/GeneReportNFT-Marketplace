@@ -3,7 +3,7 @@ pragma solidity ^0.8.10;
 
 import {GeneSharing} from "./GeneSharing_v3.sol";
 import {Metadata} from "./Metadata.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+//import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract SharingPlatform is ERC20 {
 
     //管理员
@@ -33,11 +33,11 @@ contract SharingPlatform is ERC20 {
     // 从第三方构建事件
     event CreateAllFromThirdParty(address indexed user, address indexed targetGeneSharing);
 
-    // 新建访问许可事件
-    event NewViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry);
+    // 新建访问许可事件,该事件固定reward为 10**18wei
+    event NewViewAccess(address indexed viewer, bytes32 indexed dataHash, address geneSharing, uint256 expiry, uint256 reward);
 
     // 续约许可事件
-    event RenewalViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry);
+    event RenewalViewAccess(address indexed viewer, bytes32 indexed dataHash, uint256 expiry, uint256 reward);
 
     // 管理员约束
     modifier onlyAdmin() {
@@ -50,9 +50,6 @@ contract SharingPlatform is ERC20 {
         _mint(address(this), initialSupply * 10 ** 18);
     }
 
-//    function _authorizeUpgrade(address newImplementation) internal override onlyAdmin {
-//
-//    }
 
     // 设置Metadata合约地址
     function setMetadataContract(address metadataContract) external onlyAdmin {
@@ -128,22 +125,24 @@ contract SharingPlatform is ERC20 {
     }
 
     //新增查看权限
-    function addViewAccess(address geneSharingAddress, bytes32 dataHash, string calldata remark, address originalSender) internal returns(uint256){
+    function addViewAccess(address geneSharingAddress, bytes32 dataHash, string calldata remark, address originalSender) internal {
         require(_geneSharingContract[geneSharingAddress] == true, "Sharing not found");
         GeneSharing geneSharing = GeneSharing(geneSharingAddress);
         Metadata metadata = Metadata(_metadataContract);
         require(geneSharing.isMetadataIn(dataHash), "Metadata Must In this GeneSharing");
-        uint256 expiry=metadata.addViewAccess(dataHash, originalSender, address(geneSharing), remark);
+        uint256 expiry = metadata.addViewAccess(dataHash, originalSender, address(geneSharing), remark);
 
         //奖励creator
-        _transfer(address(this), geneSharing.creator(), 1 * 10 ** 18);
+        address creator=geneSharing.creator();
+        _transfer(address(this), creator, 1 * 10 ** 18);
         //奖励owner
         _transfer(address(this), metadata.owner(dataHash), 1 * 10 ** 18);
-        return expiry;
+
+        emit NewViewAccess(originalSender, dataHash, geneSharingAddress, expiry, 1 * 10 ** 18);
     }
 
     // 续约查看权限
-    function renewalViewAccess(bytes32 dataHash, string calldata remark, address originalSender) internal returns (uint256){
+    function renewalViewAccess(bytes32 dataHash, string calldata remark, address originalSender) internal {
         Metadata metadata = Metadata(_metadataContract);
         //记录已续约次数
         uint256 renewalCount = metadata.getRenewalCount(dataHash, originalSender);
@@ -156,7 +155,7 @@ contract SharingPlatform is ERC20 {
         } else {
             _transfer(address(this), metadata.owner(dataHash), reward);
         }
-        return expiry;
+        emit RenewalViewAccess(originalSender, dataHash, expiry,reward);
     }
 
     // 验证查看权限
@@ -175,12 +174,18 @@ contract SharingPlatform is ERC20 {
 
         //新建/续约
         if (metadata.isUserHaveAccess(msg.sender, dataHash)) {
-            uint256 expiry=renewalViewAccess(dataHash, remark, msg.sender);
-            emit RenewalViewAccess(msg.sender, dataHash, expiry);
+            renewalViewAccess(dataHash, remark, msg.sender);
         } else {
-            uint256 expiry=addViewAccess(geneSharingAddress, dataHash, remark, msg.sender);
-            emit NewViewAccess(msg.sender, dataHash,expiry);
+            addViewAccess(geneSharingAddress, dataHash, remark, msg.sender);
         }
 
+    }
+
+    function testEventNewViewAccess(address originalSender, bytes32 dataHash,address geneSharing,uint256 expiry, uint256 reward) external {
+        emit NewViewAccess(originalSender, dataHash,geneSharing,expiry, reward);
+    }
+
+    function testEventRenewalViewAccess(address originalSender, bytes32 dataHash, uint256 expiry, uint256 reward) external {
+        emit RenewalViewAccess(originalSender, dataHash, expiry,reward);
     }
 }
