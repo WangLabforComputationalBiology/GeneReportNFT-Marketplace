@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	events := make(chan string)
+	events := make(chan string, 1000)
 	eventTopic := sharingPlatformContract.GetContractABI().Events["NewViewAccess"].ID().Hex()
 
 	// 配置事件监听参数，忽略动态索引的 topics
@@ -17,7 +17,7 @@ func main() {
 		FromBlock: 0,  // 从创世区块开始
 		ToBlock:   -1, // 持续监听最新区块
 		Addresses: []string{sharingPlatformContract.PlatformContractAddressHex},
-		Topics:    []string{eventTopic, "", ""}, // 仅设置事件签名，动态索引留空
+		Topics:    []string{eventTopic}, // 仅设置事件签名，动态索引留空
 	}
 
 	// 定义回调函数处理事件日志
@@ -26,6 +26,7 @@ func main() {
 			// 解析事件数据（示例：提取 topics 和 data）
 			eventData := fmt.Sprintf("Event: subscription=%d, address=%s, topics=%v, data=%s",
 				subscriptionID, txLog.Address, txLog.Topics, txLog.Data)
+
 			select {
 			case events <- eventData:
 				log.Printf("Event sent to channel: %s", eventData)
