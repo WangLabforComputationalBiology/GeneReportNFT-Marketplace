@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-
+	events := make(chan string)
 	eventTopic := sharingPlatformContract.GetContractABI().Events["NewViewAccess"].ID().Hex()
 
 	// 配置事件监听参数，忽略动态索引的 topics
@@ -21,15 +21,16 @@ func main() {
 	}
 
 	// 定义回调函数处理事件日志
-	handler := func(logs []types.Log) {
-		for _, log := range logs {
+	handler := func(subscriptionID int, logs []types.Log) {
+		for _, txLog := range logs {
 			// 解析事件数据（示例：提取 topics 和 data）
-			eventData := fmt.Sprintf("Event:  address=%s, topics=%v, data=%s", log.Address, log.Topics, log.Data)
+			eventData := fmt.Sprintf("Event: subscription=%d, address=%s, topics=%v, data=%s",
+				subscriptionID, txLog.Address, txLog.Topics, txLog.Data)
 			select {
-			case e.events <- eventData:
+			case events <- eventData:
 				log.Printf("Event sent to channel: %s", eventData)
 			default:
-				log.Println("Event channel full, dropping event")
+				log.Printf("Event channel full, dropping event")
 			}
 		}
 	}
@@ -38,7 +39,7 @@ func main() {
 	ctx := context.Background()
 	_, err := sharingPlatformContract.NewChainClient().SubscribeEventLogs(ctx, params, handler)
 	if err != nil {
-		return fmt.Errorf("failed to subscribe to events: %v", err)
+		log.Printf("failed to subscribe to events: %v", err)
 	}
 
 	// 保持监听运行
@@ -48,10 +49,3 @@ func main() {
 	}()
 
 }
-
-//// EventListener 事件监听器
-//type EventListener struct {
-//	client *BlockchainClient
-//	events chan string
-//}
-//
