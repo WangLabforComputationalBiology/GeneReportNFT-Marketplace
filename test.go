@@ -47,5 +47,5 @@ func main() {
 		<-ctx.Done()
 		log.Println("Event listener stopped")
 	}()
-
+	select {}
 }
