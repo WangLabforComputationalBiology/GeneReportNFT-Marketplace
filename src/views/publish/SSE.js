@@ -5,7 +5,7 @@ const walletStore = useWalletStore();
 export class SSEManager {
     constructor(dataArray) {
         this.connection = null;
-        this.dataArray = dataArray;
+        this.dataArray = dataArray;//传入ref对象（数组）接收数据
     }
 
     connect() {

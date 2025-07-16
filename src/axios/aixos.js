@@ -5,19 +5,29 @@ const baseURL = import.meta.env.VITE_APP_BASE_URL;  //VITE_APP_BASE_URL=http://1
 const Api = axios.create({
     baseURL: baseURL,
     headers: {
-        // 'Authorization': useWalletStore().token, //axios.create只会进行一次初始化，导致更换账户时token没有更新
+        //在此处设置token有个弊端在于axios只初始化一次，导致更换账户时token残留
     }
 });
 
-/**添加请求拦截器，动态更新 token */
+/**请求拦截器*/
 Api.interceptors.request.use((config) => {
     const walletStore = useWalletStore();
     if (walletStore.token) {
-        config.headers.Authorization = walletStore.token; // 每次请求前重新设置
-    }else{
+        config.headers.Authorization = walletStore.token; // 确保每次请求携带最新token
+    } else {
         console.log('No token.');
     }
     return config;
 });
+
+// axios.interceptors.response.use(
+//     response => response,
+//     error => {
+//         if (error.response.status === 401) {
+//             window.location.href = '/login';
+//         }
+//         return Promise.reject(error);
+//     }
+// );
 
 export default Api;

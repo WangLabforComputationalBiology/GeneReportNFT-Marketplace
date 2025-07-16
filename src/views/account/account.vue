@@ -2,7 +2,6 @@
     <div class="wrapper">
         <Bubbles />
         <div class="info">
-            <!-- <h1 class="title"><span style="color: #169608;">Account</span> information</h1> -->
             <div ref="avatarContainer" />
             {{ useWalletStore().address ? `Address: ${useWalletStore().address}` : `No address connected` }}
             <br>
