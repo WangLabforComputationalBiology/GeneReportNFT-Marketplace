@@ -15,7 +15,6 @@
         <el-scrollbar max-height="80vh">
             <el-empty description="Empty...Maybe try it again?" v-if="List == null || List == '' || List == undefined"
                 v-loading="loadingForPlaza" :element-loading-svg="svg">
-                <!-- <el-button class="obtain-btn" @click="getList">Refresh</el-button> -->
             </el-empty>
             <div class="plaza-page" v-else>
                 <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible(item)">
@@ -112,7 +111,7 @@ import { ethers } from "ethers";
 import { useWalletStore } from "@/stores/account";
 import Api from "@/axios/aixos";
 import { ElLoading, ElMessage } from 'element-plus'
-import { contractAddress, contractABI } from "@/views/plaza/contractConfig";
+import { contractAddress, contractABI } from "@/contract/contractConfig";
 
 /**
  * 获取plaza卡片数据列表
