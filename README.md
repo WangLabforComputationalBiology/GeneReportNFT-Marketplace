@@ -48,4 +48,4 @@ npm run build
   - 请确保已安装 MetaMask 浏览器插件并配置好钱包账户，**根据 MetaMask 官方描述，目前仅支持 Chrome、Edge、Firefox、Opera 以及 Brave 浏览器**，详情请参考[MetaMask 官方](https://metamask.io/)。
   - 请确保 MetaMask 正确连接到 BioChainer 的网络；BioChainer 网络为测试网，需自行部署网络与合约。
 - 关于WeBASE
-  -FISCO BCOS提供官方WeBASE区块链中间件平台，详情：[WeBASE官方文档](https://fisco-bcos-documentation.readthedocs.io/zh-cn/latest/docs/webase/webase.html)
+  - FISCO BCOS提供官方WeBASE区块链中间件平台，详情：[WeBASE官方文档](https://fisco-bcos-documentation.readthedocs.io/zh-cn/latest/docs/webase/webase.html)
