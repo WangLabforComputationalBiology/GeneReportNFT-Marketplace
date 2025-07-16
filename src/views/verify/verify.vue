@@ -24,7 +24,7 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-import loadUniversities from '@/assets/universities.json';
+import loadUniversities from '@/views/verify/universities.json';    // 大学列表，未完善，仅用于测试
 import Bubbles from '@/views/components/bubbles.vue';
 import Slidecheck from '@/views/verify/slidecheck.vue';
 import Api from '@/axios/aixos';
@@ -64,7 +64,8 @@ const handleSelect = (item) => {
     step.value = 1;//显示人机验证
 }
 
-/* 人机验证
+/**
+ * 人机验证
  * 通过滑动验证来确认用户是人类
  * 如果验证通过，设置Ready为true
  * 后续显示发送验证码页面
@@ -87,7 +88,11 @@ const fullEmail = computed(() => emailFront.value + emailEnd.value);
 
 // 是否可验证
 let isSent = ref(false);
-/* 发送邮箱验证请求 */
+/**
+ * 发送邮箱验证请求
+ * 点击发送验证码按钮后调用
+ * 验证邮箱格式，发送验证码
+*/
 const resEmail = async () => {
     if (!emailFront.value) {
         // 可以在这里添加提示：请输入完整的邮箱信息
@@ -118,7 +123,7 @@ const resEmail = async () => {
     }
 }
 
-/*
+/**
  * 发送验证码按钮状态
  * 如果按钮状态为true且倒计时大于0，则显示倒计时
  * 否则显示“发送”按钮
@@ -131,7 +136,11 @@ const sendBTN = computed(() => {
     }
     return 'Send';
 });
-/* 倒计时函数 */
+/**
+ * 倒计时函数
+ * 每秒钟减少倒计时值
+ * 当倒计时为0时，重置按钮状态
+ */
 watch(isSent, (val) => {
     if (val) {
         countdown.value = 60;
@@ -153,7 +162,9 @@ watch(isSent, (val) => {
 });
 
 
-/* 验证码输入 */
+/**
+ * 验证码输入
+ */
 let code = ref('');
 const verify = async () => {
     if (emailFront.value === false || isSent.value === false) {
