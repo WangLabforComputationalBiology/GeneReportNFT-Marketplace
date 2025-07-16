@@ -45,8 +45,7 @@ import { ElMessage } from 'element-plus';
 import Bubbles from '@/views/components/bubbles.vue';
 import jazzicon from 'jazzicon';
 import Api from "@/axios/aixos";
-import { ethers } from 'ethers';
-import { contractAddress } from '@/views/plaza/contractConfig.js';
+import { contractAddress } from '@/contract/contractConfig.js';
 
 /**
  * jazzicon 

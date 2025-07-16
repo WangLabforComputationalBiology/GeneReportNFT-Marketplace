@@ -1,18 +1,19 @@
 # Vue3 Webpage for Biochainer
 
-Author: Tang Jiaming@SZTU BDI Date: 2025.2 - 2025.8
+Author: Tang Jiaming@SZTU BDI   202200201002@stumail.sztu.edu.cn    
+Date: 2025.2 - 2025.8  
 
-## 项目介绍(Introduction)
+## 项目介绍-Introduction
 
 基于 Vue3 的 BioChainer 前端页面，提供账户验证、合约交互功能以及数据共享功能模块。合约通过 MetaMask 钱包交互。
 
-## **目录**(Directory)
+## **目录**-Directory
 
-- [项目技术栈（Technology Stack）](#项目技术栈)
-- [项目启动（Startup）](#项目启动)
-- [部署说明（Deployment Notes）](#部署说明)
+- [项目技术栈-Technology Stack](#项目技术栈-Technology-Stack)
+- [项目启动-Startup](#项目启动-Startup)
+- [部署说明-Deployment Notes](#部署说明-Deployment-Notes)
 
-## 项目技术栈（Technology Stack）
+## 项目技术栈-Technology Stack
 
 - Vue3
 - Vite
@@ -22,7 +23,7 @@ Author: Tang Jiaming@SZTU BDI Date: 2025.2 - 2025.8
 - Axios
 - Ethers.js
 
-## 项目启动（Startup）
+## 项目启动-Startup
 
 ```bash
 # 安装依赖
@@ -36,7 +37,7 @@ npm run build
 
 ```
 
-## 部署说明（Deployment Notes）
+## 部署说明-Deployment Notes
 
 区块链前端的区别在于需要在前端进行对合约的操作，如合约部署、合约调用等。
 

@@ -1,5 +1,4 @@
 <template>
-    <Bubbles />
     <div class="wrapper">
         <div class="tittle"><span style="color: #169608;">Institutional</span> Accreditation</div>
         <div class="input-wrapper">
@@ -25,7 +24,6 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import loadUniversities from '@/views/verify/universities.json';    // 大学列表，未完善，仅用于测试
-import Bubbles from '@/views/components/bubbles.vue';
 import Slidecheck from '@/views/verify/slidecheck.vue';
 import Api from '@/axios/aixos';
 
