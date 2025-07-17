@@ -92,7 +92,7 @@ async function addERC20TokenToMetaMask() {
             console.log('代币已成功添加到 MetaMask!');
             ElMessage.success('Token added successfully!');
         } else {
-            // console.log('用户拒绝了代币添加请求。');
+            console.log('用户拒绝了代币添加请求。');
             ElMessage.warning('Token added failed!');
         }
     } catch (error) {
@@ -282,7 +282,7 @@ onMounted(() => {
     transform: translate(-50%, -50%);
     font-size: 18px;
     color: #333;
-    line-height: 30px;
+    line-height: 35px;
     @include shadow;
 
     .info-address {

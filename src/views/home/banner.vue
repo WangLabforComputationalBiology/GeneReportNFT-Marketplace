@@ -5,7 +5,7 @@
             <!-- <img class="logo" src="@/assets/logo.svg" alt="BioChainer Logo" /> -->
             <span style="color: #169608;">Bio</span>Chainer
             <br>
-            <span style="font-weight: 600;color: #122;">Shares</span>
+            <span style="font-weight: 600;color: #fff;">Shares</span>
         </div>
         <div class="sec-text">A platform delivering genetic information.</div>
         <div class="scroll-arrow"><span class="arrow-fadein">↓</span></div>
