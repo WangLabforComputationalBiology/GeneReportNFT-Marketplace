@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
+
 export default defineConfig({
   plugins: [
     vue(),
@@ -14,7 +15,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        api: 'modern-compiler' // "modern"代替"legacy"
+        api: 'modern-compiler', // "modern"代替"legacy"
+        additionalData: `@use "@/assets/_main.scss" as *;` //  全局注入SCSS
       },
     },
   },

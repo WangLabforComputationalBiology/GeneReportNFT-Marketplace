@@ -37,13 +37,11 @@
     .green-bar {
         position: absolute;
         top: 52%;
-
         /* 初始宽度为0 */
         height: 20vh;
-
         /* 条块高度 */
-        background: #169608;
-        /* 绿色 */
+        background: $color-primary;
+
         transform: translateY(-50%);
         animation: extend 0.6s ease-out forwards;
         /* 延长动画 */

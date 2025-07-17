@@ -1,0 +1,21 @@
+/* 全局颜色 */
+$color-primary: #169608;
+$color-secondary: #67c23a;
+$color-tertiary: #E6A23C;
+$shadow: #00000010;
+
+/* 高复用块 */
+@mixin blur{
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px); //safari适配
+}
+@mixin shadow{
+    background: #ffffff20;
+    box-shadow: $shadow 0 0 10px;
+}
+
+
+
+
+
+

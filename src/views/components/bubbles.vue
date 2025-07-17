@@ -18,21 +18,21 @@ const balls = ref([]);
 
 /* 初始化小球 */
 function createBall() {
-    const size = Math.random() * 180 + 30; // 随机大小
-    const originX = Math.random() * (window.innerWidth - size - 20);
-    const originY = Math.random() * (window.innerHeight - size - 200);//随机位置
+    const size = Math.random() * 120 + 30; // 随机大小
+    const originX = Math.random() * (window.innerWidth - size -150);
+    const originY = Math.random() * (window.innerHeight - size -150);//随机位置
     return {
         size,
         color: `hsl(${Math.random() * 260}, 70%, 50%)`, // 随机颜色
         originX,
         originY,
-        x: originX,
-        y: originY,
+        x: originX + 50,
+        y: originY + 50,
     };
 }
 
 /* 小球数量 */
-for (let i = 0; i < 11; i++) {
+for (let i = 0; i < 9; i++) {
     balls.value.push(createBall());
 }
 </script>
@@ -49,5 +49,6 @@ for (let i = 0; i < 11; i++) {
     opacity: 0.4;
     /* 旋转45度 */
     transform: rotate(45deg);
+    
 }
 </style>

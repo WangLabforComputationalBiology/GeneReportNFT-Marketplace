@@ -64,24 +64,23 @@ function toFB() {
     width: 46%;
     height: 55%;
     min-height: 460px;
-    background-color: #ffffff;
     justify-content: center;
     text-align: center;
     position: absolute;
-    box-shadow: #ccc 0 0 10px;
     border-radius: 25px;
     left: 13.5%;
     top: 18%;
+    @include blur;
+    @include shadow;
 
     h1 {
         text-align: center;
         font-size: 56px;
         font-weight: 500;
-        color: #169608;
+        color: $color-primary;
     }
 
     h2 {
-        // height: 180px;
         font-size: 20px;
         color: #333;
     }
@@ -148,15 +147,17 @@ function toFB() {
     position: relative;
     left: 62%;
     top: 18%;
+    
 
     .card {
         width: 500px;
         height: 225px;
-        background-color: #ffffff;
         position: absolute;
         border-radius: 25px;
-        border: #ccc;
-        box-shadow: #ccc 0 0 10px;
+        // border: #ccc;
+        // box-shadow: #00000010 0 0 10px;
+        @include shadow;
+        @include blur;
 
         .FB {
             margin: 15px 80px;
