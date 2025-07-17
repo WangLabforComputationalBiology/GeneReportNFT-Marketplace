@@ -2,7 +2,7 @@
     <div class="banner">
         <div class="green-bar" />
         <div class="main-text">
-            <img class="logo" src="@/assets/logo.svg" alt="BioChainer Logo" />
+            <!-- <img class="logo" src="@/assets/logo.svg" alt="BioChainer Logo" /> -->
             <span style="color: #169608;">Bio</span>Chainer
             <br>
             <span style="font-weight: 600;color: #122;">Shares</span>

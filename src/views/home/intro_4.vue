@@ -44,6 +44,9 @@
                 </div>
             </div>
         </div>
+        <div class="bottom">
+            <p>© 2025 BioChainer Team. All rights reserved.</p>
+        </div>
     </div>
 </template>
 
@@ -74,7 +77,6 @@ let hovered3 = ref(false)
         color: #169608;
         margin-bottom: 50px;
         font-weight: 500;
-        text-shadow: 0 5px 5px #dddddd;
     }
 
     .inner-wrapper {
@@ -104,16 +106,12 @@ let hovered3 = ref(false)
             margin-top: 120px;
             width: 300px;
             height: 400px;
-            background-color: #ffffff;
-            box-shadow: 0 0 15px #E4E7ED;
             border-radius: 20px;
             background-repeat: no-repeat;
             background-position: center 0;
             position: relative;
-
-            &:hover {
-                box-shadow: 0 0 40px #E4E7ED;
-            }
+            @include shadow;
+            @include blur;
 
             .step {
                 width: 160px;
@@ -170,6 +168,22 @@ let hovered3 = ref(false)
             }
         }
 
+    }
+}
+.bottom {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    color: #333;
+    pointer-events: none;
+
+    p {
+        color: #333;
+        text-align: center;
+        margin-top: 20px;
     }
 }
 </style>

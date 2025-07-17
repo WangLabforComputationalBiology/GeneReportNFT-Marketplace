@@ -2,7 +2,7 @@
     <div class="header">
         <div class="side" @click="toHome">
             <div class="logo" style="cursor: pointer;">
-                <img src="@/icons/biochainer_logo_full.svg" alt="logo">
+                <img src="@/icons/BioChainer.svg" alt="logo">
             </div>
         </div>
         <div class="header-wrapper">
@@ -59,6 +59,7 @@ function toAccount() {
     position: sticky;
     top: 0;
     background: #fff;
+    // @include blur;
 
     a {
         text-decoration: none;

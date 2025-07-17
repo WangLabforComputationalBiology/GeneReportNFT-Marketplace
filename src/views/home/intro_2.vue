@@ -16,7 +16,7 @@
         <br />
         <br />
         <span class="tags">#Coinless blockchain</span>
-        <span class="tags">#Traceable</span>
+        <!-- <span class="tags">#Traceable</span> -->
         <span class="tags">#Decentralisation</span>
       </h2>
     </div>
@@ -47,7 +47,6 @@ const isVisible2 = ref(false);
   height: 95vh;
   min-width: 1200px;
   scroll-snap-align: start;
-  display: flex;
   position: relative;
 }
 
@@ -69,8 +68,8 @@ const isVisible2 = ref(false);
   align-items: center;
   text-align: center;
   position: absolute;
-  width: 50%;
-  min-width: 600px;
+  width: 40%;
+  min-width: 480px;
   height: 94.8vh;
   left: 0%;
   background-color: #169608;
@@ -89,7 +88,7 @@ const isVisible2 = ref(false);
     font-size: 2.5vh;
     color: #fff;
     margin-bottom: 30px;
-    text-align: left;
+    text-align: center;
   }
 
   .tags {
@@ -105,20 +104,20 @@ const isVisible2 = ref(false);
 
 .wrapper-right {
   position: absolute;
-  left: 50%;
-  width: 50%;
+  left: 40%;
+  width: 60%;
   min-width: 600px;
   height: 94.8vh;
   background-color: #fff;
   pointer-events: auto;
 
   img {
-    min-width: 350px;
+    min-width: 450px;
     position: absolute;
     top: 50%;
-    left: 25%;
-    transform: translate(0%, -50%);
-    width: 25vw;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 42%;
   }
 
   h2 {

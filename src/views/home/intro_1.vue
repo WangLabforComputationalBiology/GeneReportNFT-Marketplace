@@ -151,7 +151,8 @@ function toFB() {
 
     .card {
         width: 500px;
-        height: 225px;
+        height: 25vh;
+        min-height: 225px;
         position: absolute;
         border-radius: 25px;
         // border: #ccc;

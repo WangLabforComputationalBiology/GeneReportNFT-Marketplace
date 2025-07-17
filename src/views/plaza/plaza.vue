@@ -1,34 +1,40 @@
 <template>
     <div class="wrapper">
-        <div class="banner">
-            <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
-            <el-button class="obtain-btn btn-location" @click="getList">Refresh</el-button>
-
-            <div class="download">&gt;Download decrypt tool</div>
-            <div class="page">
-                <div class="previous" v-show="page > 1" @click="page--">&lt;Previous</div>
-                <div style="color: #E6A23C;font-size: 18px;font-weight: 700;">Page:{{ page }}</div>
-                <div class="next" @click="page++">Next&gt;</div>
+        <div class="wrapper-left">
+            <div class="download">
+                <div>Decrypt tool</div>
             </div>
         </div>
-
-        <el-scrollbar max-height="80vh">
-            <el-empty description="Empty...Maybe try it again?" v-if="List == null || List == '' || List == undefined"
-                v-loading="loadingForPlaza" :element-loading-svg="svg">
-            </el-empty>
-            <div class="plaza-page" v-else>
-                <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible(item)">
-                    <div class="icon" />
-                    <div class="info">
-                        <p>Name: <span class="info-item"> &nbsp; {{ item.name }}</span></p>
-                        <p>Description:<span class="info-item"> &nbsp; {{ item.description }}</span>
-                        </p>
-                        <p>Format:<span class="info-item"> &nbsp; {{ item.format }}</span></p>
-                        <div v-show="item.is_sharable" class="sharable">Sharable</div>
-                    </div>
+        <div class="wrapper-right">
+            <div class="banner">
+                <h1 class="banner-title">Data&nbsp;<span style="color: #333;">Plaza</span></h1>
+                <el-button class="obtain-btn btn-location" @click="getList">Refresh</el-button>
+                <div class="page">
+                    <div class="previous" v-show="page > 1" @click="page--">&lt;Previous</div>
+                    <div style="color: #E6A23C;font-size: 18px;font-weight: 700;">Page:{{ page }}</div>
+                    <div class="next" @click="page++">Next&gt;</div>
                 </div>
             </div>
-        </el-scrollbar>
+
+            <el-scrollbar max-height="80vh">
+                <el-empty description="Empty...Maybe try it again?"
+                    v-if="List == null || List == '' || List == undefined" v-loading="loadingForPlaza"
+                    :element-loading-svg="svg">
+                </el-empty>
+                <div class="plaza-page" v-else>
+                    <div class="card" v-for="(item, index) in List" :key="index" @click="isVisible(item)">
+                        <div class="icon" />
+                        <div class="info">
+                            <p>Name: <span class="info-item"> &nbsp; {{ item.name }}</span></p>
+                            <p>Description:<span class="info-item"> &nbsp; {{ item.description }}</span>
+                            </p>
+                            <p>Format:<span class="info-item"> &nbsp; {{ item.format }}</span></p>
+                            <div v-show="item.is_sharable" class="sharable">Sharable</div>
+                        </div>
+                    </div>
+                </div>
+            </el-scrollbar>
+        </div>
     </div>
 
     <el-drawer v-model="drawerIsVisible" title="Detail" :direction="'rtl'" @closed="handleClosed" :size="'60%'"
@@ -360,7 +366,7 @@ async function downloadMetadata(shortURL) {
             const contentDisposition = fileResponse.headers.get('Content-Disposition') || fileResponse.headers.get('Content-Disposition');  //要注意跨域问题不默认暴露这个头，需要后端设置
             // console.log('All headers:', [...fileResponse.headers.entries()]);
             let filename = 'metadata'; // 默认文件名
-            if(contentDisposition){
+            if (contentDisposition) {
                 // 从 Content-Disposition 中提取文件名
                 filename = contentDisposition.split('filename=')[1];
             }
@@ -395,27 +401,61 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .wrapper {
+    display: flex;
+    position: relative;
+    background-color: $color-primary;
     height: 95vh;
-    width: 80vw;
+    width: 100vw;
     min-width: 1200px;
-    margin: auto;
+}
+
+.wrapper-left {
+    width: 15vw;
+    position: relative;
+
+    .download {
+        position: absolute;
+        bottom: 2%;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        border-radius: 10px;
+        width: 85%;
+        height: 50px;
+        background: #ffffff10;
+        @include blur;
+        cursor: pointer;
+
+    }
+}
+
+.wrapper-right {
+    position: absolute;
+    right: 0%;
+    height: 95vh;
+    width: 85vw;
+    min-width: 1200px;
+    background-color: #fff;
+
 }
 
 .banner {
-    width: 80vw;
+    width: 85vw;
     min-width: 1200px;
     height: 15vh;
     min-height: 100px;
     display: flex;
     position: relative;
     border-bottom: #ddd 1px solid;
-    background-color: #ffffff;
     background: url('@/assets/imgs/biochain.svg') no-repeat;
     background-position: 85% -15%;
 
     .download {
         position: absolute;
-        right: 0%;
+        right: 1%;
         top: 50%;
         color: #169608;
 
@@ -428,7 +468,7 @@ onMounted(() => {
     .page {
         position: absolute;
         display: flex;
-        right: 0%;
+        right: 1%;
         bottom: 0%;
         gap: 25px;
 

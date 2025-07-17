@@ -20,7 +20,7 @@
     </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .wrapper {
     height: 95vh;
     min-width: 1200px;
@@ -38,7 +38,6 @@ h1 {
     color: #169608;
     margin-bottom: 20px;
     font-weight: 500;
-    text-shadow: 0 5px 5px #ccc;
 }
 
 .page {
@@ -60,16 +59,11 @@ h1 {
         color: #333;
         font-weight: 700;
         padding: 20px;
-        background-color: #ffffff;
         border-radius: 20px;
         align-items: center;
         text-align: left;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-        &:hover {
-            transform: translateY(-3%);
-            transition: all 0.5s;
-        }
+        @include shadow;
+        @include blur;
 
         img {
             height: 10vh;
