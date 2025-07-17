@@ -6,6 +6,7 @@ $shadow: #00000010;
 
 /* 高复用块 */
 @mixin blur{
+    background: #ffffff20;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px); //safari适配
 }

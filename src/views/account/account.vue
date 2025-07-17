@@ -1,10 +1,16 @@
 <template>
     <div class="wrapper">
-        <Bubbles />
+        <div class="bar">
+            <p class="dec">BioChainer</p>
+            <p class="dec">BioChainer</p>
+        </div>
         <div class="info">
             <div ref="avatarContainer" />
-            {{ useWalletStore().address ? `Address: ${useWalletStore().address}` : `No address connected` }}
-            <br>
+            <div class="info-address">
+                <span>
+                    {{ useWalletStore().address.slice(0, 8) + '...' + useWalletStore().address.slice(-6) }}
+                </span>
+            </div>
             {{ useWalletStore().insititution ? ` Institution: ${useWalletStore().insititution}.` : `Your institution
             accreditation is not verified.` }}
             <br>
@@ -14,12 +20,14 @@
                     Verify
                 </el-button>
             </router-link>
-            <br>
+            <br><br><br><br><br>
+
             <el-button class="custom-button" @click="logout">Log out</el-button>
             <br>
             <el-button class="custom-button logs-btn" @click="viewActivity">Activity</el-button>
-            <el-button class="custom-button logs-btn" @click="addERC20TokenToMetaMask">Add Token</el-button>
-            <el-button class="custom-button logs-btn" @click="addNetworkToMetaMask">Add Network</el-button>
+            <br>
+            <!-- <el-button class="custom-button logs-btn" @click="addERC20TokenToMetaMask">Add Token</el-button> -->
+            <!-- <el-button class="custom-button logs-btn" @click="addNetworkToMetaMask">Add Network</el-button> -->
         </div>
     </div>
 
@@ -40,7 +48,7 @@
 import { ref, onMounted } from 'vue';
 import { useWalletStore } from '@/stores/account';
 import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElLoading } from 'element-plus';
 import Bubbles from '@/views/components/bubbles.vue';
 import jazzicon from 'jazzicon';
 import Api from "@/axios/aixos";
@@ -132,11 +140,18 @@ async function addNetworkToMetaMask() {
 /**登出 */
 const logout = () => {
     // walletStore.$reset();//登出重置
-    useWalletStore().reset();
-    ElMessage.success('Log out successful!');
+    let loading = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+    });
     setTimeout(() => {
+        useWalletStore().reset();
         router.push('/login');
+        loading.close();
+        ElMessage.success('Log out successful!');
     }, 1500);
+
 }
 
 /**
@@ -202,9 +217,8 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .wrapper {
-    display: flex;
     position: relative;
-    width: 100vw;
+    width: 100%;
     min-width: 1200px;
     height: 95vh;
     margin: auto;
@@ -229,23 +243,55 @@ onMounted(() => {
 
 }
 
-.info {
-    background-color: #ffffffaa;
-    border-radius: 30px;
-    box-shadow: 0 0 5px #ccc;
+.bar {
     position: absolute;
-    width: 800px;
+    top: 45%;
+    transform: translate(-2%, -50%);
+    width: 56%;
+    height: 600px;
+    border-radius: 20px;
+    box-shadow: #00000010 0 0 10px;
+    background-color: $color-primary;
+    pointer-events: none;
+    overflow: hidden;
+
+    .dec {
+        position: absolute;
+        font-size: 280px;
+        font-weight: 700;
+        color: #fff;
+        transform: rotate(-48deg) translate(15%, -60%);
+        top: 30%;
+
+
+        &:nth-child(1) {
+            transform: rotate(-48deg) translate(-20%, 0%);
+            top: 50%;
+        }
+    }
+}
+
+.info {
+    border-radius: 20px;
+    position: absolute;
+    width: 45%;
+    height: 600px;
     padding: 60px;
-    top: 40%;
-    left: 50%;
+    top: 45%;
+    left: 80%;
     transform: translate(-50%, -50%);
-    text-align: center;
-    font-size: 24px;
+    font-size: 18px;
     color: #333;
-    line-height: 50px;
+    line-height: 30px;
+    @include shadow;
+
+    .info-address {
+        color: $color-primary;
+    }
 }
 
 :deep(.custom-button) {
+    margin: 5px 0;
     font-size: 18px;
     background-color: #169608;
     color: #fff;

@@ -65,7 +65,9 @@
 
 html {
     font-family: "arial";
+    font-display: swap;
 }
+
 
 /* 隐藏默认的滚动条样式 */
 * {

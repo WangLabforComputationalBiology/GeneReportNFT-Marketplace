@@ -219,6 +219,10 @@ const getCompleted = async () => {
  */
 const loadingForProgress = ref(false);
 const getProfileStatus = () => {
+   if(!walletStore.insititution){
+      ElMessage.error('Please login first');
+      return
+   }
    drawerIsVisible.value = true;
    getCompleted();
    getUncompleted();

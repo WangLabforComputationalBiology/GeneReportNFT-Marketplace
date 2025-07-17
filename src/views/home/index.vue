@@ -87,7 +87,6 @@ const toPage = (index) => {
    flex-direction: column;
    transform: translateY(-70%);
    animation: fadeIn 0.4s ease-in 0s forwards;
-   opacity: 0;
 
    @keyframes fadeIn {
       0% {
@@ -107,7 +106,7 @@ const toPage = (index) => {
       transform: rotate(45deg);
       border-radius: 25%;
       cursor: pointer;
-      box-shadow: inset 0 0 2px #ccc;
+      box-shadow: solid 0 0 5px #ccc;
    }
 
    .active {

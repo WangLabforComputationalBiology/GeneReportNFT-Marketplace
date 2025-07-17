@@ -155,8 +155,6 @@ function toFB() {
         min-height: 225px;
         position: absolute;
         border-radius: 25px;
-        // border: #ccc;
-        // box-shadow: #00000010 0 0 10px;
         @include shadow;
         @include blur;
 

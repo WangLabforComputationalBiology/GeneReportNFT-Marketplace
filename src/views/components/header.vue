@@ -1,9 +1,7 @@
 <template>
     <div class="header">
         <div class="side" @click="toHome">
-            <div class="logo" style="cursor: pointer;">
-                <img src="@/icons/BioChainer.svg" alt="logo">
-            </div>
+            <img src="@/icons/BioChainer.svg" width="175px" fetchpriority="high" loading="eager" alt="logo">
         </div>
         <div class="header-wrapper">
             <!-- 路由菜单 -->
@@ -58,8 +56,8 @@ function toAccount() {
     min-width: 700px;
     position: sticky;
     top: 0;
-    background: #fff;
-    // @include blur;
+    background: #ffffff40;
+    @include blur;
 
     a {
         text-decoration: none;
@@ -79,14 +77,6 @@ function toAccount() {
             font-size: 20px;
             font-weight: 700;
             cursor: pointer;
-        }
-
-        .logo {
-
-            img {
-                min-height: 25px;
-                height: 2.3vh;
-            }
         }
     }
 

@@ -627,4 +627,8 @@ onMounted(() => {
 :deep(.el-scrollbar) {
     height: 80vh;
 }
+
+:deep(.el-empty){
+    height: 80vh;
+}
 </style>
