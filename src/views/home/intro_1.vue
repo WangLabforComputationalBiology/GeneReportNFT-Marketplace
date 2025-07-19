@@ -1,27 +1,30 @@
 <template>
     <div class="wrapper">
         <div class="wrapper-left">
-            <h1>Sharing <span style="color: #333;"> Gene code.</span></h1><br>
-            <h2>
-                <div class="des-left">
-                    <span style="color: #169608;">Bio</span>Chainer, a Biological alliance-chain based on <span
-                        class="click-link" @click="toFB">FISCO
-                        BCOS.</span>
+            <div class="inner-wrapper">
+                <h1>Sharing <span style="color: #333;"> Gene code.</span></h1><br>
+                <h2>
+                    <div class="des-left">
+                        <span style="color: #169608;">Bio</span>Chainer, a Biological alliance-chain based on <span
+                            class="click-link" @click="toFB">FISCO
+                            BCOS.</span>
+                        <br>
+                        We advocate the creation of a blockchain-based biological information sharing chain to achieve
+                        reliable
+                        circulation of genetic information, promote the
+                        circulation of genetic information and assist genetic research.
+                    </div>
                     <br>
-                    We advocate the creation of a blockchain-based biological information sharing chain to achieve
-                    reliable
-                    circulation of genetic information, promote the
-                    circulation of genetic information and assist genetic research.
+                    <span class="tags">#Non-profit</span>
+                    <span class="tags">#Volunteer</span>
+                    <span class="tags">#Academic</span>
+                </h2>
+                <div class="Btn-wrapper">
+                    <div class="toBTN" @click="">Publication</div>
+                    <div class="toBTN" @click="">Git Hub↗</div>
                 </div>
-                <br>
-                <span class="tags">#Non-profit</span>
-                <span class="tags">#Volunteer</span>
-                <span class="tags">#Academic</span>
-            </h2>
-            <div class="Btn-wrapper">
-                <div class="toBTN" @click="">Publication</div>
-                <div class="toBTN" @click="">Git Hub↗</div>
             </div>
+
         </div>
 
         <div class="wrapper-right">
@@ -61,17 +64,23 @@ function toFB() {
 .wrapper-left {
     display: flex;
     flex-direction: column;
-    width: 46%;
-    height: 55%;
+    width: 60%;
+    height: 60%;
     min-height: 460px;
     justify-content: center;
     text-align: center;
     position: absolute;
     border-radius: 25px;
-    left: 13.5%;
+    left: -2%;
     top: 18%;
-    @include blur;
+    background-color: #fff;
     @include shadow;
+
+    .inner-wrapper {
+        position: relative;
+        width: 80%;
+        left: 15%;
+    }
 
     h1 {
         text-align: center;
@@ -141,22 +150,28 @@ function toFB() {
 
 
 .wrapper-right {
-    height: 55%;
-    width: 500px;
+    height: 60%;
+    width: 45%;
+    padding-left: 40px;
+    border-radius: 20px;
     min-height: 460px;
     position: relative;
-    left: 62%;
+    left: 60%;
     top: 18%;
-    
+    background-color: $color-primary;
+    @include shadow;
+
 
     .card {
+        margin: 20px 0;
         width: 500px;
         height: 25vh;
-        min-height: 225px;
+        min-height: 210px;
         position: absolute;
-        border-radius: 25px;
+        border-radius: 15px;
         @include shadow;
-        @include blur;
+        background-color: #fff;
+        // @include blur;
 
         .FB {
             margin: 15px 80px;
@@ -166,8 +181,6 @@ function toFB() {
 
         &:nth-child(2) {
             bottom: 0%;
-            // top: 46%;
-            // left: 60%;
             display: flex;
             align-items: center;
 

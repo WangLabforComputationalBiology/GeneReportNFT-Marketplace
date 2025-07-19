@@ -56,8 +56,7 @@ function toAccount() {
     min-width: 700px;
     position: sticky;
     top: 0;
-    background: #ffffff40;
-    @include blur;
+    background: #ffffff;
 
     a {
         text-decoration: none;
