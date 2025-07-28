@@ -2,16 +2,21 @@
 $color-primary: #169608;
 $color-secondary: #67c23a;
 $color-tertiary: #E6A23C;
-$shadow: #00000010;
+$shadow: #00000020;
 
-/* 高复用块 */
+/* ---复用块--- */
+
+/* 由于多块模糊渲染性能要求过高，已弃用 */
 @mixin blur{
-    background: #ffffff20;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px); //safari适配
+    background: #ffffffe0;
+    // backdrop-filter: blur(2px);
+    // -webkit-backdrop-filter: blur(2px); //safari适配
+    /* 强制硬件加速 */
+    // transform: translateZ(0); 
+    // will-change: transform
 }
 @mixin shadow{
-    background: #ffffff20;
+    // background: #ffffff20;
     box-shadow: $shadow 0 0 10px;
 }
 
