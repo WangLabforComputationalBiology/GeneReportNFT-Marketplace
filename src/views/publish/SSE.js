@@ -12,7 +12,15 @@ export class SSEManager {
         this.connection = new EventSourcePolyfill(`${import.meta.env.VITE_APP_BASE_URL}/studio/getProfile/uncompleted`, {
             headers: {
                 'Authorization': walletStore.token
-            }
+            },
+            //重连控制
+            initialRetryDelay: 1000,    //初始重试延迟时间
+            maxRetryDelay: 10000,    //最大重试延迟时间
+            backoff: {
+                strategy: 'exponential' // 使用指数退避策略
+            },
+            heartbeatTimeout: 30000, // 30秒无数据视为超时
+            // forcePolyfill: true, // 强制使用 EventSourcePolyfill
         });
 
         this.connection.onopen = () => {
