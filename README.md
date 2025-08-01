@@ -1,85 +1,81 @@
-# 🧬 基因数据共享平台
+# 🧬 Genetic Data Sharing Platform
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
 ![FISCO BCOS](https://img.shields.io/badge/blockchain-FISCO%20BCOS-orange.svg)
 
-## 🌟 项目概述
+## 🌟 Project Overview
 
-基因数据共享平台是一个基于联盟链的去中心化解决方案，致力于实现个人基因数据的**安全存储**、**授权共享**和**隐私保护**。平台基于[微众银行FISCO BCOS](https://fisco-bcos-documentation.readthedocs.io/)联盟链，结合MetaMask钱包、OAuth2协议、加密技术和ERC20代币激励机制，为数据提供者和机构用户（如高校、制药公司、研究机构）提供安全、高效、可追溯的数据共享服务。
+The Genetic Data Sharing Platform is a decentralized solution based on a consortium blockchain, designed to enable **secure storage**, **authorized sharing**, and **privacy protection** of personal genetic data. Built on the [FISCO BCOS](https://fisco-bcos-doc.readthedocs.io/zh-cn/latest/) consortium blockchain, the platform integrates MetaMask wallets, OAuth2 protocols, encryption technologies, and an ERC20 token incentive mechanism to provide secure, efficient, and traceable data sharing services for data providers and institutional users (e.g., universities, pharmaceutical companies, and research institutes).
 
-通过**权限分级**、**数据加密**和**水印溯源**技术，平台确保基因型数据的隐私性和可控性，同时通过代币奖励激励用户参与数据共享。数据提供者可通过授权数据获取奖励，机构用户可通过邮箱验证访问基因型数据，适用于基因研究、药物开发等场景。
-
----
-
-## 🚀 功能特性
-
-- **🔐 用户认证**：通过MetaMask钱包实现安全登录和身份管理。
-- **📥 数据获取与分类**：通过OAuth2协议从WeGene获取用户授权数据，按类型（如皮肤、运动）分类并生成哈希凭证。
-- **🔒 权限管理**：
-    - **普通用户**：上传基因数据并获取代币奖励。
-    - **机构用户**：通过邮箱验证查看基因型数据。
-- **🛡️ 数据隐私保护**：
-    - 基因型数据采用随机对称密钥和用户公钥加密。
-    - 嵌入公钥水印，实现数据二次传播溯源。
-    - 离线解密工具支持数据预览，禁止本地下载并设置数据过期机制。
-- **💰 激励机制**：数据被查看时，数据提供者获ERC20代币奖励，可兑换高校周边礼品。
-- **🔍 数据溯源**：通过水印和智能合约追踪违规传播，封禁违规用户。
+Through **tiered access control**, **data encryption**, and **watermark tracing**, the platform ensures the privacy and controllability of genomic data while incentivizing user participation with token rewards. Data providers earn rewards for sharing data, and institutional users access genomic data via email verification, supporting applications in genetic research, drug development, and more.
 
 ---
 
-## 🏗️ 技术架构
+## 🚀 Features
 
-平台采用以下技术栈构建，结合区块链和加密技术实现安全高效的数据共享：
-
-| 模块              | 技术实现                             |
-|-------------------|-------------------------------------|
-| **区块链**        | FISCO BCOS联盟链，存储数据哈希、权限记录和代币交易 |
-| **身份认证**      | MetaMask钱包，提供以太坊兼容地址管理 |
-| **数据对接**      | OAuth2协议，与WeGene等第三方平台集成 |
-| **数据存储**      | 链上：数据哈希、权限记录；链下：分布式数据库（如IPFS） |
-| **加密技术**      | 对称加密（随机密钥）、非对称加密（公钥/私钥）、水印技术 |
-| **智能合约**      | 权限管理、代币分发、违规封禁 |
-| **离线解密工具**  | 本地运行程序，支持数据预览与过期控制 |
-
----
-
-## 🛠️ 安装与部署
-
-### 环境要求
-- **MetaMask**: 浏览器插件
-- **FISCO BCOS**: 联盟链节点
-- **数据库**: 支持分布式存储（如IPFS或MySQL）
-
-### 安装步骤
-暂不提供具体安装步骤。
-
+- **🔐 User Authentication**: Secure login and identity management via MetaMask wallet.
+- **📥 Data Acquisition and Classification**: Obtains user-authorized data from WeGene via OAuth2 protocol, categorizing data (e.g., skin, fitness) and generating hash credentials.
+- **🔒 Access Control**:
+    - **Regular Users**: Upload genetic data and earn token rewards.
+    - **Institutional Users**: Access genomic data upon email verification.
+- **🛡️ Data Privacy Protection**:
+    - Genomic data encrypted with HCE (Hybrid CP-ABE with ECIES Encryption).
+    - Embedded public key watermarks for tracing secondary data distribution.
+    - Offline decryption tool enables data preview, prohibits local downloads, and enforces data expiration.
+- **💰 Incentive Mechanism**: Data providers receive ERC20 tokens when their data is accessed, redeemable for data analysis services or university-branded merchandise.
+- **🔍 Data Traceability**: Watermarks and smart contracts track unauthorized data sharing, enabling automatic banning of violators.
 
 ---
 
-## 📖 使用说明
+## 🏗️ Technical Architecture
 
-1. **用户登录**
-    - 安装MetaMask插件，连接FISCO BCOS网络。
-    - 通过平台界面登录，授权WeGene数据访问。
+The platform is built with the following technology stack, combining blockchain and encryption technologies for secure and efficient data sharing:
 
-2. **数据上传**
-    - 普通用户上传基因数据，系统自动分类并生成哈希。
-    - 数据存储于链下，哈希记录于FISCO BCOS链上。
-
-3. **数据查看**
-    - 机构用户提交邮箱验证（如`user@university.edu`）。
-    - 验证通过后，申请查看基因型数据，接收加密PDF和密钥。
-    - 使用离线解密工具输入MetaMask私钥进行数据预览。
-
-4. **奖励获取**
-    - 数据被查看后，数据提供者自动获得ERC20代币。
-    - 在平台兑换页面使用代币兑换高校周边礼品等。
-
-5. **违规处理**
-    - 平台通过水印监控数据二次传播。
-    - 发现违规行为，智能合约自动封禁用户。
+| Module              | Technology Implementation                     |
+|---------------------|---------------------------------------------|
+| **Blockchain**      | FISCO BCOS consortium chain for storing data hashes, access records, and token transactions |
+| **Authentication**  | MetaMask wallet for Ethereum-compatible address management |
+| **Data Integration**| OAuth2 protocol for integration with platforms like WeGene |
+| **Data Storage**    | On-chain: Data hashes, access records; Off-chain: Distributed database (e.g., IPFS) |
+| **Encryption**      | CP-ABE, ECIES                              |
+| **Smart Contracts** | Access control, token distribution, and violation banning |
+| **Local Decryption Tool** | Local application for data preview and expiration control |
 
 ---
 
-*构建安全、可信的基因数据共享未来！*
+## 🛠️ Installation and Deployment
+
+### Prerequisites
+- **MetaMask**: Browser extension
+- **FISCO BCOS**: Consortium blockchain node
+- **Database**: Support for distributed storage (e.g., IPFS or MySQL)
+
+---
+
+## 📖 Usage Instructions
+
+1. **User Login**
+    - Install the MetaMask browser extension and connect to the FISCO BCOS network.
+    - Log in through the platform interface and authorize data access from WeGene.
+
+2. **Data Upload**
+    - Regular users upload genetic data, which is automatically classified into phenotypic and genomic data, with hashes generated for genomic data.
+    - Data is stored off-chain, with hashes recorded on the FISCO BCOS blockchain.
+
+3. **Data Access**
+    - Institutional users submit email verification (e.g., `user@university.edu`).
+    - Upon verification, request access to genomic data and receive encrypted data packages.
+    - Use the local decryption tool with a MetaMask private key to preview data.
+
+4. **Reward Acquisition**
+    - Data providers automatically receive ERC20 tokens when their data is accessed.
+    - Redeem tokens for university-branded merchandise or data analysis services on the platform's redemption page.
+
+5. **Violation Handling**
+    - The platform monitors secondary data distribution via watermarks.
+    - Smart contracts automatically ban users upon detection of violations.
+
+---
+
+*Building a secure and trusted future for genetic data sharing!*
