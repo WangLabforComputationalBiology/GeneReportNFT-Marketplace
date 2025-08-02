@@ -1,4 +1,4 @@
-# 🧬 Genetic Data Sharing Platform
+# 🧬 BioLedger - Genomic Data Sharing Platform
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
@@ -6,76 +6,87 @@
 
 ## 🌟 Project Overview
 
-The Genetic Data Sharing Platform is a decentralized solution based on a consortium blockchain, designed to enable **secure storage**, **authorized sharing**, and **privacy protection** of personal genetic data. Built on the [FISCO BCOS](https://fisco-bcos-doc.readthedocs.io/zh-cn/latest/) consortium blockchain, the platform integrates MetaMask wallets, OAuth2 protocols, encryption technologies, and an ERC20 token incentive mechanism to provide secure, efficient, and traceable data sharing services for data providers and institutional users (e.g., universities, pharmaceutical companies, and research institutes).
+**BioLedger** is a decentralized genomic data sharing platform built on a consortium blockchain, dedicated to enabling **secure storage**, **authorized sharing**, and **privacy protection** of personal genomic data. Based on [WeBank FISCO BCOS](https://fisco-bcos-doc.readthedocs.io/zh-cn/latest/), BioLedger integrates MetaMask wallet, OAuth2 protocol, encryption technologies, and an ERC20 token incentive mechanism to provide secure, efficient, and traceable data sharing services for data providers (individuals) and institutional users (e.g., universities, pharmaceutical companies, research institutions).
 
-Through **tiered access control**, **data encryption**, and **watermark tracing**, the platform ensures the privacy and controllability of genomic data while incentivizing user participation with token rewards. Data providers earn rewards for sharing data, and institutional users access genomic data via email verification, supporting applications in genetic research, drug development, and more.
+Through **tiered access control**, **data encryption**, and **watermark tracing**, BioLedger ensures the privacy and controllability of genotypic data while incentivizing user participation with token rewards. Data providers earn rewards for sharing data, while institutional users access genotypic data via email verification, supporting applications in genetic research, drug development, and more.
 
 ---
 
 ## 🚀 Features
 
 - **🔐 User Authentication**: Secure login and identity management via MetaMask wallet.
-- **📥 Data Acquisition and Classification**: Obtains user-authorized data from WeGene via OAuth2 protocol, categorizing data (e.g., skin, fitness) and generating hash credentials.
+- **📥 Data Acquisition and Classification**: Retrieve user-authorized data from WeGene via OAuth2 protocol, classify by type (e.g., skin, fitness), and generate hash credentials.
 - **🔒 Access Control**:
-    - **Regular Users**: Upload genetic data and earn token rewards.
-    - **Institutional Users**: Access genomic data upon email verification.
+    - **Individual Users**: Upload genomic data and earn token rewards.
+    - **Institutional Users**: Access genotypic data after email verification.
 - **🛡️ Data Privacy Protection**:
-    - Genomic data encrypted with HCE (Hybrid CP-ABE with ECIES Encryption).
+    - Genotypic data encrypted using HCE (Hybrid CP-ABE with ECIES Encryption).
     - Embedded public key watermarks for tracing secondary data distribution.
-    - Offline decryption tool enables data preview, prohibits local downloads, and enforces data expiration.
-- **💰 Incentive Mechanism**: Data providers receive ERC20 tokens when their data is accessed, redeemable for data analysis services or university-branded merchandise.
-- **🔍 Data Traceability**: Watermarks and smart contracts track unauthorized data sharing, enabling automatic banning of violators.
+    - Offline decryption tool for data preview, with local download prevention and data expiration mechanisms.
+- **💰 Incentive Mechanism**: Data providers receive ERC20 token rewards when their data is accessed, redeemable for data analysis services or university-branded merchandise.
+- **🔍 Data Traceability**: Watermarks and smart contracts track unauthorized data sharing, with automatic bans for violators.
 
 ---
 
 ## 🏗️ Technical Architecture
 
-The platform is built with the following technology stack, combining blockchain and encryption technologies for secure and efficient data sharing:
+BioLedger is built with the following technology stack, combining blockchain and encryption for secure and efficient data sharing:
 
-| Module              | Technology Implementation                     |
-|---------------------|---------------------------------------------|
-| **Blockchain**      | FISCO BCOS consortium chain for storing data hashes, access records, and token transactions |
-| **Authentication**  | MetaMask wallet for Ethereum-compatible address management |
-| **Data Integration**| OAuth2 protocol for integration with platforms like WeGene |
-| **Data Storage**    | On-chain: Data hashes, access records; Off-chain: Distributed database (e.g., IPFS) |
-| **Encryption**      | CP-ABE, ECIES                              |
-| **Smart Contracts** | Access control, token distribution, and violation banning |
-| **Local Decryption Tool** | Local application for data preview and expiration control |
+| Module             | Technology                          |
+|--------------------|------------------------------------|
+| **Blockchain**     | FISCO BCOS consortium chain for storing data hashes, access records, and token transactions |
+| **Authentication** | MetaMask wallet for Ethereum-compatible address management |
+| **Data Integration** | OAuth2 protocol for integration with platforms like WeGene |
+| **Data Storage**   | On-chain: Data hashes, access records; Off-chain: Distributed database (e.g., IPFS) |
+| **Encryption**     | CP-ABE, ECIES                     |
+| **Smart Contracts**| Access control, token distribution, violation bans |
+| **Local Decryption Tool** | Local program for data preview and expiration control |
 
 ---
 
 ## 🛠️ Installation and Deployment
 
-### Prerequisites
+### Requirements
 - **MetaMask**: Browser extension
-- **FISCO BCOS**: Consortium blockchain node
+- **FISCO BCOS**: Consortium chain node
 - **Database**: Support for distributed storage (e.g., IPFS or MySQL)
+
+### Deployment Steps
+1. Configure FISCO BCOS consortium chain nodes to ensure proper operation.
+2. Install MetaMask extension and connect to BioLedger’s FISCO BCOS network.
+3. Set up a distributed database (e.g., IPFS) for off-chain data storage.
+4. Deploy smart contracts to configure access control and token distribution logic.
+5. Launch the local decryption tool to enable data preview functionality.
 
 ---
 
-## 📖 Usage Instructions
+## 📖 Usage Guide
 
 1. **User Login**
-    - Install the MetaMask browser extension and connect to the FISCO BCOS network.
-    - Log in through the platform interface and authorize data access from WeGene.
+    - Install MetaMask extension and connect to BioLedger’s FISCO BCOS network.
+    - Log in via the BioLedger platform interface and authorize data access from WeGene.
 
 2. **Data Upload**
-    - Regular users upload genetic data, which is automatically classified into phenotypic and genomic data, with hashes generated for genomic data.
-    - Data is stored off-chain, with hashes recorded on the FISCO BCOS blockchain.
+    - Individual users upload genomic data; BioLedger automatically classifies phenotypic and genotypic data and generates hash credentials for genotypic data.
+    - Data is stored off-chain, with hashes recorded on the FISCO BCOS chain.
 
 3. **Data Access**
     - Institutional users submit email verification (e.g., `user@university.edu`).
-    - Upon verification, request access to genomic data and receive encrypted data packages.
-    - Use the local decryption tool with a MetaMask private key to preview data.
+    - Upon verification, request access to genotypic data and receive encrypted data packages.
+    - Use BioLedger’s local decryption tool with MetaMask private key for data preview.
 
-4. **Reward Acquisition**
+4. **Reward Collection**
     - Data providers automatically receive ERC20 tokens when their data is accessed.
-    - Redeem tokens for university-branded merchandise or data analysis services on the platform's redemption page.
+    - Redeem tokens for university-branded merchandise or data analysis services via the BioLedger platform.
 
 5. **Violation Handling**
-    - The platform monitors secondary data distribution via watermarks.
-    - Smart contracts automatically ban users upon detection of violations.
+    - BioLedger monitors secondary data distribution via watermarks.
+    - Smart contracts automatically ban users for detected violations.
 
 ---
 
-*Building a secure and trusted future for genetic data sharing!*
+## 🌍 Vision
+
+**BioLedger** aims to build a secure and trusted ecosystem for genomic data sharing, empowering genetic research and personalized medicine for the future!
+
+---
